@@ -80,9 +80,70 @@ public:
   }
 };
 
+SurfaceDrawer::SurfaceDrawer(const CL_Surface& sur)
+  : surface(sur)
+{
+}
+
+SurfaceDrawer::~SurfaceDrawer() 
+{
+}
+  
+void
+SurfaceDrawer::set_surface(const CL_Surface& sur)
+{
+  surface = sur;
+  surface.set_alignment(origin_center);
+}
+
+void
+SurfaceDrawer::draw(ParticleSystem& psys) 
+{          
+  for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
+    {
+      // FIXME: use custom OpenGL here
+      if (i->t != -1.0f)
+        {
+          float p = 1.0f - psys.get_progress(i->t);
+          surface.set_color(CL_Color(int(psys.color_start.get_red()   * p + psys.color_stop.get_red()   * (1.0f - p)),
+                                     int(psys.color_start.get_green() * p + psys.color_stop.get_green() * (1.0f - p)),
+                                     int(psys.color_start.get_blue()  * p + psys.color_stop.get_blue()  * (1.0f - p)),
+                                     int(psys.color_start.get_alpha() * p + psys.color_stop.get_alpha() * (1.0f - p))));
+
+          surface.set_scale(psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start),
+                            psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start));
+          surface.set_angle(i->angle);
+          surface.draw(int(psys.get_x_pos() + i->x),
+                       int(psys.get_y_pos() + i->y));
+        }
+    }
+}
+
+void
+SparkDrawer::draw(ParticleSystem& psys) 
+{
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active();
+  state.setup_2d();
+  
+  //glBlendMode(GL_SRC_ALPHA, GL_SRC_ALPHA_MINUS_ONE);
+  glEnable(GL_BLEND);
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE );
+  glBegin(GL_LINES);
+  for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
+    {
+      glColor4f(1.0, 1.0, 0, 1.0f-psys.get_progress(i->t));
+      glVertex2f(i->x, i->y);
+      glColor4f(0, 0, 0, 0);
+      glVertex2f(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f);
+    }
+  glEnd();
+}
+
 ParticleSystem::ParticleSystem()
 {
   randomizer = new PointRandomizer;
+  drawer     = 0;
   x_pos      = 320.0f;
   y_pos      = 240.0f;
   life_time  = 1.0f;
@@ -100,81 +161,35 @@ ParticleSystem::ParticleSystem()
   speed_stop  = 200.0f;
 
   color_start = CL_Color(255, 255, 255, 255);
-  color_stop  = CL_Color(255, 255, 255, 255);
+  color_stop  = CL_Color(  0,   0,   0,   0);
 
   set_count(70);
-
-  start_particle = particles.begin();
 }
 
 ParticleSystem::~ParticleSystem()
 {
   delete randomizer;
+  delete drawer;
+}
+
+void
+ParticleSystem::set_drawer(Drawer* drawer_)
+{
+  delete drawer;
+  drawer = drawer_;
 }
   
 void
 ParticleSystem::draw()
 {
-  if (1)
+  if (drawer)
     {
-      surface.set_blend_func(blend_src_alpha, blend_one);
-            
-      for(Particles::iterator i = start_particle; i != particles.end(); ++i)
-        {
-          // FIXME: use custom OpenGL here
-          if (i->t != -1.0f && i->t <= life_time) 
-            {
-              surface.set_color(CL_Color(255, 255, 255, std::min(255, 
-                                                                 255-static_cast<int>(255*(i->t/life_time)))));
-              surface.set_scale(0.1+(i->t/life_time)*3.0f,
-                                0.1+(i->t/life_time)*3.0f);
-              surface.set_angle(i->angle);
-              surface.draw(int(x_pos + i->x),
-                           int(y_pos + i->y));
-            }
-        }
-
-      for(Particles::iterator i = particles.begin(); i != start_particle; ++i)
-        {
-          // FIXME: use custom OpenGL here
-          if (i->t != -1.0f && i->t <= life_time) 
-            {
-              surface.set_color(CL_Color(255, 255, 255, std::min(255, 
-                                                                 255-static_cast<int>(255*(i->t/life_time)))));
-              surface.set_scale(0.1+ (i->t/life_time)*3.0f,
-                                0.1+ (i->t/life_time)*3.0f);
-              surface.set_angle(i->angle);
-              surface.draw(int(x_pos + i->x),
-                           int(y_pos + i->y));
-            }
-        }
+      drawer->draw(*this);
     }
   else
     {
-      CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-      state.set_active();
-      state.setup_2d();
-      glBegin(GL_LINES);
-
-      for(Particles::iterator i = particles.begin(); i != particles.end(); ++i)
-        {
-          /*CL_Display::draw_line(i->x, i->y,
-                                i->x - i->v_x/10.0f, i->y - i->v_y/10.0f, 
-                                CL_Color(255, 255, 255));*/
-          glColor3f(1.0, 1.0, 0);
-          glVertex2f(i->x, i->y);
-          glColor3f(0, 0, 0);
-          glVertex2f(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f);
-          //glVertex2f(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f);
-        }
-      glEnd();
+      std::cout << "ParticleSystem: No drawer set" << std::endl;
     }
-}
-
-float
-ParticleSystem::get_progress(float t)
-{
-  return t;
 }
 
 void
@@ -193,10 +208,6 @@ ParticleSystem::spawn(Particle& particle)
   particle.angle = rnd.drand(360);
 
   particle.t   = std::min(std::max(0.0f, particle.t - life_time), life_time);
-  
-  ++start_particle;
-  if (start_particle == particles.end())
-    start_particle = particles.begin();
 }
 
 void
@@ -222,17 +233,9 @@ ParticleSystem::update(float delta)
 }
 
 void
-ParticleSystem::set_surface(const CL_Surface& sur)
-{
-  surface = sur;
-  surface.set_alignment(origin_center);
-}
-
-void
 ParticleSystem::set_count(int num)
 {
   particles.resize(num);
-  start_particle = particles.begin();
 
   for(Particles::iterator i = particles.begin(); i != particles.end(); ++i)
     {
@@ -346,6 +349,12 @@ ParticleSystem::set_speed(float from, float to)
 {
   speed_start = from;
   speed_stop  = to;
+}
+
+float
+ParticleSystem::get_progress(float t)
+{
+  return std::max(0.0f, std::min(1.0f, t/life_time));
 }
 
 /* EOF */

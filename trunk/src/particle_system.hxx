@@ -24,38 +24,67 @@
 #include <vector>
 
 class Randomizer;
+class Particle;
+class ParticleSystem;
 
-  struct Particle {
-    /** Position of the particle */
-    float x;
-    float y;
+class Drawer
+{
+public:
+  virtual ~Drawer() {}
+  virtual void draw(ParticleSystem& psys) =0;
+};
 
-    /** Velocity of the particle */
-    float v_x;
-    float v_y;
+class SparkDrawer : public Drawer
+{
+public:
+  void draw(ParticleSystem& psys);
+};
 
-    /** Rotation angle */
-    float angle;
+class SurfaceDrawer : public Drawer
+{
+private:
+  CL_Surface surface;
+  
+public:
+  SurfaceDrawer(const CL_Surface& sur);
+  virtual ~SurfaceDrawer();
+  
+  void set_surface(const CL_Surface& sur);
+  void draw(ParticleSystem& psys);
+};
 
-    /** How long the particle already lifed, -1 means the particle
-        isn't active and ready to respawn */
-    float t;
-  };
+struct Particle {
+  /** Position of the particle */
+  float x;
+  float y;
+
+  /** Velocity of the particle */
+  float v_x;
+  float v_y;
+
+  /** Rotation angle */
+  float angle;
+
+  /** How long the particle already lifed, -1 means the particle
+      isn't active and ready to respawn */
+  float t;
+};
 
 
 /** */
 class ParticleSystem
 {
-private:
+public:
   typedef std::vector<Particle> Particles;
+  typedef Particles::iterator iterator;
+private:
   Particles particles;
-  Particles::iterator start_particle;
 
-  CL_Surface surface;
   float life_time;
 
   /** Places the particle in its initial position */
   Randomizer* randomizer;
+  Drawer* drawer;
 
   float x_pos;
   float y_pos;
@@ -69,22 +98,23 @@ private:
   float cone_start;
   float cone_stop;
 
+public:
   float size_start;
   float size_stop;
-
+private:
   float speed_start;
   float speed_stop;
 
+public:
   CL_Color color_start;
   CL_Color color_stop;
-
-  /** Returns the how much a particle has progressed, this is
-      particle.life_time with fade_in/fade_out applied  */
-  float get_progress(float t);
+private:
   void spawn(Particle& particle);
 public:
   ParticleSystem();
   virtual ~ParticleSystem();
+
+  void set_drawer(Drawer*);
 
   /** Draws the particle system to the screen */
   virtual void draw();
@@ -92,9 +122,6 @@ public:
   /** Update the particle system \a delta seconds */
   virtual void update(float delta);
   
-  /** Set the surface that will be used */
-  void set_surface(const CL_Surface& sur);
-
   /** Set how many particles will be used */
   void set_count(int num);
   
@@ -154,6 +181,16 @@ public:
   /** Set the speed of the particles, it will be randomly distributed
       from \a from to \a to, direction will be taken from the cone */
   void set_speed(float from, float to);
+
+  iterator begin() { return particles.begin(); }
+  iterator end()   { return particles.end(); }
+
+  float get_x_pos() { return x_pos; }
+  float get_y_pos() { return y_pos; } 
+
+  /** Returns the how much a particle has progressed, this is
+      particle.life_time with fade_in/fade_out applied  */
+  float get_progress(float t);
 private:
   ParticleSystem (const ParticleSystem&);
   ParticleSystem& operator= (const ParticleSystem&);

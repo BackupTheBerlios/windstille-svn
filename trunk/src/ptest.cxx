@@ -49,16 +49,39 @@ public:
         CL_DisplayWindow window("Surface Example", 512, 512);
 
         CL_Surface surface1("smoke.png");
+        CL_Surface surface2("smoke2.png");
 
         unsigned int last_time = CL_System::get_time();
 
+        ParticleSystem psystem2;
+        psystem2.set_drawer(new SparkDrawer());
+        psystem2.set_pos(0,0);
+        psystem2.set_speed(300, 550);
+        psystem2.set_cone(-25-90, 25-90);
+        psystem2.set_gravity(0, 20);
+        psystem2.set_line_distribution(-50, 0, 50, 0);
+
+        ParticleSystem psystem3;
+        psystem3.set_lifetime(8);
+        psystem3.set_count(30);
+        surface2.set_blend_func(blend_src_alpha, blend_one_minus_src_alpha);
+        surface2.set_alignment(origin_center);
+        psystem3.set_drawer(new SurfaceDrawer(surface2));
+        psystem3.set_pos(0,0);
+        psystem3.set_speed(70, 100);
+        psystem3.set_cone(-25-90, 25-90);
+        psystem3.set_gravity(0, -1);
+        psystem3.set_size(1.0f, 3.0f);
+        psystem3.set_line_distribution(-50, 0, 50, 0);
+ 
         ParticleSystem psystem;
         psystem.set_count(100);
-        psystem.set_surface(surface1);
+        surface1.set_blend_func(blend_src_alpha, blend_one);
+        psystem.set_drawer(new SurfaceDrawer(surface1));
         psystem.set_pos(0,0);
-        psystem.set_speed(300, 550);
-        psystem.set_cone(-25-90, 25-90);
-        psystem.set_gravity(0, 20);
+        psystem.set_speed(200, 300);
+        psystem.set_cone(-5-90, 5-90);
+        psystem.set_gravity(0, 0);
         psystem.set_line_distribution(-50, 0, 50, 0);
         //psystem.set_circle_distribution(100.0f);
         //psystem.set_rect_distribution(200.0f, 50);
@@ -70,12 +93,18 @@ public:
             CL_Display::clear(CL_Color(0, 0, 0));
 
             psystem.set_spawn_point(CL_Mouse::get_x(), CL_Mouse::get_y());
+            psystem2.set_spawn_point(CL_Mouse::get_x(), CL_Mouse::get_y());
+            psystem3.set_spawn_point(CL_Mouse::get_x(), CL_Mouse::get_y());
         
             unsigned int cur_time = CL_System::get_time();
             psystem.update((cur_time - last_time)/1000.f);
+            psystem2.update((cur_time - last_time)/1000.f);
+            psystem3.update((cur_time - last_time)/1000.f);
             last_time = cur_time;
 
+            psystem3.draw();
             psystem.draw();
+            psystem2.draw();
 
             // Flip front and backbuffer. This makes the changes visible:
             CL_Display::flip();
