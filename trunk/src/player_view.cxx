@@ -30,7 +30,7 @@ PlayerView::PlayerView (Player* t)
 }
 
 void
-PlayerView::draw (DrawingContext& gc)
+PlayerView::draw (SceneContext& gc)
 {
   CL_Display::push_modelview();
   CL_Display::add_translate(int(-pos.x + CL_Display::get_width ()/2),

@@ -59,7 +59,7 @@ public:
   void set_pos(float x, float y);
   void move_to(float x, float y);
 
-  void draw(DrawingContext& gc);
+  void draw(SceneContext& gc);
   void update(float delta);
 
   CL_Signal_v0& sig_done() { return done; }

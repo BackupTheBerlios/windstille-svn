@@ -25,7 +25,7 @@
 
 #include "globals.hxx"
 #include "field.hxx"
-#include "drawing_context.hxx"
+#include "scene_context.hxx"
 
 class WindstilleLevel;
 class Tile;
@@ -40,7 +40,7 @@ public:
   TileMap (Field<int>* data);
 
   void update (float delta);
-  void draw (DrawingContext& gc);
+  void draw (SceneContext& gc);
   
   /** @return the type of ground at the given world coordinates */
   bool is_ground(float x, float y);

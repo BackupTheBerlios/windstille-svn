@@ -18,6 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <ClanLib/Display/sprite.h>
+#include <iostream>
 #include "drawing_context.hxx"
 
 struct DrawingRequestsSorter
@@ -31,6 +32,7 @@ class SpriteDrawingRequest : public DrawingRequest
 {
 private:
   CL_Sprite sprite;
+
 public:
   SpriteDrawingRequest(const CL_Sprite& sprite_, const CL_Vector& pos_)
     : DrawingRequest(pos_),
@@ -38,8 +40,8 @@ public:
   {}
   virtual ~SpriteDrawingRequest() {}
 
-  void draw() {
-    sprite.draw(static_cast<int>(pos.x), static_cast<int>(pos.y));
+  void draw(CL_GraphicContext* gc) {
+    sprite.draw(static_cast<int>(pos.x), static_cast<int>(pos.y), gc);
   }
 };
 
@@ -54,7 +56,7 @@ public:
   {}
   virtual ~TextDrawingRequest() {}
 
-  void draw() {
+  void draw(CL_GraphicContext* gc) {
     // FIXME: not implemented
   }
 };
@@ -66,11 +68,14 @@ DrawingContext::DrawingContext()
 }
 
 void
-DrawingContext::do_draw()
+DrawingContext::render(CL_GraphicContext* gc)
 {
   std::stable_sort(drawingrequests.begin(), drawingrequests.end(), DrawingRequestsSorter());
-
   
+  for(DrawingRequests::iterator i = drawingrequests.begin(); i != drawingrequests.end(); ++i)
+    {
+      (*i)->draw(gc);
+    }
 }
 
 void
@@ -91,13 +96,14 @@ DrawingContext::draw(DrawingRequest* request)
 
 void
 DrawingContext::draw(const CL_Sprite&   sprite,  float x, float y, float z)
-{
+{ // FIXME: This should get flattend down to a simple texture draw
+  // command for easier sorting after texture-id/alpha
   draw(new SpriteDrawingRequest(sprite, CL_Vector(x, y, z)));
 }
 
 void
 DrawingContext::draw(const std::string& text,    float x, float y, float z)
-{
+{ 
   draw(new TextDrawingRequest(text, CL_Vector(x, y, z)));
 }
 

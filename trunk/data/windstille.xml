@@ -53,6 +53,9 @@
     <image file="images/door.png"></image>
   </sprite>
 
+  <surface name="black" file="images/black.png" />
+
+
   <section name="powerup">
     <sprite name="flash">
       <image file="images/powerup/flash.png" name="image1" />
@@ -141,6 +144,10 @@
       <image file="images/hero_run/hero-1.png" name="image9" />
       <image file="images/hero_run/hero-0.png" name="image10" />
     </description>
+
+    <sprite name="light">
+      <image file="images/hero_light.png" />
+    </sprite>
     
     <sprite name="dead">
       <translation origin="top_left" x="-200" y="120"/>

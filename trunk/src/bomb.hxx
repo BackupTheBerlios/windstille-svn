@@ -40,7 +40,7 @@ public:
   virtual ~Bomb();
 
   void update(float delta);
-  void draw(DrawingContext& gc);
+  void draw(SceneContext& gc);
 private:
   void explode();
   Bomb (const Bomb&);

@@ -32,7 +32,7 @@ WaterSplash::~WaterSplash()
 }
 
 void
-WaterSplash::draw (DrawingContext& gc)
+WaterSplash::draw (SceneContext& gc)
 {
   float factor = time * 2.0f;
   

@@ -20,7 +20,7 @@
 #include "darkness.hxx"
 
 void
-Darkness::draw(DrawingContext& gc)
+Darkness::draw(SceneContext& gc)
 {
   if (0)
     { // Darkness

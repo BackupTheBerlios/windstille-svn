@@ -37,7 +37,7 @@ Igel::~Igel()
 }
 
 void
-Igel::draw(DrawingContext& gc)
+Igel::draw(SceneContext& gc)
 {
   CL_Sprite* s;
 

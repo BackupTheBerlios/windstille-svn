@@ -26,7 +26,12 @@
 
 class CL_Sprite;
 
-/** */
+/** The DrawingContext collects all DrawingRequests and allows you to
+    flush them all down to the graphics card in one run, this has the
+    advantage that it is possible to z-sort, texture-id sort or
+    otherwise optimize the drawing. In addition to that it also allows
+    you do render the drawing commands to multiple buffers which might
+    be usefull for post-processing effects and such. */
 class DrawingContext
 {
 private:
@@ -35,11 +40,12 @@ private:
 
   float translate_x;
   float translate_y;
+
 public:
   DrawingContext();
 
   /** Draws everything in the drawing context to the screen */
-  void do_draw();
+  void render(CL_GraphicContext* gc);
 
   /** Empties the drawing context */
   void clear();

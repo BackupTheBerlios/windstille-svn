@@ -62,7 +62,7 @@ TileMap::update (float delta)
 }
 
 void
-TileMap::draw (DrawingContext& gc)
+TileMap::draw (SceneContext& gc)
 {
   CL_Rect rect = View::current()->get_clip_rect();
 

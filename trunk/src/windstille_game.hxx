@@ -24,6 +24,7 @@
 #include <ClanLib/Display/sprite.h>
 #include <ClanLib/Display/font.h>
 #include <ClanLib/Signals/slot_container.h>
+#include "scene_context.hxx"
 #include "screen.hxx"
 
 class CL_InputEvent;
@@ -38,6 +39,8 @@ class DialogManager;
 class WindstilleGame : public Windstille::Screen
 {
 private:
+  SceneContext sc;
+
   int frames;
   Player* player;
 

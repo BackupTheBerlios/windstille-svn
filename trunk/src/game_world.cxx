@@ -69,7 +69,7 @@ GameWorld::~GameWorld()
 }
 
 void
-GameWorld::draw (DrawingContext& gc)
+GameWorld::draw (SceneContext& gc)
 {
   background_tilemap->draw (gc);
 

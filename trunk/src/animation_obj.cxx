@@ -30,7 +30,7 @@ AnimationObj::AnimationObj (const std::string& str, const CL_Vector& arg_pos)
 }
 
 void
-AnimationObj::draw (DrawingContext& gc)
+AnimationObj::draw (SceneContext& gc)
 {
   sprite.draw (int (pos.x), int (pos.y));
 }

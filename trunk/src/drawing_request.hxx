@@ -22,6 +22,8 @@
 
 #include <ClanLib/Core/Math/cl_vector.h>
 
+class CL_GraphicContext;
+
 /** 
  */
 class DrawingRequest
@@ -31,7 +33,7 @@ protected:
 public:
   DrawingRequest(const CL_Vector& pos_) : pos(pos_) {}
   
-  virtual void draw() = 0;
+  virtual void draw(CL_GraphicContext* gc) = 0;
   
   /** Returns true if the request contains an alpha channel and needs
       to be drawn in order */

@@ -26,7 +26,7 @@ PowerUp::PowerUp (CL_Sprite s, const CL_Vector& arg_pos)
 }
 
 void
-PowerUp::draw (DrawingContext& gc)
+PowerUp::draw (SceneContext& gc)
 {
   sprite.draw (int (pos.x), int (pos.y));
 }

@@ -94,6 +94,7 @@ windstille_source = [
 
     # drawing
     'drawing_context.cxx',
+    'scene_context.cxx',
     
     # Input Subdirectory
     'input/controller.cxx', 

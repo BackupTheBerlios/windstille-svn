@@ -69,6 +69,7 @@ private:
   CL_Sprite stand;
   CL_Sprite killed;
   CL_Sprite dead;
+  CL_Sprite light;
 
   CL_Sprite roll;
   CL_Sprite surround;
@@ -99,7 +100,7 @@ public:
 
   int get_movement_state() { return state; }
 
-  void draw (DrawingContext& gc);
+  void draw (SceneContext& gc);
   void update (float delta);
 
   void set_position (const CL_Vector& arg_pos);

@@ -34,7 +34,7 @@ private:
 public:
   LaserShoot (const CL_Vector& arg_pos, Direction arg_dir, int arg_stage);
   virtual ~LaserShoot () {}
-  void draw (DrawingContext& gc);
+  void draw (SceneContext& gc);
   void update (float delta);
 };
 

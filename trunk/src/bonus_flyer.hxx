@@ -35,7 +35,7 @@ private:
 public:
   BonusFlyer (const CL_Vector2&);
   virtual ~BonusFlyer () {}
-  void draw (DrawingContext& gc);
+  void draw (SceneContext& gc);
   void update (float delta);
 };
 

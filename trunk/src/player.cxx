@@ -41,8 +41,9 @@ Player::Player () :
   sit      ("hero/sit",   resources),
   jump     ("hero/jump",  resources),
   stand    ("hero/stand", resources),
-  killed   ("hero/kill", resources),
-  dead     ("hero/dead", resources),
+  killed   ("hero/kill",  resources),
+  dead     ("hero/dead",  resources),
+  light    ("hero/light", resources),
 
   state (WALKING),
   gun_state (GUN_READY),
@@ -61,8 +62,10 @@ Player::Player () :
 }
 
 void
-Player::draw (DrawingContext& gc)
+Player::draw (SceneContext& gc)
 {
+  gc.light().draw(light, 0, 0, 0);
+  
   //std::cout << "onground: " << ground_state << std::endl;
   CL_Sprite* sprite = 0;
 

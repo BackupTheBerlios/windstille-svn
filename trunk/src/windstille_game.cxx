@@ -39,7 +39,7 @@
 #include "dialog_manager.hxx"
 #include "windstille_main.hxx"
 #include "screenshot.hxx"
-#include "drawing_context.hxx"
+#include "scene_context.hxx"
 #include "input/input_manager.hxx"
 
 #include "windstille_game.hxx"
@@ -75,12 +75,13 @@ WindstilleGame::~WindstilleGame()
 void
 WindstilleGame::draw_game()
 {
-  DrawingContext gc;
-
   background->draw();
 
   // Draw the world
-  view->draw (gc);
+  view->draw (sc);
+
+  // Render the scene to the screen
+  sc.render();
 
   // Draw HUD
   energiebar->draw();

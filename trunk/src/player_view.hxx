@@ -33,7 +33,7 @@ private:
 public:
   PlayerView (Player*);
   
-  void draw (DrawingContext& gc);
+  void draw (SceneContext& gc);
   void update (float delta);
 
   CL_Rect get_clip_rect();

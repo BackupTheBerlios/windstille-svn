@@ -20,7 +20,7 @@
 #ifndef GAMEOBJ_HXX
 #define GAMEOBJ_HXX
 
-#include "drawing_context.hxx"
+#include "scene_context.hxx"
 
 class GameWorld;
 
@@ -39,7 +39,7 @@ public:
 
   GameObj () : remove_ (false) {}
 
-  virtual void draw (DrawingContext& gc) =0;
+  virtual void draw (SceneContext& sc) =0;
   virtual void update (float) =0;
 };
 

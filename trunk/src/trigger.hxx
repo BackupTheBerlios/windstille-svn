@@ -59,7 +59,7 @@ public:
   Trigger(TriggerCondition*, const RubyFunctor& func);
   virtual ~Trigger();
 
-  void draw (DrawingContext& gc);
+  void draw (SceneContext& gc);
   void update (float delta);
 private:
   Trigger (const Trigger&);

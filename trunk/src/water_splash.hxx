@@ -35,7 +35,7 @@ public:
   WaterSplash(float x, float y);
   virtual ~WaterSplash();
 
-  void draw (DrawingContext& gc);
+  void draw (SceneContext& gc);
   void update (float);
 private:
   WaterSplash (const WaterSplash&);
