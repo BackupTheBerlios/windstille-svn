@@ -42,6 +42,7 @@ public:
         CL_Sizef rect2(100, 30);
         
         CL_Vector p0;
+        bool collides = false;
         while (CL_Keyboard::get_keycode(CL_KEY_ESCAPE) == false)
           {
             CL_Display::clear(CL_Color(0, 0, 0));
@@ -62,6 +63,12 @@ public:
                           << std::endl;;
               }
 
+            if ((res.side != CollisionManager::CO_NONE) != collides)
+              {
+                std::cout << "Collision status change" << std::endl;
+                collides = (res.side != CollisionManager::CO_NONE);
+              }
+
             draw(a, p0, CL_Color(155, 0, 0));
             draw(a, p1, CL_Color(255, 0, 0));
 
@@ -73,54 +80,6 @@ public:
               draw(b, p2, CL_Color(255, 0, 255));
             
             p0 = p1;
-#if 0
-            CL_Vector p1(CL_Mouse::get_x(), CL_Mouse::get_y());
-            CL_Vector p2(256, 256);
-            
-            float a1 = p0.x - 50;
-            float a2 = p0.x + 50;
-
-            float b1 = p2.x - 50;
-            float b2 = p2.x + 50;
-
-            float u0 = 0.0f;
-            float u1 = 1.0f;
-
-            colmgr.sweep_helper(a1, a2, b1, b2, p1.x - p0.x, u0, u1);
-
-            CL_Display::fill_rect(CL_Rect((int)std::min(a1, (p1.x - 50)), 0,
-                                          (int)std::max(a2, (p1.x + 50)), 50),
-                                  CL_Color(255, 0, 255));
-
-            CL_Display::fill_rect(CL_Rect((int)(p1.x - 50), 0, (int)(p1.x + 50), 50),
-                                  CL_Color(255, 0, 0));
-
-            CL_Display::draw_rect(CL_Rect((int)(p0.x - 50), 0, (int)p0.x + 50, 50),
-                                  CL_Color(255, 255, 0));
-
-            CL_Display::fill_rect(CL_Rect((int)b1, (int)25, (int)b2, 75),
-                                  CL_Color(255, 255, 0));
-
-            if (u0 > 0 && u0 < 1.0f) {
-              CL_Display::draw_rect(CL_Rect((int)a1 + u0*(p1.x - p0.x), (int)40, 
-                                            (int)a2 + u0*(p1.x - p0.x), 60),
-                                    CL_Color(255, 255, 255));
-            } else {
-              CL_Display::draw_rect(CL_Rect((int)a1 + u0*(p1.x - p0.x), (int)40, 
-                                            (int)a2 + u0*(p1.x - p0.x), 60),
-                                    CL_Color(255, 155, 255));
-            }
-
-            if (u1< 1.0f ) {
-              CL_Display::draw_rect(CL_Rect((int)a1 + u1*(p1.x - p0.x), (int)40, 
-                                            (int)a2 + u1*(p1.x - p0.x), 60),
-                                    CL_Color(155, 155, 155));
-            }
-
-            std::cout << u0 << " " << u1 << " " << (p1.x - p0.x) << std::endl;
-#endif
-
-
             // Flip front and backbuffer. This makes the changes visible:
             CL_Display::flip();
 
