@@ -20,7 +20,7 @@
 #ifndef HEADER_SCRIPTING_GAME_HXX
 #define HEADER_SCRIPTING_GAME_HXX
 
-#include <guile/gh.h>
+#include <ruby.h>
 
 class GameWorld;
 
@@ -50,7 +50,7 @@ int  player_get_y();
 GameWorld* make_game_world(int w, int h);
 void start_game(GameWorld*);
 
-void add_region_trigger(int x, int y, int w, int h, SCM func);
+void add_region_trigger(int x, int y, int w, int h, VALUE func);
 void remove_trigger();
 
 void game_set_pause(bool p);
@@ -58,10 +58,12 @@ bool game_get_pause();
 void game_quit();
 
 void dialog_add(const char* portrait, const char* text);
-void dialog_add_answer(const char* text, SCM func);
+void dialog_add_answer(const char* text, VALUE func);
 void dialog_show();
 void dialog_hide();
 void dialog_clear();
+
+void coroutine_add(VALUE val);
 
 /** @return number of seconds since game start, time doesn't progress
     in pause mode */

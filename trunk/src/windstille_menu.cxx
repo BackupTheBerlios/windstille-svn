@@ -69,14 +69,14 @@ WindstilleMenu::update(float delta)
         {
           if ((*i).button.name == FIRE_BUTTON && (*i).button.down == true)
             {
-              if ((current_choice == 2 && !bonus_active)
-                  || (current_choice == 3 && bonus_active))// QUIT
+              if ((current_choice == 1 && !bonus_active)
+                  || (current_choice == 2 && bonus_active))// QUIT
                 {
                   fadeout();
                   quit();
                   break;
                 }
-              else if (current_choice == 2 && bonus_active)
+              else if (current_choice == 1 && bonus_active)
                 {
                   MusicManager::current()->stop();
                   fadeout();
@@ -127,13 +127,13 @@ WindstilleMenu::update(float delta)
   if (current_choice < 0)
     {
       if (bonus_active)
-        current_choice = 3;
-      else
         current_choice = 2;
+      else
+        current_choice = 1;
     }
-  else if (current_choice > 2 && !bonus_active)
+  else if (current_choice > 1 && !bonus_active)
     current_choice = 0;
-  else if (current_choice > 3 && bonus_active)
+  else if (current_choice > 2 && bonus_active)
     current_choice = 0;
 
   InputManager::clear();
@@ -179,7 +179,7 @@ WindstilleMenu::draw()
           Fonts::menu_h.draw(580, 385, "[Extras]");
         }
       else
-        Fonts::menu.draw(580, 440, "Extras");
+        Fonts::menu.draw(580, 385, "Extras");
 
       if (current_choice == 2)
         {

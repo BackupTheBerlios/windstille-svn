@@ -23,7 +23,7 @@ import glob
 
 opts = Options('custom.py')
 opts.Add('CXX', 'The C++ compiler.', 'g++')
-opts.Add('CXXFLAGS', 'The C++ compiler flags.', '-g -O2 -Wall')
+opts.Add('CXXFLAGS', 'The C++ compiler flags.', '-g -O0 -Wall')
 opts.Add('CPPPATH', 'additional header path', '')
 opts.Add('LIBPATH', 'additional library path', '')
 
@@ -40,6 +40,7 @@ Help(opts.GenerateHelpText(env))
 clanLib_env = Environment()
 clanLib_env.ParseConfig("pkg-config --cflags --libs clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7")
 
+Depends('windstille_wrap.cxx', ['windstille.i'])
 env.Command('windstille_wrap.cxx', 'windstille.i',
             "swig -runtime -ruby -o $TARGET -c++ $SOURCE")
 
@@ -101,11 +102,9 @@ windstille_source = [
     'input/input_recorder.cxx', 
     'input/multi_button.cxx',
 
-    # Guile Specific stuff 
-    'scm_functor.cxx', 
-    'scm_helper.cxx',
     #'scripting/windstille_wrap.cxx',
     'guile.cxx',
+    'scm_helper.cxx',
 
     # Ruby stuff
     'windstille_wrap.cxx',
@@ -124,7 +123,7 @@ windstille_data = glob.glob('../data/images/*.png')     + \
 
 windstille_datadir = env['DESTDIR'] + env['PREFIX'] + '/share/games/windstille'
 
-windstille_prg = Program('windstille',
+windstille_prg = env.Program('windstille',
                          windstille_source,
                          CPPPATH=[env['CPPPATH'], env['RUBYDIR']] + clanLib_env['CPPPATH'],
                          LINKFLAGS = clanLib_env['LINKFLAGS'],

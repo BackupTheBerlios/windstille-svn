@@ -29,6 +29,13 @@
 #include "../dialog_manager.hxx"
 #include "../player.hxx"
 #include "../tile_factory.hxx"
+#include "../coroutine_manager.hxx"
+
+void
+coroutine_add(VALUE val)
+{
+  CoroutineManager::current()->add(new RubyCoroutine(val));
+}
 
 void
 game_set_tilesize(int size, int subsize)
@@ -97,10 +104,10 @@ void start_game(GameWorld* world)
   game.display ();
 }
 
-void add_region_trigger(int x, int y, int w, int h, SCM func)
+void add_region_trigger(int x, int y, int w, int h, VALUE func)
 {
   GameWorld::current()->add(new Trigger(new RegionTriggerCondition(CL_Rectf(x, y, w, h)), 
-                                        func));
+                                        RubyFunctor(func)));
 }
 
 void player_set_pos(float x, float y)
@@ -200,9 +207,9 @@ void dialog_clear()
   DialogManager::current()->clear();
 }
 
-void dialog_add_answer(const char* text, SCM func)
+void dialog_add_answer(const char* text, VALUE func)
 {
-  DialogManager::current()->add_answer(text, func);
+  DialogManager::current()->add_answer(text, RubyFunctor(func));
 }
 
 void remove_trigger()

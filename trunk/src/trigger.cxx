@@ -40,7 +40,7 @@ RegionTriggerCondition::check()
                                   player->get_pos().y));
 }
 
-Trigger::Trigger(TriggerCondition* condition, SCMFunctor func)
+Trigger::Trigger(TriggerCondition* condition, const RubyFunctor& func)
   : condition(condition),
     func(func),
     triggered(false)

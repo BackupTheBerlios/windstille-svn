@@ -214,8 +214,7 @@ WindstilleGame::on_startup ()
 
   //gh_load((datadir + "game.scm").c_str());
   std::cout << "Loading game file: " << std::endl;
-  rb_load_file((datadir + "game.rb").c_str());
-  ruby_exec();
+  RubyFunctor::load_file((datadir + "game.rb").c_str());
   std::cout << "Loading game file: done" << std::endl;
 
   logo       = CL_Sprite("logo", resources);

@@ -68,4 +68,42 @@ RubyFunctor::operator()(int x, int y)
   rb_funcall(val.ptr(), rb_intern("call"), 2, INT2FIX(x), INT2FIX(y));
 }
 
+VALUE
+RubyFunctor::load_file_protected(VALUE value)
+{
+  rb_load_file(reinterpret_cast<const char*>(value));
+  return Qnil;
+}
+
+void
+RubyFunctor::load_file(const char* filename)
+{
+  std::cout << "RubyFunctor: load_file: " << filename << std::endl;
+  int status = 0;   
+
+  rb_protect(&RubyFunctor::load_file_protected, (VALUE) filename, &status);
+
+  if (status == 0)
+    status = ruby_exec();
+
+  if (status)
+    {
+      // FIXME: Potential memory leak
+      std::cout << "######################################################" << std::endl;
+      std::cout << "RubyException: " 
+                << rb_str2cstr(rb_inspect(ruby_errinfo), 0) 
+                << std::endl;
+
+      VALUE trace = rb_funcall(ruby_errinfo, rb_intern("backtrace"), 0);
+      for (int i = 0; i < RARRAY(trace)->len; ++i)
+        std::cout << rb_str2cstr(rb_ary_entry(trace, i), 0) << std::endl;
+      std::cout << "######################################################" << std::endl;
+      ruby_errinfo = Qnil;
+    }
+  else
+    {
+      std::cout << "Load successfull" << std::endl;
+    }
+}
+
 /* EOF */

@@ -23,7 +23,7 @@
 #include <vector>
 #include <ClanLib/Core/Math/rect.h>
 #include "gameobj.hxx"
-#include "scm_functor.hxx"
+#include "ruby_functor.hxx"
 
 class TriggerCondition
 {
@@ -49,14 +49,14 @@ class Trigger : public GameObj
 {
 private:
   TriggerCondition* condition;
-  SCMFunctor func;
+  RubyFunctor func;
   bool triggered;
   
   static Trigger* current_;
 public:
   static Trigger* get_current() { return current_; }
 
-  Trigger(TriggerCondition*, SCMFunctor func);
+  Trigger(TriggerCondition*, const RubyFunctor& func);
   virtual ~Trigger();
 
   void draw ();

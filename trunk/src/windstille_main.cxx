@@ -26,6 +26,7 @@
 #include <guile/gh.h>
 
 #include "config.h"
+#include "ruby_functor.hxx"
 #include "string_converter.hxx"
 #include "windstille_error.hxx"
 #include "globals.hxx"
@@ -258,20 +259,8 @@ WindstilleMain::init_modules()
   scm_init_guile();
   ruby_init();
   Init_windstille();
-
-  std::cout << "Loading Guile Code... " << std::flush;
-
-  gh_eval_str("(debug-enable 'debug)"
-              "(debug-enable 'backtrace)"
-              "(read-enable 'positions)");
-
-  gh_define("*windstille-levelfile*",      gh_str02scm(levelfile.c_str()));
-  gh_define("*windstille-datadir*",        gh_str02scm(datadir.c_str()));
-  gh_define("*windstille-homedir*",        gh_str02scm(homedir.c_str()));
-  gh_define("*windstille-package-string*", gh_str02scm(PACKAGE_STRING));
-  std::cout << "done" << std::endl;
   
-// Init ClanLib
+  // Init ClanLib
   CL_SetupCore::init();
   
   CL_SetupGL::init();
@@ -299,8 +288,7 @@ WindstilleMain::init_modules()
 
   std::cout << "Loading Windstille startup script: " << game_definition_file << std::endl;
   //gh_load((datadir + game_definition_file).c_str());
-  rb_load_file((datadir + game_definition_file).c_str());
-  ruby_exec();
+  RubyFunctor::load_file((datadir + game_definition_file).c_str());
   std::cout << "done" << std::endl;
 
   Fonts::init(); 

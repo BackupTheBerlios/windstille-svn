@@ -27,8 +27,12 @@
 class Coroutine
 {
 public:
+  enum COStatus { CO_WAITING, CO_RUNNING, CO_FINISHED }; 
+
   /** Run the given Cooroutine*/
-  virtual void run() =0;
+  virtual void update()  =0;
+  virtual void restart() =0;
+  virtual COStatus status()  =0;
 };
 
 class RubyCoroutine : public Coroutine
@@ -37,20 +41,29 @@ private:
   RubyObject value;
 public:
   RubyCoroutine(const RubyObject& value_);
+  virtual ~RubyCoroutine();
   
-  void run();
+  void update();
+  void restart();
+  COStatus status();
 };
 
 /** */
 class CoroutineManager
 {
 private:
+  static CoroutineManager* current_;
+public:
+  static CoroutineManager* current() { return current_; }
+private:
   typedef std::vector<Coroutine*> Coroutines;
   Coroutines coroutines;
+  Coroutines new_coroutines;
 public:
   CoroutineManager();
 
   void update(float delta);
+  void add(Coroutine* co);
 private:
   CoroutineManager (const CoroutineManager&);
   CoroutineManager& operator= (const CoroutineManager&);

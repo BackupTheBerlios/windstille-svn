@@ -23,6 +23,7 @@
 #include <list>
 #include <vector>
 #include <string>
+#include "coroutine_manager.hxx"
 
 class TileMap;
 class DiamondMap;
@@ -42,6 +43,8 @@ private:
   WaterMap*   water_map;
 
   std::vector<std::string> scripts;
+
+  CoroutineManager coroutines;
 
   static GameWorld* current_;
 public:

@@ -37,7 +37,12 @@ public:
   void operator()(int i);
   void operator()(int x, int y);
 
+private:
   static VALUE call_protected(VALUE self);
+  static VALUE load_file_protected(VALUE val);
+
+public:
+  static void load_file(const char* filename);
 };
 
 #endif

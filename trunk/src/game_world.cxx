@@ -18,6 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <ruby.h>
+#include "ruby_functor.hxx"
 #include "display.hxx"
 #include "player.hxx"
 #include "gameobj.hxx"
@@ -83,6 +84,8 @@ GameWorld::draw ()
 void
 GameWorld::update (float delta)
 {
+  coroutines.update(delta);
+
   passed_time += delta;
 
   diamond_map->update(delta);
@@ -130,8 +133,7 @@ GameWorld::on_startup()
        i != scripts.end(); ++i)
     {
       //gh_load((datadir + "levels/" + *i).c_str());
-      rb_load_file((datadir + "levels/" + *i).c_str());
-      ruby_exec();
+      RubyFunctor::load_file((datadir + "levels/" + *i).c_str());
     }
 }
 

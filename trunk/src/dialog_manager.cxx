@@ -47,10 +47,10 @@ DialogManager::add_dialog(const std::string& portrait, const std::string& text)
 }
 
 void
-DialogManager::add_answer(const std::string& text, SCMFunctor func)
+DialogManager::add_answer(const std::string& text, const RubyFunctor& func)
 {
   Dialog& dialog = dialogs[current_dialog];
-  dialog.answers.push_back(std::pair<std::string, SCMFunctor>(text, func));
+  dialog.answers.push_back(std::pair<std::string, RubyFunctor>(text, func));
 }
 
 void

@@ -23,14 +23,14 @@
 #include <vector>
 #include <string>
 #include <ClanLib/Display/sprite.h>
-#include "scm_functor.hxx"
+#include "ruby_functor.hxx"
 #include "globals.hxx"
 
 class Dialog {
 public:
   CL_Sprite portrait;
   std::string text;
-  std::vector<std::pair<std::string, SCMFunctor> > answers;
+  std::vector<std::pair<std::string, RubyFunctor> > answers;
 
   Dialog(const std::string& portrait, const std::string& text);
 };
@@ -54,7 +54,7 @@ public:
   void update(float delta);
 
   void add_dialog(const std::string& portrait, const std::string& text);
-  void add_answer(const std::string& text, SCMFunctor func);
+  void add_answer(const std::string& text, const RubyFunctor& func);
   void clear();
 private:
   DialogManager (const DialogManager&);
