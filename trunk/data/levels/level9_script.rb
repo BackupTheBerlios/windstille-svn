@@ -1,3 +1,5 @@
+include ObjectSpace
+
 puts "Doing a require..."
 require "/home/ingo/projects/windstille/trunk/data/coroutine.rb"
 puts "Doing a require...done"
@@ -120,7 +122,12 @@ coroutine_add(MyDoSomething.new())
 $igel1 = spawn_entity('frog', 500, 500)
 $igel2 = spawn_entity('frog', 500, 550)
 $igel3 = spawn_entity('frog', 500, 600)
+$igel4 = spawn_entity('frog', 500, 630)
+$igel5 = spawn_entity('frog', 500, 660)
+$igel6 = spawn_entity('frog', 500, 690)
 
+$igel5.bind($igel4)
+$igel4.bind($igel3)
 $igel3.bind($igel2)
 $igel2.bind($igel1)
 
@@ -136,15 +143,28 @@ class IgelMover<Coroutine
     @entity.move_to(@speed/2, 0)
     while true
       waitFor(@entity)
+      # wait()
       @entity.move_to(-@speed, 0)
       waitFor(@entity)
+      # wait()
       @entity.move_to(@speed, 0)
+      # GC.start            
     end
   end
 end
 
-coroutine_add(IgelMover.new($igel1, 100))
-coroutine_add(IgelMover.new($igel2, 50))
-coroutine_add(IgelMover.new($igel3, 75))
+$co1 = IgelMover.new($igel1, 20)
+$co2 = IgelMover.new($igel2, 27)
+$co3 = IgelMover.new($igel3, 31)
+$co4 = IgelMover.new($igel4, 40)
+$co5 = IgelMover.new($igel5, 30)
+$co6 = IgelMover.new($igel6, 25)
+
+# coroutine_add($co1)
+# coroutine_add($co2)
+# coroutine_add($co3)
+# coroutine_add($co4)
+# coroutine_add($co5)
+# coroutine_add($co6)
 
 # EOF #

@@ -71,7 +71,7 @@ GameWorld::~GameWorld()
 void
 GameWorld::draw (SceneContext& gc)
 {
-  gc.light().fill_screen(CL_Color(30, 30, 30));
+  gc.light().fill_screen(CL_Color(100, 100, 200));
   
   background_tilemap->draw (gc);
 

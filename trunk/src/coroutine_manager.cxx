@@ -89,6 +89,7 @@ Coroutine::on_done()
 {
   //std::cout << "on_done triggered" << std::endl;
   ready_to_run = true;
+  done_slot = CL_Slot();
 }
 
 void 

@@ -285,6 +285,10 @@ WindstilleMain::init_modules()
   resources =  new CL_ResourceManager();
   //resources->add_resources(CL_ResourceManager(datadir + "tiles.xml", false));
   resources->add_resources(CL_ResourceManager(datadir + "windstille.xml", false));
+  
+  std::cout << "Loading all resources..." << std::endl;
+  resources->load_all();
+  std::cout << "Loading all resources... done" << std::endl;
 
   std::cout << "Loading Windstille startup script: " << game_definition_file << std::endl;
   //gh_load((datadir + game_definition_file).c_str());

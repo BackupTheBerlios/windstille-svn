@@ -12,15 +12,15 @@ class Coroutine
     if @status != :finished then
       @status = :running
 
-      catch :wait do
+      callcc {|@break|
         if @continuation then
           @continuation.call
         else
           self.run()
         end
         @status = :finished
-      end
-
+      }
+      
       if @status == :running then
         @status = :waiting
       end
@@ -34,7 +34,7 @@ class Coroutine
   def wait()
     callcc {|@continuation| 
       @status = :waiting
-      throw :wait
+      @break.call
     }
   end
 
@@ -47,6 +47,13 @@ class Coroutine
     #puts "waitFor: #{entity}"
     coroutine_waitFor(entity)
     wait()
+    wait()
+    wait()
+    wait()
+#    callcc {|@continuation| 
+#      @status = :waiting
+#      @break.call
+#    }
   end
 
   def waitFrame()

@@ -36,6 +36,7 @@ Bomb::Bomb(int x, int y)
 {
   light.set_blend_func(blend_src_alpha, blend_one);
   highlight.set_blend_func(blend_src_alpha, blend_one);
+  explolight.set_blend_func(blend_src_alpha, blend_one);
 }
 
 Bomb::~Bomb()
@@ -75,6 +76,11 @@ Bomb::draw(SceneContext& sc)
     {
       explo.draw(pos.x, pos.y);
       sc.light().draw(explolight, pos.x, pos.y, 0);
+      explolight.set_alpha(0.5);
+      explolight.set_scale(.5, .5);
+      sc.highlight().draw(explolight, pos.x, pos.y, 0);
+      explolight.set_alpha(1.0);
+      explolight.set_scale(1.0, 1.0);
     }
   else
     {
