@@ -64,6 +64,7 @@ void dialog_hide();
 void dialog_clear();
 
 void coroutine_add(VALUE val);
+void coroutine_wait(int id);
 
 /** @return number of seconds since game start, time doesn't progress
     in pause mode */

@@ -26,6 +26,7 @@ CoroutineManager* CoroutineManager::current_ = 0;
 CoroutineManager::CoroutineManager()
 {
   current_ = this;
+  current_coroutine = 0;
 }
 
 void
@@ -45,7 +46,12 @@ CoroutineManager::update(float delta)
     {
       if (coroutines[i] && coroutines[i]->status() == Coroutine::CO_WAITING)
         {
-          coroutines[i]->update();
+          if (coroutines[i]->ready_to_run)
+            {
+              current_coroutine = coroutines[i];
+              coroutines[i]->update();
+              current_coroutine = 0;
+            }
         }
       else
         {
@@ -60,10 +66,33 @@ CoroutineManager::update(float delta)
 }
 
 void
+CoroutineManager::register_wait(int id)
+{
+  //std::cout << "CoroutineManager: Registering wait: " << id << std::endl;
+}
+
+void
 CoroutineManager::add(Coroutine* co)
 {
   std::cout << "XXX: New coroutine" << std::endl;
   new_coroutines.push_back(co);
+}
+
+Coroutine::Coroutine()
+{
+  ready_to_run = true;
+}
+
+void
+Coroutine::on_done()
+{
+  ready_to_run = true;
+}
+
+void 
+Coroutine::wait()
+{
+  ready_to_run = false;
 }
 
 RubyCoroutine::RubyCoroutine(const RubyObject& value_)

@@ -11,7 +11,8 @@ class MyDoSomething<Coroutine
         @count = 0
       end
       @count += 1
-      wait()
+      #puts "waitTime(5)"
+      waitTime(5)
     end
   end
 end
@@ -111,7 +112,7 @@ puts "Ruby: adding triggre"
 
 add_region_trigger(6000, 3968, 9000, 5000, proc{end_dialog})
 
-startup_dialog()
+# startup_dialog()
 
 puts "Ruby: adding coroutine"
 coroutine_add(MyDoSomething.new())

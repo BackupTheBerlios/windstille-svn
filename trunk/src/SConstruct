@@ -40,7 +40,8 @@ Help(opts.GenerateHelpText(env))
 clanLib_env = Environment()
 clanLib_env.ParseConfig("pkg-config --cflags --libs clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7")
 
-Depends('windstille_wrap.cxx', ['windstille.i'])
+env.Depends('windstille.i', ['scripting/game.hxx'])
+env.Depends('windstille_wrap.cxx', ['windstille.i'])
 env.Command('windstille_wrap.cxx', 'windstille.i',
             "swig -runtime -ruby -o $TARGET -c++ $SOURCE")
 

@@ -37,6 +37,20 @@ class Coroutine
       throw :wait
     }
   end
+
+  def waitTime(time)
+    coroutine_wait(time)
+    wait()
+  end
+
+  def waitFor(entity)
+    coroutine_wait(entity)
+    wait()
+  end
+
+  def waitFrame()
+    wait()
+  end
 end
 
 # EOF #

@@ -242,4 +242,9 @@ void  set_game_speed(float s)
   game_speed = s;
 }
 
+void coroutine_wait(int id)
+{
+  CoroutineManager::current()->register_wait(id);
+}
+
 /* EOF */

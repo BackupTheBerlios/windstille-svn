@@ -33,6 +33,12 @@ public:
   virtual void update()  =0;
   virtual void restart() =0;
   virtual COStatus status()  =0;
+
+  Coroutine();
+
+  bool ready_to_run;
+  void on_done();
+  void wait();
 };
 
 class RubyCoroutine : public Coroutine
@@ -59,11 +65,14 @@ private:
   typedef std::vector<Coroutine*> Coroutines;
   Coroutines coroutines;
   Coroutines new_coroutines;
+  Coroutine* current_coroutine;
 public:
   CoroutineManager();
 
   void update(float delta);
   void add(Coroutine* co);
+
+  void register_wait(int id);
 private:
   CoroutineManager (const CoroutineManager&);
   CoroutineManager& operator= (const CoroutineManager&);
