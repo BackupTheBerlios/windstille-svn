@@ -40,10 +40,11 @@ Help(opts.GenerateHelpText(env))
 clanLib_env = Environment()
 clanLib_env.ParseConfig("pkg-config --cflags --libs clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7")
 
-env.Depends('windstille.i', ['scripting/game.hxx'])
-env.Depends('windstille_wrap.cxx', ['windstille.i'])
-env.Command('windstille_wrap.cxx', 'windstille.i',
-            "swig -runtime -ruby -o $TARGET -c++ $SOURCE")
+windstille_wrap = env.Command('windstille_wrap.cxx', 'windstille.i',
+                              "swig -runtime -ruby -o $TARGET -c++ $SOURCE")
+
+env.Depends(windstille_wrap, ['windstille.i', 'scripting/game.hxx'])
+
 
 windstille_source = [
     'animation_obj.cxx',
@@ -57,7 +58,8 @@ windstille_source = [
     'diamond_map.cxx', 
     'display.cxx', 
     'dog.cxx', 
-    'energiebar.cxx', 
+    'energiebar.cxx',
+    'entity.cxx',
     'fonts.cxx', 
     'game_world.cxx', 
     'gameobj.cxx', 
@@ -130,6 +132,13 @@ windstille_prg = env.Program('windstille',
                          LINKFLAGS = clanLib_env['LINKFLAGS'],
                          LIBPATH=['.'] + clanLib_env['LIBPATH'],
                          LIBS=clanLib_env['LIBS'] + ['guile', 'ruby1.8'])
+
+ptest = env.Program('ptest',
+                    ['ptest.cxx', 'particle_system.cxx', 'random.cxx'],
+                    CPPPATH   = [env['CPPPATH']] + clanLib_env['CPPPATH'],
+                    LINKFLAGS = clanLib_env['LINKFLAGS'],
+                    LIBPATH   = clanLib_env['LIBPATH'],
+                    LIBS      = clanLib_env['LIBS'])
 
 install_exec = env.Alias('install_exec',
                          Install(env['DESTDIR'] + env['PREFIX'] + '/games', windstille_prg))

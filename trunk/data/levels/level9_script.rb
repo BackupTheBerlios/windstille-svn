@@ -117,4 +117,6 @@ add_region_trigger(6000, 3968, 9000, 5000, proc{end_dialog})
 puts "Ruby: adding coroutine"
 coroutine_add(MyDoSomething.new())
 
+spawn_entity('frog')
+
 # EOF #

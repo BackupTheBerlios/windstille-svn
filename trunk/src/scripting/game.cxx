@@ -247,4 +247,9 @@ void coroutine_wait(int id)
   CoroutineManager::current()->register_wait(id);
 }
 
+void spawn_entity(const std::string& name)
+{
+  std::cout << "Spawning entity: " << name << std::endl;
+}
+
 /* EOF */

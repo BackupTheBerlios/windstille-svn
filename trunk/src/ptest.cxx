@@ -121,7 +121,7 @@ public:
                 screenshot("/tmp/myshot.pnm");
               }
 
-            if (1)
+            if (0)
               {char str[1024];
               snprintf(str, 1024, "/tmp/shot%04d.pnm", count);
               //printf("%02d\n");

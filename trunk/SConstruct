@@ -1,4 +1,5 @@
 SConscript(['src/SConstruct'])
+SConscript(['data/SConstruct'])
 
 # EOF #
 

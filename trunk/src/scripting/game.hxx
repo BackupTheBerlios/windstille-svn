@@ -20,6 +20,7 @@
 #ifndef HEADER_SCRIPTING_GAME_HXX
 #define HEADER_SCRIPTING_GAME_HXX
 
+#include <string>
 #include <ruby.h>
 
 class GameWorld;
@@ -75,6 +76,8 @@ int game_get_max_diamonds();
 
 float get_game_speed();
 void  set_game_speed(float s);
+
+void spawn_entity(const std::string& name);
 
 #endif
 
