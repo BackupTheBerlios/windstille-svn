@@ -103,9 +103,12 @@ windstille_source = [
 
     # Guile Specific stuff 
     'scm_functor.cxx', 
-    'scm_helper.cxx', 
-    'scripting/windstille_wrap.cxx',
-    'guile.cxx'
+    'scm_helper.cxx',
+    #'scripting/windstille_wrap.cxx',
+    'guile.cxx',
+
+    # Ruby stuff
+    'windstille_wrap.cxx',
     ]
 
 windstille_data = glob.glob('../data/images/*.png')     + \
@@ -120,10 +123,10 @@ windstille_datadir = env['DESTDIR'] + env['PREFIX'] + '/share/games/windstille'
 
 windstille_prg = Program('windstille',
                          windstille_source,
-                         CPPPATH=['$USER_CPPPATH','$RUBYDIR','..'] + clanLib_env['CPPPATH'],
+                         CPPPATH=[env['CPPPATH'], env['RUBYDIR']] + clanLib_env['CPPPATH'],
                          LINKFLAGS = clanLib_env['LINKFLAGS'],
                          LIBPATH=['.'] + clanLib_env['LIBPATH'],
-                         LIBS=clanLib_env['LIBS'] + ['guile'])
+                         LIBS=clanLib_env['LIBS'] + ['guile', 'ruby1.8'])
 
 install_exec = env.Alias('install_exec',
                          Install(env['DESTDIR'] + env['PREFIX'] + '/games', windstille_prg))

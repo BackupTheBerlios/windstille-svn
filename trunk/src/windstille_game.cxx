@@ -17,6 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include <ruby.h>
 #include <math.h>
 #include <ClanLib/gl.h>
 #include <sstream>
@@ -41,7 +42,6 @@
 #include "screenshot.hxx"
 #include "input/input_manager.hxx"
 
-#include "guile_gameobj_factory.hxx"
 #include "windstille_game.hxx"
 
 using namespace Windstille;
@@ -212,7 +212,11 @@ WindstilleGame::on_startup ()
 
   world->add_player(player);
 
-  gh_load((datadir + "game.scm").c_str());
+  //gh_load((datadir + "game.scm").c_str());
+  std::cout << "Loading game file: " << std::endl;
+  rb_load_file((datadir + "game.rb").c_str());
+  ruby_exec();
+  std::cout << "Loading game file: done" << std::endl;
 
   logo       = CL_Sprite("logo", resources);
   portrait   = CL_Sprite("hero/portrait", resources);

@@ -41,6 +41,7 @@ game_set_tilesize(int size, int subsize)
 void
 game_load_tiles(const char* resourcefile)
 {
+  std::cout << "game_load_tiles: " << resourcefile << std::endl;
   TileFactory::tile_def_file = resourcefile;
 }
 

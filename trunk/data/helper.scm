@@ -55,6 +55,6 @@
                   default
                   ))))))
 
-(load "gui.scm")
+;; (load "gui.scm")
 
 ;; EOF ;;

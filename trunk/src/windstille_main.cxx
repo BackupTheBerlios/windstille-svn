@@ -17,6 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include <ruby.h>
 //#include <ClanLib/gl.h>
 #include <ClanLib/core.h>
 #include <ClanLib/vorbis.h>
@@ -29,7 +30,7 @@
 #include "windstille_error.hxx"
 #include "globals.hxx"
 #include "windstille_game.hxx"
-#include "guile_gameobj_factory.hxx"
+//#include "guile_gameobj_factory.hxx"
 #include "windstille_level.hxx"
 #include "windstille_main.hxx"
 #include "windstille_menu.hxx"
@@ -39,7 +40,7 @@
 #include "music_manager.hxx"
 #include "tile_factory.hxx"
 
-extern "C" void SWIG_init(void);
+extern "C" void Init_windstille(void);
 
 WindstilleMain main_app;
 CL_ResourceManager* resources;
@@ -54,7 +55,7 @@ WindstilleMain::WindstilleMain()
   fullscreen    = false;
 #endif
   allow_resize  = false;
-  game_definition_file = "windstille.scm";
+  game_definition_file = "windstille.rb";
 }
 
 WindstilleMain::~WindstilleMain()
@@ -255,7 +256,8 @@ WindstilleMain::init_modules()
 
   // Init Guile
   scm_init_guile();
-  SWIG_init();
+  ruby_init();
+  Init_windstille();
 
   std::cout << "Loading Guile Code... " << std::flush;
 
@@ -295,8 +297,10 @@ WindstilleMain::init_modules()
   //resources->add_resources(CL_ResourceManager(datadir + "tiles.xml", false));
   resources->add_resources(CL_ResourceManager(datadir + "windstille.xml", false));
 
-  std::cout << "Loading Windstille startup script: " << game_definition_file << std::flush;
-  gh_load((datadir + game_definition_file).c_str());
+  std::cout << "Loading Windstille startup script: " << game_definition_file << std::endl;
+  //gh_load((datadir + game_definition_file).c_str());
+  rb_load_file((datadir + game_definition_file).c_str());
+  ruby_exec();
   std::cout << "done" << std::endl;
 
   Fonts::init(); 

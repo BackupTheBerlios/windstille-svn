@@ -17,6 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include <ruby.h>
 #include "display.hxx"
 #include "player.hxx"
 #include "gameobj.hxx"
@@ -128,7 +129,9 @@ GameWorld::on_startup()
   for (std::vector<std::string>::iterator i = scripts.begin();
        i != scripts.end(); ++i)
     {
-      gh_load((datadir + "levels/" + *i).c_str());
+      //gh_load((datadir + "levels/" + *i).c_str());
+      rb_load_file((datadir + "levels/" + *i).c_str());
+      ruby_exec();
     }
 }
 

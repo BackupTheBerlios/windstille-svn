@@ -3,7 +3,7 @@
     (name "Hello World")
     (width 80)
     (height 30))
-  (scripts "level9_script.scm")
+  (scripts "level9_script.rb")
   (tilemap
     (data 60
           46
