@@ -120,26 +120,26 @@ TileFactory::parse_tiles(lisp_object_t* data)
       std::cout << "Error: Size does not match: " << colmap.size() << std::endl;
     }
 
-  CL_PixelBuffer* image = CL_ProviderFactory::load(filename);
+  CL_PixelBuffer image = CL_ProviderFactory::load(filename);
 
-  int num_tiles = (image->get_width()/64) * (image->get_height()/64);
+  int num_tiles = (image.get_width()/64) * (image.get_height()/64);
 
   if ((id + num_tiles) >= int(tiles.size()))
     {
       tiles.resize(id + num_tiles + 1);
     }
 
-  for (int y = 0; y < image->get_height(); y += TILE_SIZE)
+  for (int y = 0; y < image.get_height(); y += TILE_SIZE)
     {
-      for (int x = 0; x < image->get_width(); x += TILE_SIZE)
+      for (int x = 0; x < image.get_width(); x += TILE_SIZE)
         {
           CL_PixelBuffer chopped_image(TILE_SIZE, TILE_SIZE,
-                                       image->get_format().get_depth()*TILE_SIZE,
-                                       image->get_format(), NULL);
+                                       image.get_format().get_depth()*TILE_SIZE,
+                                       image.get_format(), NULL);
           chopped_image.lock();
-          image->convert(chopped_image.get_data(), 
+          image.convert(chopped_image.get_data(), 
                          chopped_image.get_format(), 
-                         image->get_format().get_depth()*TILE_SIZE, 
+                         image.get_format().get_depth()*TILE_SIZE, 
                          CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
                          CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
           chopped_image.unlock();
@@ -153,8 +153,6 @@ TileFactory::parse_tiles(lisp_object_t* data)
           id += 1;
         }
     }
-
-  delete image;
 }
 
 void

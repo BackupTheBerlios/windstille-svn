@@ -45,7 +45,7 @@ Tile::Tile(const CL_PixelBuffer& buffer,
     filename("<unknown>")
 {
   CL_SpriteDescription desc;
-  desc.add_frame(new CL_PixelBuffer(buffer), true);
+  desc.add_frame(buffer);
   sur = CL_Sprite(desc);
 
   //sur.set_alignment(origin_center, 0, 0);

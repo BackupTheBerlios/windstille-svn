@@ -38,7 +38,6 @@
 #include "background.hxx"
 #include "dialog_manager.hxx"
 #include "windstille_main.hxx"
-#include "screenshot.hxx"
 #include "display/scene_context.hxx"
 #include "input/input_manager.hxx"
 
@@ -144,8 +143,8 @@ WindstilleGame::draw()
       filename.width(8);
       filename.fill('0');
       filename << frames;
-      filename << ".ppm";
-      Screenshot::write_screenshot_pnm(filename.str());
+      filename << ".png";
+      CL_ProviderFactory::save(CL_Display::get_front_buffer(), filename.str());
     }
   ++frames;
 }

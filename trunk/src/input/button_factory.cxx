@@ -87,7 +87,7 @@ InputButton*
 ButtonFactory::create_keyboard_button(lisp_object_t* lst)
 {
   std::string key_str = lisp_string(lisp_car(lst));
-  int key_num         = CL_Keyboard::get_device().keyid_to_string(key_str);
+  int key_num         = CL_Keyboard::get_device().string_to_keyid(key_str);
 
   // FIXME: No error checking
   return new InputButtonInputDevice(CL_Keyboard::get_device(), key_num);

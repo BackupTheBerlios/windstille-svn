@@ -71,7 +71,6 @@ windstille_source = [
     'player_view.cxx', 
     'power_up.cxx', 
     'screen.cxx', 
-    'screenshot.cxx', 
     'tile.cxx', 
     'tile_factory.cxx', 
     'tile_map.cxx', 
