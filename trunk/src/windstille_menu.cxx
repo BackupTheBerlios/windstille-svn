@@ -17,7 +17,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <config.h>
 #include <iostream>
 #include <ClanLib/Display/display.h>
 #include <ClanLib/Display/display_window.h>
@@ -26,6 +25,7 @@
 #include <ClanLib/Display/keyboard.h>
 #include "globals.hxx"
 #include "fonts.hxx"
+#include "config.h"
 #include "input/controller.hxx"
 #include "windstille_menu.hxx"
 #include "windstille_game.hxx"

@@ -19,12 +19,17 @@
 ##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
+import glob
 
 opts = Options('custom.py')
 opts.Add('CXX', 'The C++ compiler.', 'g++')
 opts.Add('CXXFLAGS', 'The C++ compiler flags.', '-g -O2 -Wall')
 opts.Add('CPPPATH', 'additional header path', '')
 opts.Add('LIBPATH', 'additional library path', '')
+
+opts.Add('DESTDIR', 'destination directory which gets appended to PREFIX', '')
+opts.Add('PREFIX',  'PREFIX, ie. /usr/local', '/usr/local')
+
 # opts.Add('RUBYDIR', 'Ruby directory', os.popen('ruby -e "require \'rbconfig\'; puts Config::CONFIG[\'archdir\']"').read()[:-1])
 
 env = Environment(SHLIBPREFIX='',
@@ -35,74 +40,93 @@ Help(opts.GenerateHelpText(env))
 clanLib_env = Environment()
 clanLib_env.ParseConfig("pkg-config --cflags --libs clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7")
 
-Program('windstille',
-        ['animation_obj.cxx',
-         'background.cxx', 
-         'bomb.cxx', 
-         'bonus_flyer.cxx', 
-         'brush.cxx', 
-         'controller_def.cxx', 
-         'default_shoot.cxx', 
-         'dialog_manager.cxx', 
-         'diamond_map.cxx', 
-         'display.cxx', 
-         'dog.cxx', 
-         'energiebar.cxx', 
-         'fonts.cxx', 
-         'game_world.cxx', 
-         'gameobj.cxx', 
-         'globals.cxx', 
-         'guile.cxx', 
-         'guile_gameobj.cxx', 
-         'guile_gameobj_factory.cxx', 
-         'igel.cxx', 
-         'laser_shoot.cxx', 
-         'music_manager.cxx', 
-         'player.cxx', 
-         'player_view.cxx', 
-         'power_up.cxx', 
-         'scm_functor.cxx', 
-         'scm_helper.cxx', 
-         'screen.cxx', 
-         'screenshot.cxx', 
-         'tile.cxx', 
-         'tile_factory.cxx', 
-         'tile_map.cxx', 
-         'trigger.cxx', 
-         'view.cxx', 
-         'view_component.cxx', 
-         'water_map.cxx', 
-         'water_splash.cxx',
-         'windstille_bonus.cxx', 
-         'windstille_error.cxx', 
-         'windstille_game.cxx', 
-         'windstille_level.cxx', 
-         'windstille_main.cxx', 
-         'windstille_menu.cxx',
+windstille_source = [
+    'animation_obj.cxx',
+    'background.cxx', 
+    'bomb.cxx', 
+    'bonus_flyer.cxx', 
+    'brush.cxx', 
+    'controller_def.cxx', 
+    'default_shoot.cxx', 
+    'dialog_manager.cxx', 
+    'diamond_map.cxx', 
+    'display.cxx', 
+    'dog.cxx', 
+    'energiebar.cxx', 
+    'fonts.cxx', 
+    'game_world.cxx', 
+    'gameobj.cxx', 
+    'globals.cxx', 
+    'guile.cxx', 
+    'guile_gameobj.cxx', 
+    'guile_gameobj_factory.cxx', 
+    'igel.cxx', 
+    'laser_shoot.cxx', 
+    'music_manager.cxx', 
+    'player.cxx', 
+    'player_view.cxx', 
+    'power_up.cxx', 
+    'scm_functor.cxx', 
+    'scm_helper.cxx', 
+    'screen.cxx', 
+    'screenshot.cxx', 
+    'tile.cxx', 
+    'tile_factory.cxx', 
+    'tile_map.cxx', 
+    'trigger.cxx', 
+    'view.cxx', 
+    'view_component.cxx', 
+    'water_map.cxx', 
+    'water_splash.cxx',
+    'windstille_bonus.cxx', 
+    'windstille_error.cxx', 
+    'windstille_game.cxx', 
+    'windstille_level.cxx', 
+    'windstille_main.cxx', 
+    'windstille_menu.cxx',
 
-         # Scripting Subdirectory
-         'scripting/game.cxx',
-         'scripting/windstille_wrap.cxx',
+    # Scripting Subdirectory
+    'scripting/game.cxx',
+    'scripting/windstille_wrap.cxx',
+    
+    # Input Subdirectory
+    'input/controller.cxx', 
+    'input/input_manager.cxx', 
+    'input/input_manager_impl.cxx', 
+    'input/input_manager_custom.cxx', 
+    'input/input_manager_player.cxx', 
+    'input/input_button_input_device.cxx', 
+    'input/input_axis_input_device.cxx', 
+    'input/axis_button.cxx', 
+    'input/button_axis.cxx', 
+    'input/button_factory.cxx', 
+    'input/axis_factory.cxx', 
+    'input/input_recorder.cxx', 
+    'input/multi_button.cxx'
+    ]
 
-         # Input Subdirectory
-         'input/controller.cxx', 
-         'input/input_manager.cxx', 
-         'input/input_manager_impl.cxx', 
-         'input/input_manager_custom.cxx', 
-         'input/input_manager_player.cxx', 
-         'input/input_button_input_device.cxx', 
-         'input/input_axis_input_device.cxx', 
-         'input/axis_button.cxx', 
-         'input/button_axis.cxx', 
-         'input/button_factory.cxx', 
-         'input/axis_factory.cxx', 
-         'input/input_recorder.cxx', 
-         'input/multi_button.cxx'
+windstille_data = glob.glob('../data/images/*.png')     + \
+                  glob.glob('../data/images/*.jpg')     + \
+                  glob.glob('../data/images/*/*.jpg')   + \
+                  glob.glob('../data/images/*/*.png')   + \
+                  glob.glob('../data/music/*.ogg')      + \
+                  glob.glob('../data/controller/*.scm') + \
+                  glob.glob('../data/level/*.scm')
 
-         ],
-        CPPPATH=['$USER_CPPPATH','$RUBYDIR','..'] + clanLib_env['CPPPATH'],
-        LINKFLAGS = clanLib_env['LINKFLAGS'],
-        LIBPATH=['.'] + clanLib_env['LIBPATH'],
-        LIBS=clanLib_env['LIBS'] + ['guile'])
-        
+windstille_datadir = env['DESTDIR'] + env['PREFIX'] + '/share/games/windstille'
+
+windstille_prg = Program('windstille',
+                         windstille_source,
+                         CPPPATH=['$USER_CPPPATH','$RUBYDIR','..'] + clanLib_env['CPPPATH'],
+                         LINKFLAGS = clanLib_env['LINKFLAGS'],
+                         LIBPATH=['.'] + clanLib_env['LIBPATH'],
+                         LIBS=clanLib_env['LIBS'] + ['guile'])
+
+install_exec = env.Alias('install_exec',
+                         Install(env['DESTDIR'] + env['PREFIX'] + '/games', windstille_prg))
+install_data = env.Alias('install_data',
+                         InstallAs([os.path.join(windstille_datadir, i[8:]) for i in windstille_data],
+                                   windstille_data))
+env.Alias('install', [install_data, install_exec])
+
 # EOF #
