@@ -109,6 +109,9 @@ windstille_source = [
 
     # Ruby stuff
     'windstille_wrap.cxx',
+    'ruby_functor.cxx',
+    'ruby_object.cxx',
+    'coroutine_manager.cxx'
     ]
 
 windstille_data = glob.glob('../data/images/*.png')     + \

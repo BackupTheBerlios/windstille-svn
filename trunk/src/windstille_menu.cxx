@@ -171,36 +171,27 @@ WindstilleMenu::draw()
   else
     Fonts::menu.draw(580, 330, "Start Game");
 
-
-  if (current_choice == 1)
-    {
-      Fonts::menu.draw(580, 385, "[Start Editor]");
-      Fonts::menu_h.draw(580, 385, "[Start Editor]");
-    }
-  else
-    Fonts::menu.draw(580, 385, "Start Editor");
-
   if (bonus_active)
     {
-      if (current_choice == 2)
+      if (current_choice == 1)
         {
-          Fonts::menu.draw(580, 440, "[Extras]");
-          Fonts::menu_h.draw(580, 440, "[Extras]");
+          Fonts::menu.draw(580, 385, "[Extras]");
+          Fonts::menu_h.draw(580, 385, "[Extras]");
         }
       else
         Fonts::menu.draw(580, 440, "Extras");
 
-      if (current_choice == 3)
+      if (current_choice == 2)
         {
-          Fonts::menu.draw(580, 495, "[Quit]");
-          Fonts::menu_h.draw(580, 495, "[Quit]");
+          Fonts::menu.draw(580, 440, "[Quit]");
+          Fonts::menu_h.draw(580, 440, "[Quit]");
         }
       else
-        Fonts::menu.draw(580, 495, "Quit");
+        Fonts::menu.draw(580, 440, "Quit");
     }
   else
     {
-      if (current_choice == 2 || (bonus_active && current_choice == 3))
+      if (current_choice == 1 || (bonus_active && current_choice == 3))
         {
           Fonts::menu.draw(580, 440, "[Quit]");
           Fonts::menu_h.draw(580, 440, "[Quit]");
