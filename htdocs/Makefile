@@ -18,8 +18,9 @@ clean :
           -OUT $@ \
           -XSL default.xsl
 
-commit: all
-	cvs commit -m "automatic webpage update"
+upload: berlios
+
+commit: berlios
 
 berlios:
 	rsync -Ctrv . grumbel@shell.berlios.de:/home/groups/windstille/htdocs/

@@ -39,4 +39,14 @@
 
   </section>
 
+  <section title="Development Version">
+    <p>
+      You can also get access to the latest development version, it is
+      available via <a
+        href="http://subversion.tigris.de">Subversion</a> at:
+    </p>
+    <p>
+      <tt>svn co svn://svn.berlios.de/windstille/</tt>
+    </p>
+  </section>
 </page>
