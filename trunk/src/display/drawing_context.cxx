@@ -127,6 +127,44 @@ DrawingContext::draw(const std::string& text,    float x, float y, float z)
 }
 
 void
+DrawingContext::draw_line (float x1, float y1, float x2, float y2, 
+                           const CL_Color& color)
+{
+}
+
+void
+DrawingContext::draw_fillrect (float x1, float y1, float x2, float y2, 
+		      const CL_Color& color)
+{
+}
+
+void
+DrawingContext::draw_rect (float x1, float y1, float x2, float y2, 
+		  const CL_Color& color)
+{
+}
+
+void
+DrawingContext::draw_pixel (float x_pos, float y_pos, 
+		   const CL_Color& color)
+{
+}
+
+void
+DrawingContext::draw_circle (float x_pos, float y_pos, float radius,
+                             const CL_Color& color)
+{
+}
+
+/** Draws an arc, starting from angle_start to angle_end in
+      counterclockwise direction. Angles are taken in radian */
+void
+DrawingContext::draw_arc (float x_pos, float y_pos, float radius, float angle_start, float angle_end,
+                          const CL_Color& color)
+{
+}
+
+void
 DrawingContext::fill_screen(const CL_Color& color)
 {
   draw(new FillScreenDrawingRequest(color));
@@ -162,6 +200,13 @@ DrawingContext::pop_modelview()
 {
   translate_stack.pop_back();
   assert(!translate_stack.empty());
+}
+
+void
+DrawingContext::reset_modelview()
+{
+  translate_stack.clear();
+  translate_stack.push_back(CL_Pointf(0, 0));
 }
 
 CL_Rect

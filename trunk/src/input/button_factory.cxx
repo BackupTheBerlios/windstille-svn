@@ -20,7 +20,6 @@
 #include <ClanLib/Display/joystick.h>
 #include <ClanLib/Display/keyboard.h>
 #include "../lispreader.hxx"
-#include "../string_converter.hxx"
 #include "../feuerkraft_error.hxx"
 #include "input_button.hxx"
 #include "input_axis.hxx"

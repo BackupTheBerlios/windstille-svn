@@ -59,6 +59,22 @@ public:
   void draw(DrawingRequest* request);
   void draw(const CL_Sprite&   sprite,  float x, float y, float z = 0);
   void draw(const std::string& text,    float x, float y, float z = 0);
+
+  void draw_line (float x1, float y1, float x2, float y2, 
+		  const CL_Color& color);
+  void draw_fillrect (float x1, float y1, float x2, float y2, 
+		      const CL_Color& color);
+  void draw_rect (float x1, float y1, float x2, float y2, 
+		  const CL_Color& color);
+  void draw_pixel (float x_pos, float y_pos, 
+		   const CL_Color& color);
+  void draw_circle (float x_pos, float y_pos, float radius,
+                    const CL_Color& color);
+
+  /** Draws an arc, starting from angle_start to angle_end in
+      counterclockwise direction. Angles are taken in radian */
+  void draw_arc (float x_pos, float y_pos, float radius, float angle_start, float angle_end,
+                 const CL_Color& color);
   /*} */
   
   /** Translate the drawing context */
@@ -72,6 +88,7 @@ public:
 
   void push_modelview();
   void pop_modelview();
+  void reset_modelview();
 
   /** Return the area of the screen that will be visible*/
   CL_Rect get_clip_rect();

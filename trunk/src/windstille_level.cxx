@@ -21,7 +21,6 @@
 #include <iostream>
 #include "globals.hxx"
 #include "windstille_level.hxx"
-#include "string_converter.hxx"
 #include "lispreader.hxx"
 
 WindstilleLevel::WindstilleLevel (const std::string& filename)

@@ -25,7 +25,6 @@
 #include <ClanLib/display.h>
 
 #include "ruby_functor.hxx"
-#include "string_converter.hxx"
 #include "windstille_error.hxx"
 #include "globals.hxx"
 #include "windstille_game.hxx"

@@ -32,9 +32,9 @@ public:
   CL_Canvas        canvas;
 
   SceneContextImpl() 
-    : lightmap(new CL_PixelBuffer(CL_Display::get_width(), 
-                                  CL_Display::get_height(),
-                                  CL_Display::get_width()*4, CL_PixelFormat::rgba8888), true),
+    : lightmap(CL_PixelBuffer(200, 
+                              150,
+                              200*4, CL_PixelFormat::rgba8888)),
       canvas(lightmap)
   {
     canvas.get_gc()->set_scale(0.25, 0.25);
@@ -111,6 +111,14 @@ SceneContext::pop_modelview()
   impl->color.pop_modelview();
   impl->light.pop_modelview();
   impl->highlight.pop_modelview();
+}
+
+void
+SceneContext::reset_modelview()
+{
+  impl->color.reset_modelview();
+  impl->light.reset_modelview();
+  impl->highlight.reset_modelview();
 }
 
 void

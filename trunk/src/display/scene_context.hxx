@@ -65,6 +65,7 @@ public:
 
   void push_modelview();
   void pop_modelview();
+  void reset_modelview();
 
   /** Takes all the buffers and combines them to form the final image
       that will be shown on the screen */

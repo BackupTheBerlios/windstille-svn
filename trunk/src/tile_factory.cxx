@@ -25,7 +25,6 @@
 #include <assert.h>
 #include <iostream>
 #include "globals.hxx"
-#include "string_converter.hxx"
 #include "tile.hxx"
 #include "tile_factory.hxx"
 

@@ -26,6 +26,7 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ClanLib/Core/System/clanstring.h>
 #include "lispreader.hxx"
 
 #define TOKEN_ERROR                   -1
@@ -1361,7 +1362,7 @@ lisp_object_t* lisp_read_from_file(const std::string& filename)
 {
   lisp_stream_t stream;
 
-  if (has_suffix(filename.c_str(), ".gz"))
+  if (CL_String::get_extension(filename) == "gz")
     {
       return lisp_read_from_gzfile(filename.c_str());
     }

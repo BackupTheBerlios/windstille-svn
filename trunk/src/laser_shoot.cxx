@@ -22,7 +22,6 @@
 #include "display.hxx"
 #include "tile_map.hxx"
 #include "globals.hxx"
-#include "string_converter.hxx"
 #include "game_world.hxx"
 #include "animation_obj.hxx"
 #include "laser_shoot.hxx"
@@ -32,7 +31,7 @@ LaserShoot::LaserShoot (const CL_Vector& arg_pos, Direction arg_dir, int arg_sta
 {
   assert(stage >= 1 && stage <= 5);
 
-  sprite = CL_Sprite (std::string("shoot/laser/stage") + to_string(stage), resources);
+  sprite = CL_Sprite (std::string("shoot/laser/stage") + CL_String::to(stage), resources);
 }
 
 void
