@@ -20,17 +20,17 @@
 #ifndef HEADER_AXIS_FACTORY_HXX
 #define HEADER_AXIS_FACTORY_HXX
 
-#include <guile/gh.h>
+#include "../lispreader.hxx"
 #include "input_axis.hxx"
 
 /** */
 class AxisFactory
 {
 public:
-  static InputAxis* create(SCM lst);
+  static InputAxis* create(lisp_object_t* lst);
 private:
-  static InputAxis* create_joystick_axis(SCM lst);
-  static InputAxis* create_button_axis(SCM lst);
+  static InputAxis* create_joystick_axis(lisp_object_t* lst);
+  static InputAxis* create_button_axis(lisp_object_t* lst);
 };
 
 #endif

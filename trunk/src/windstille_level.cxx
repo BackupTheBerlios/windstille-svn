@@ -24,7 +24,6 @@
 #include "windstille_level.hxx"
 #include "string_converter.hxx"
 #include "lispreader.hxx"
-#include "scm_helper.hxx"
 
 WindstilleLevel::WindstilleLevel (const std::string& filename)
   : tilemap(0),
@@ -66,6 +65,8 @@ WindstilleLevel::parse_file (const std::string& filename)
       std::cout << "No diamond map in level file" << std::endl;
       diamond_map = new Field<int>(width * 2, height * 2);
     }
+
+  lisp_free(tree);
 }
 
 void
@@ -75,7 +76,15 @@ WindstilleLevel::parse_water(lisp_object_t* tree)
     {
       for(lisp_object_t* cur = tree; cur != 0; cur = lisp_cdr(cur))
         {
+#if 0
           // read (water x y w h)
+          lisp_object_t* data = lisp_car(cur);
+          
+          lisp_integer(lisp_list_nth(data, 1));
+          lisp_integer(lisp_list_nth(data, 2));
+          lisp_integer(lisp_list_nth(data, 3));
+          lisp_integer(lisp_list_nth(data, 4));
+#endif
         }
     }
 }

@@ -20,7 +20,7 @@
 #ifndef HEADER_BUTTON_FACTORY_HXX
 #define HEADER_BUTTON_FACTORY_HXX
 
-#include <guile/gh.h>
+#include "../lispreader.hxx"
 
 class InputButton;
 
@@ -29,13 +29,13 @@ class ButtonFactory
 {
 private:
 public:
-  static InputButton* create(SCM lst);
+  static InputButton* create(lisp_object_t* lst);
 
 private:
-  static InputButton* create_joystick_button(SCM lst);
-  static InputButton* create_keyboard_button(SCM lst);
-  static InputButton* create_axis_button(SCM lst);
-  static InputButton* create_multi_button(SCM lst);
+  static InputButton* create_joystick_button(lisp_object_t* lst);
+  static InputButton* create_keyboard_button(lisp_object_t* lst);
+  static InputButton* create_axis_button(lisp_object_t* lst);
+  static InputButton* create_multi_button(lisp_object_t* lst);
 
   ButtonFactory (const ButtonFactory&);
   ButtonFactory& operator= (const ButtonFactory&);

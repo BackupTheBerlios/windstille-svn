@@ -23,7 +23,7 @@
 #include <ClanLib/Display/display_iostream.h>
 #include <ClanLib/Display/keys.h>
 
-#include "../guile.hxx"
+#include "../lispreader.hxx"
 #include "../assert.hxx"
 #include "../controller_def.hxx"
 #include "input_button_input_device.hxx"
@@ -33,7 +33,7 @@
 
 #include "input_manager_custom.hxx"
 
-InputManagerCustom::InputManagerCustom(SCM lst)
+InputManagerCustom::InputManagerCustom(lisp_object_t* lst)
 {
   init(lst);
 
@@ -66,17 +66,17 @@ InputManagerCustom::InputManagerCustom(SCM lst)
 }
 
 void 
-InputManagerCustom::init(SCM lst)
+InputManagerCustom::init(lisp_object_t* lst)
 {
   buttons.resize(ControllerDef::get_button_count());
   axes.resize(ControllerDef::get_axis_count());
   
-  while (gh_pair_p(lst))
+  while (lisp_cons_p(lst))
     {
-      SCM sym  = gh_caar(lst);
-      SCM data = gh_cadar(lst);
+      lisp_object_t* sym  = lisp_cxr(lst, "aa");
+      lisp_object_t* data = lisp_cxr(lst, "ada");
 
-      std::string name = Guile::symbol2string(sym);
+      std::string name = lisp_symbol(sym);
 
       int id = ControllerDef::button_name2id(name);
       if (id != -1)
@@ -92,12 +92,12 @@ InputManagerCustom::init(SCM lst)
             }
           else
             {
-              std::cout << "# Warning: InputManagerCustom::init: Error unknown tag: " 
-                        << Guile::scm2string(sym) << std::endl;
+              std::cout << "# Warning: InputManagerCustom::init: Error unknown tag: " << std::endl;
+                //                        << Guile::scm2string(sym) << std::endl;
             }
         }
 
-      lst = gh_cdr(lst);
+      lst = lisp_cdr(lst);
     }
 }  
 

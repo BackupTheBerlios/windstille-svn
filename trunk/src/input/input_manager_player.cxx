@@ -18,54 +18,56 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
-#include "../guile.hxx"
+#include "../lispreader.hxx"
 #include "input_manager_player.hxx"
 
 InputManagerPlayer::InputManagerPlayer(const std::string& filename)
 {
+#if 0
+  // FIXME
   std::cout << "InputManagerPlayer::InputManagerPlayer(" << filename << ")" << std::endl;
   entry_counter = 0;
-  SCM port = scm_open_file(gh_str02scm(filename.c_str()),
-                           gh_str02scm("r"));
-  SCM entry;
-  while(scm_eof_object_p(entry = scm_read(port)) == SCM_BOOL_F)
+  lisp_object_t* port = lisp_read_from_file(filename.c_str());
+  lisp_object_t* entry;
+  while(scm_eof_object_p(entry = scm_read(port)) == lisp_object_t*_BOOL_F)
     {
       InputEventLst lst;
-      int entry_num = gh_scm2int(gh_cadr(entry));
-      entry = gh_cddr(entry);
+      int entry_num = lisp_scm2int(lisp_cadr(entry));
+      entry = lisp_cddr(entry);
       
-      while(gh_pair_p(entry))
+      while(lisp_cons_p(entry))
         {
-          lst.push_back(scm2event(gh_car(entry)));
-          entry = gh_cdr(entry);
+          lst.push_back(scm2event(lisp_car(entry)));
+          entry = lisp_cdr(entry);
         }
       entries.push(Entry(entry_num, lst));
     }
   scm_close_port(port);
+#endif 
 }
 
 InputEvent
-InputManagerPlayer::scm2event(SCM entry)
+InputManagerPlayer::scm2event(lisp_object_t* entry)
 {
   InputEvent event;
-  SCM sym  = gh_car(entry);
-  SCM data = gh_cdr(entry);
+  lisp_object_t* sym  = lisp_car(entry);
+  lisp_object_t* data = lisp_cdr(entry);
 
-  if (gh_equal_p(gh_symbol2scm("axis"), sym)) 
+  if (strcmp("axis", lisp_symbol(sym)) == 0)
     {
       event.type = AXIS_EVENT;
-      event.axis.name = gh_scm2int(gh_car(data));
-      event.axis.pos  = gh_scm2double(gh_cadr(data));
+      event.axis.name = lisp_integer(lisp_list_nth(data, 0));
+      event.axis.pos  = lisp_real   (lisp_list_nth(data, 1));
     } 
-  else if (gh_equal_p(gh_symbol2scm("button"), sym))
+  else if (strcmp("button", lisp_symbol(sym)) == 0)
     {
       event.type = BUTTON_EVENT;
-      event.button.name = gh_scm2int(gh_car(data));
-      event.button.down = gh_scm2int(gh_cadr(data));
+      event.button.name = lisp_integer(lisp_list_nth(data, 0));
+      event.button.down = lisp_real   (lisp_list_nth(data, 1));
     } 
   else 
     {
-      std::cout << "scm2event: Unknown sym: " << Guile::scm2string(sym) << std::endl;
+      std::cout << "scm2event: Unknown sym: " << std::endl; //Guile::scm2string(sym) << std::endl;
     }
   return event;
 }

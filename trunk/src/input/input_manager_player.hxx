@@ -22,7 +22,7 @@
 
 #include <queue>
 #include <string>
-#include <guile/gh.h>
+#include "../lispreader.hxx"
 #include "input_manager_impl.hxx"
 
 /** Playback class for events recorded my the InputRecorder */
@@ -44,7 +44,7 @@ public:
   
   void update(float delta);
 private:
-  InputEvent scm2event(SCM lst);
+  InputEvent scm2event(lisp_object_t* lst);
 
   InputManagerPlayer (const InputManagerPlayer&);
   InputManagerPlayer& operator= (const InputManagerPlayer&);

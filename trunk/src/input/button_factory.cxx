@@ -19,7 +19,7 @@
 
 #include <ClanLib/Display/joystick.h>
 #include <ClanLib/Display/keyboard.h>
-#include "../guile.hxx"
+#include "../lispreader.hxx"
 #include "../string_converter.hxx"
 #include "../feuerkraft_error.hxx"
 #include "input_button.hxx"
@@ -31,63 +31,63 @@
 #include "button_factory.hxx"
 
 InputButton* 
-ButtonFactory::create(SCM lst)
+ButtonFactory::create(lisp_object_t* lst)
 {
-  SCM sym = gh_car(lst);
+  lisp_object_t* sym = lisp_car(lst);
 
-  if (gh_equal_p(sym, gh_symbol2scm("joystick-button")))
+  if (strcmp(lisp_symbol(sym), "joystick-button") == 0)
     {
-      return create_joystick_button(gh_cdr(lst));
+      return create_joystick_button(lisp_cdr(lst));
     }
-  else if (gh_equal_p(sym, gh_symbol2scm("keyboard-button")))
+  else if (strcmp(lisp_symbol(sym), "keyboard-button") == 0)
     {
-      return create_keyboard_button(gh_cdr(lst));
+      return create_keyboard_button(lisp_cdr(lst));
     }
-  else if (gh_equal_p(sym, gh_symbol2scm("axis-button")))
+  else if (strcmp(lisp_symbol(sym), "axis-button") == 0)
     {
-      return create_axis_button(gh_cdr(lst));
+      return create_axis_button(lisp_cdr(lst));
     }
-  else if (gh_equal_p(sym, gh_symbol2scm("multi-button")))
+  else if (strcmp(lisp_symbol(sym), "multi-button") == 0)
     {
-      return create_multi_button(gh_cdr(lst));
+      return create_multi_button(lisp_cdr(lst));
     }
   else
     {
-      throw FeuerkraftError("ButtonFactory::create: parse error: '"
-                            + Guile::scm2string(lst) + "'");
+      throw FeuerkraftError("ButtonFactory::create: parse error: '");
+                            //                            + Guile::scm2string(lst) + "'");
     }
       
   return 0;
 }
 
 InputButton*
-ButtonFactory::create_axis_button(SCM lst)
+ButtonFactory::create_axis_button(lisp_object_t* lst)
 {
-  InputAxis* axis = AxisFactory::create(gh_car(lst));
-  bool top = gh_scm2bool(gh_cadr(lst));
+  InputAxis* axis = AxisFactory::create(lisp_list_nth(lst, 0));
+  bool top = lisp_boolean(lisp_list_nth(lst, 1));
   
   return new AxisButton(axis, top);
 }
 
 InputButton*
-ButtonFactory::create_joystick_button(SCM lst)
+ButtonFactory::create_joystick_button(lisp_object_t* lst)
 {
-  int device_num = gh_scm2int(gh_car(lst));
-  int button_num = gh_scm2int(gh_cadr(lst));
+  int device_num = lisp_integer(lisp_list_nth(lst, 0));
+  int button_num = lisp_integer(lisp_list_nth(lst, 1));
   
   if (device_num >= 0 && device_num < CL_Joystick::get_device_count())
     return new InputButtonInputDevice(CL_Joystick::get_device(device_num), button_num);
   else
     {
-      throw FeuerkraftError("Error: ButtonFactory::create_joystick_button: device out of range"
-                            + to_string(device_num) + " " + Guile::scm2string(lst));
+      throw FeuerkraftError("Error: ButtonFactory::create_joystick_button: device out of range");
+                            //                            + to_string(device_num) + " " + Guile::scm2string(lst));
     }
 }
 
 InputButton*
-ButtonFactory::create_keyboard_button(SCM lst)
+ButtonFactory::create_keyboard_button(lisp_object_t* lst)
 {
-  std::string key_str = Guile::scm2string(gh_car(lst));
+  std::string key_str = lisp_string(lisp_car(lst));
   int key_num         = CL_Keyboard::get_device().keyid_to_string(key_str);
 
   // FIXME: No error checking
@@ -95,14 +95,14 @@ ButtonFactory::create_keyboard_button(SCM lst)
 }
 
 InputButton*
-ButtonFactory::create_multi_button(SCM lst)
+ButtonFactory::create_multi_button(lisp_object_t* lst)
 {
   MultiButton* button = new MultiButton();
   
-  while (!gh_null_p(lst))
+  while (!lisp_nil_p(lst))
     {
-      button->add(create(gh_car(lst)));
-      lst = gh_cdr(lst);
+      button->add(create(lisp_car(lst)));
+      lst = lisp_cdr(lst);
     }
   
   return button;

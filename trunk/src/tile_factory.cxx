@@ -23,7 +23,6 @@
 #include <iostream>
 #include "globals.hxx"
 #include "string_converter.hxx"
-#include "scm_helper.hxx"
 #include "tile.hxx"
 #include "tile_factory.hxx"
 
@@ -35,66 +34,67 @@ std::string TileFactory::tile_def_file = "tuxtiles.scm";
 
 TileFactory::TileFactory (const std::string& filename)
 {
-  SCM input_stream = scm_open_file(gh_str02scm(filename.c_str()), 
-                                   gh_str02scm("r"));
-  SCM tree = scm_read(input_stream);
+  lisp_object_t* tree = lisp_read_from_file(filename.c_str());
   
-  if (!(gh_symbol_p(gh_car(tree)) && gh_equal_p(gh_symbol2scm("windstille-tiles"), gh_car(tree))))
+  if (!(lisp_symbol_p(lisp_car(tree)) && 
+        strcmp("windstille-tiles", lisp_symbol(lisp_car(tree))) == 0))
     {
       std::cout << "Not a Windstille Tile File!" << std::endl;
     }
   else
     {
-      tree = gh_cdr(tree);
+      tree = lisp_cdr(tree);
 
-      while (!gh_null_p(tree))
+      while (!lisp_nil_p(tree))
         {
-          SCM current = gh_car(tree);
+          lisp_object_t* current = lisp_car(tree);
           
-          if (gh_pair_p(current))
+          if (lisp_cons_p(current))
             {
-              SCM name    = gh_car(current);
-              SCM data    = gh_cdr(current);
+              lisp_object_t* name    = lisp_car(current);
+              lisp_object_t* data    = lisp_cdr(current);
       
-              if (gh_equal_p(gh_symbol2scm("tile"), name)) 
+              if (strcmp(lisp_symbol(name), "tile") == 0)
                 {
                   parse_tile(data);
                 }
-              else if (gh_equal_p(gh_symbol2scm("tiles"), name)) 
+              else if (strcmp(lisp_symbol(name), "tiles") == 0)
                 {
                   parse_tiles(data);
                 }
               else
                 {
-                  std::cout << "WindstilleLevel: Unknown tag: " << scm2string(name) << std::endl;
+                  std::cout << "WindstilleLevel: Unknown tag: " << lisp_symbol(name) << std::endl;
                 }
             }
           else
             {
               std::cout << "WindstilleLevel: Not a pair!"  << std::endl;
             }
-          tree = gh_cdr(tree);
+          tree = lisp_cdr(tree);
         }
     }
+
+  lisp_free(tree);
 }
 
 void
-TileFactory::parse_tiles(SCM data)
+TileFactory::parse_tiles(lisp_object_t* data)
 {
-  while (!gh_null_p(data))
+  while (!lisp_nil_p(data))
     {
-      SCM current = gh_car(data);
+      lisp_object_t* current = lisp_car(data);
 
-      if (gh_pair_p(current))
+      if (lisp_cons_p(current))
         {
-          SCM name    = gh_car(current);
-          SCM data    = gh_cdr(current);
+          lisp_object_t* name    = lisp_car(current);
+          lisp_object_t* data    = lisp_cdr(current);
 
-          if (gh_equal_p(gh_symbol2scm("id"), name))           
+          if (strcmp(lisp_symbol(name), "id") == 0)
             {
-              //int id = gh_scm2int(gh_car(data));
+              //int id = lisp_integer(lisp_car(data));
             }
-          else if (gh_equal_p(gh_symbol2scm("image"), name))
+          else if (strcmp(lisp_symbol(name), "image") == 0)
             {
               
             }
@@ -103,13 +103,13 @@ TileFactory::parse_tiles(SCM data)
               assert(!"error in tile file");
             }
 
-          data = gh_cdr(data);
+          data = lisp_cdr(data);
         }
     }
 }
 
 void
-TileFactory::parse_tile(SCM data)
+TileFactory::parse_tile(lisp_object_t* data)
 {
   // FIXME: Move this to scripting and add a TileFactory::add()
   int id;
@@ -118,57 +118,57 @@ TileFactory::parse_tile(SCM data)
   CL_Color attribute_color(255, 255, 255, 255);
   unsigned char colmap[8];
   
-  while (!gh_null_p(data))
+  while (!lisp_nil_p(data))
     {
-      SCM current = gh_car(data);
+      lisp_object_t* current = lisp_car(data);
           
-      if (gh_pair_p(current))
+      if (lisp_cons_p(current))
         {
-          SCM name    = gh_car(current);
-          SCM data    = gh_cdr(current);
+          lisp_object_t* name    = lisp_car(current);
+          lisp_object_t* data    = lisp_cdr(current);
 
-          if (gh_equal_p(gh_symbol2scm("id"), name))           
+          if (strcmp(lisp_symbol(name), "id") == 0)
             {
-              id = gh_scm2int(gh_car(data));
+              id = lisp_integer(lisp_car(data));
             }
-          else if (gh_equal_p(gh_symbol2scm("color"), name))
+          else if (strcmp(lisp_symbol(name), "color") == 0)
             {
-              color = CL_Color(gh_scm2int(gh_car(data)),
-                               gh_scm2int(gh_cadr(data)),
-                               gh_scm2int(gh_caddr(data)),
-                               gh_scm2int(gh_car(gh_cdddr(data))));
+              color = CL_Color(lisp_integer(lisp_list_nth(data, 0)),
+                               lisp_integer(lisp_list_nth(data, 1)),
+                               lisp_integer(lisp_list_nth(data, 2)),
+                               lisp_integer(lisp_list_nth(data, 3)));
             }
-          else if (gh_equal_p(gh_symbol2scm("attribute-color"), name))
+          else if (strcmp(lisp_symbol(name), "attribute-color") == 0)
             {
-              attribute_color = CL_Color(gh_scm2int(gh_car(data)),
-                                         gh_scm2int(gh_cadr(data)),
-                                         gh_scm2int(gh_caddr(data)),
-                                         gh_scm2int(gh_car(gh_cdddr(data))));
+              attribute_color = CL_Color(lisp_integer(lisp_list_nth(data, 0)),
+                                         lisp_integer(lisp_list_nth(data, 1)),
+                                         lisp_integer(lisp_list_nth(data, 2)),
+                                         lisp_integer(lisp_list_nth(data, 3)));
             }
-          else if (gh_equal_p(gh_symbol2scm("image"), name))           
+          else if (strcmp(lisp_symbol(name), "image") == 0)
             {
-              image = scm2string(gh_car(data));
+              image = lisp_string(lisp_car(data));
             }
-          else if (gh_equal_p(gh_symbol2scm("colmap"), name))
+          else if (strcmp(lisp_symbol(name), "colmap") == 0)
             {
-              colmap[0] = gh_scm2int(gh_car(data));
-              data = gh_cdr(data);
-              colmap[1] = gh_scm2int(gh_car(data));
-              data = gh_cdr(data);
-              colmap[2] = gh_scm2int(gh_car(data));
-              data = gh_cdr(data);
-              colmap[3] = gh_scm2int(gh_car(data));
-              data = gh_cdr(data);
-              colmap[4] = gh_scm2int(gh_car(data));
-              data = gh_cdr(data);
-              colmap[5] = gh_scm2int(gh_car(data));
-              data = gh_cdr(data);
-              colmap[6] = gh_scm2int(gh_car(data));
-              data = gh_cdr(data);
-              colmap[7] = gh_scm2int(gh_car(data));
+              colmap[0] = lisp_integer(lisp_car(data));
+              data = lisp_cdr(data);
+              colmap[1] = lisp_integer(lisp_car(data));
+              data = lisp_cdr(data);
+              colmap[2] = lisp_integer(lisp_car(data));
+              data = lisp_cdr(data);
+              colmap[3] = lisp_integer(lisp_car(data));
+              data = lisp_cdr(data);
+              colmap[4] = lisp_integer(lisp_car(data));
+              data = lisp_cdr(data);
+              colmap[5] = lisp_integer(lisp_car(data));
+              data = lisp_cdr(data);
+              colmap[6] = lisp_integer(lisp_car(data));
+              data = lisp_cdr(data);
+              colmap[7] = lisp_integer(lisp_car(data));
             }
         }
-      data = gh_cdr(data);
+      data = lisp_cdr(data);
     }
 
   if (0) // Debugging code

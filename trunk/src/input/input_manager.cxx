@@ -43,19 +43,17 @@ void
 InputManager::init(const std::string& filename)
 {
   std::cout << "InputManager::init(" << filename << ")" << std::endl;
-  SCM port = scm_open_file(gh_str02scm(filename.c_str()),
-                           gh_str02scm("r"));
-  SCM lst  = scm_read(port);
+  lisp_object_t* lst = lisp_read_from_file(filename.c_str());
 
-  if (gh_equal_p(gh_symbol2scm("feuerkraft-controller"), gh_car(lst)))
+  if (strcmp("feuerkraft-controller", lisp_symbol(lisp_car(lst))) == 0)
     {
-      impl = new InputManagerCustom(gh_cdr(lst));
+      impl = new InputManagerCustom(lisp_cdr(lst));
     }
   else
     {
       throw FeuerkraftError("Error: not a valid controller file: " + filename);
     }
-  scm_close_port(port);
+  lisp_free(lst);
 }
 
 void

@@ -20,24 +20,23 @@
 #include <ClanLib/Display/joystick.h>
 #include "input_axis_input_device.hxx"
 #include "../feuerkraft_error.hxx"
-#include "../guile.hxx"
 #include "button_factory.hxx"
 #include "button_axis.hxx"
 #include "axis_factory.hxx"
 
 InputAxis* 
-AxisFactory::create(SCM lst)
+AxisFactory::create(lisp_object_t* lst)
 {
-  while(gh_pair_p(lst))
+  while(lisp_cons_p(lst))
     {
-      SCM sym  = gh_car(lst);
-      SCM data = gh_cdr(lst);
+      lisp_object_t* sym  = lisp_car(lst);
+      lisp_object_t* data = lisp_cdr(lst);
       
-      if (gh_equal_p(sym, gh_symbol2scm("joystick-axis")))
+      if (strcmp(lisp_symbol(sym), "joystick-axis") == 0)
         {
           return create_joystick_axis(data);
         }
-      if (gh_equal_p(sym, gh_symbol2scm("button-axis")))
+      else if (strcmp(lisp_symbol(sym), "button-axis") == 0)
         {
           return create_button_axis(data);
         }
@@ -46,32 +45,32 @@ AxisFactory::create(SCM lst)
           throw FeuerkraftError("AxisFactory::create: parse error");
         }
 
-      lst = gh_cdr(lst);
+      lst = lisp_cdr(lst);
     }
   return 0;
 }
 
 InputAxis*
-AxisFactory::create_joystick_axis(SCM lst)
+AxisFactory::create_joystick_axis(lisp_object_t* lst)
 {
-  int device_num = gh_scm2int(gh_car(lst));
-  int axis_num   = gh_scm2int(gh_cadr(lst));
+  int device_num = lisp_integer(lisp_list_nth(lst, 0));
+  int axis_num   = lisp_integer(lisp_list_nth(lst, 1));
 
   if (device_num >= 0 && device_num < CL_Joystick::get_device_count())
     return new InputAxisInputDevice(CL_Joystick::get_device(device_num), axis_num);
   else
     {
-      throw FeuerkraftError("Error: AxisFactory::create_joystick_axis: " 
-                            + Guile::scm2string(lst));
+      throw FeuerkraftError("Error: AxisFactory::create_joystick_axis: ");
+      //                            + lisp_string(lst));
       return 0;
     }
 }
 
 InputAxis*
-AxisFactory::create_button_axis(SCM lst)
+AxisFactory::create_button_axis(lisp_object_t* lst)
 {
-  InputButton* left  = ButtonFactory::create(gh_car(lst));
-  InputButton* right = ButtonFactory::create(gh_cadr(lst));
+  InputButton* left  = ButtonFactory::create(lisp_list_nth(lst, 0));
+  InputButton* right = ButtonFactory::create(lisp_list_nth(lst, 1));
 
   return new ButtonAxis(left, right);
 }

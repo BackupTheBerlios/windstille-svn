@@ -23,7 +23,6 @@
 #include <ClanLib/vorbis.h>
 #include <ClanLib/sound.h>
 #include <ClanLib/display.h>
-#include <guile/gh.h>
 
 #include "config.h"
 #include "ruby_functor.hxx"
@@ -31,7 +30,6 @@
 #include "windstille_error.hxx"
 #include "globals.hxx"
 #include "windstille_game.hxx"
-//#include "guile_gameobj_factory.hxx"
 #include "windstille_level.hxx"
 #include "windstille_main.hxx"
 #include "windstille_menu.hxx"
@@ -249,14 +247,6 @@ WindstilleMain::main(int argc, char** argv)
 void
 WindstilleMain::init_modules()
 {
-#ifdef WIN32
-  // Make sure that Guile find its files
-  // FIXME: this doesn't use 'datadir'
-  putenv("GUILE_LOAD_PATH=data\\guile\\");
-#endif
-
-  // Init Guile
-  scm_init_guile();
   ruby_init();
   Init_windstille();
   

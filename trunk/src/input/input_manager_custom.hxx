@@ -20,7 +20,7 @@
 #ifndef HEADER_INPUT_MANAGER_CUSTOM_HXX
 #define HEADER_INPUT_MANAGER_CUSTOM_HXX
 
-#include <guile/gh.h>
+#include "../lispreader.hxx"
 #include <ClanLib/Display/input_device.h>
 #include <ClanLib/Display/input_event.h>
 #include "input_event.hxx"
@@ -41,7 +41,7 @@ private:
   Buttons buttons;
 
 public:
-  InputManagerCustom(SCM lst);
+  InputManagerCustom(lisp_object_t* lst);
   
   void update(float delta);
 
@@ -49,7 +49,7 @@ public:
   void on_button_down(int name);
   void on_axis_move(float pos, int name);
 private:
-  void init(SCM lst);
+  void init(lisp_object_t* lst);
 
   InputManagerCustom (const InputManagerCustom&);
   InputManagerCustom& operator= (const InputManagerCustom&);
