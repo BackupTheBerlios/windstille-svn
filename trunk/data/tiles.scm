@@ -214,6 +214,10 @@
         (colmap 240 240 240 240 240 240 240 240))
   (tile (id 72)
         (image "tiles/air_dbrw_dbrw_air_1")
-        (colmap 15 15 15 15 15 15 15 15)))
+        (colmap 15 15 15 15 15 15 15 15))
+
+  (tiles (id 1)
+        (image "../data/images/groundset.png")
+        (colmap 255 255 255 255 255 255 255 255)))
 
 ;; EOF ;;

@@ -1116,6 +1116,26 @@ LispReader::read_string_vector (const char* name, std::vector<std::string>* vec)
 }
 
 bool
+LispReader::read_unsigned_char_vector (const char* name, std::vector<unsigned char>* vec)
+{
+  lisp_object_t* obj = get (name);
+  if (obj)
+    {
+      vec->clear();
+
+      while(!lisp_nil_p(obj))
+        {
+          if (!lisp_integer_p(lisp_car(obj)))
+            throw LispReaderException("LispReader expected type integer at token: ", name);
+          vec->push_back(lisp_integer(lisp_car(obj)));
+          obj = lisp_cdr(obj);
+        }
+      return true;
+    }
+  return false;    
+}
+
+bool
 LispReader::read_int_vector (const char* name, std::vector<int>* vec)
 {
   lisp_object_t* obj = get (name);

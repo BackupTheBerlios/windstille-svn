@@ -188,7 +188,10 @@ public:
   /** cur == ((pos 1 2 3) (id 12 3 4)...) */
   LispReader (lisp_object_t* l);
 
+
   bool read_int_vector (const char* name, std::vector<int>* vec);
+  bool read_unsigned_char_vector (const char* name, std::vector<unsigned char>* vec);
+
   bool read_char_vector (const char* name, std::vector<char>* vec);
   bool read_string_vector (const char* name, std::vector<std::string>* vec);
   bool read_string (const char* name, std::string* str);

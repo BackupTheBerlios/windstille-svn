@@ -18,6 +18,8 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <ClanLib/Core/System/error.h>
+#include <ClanLib/Display/sprite_description.h>
+#include <ClanLib/Display/pixel_buffer.h>
 #include <iostream>
 #include "globals.hxx"
 #include "tile.hxx"
@@ -30,6 +32,22 @@ Tile::Tile(const std::string& filename_,
     attribute_color(attribute_color_),
     filename(filename_)
 {
+  //sur.set_alignment(origin_center, 0, 0);
+  memcpy(colmap, arg_colmap, 8);
+}
+
+Tile::Tile(const CL_PixelBuffer& buffer, 
+           const CL_Color& color_,
+           const CL_Color& attribute_color_,
+           unsigned char arg_colmap[])
+  : color(color_),
+    attribute_color(attribute_color_),
+    filename("<unknown>")
+{
+  CL_SpriteDescription desc;
+  desc.add_frame(new CL_PixelBuffer(buffer), true);
+  sur = CL_Sprite(desc);
+
   //sur.set_alignment(origin_center, 0, 0);
   memcpy(colmap, arg_colmap, 8);
 }

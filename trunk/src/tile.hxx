@@ -49,6 +49,9 @@ public:
   Tile(const std::string& filename, 
        const CL_Color& color, const CL_Color& attribute_color, unsigned char arg_colmap[]);
 
+  Tile(const CL_PixelBuffer& buffer, 
+       const CL_Color& color, const CL_Color& attribute_color, unsigned char arg_colmap[]);
+
   CL_Sprite& get_sprite();
   CL_Color   get_color();
   CL_Color   get_attribute_color();

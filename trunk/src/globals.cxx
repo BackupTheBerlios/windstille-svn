@@ -23,7 +23,7 @@ std::string datadir;
 std::string bindir;
 std::string homedir;
 
-int TILE_SIZE    = 128;
+int TILE_SIZE    = 64;
 int SUBTILE_SIZE = 16;
 int SUBTILE_NUM  = (TILE_SIZE/SUBTILE_SIZE);
 

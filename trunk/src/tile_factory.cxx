@@ -19,6 +19,9 @@
 
 #include <string>
 #include <ClanLib/Core/System/system.h>
+#include <ClanLib/Display/pixel_buffer.h>
+#include <ClanLib/Display/pixel_format.h>
+#include <ClanLib/Display/Providers/provider_factory.h>
 #include <assert.h>
 #include <iostream>
 #include "globals.hxx"
@@ -81,38 +84,85 @@ TileFactory::TileFactory (const std::string& filename)
 void
 TileFactory::parse_tiles(lisp_object_t* data)
 {
-  while (!lisp_nil_p(data))
+  LispReader reader(data);
+
+  int id = 1;
+
+  if (!reader.read_int("id", &id))
     {
-      lisp_object_t* current = lisp_car(data);
+      std::cout << "Error: Id tag missing" << std::endl;
+      return;
+    }
 
-      if (lisp_cons_p(current))
+  std::string filename;
+  if (!reader.read_string("image", &filename))
+    {
+      std::cout << "Error: image tag missing" << std::endl;
+      return;
+    }
+
+  std::vector<unsigned char> colmap;
+  if (!reader.read_unsigned_char_vector("colmap", &colmap))
+    {
+      // fill with default
+      colmap.push_back(255);
+      colmap.push_back(255);
+      colmap.push_back(255);
+      colmap.push_back(255);
+
+      colmap.push_back(255);
+      colmap.push_back(255);
+      colmap.push_back(255);
+      colmap.push_back(255);
+    }
+  
+  if (colmap.size() != 8)
+    {
+      std::cout << "Error: Size does not match: " << colmap.size() << std::endl;
+    }
+
+  CL_PixelBuffer* image = CL_ProviderFactory::load(filename);
+
+  int num_tiles = (image->get_width()/64) * (image->get_height()/64);
+
+  if ((id + num_tiles) >= int(tiles.size()))
+    {
+      tiles.resize(id + num_tiles + 1);
+    }
+
+  for (int y = 0; y < image->get_height(); y += TILE_SIZE)
+    {
+      for (int x = 0; x < image->get_width(); x += TILE_SIZE)
         {
-          lisp_object_t* name    = lisp_car(current);
-          lisp_object_t* data    = lisp_cdr(current);
+          CL_PixelBuffer chopped_image(TILE_SIZE, TILE_SIZE,
+                                       image->get_format().get_depth()*TILE_SIZE,
+                                       image->get_format(), NULL);
+          chopped_image.lock();
+          image->convert(chopped_image.get_data(), 
+                         chopped_image.get_format(), 
+                         image->get_format().get_depth()*TILE_SIZE, 
+                         CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
+                         CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
+          chopped_image.unlock();
 
-          if (strcmp(lisp_symbol(name), "id") == 0)
-            {
-              //int id = lisp_integer(lisp_car(data));
-            }
-          else if (strcmp(lisp_symbol(name), "image") == 0)
-            {
-              
-            }
-          else
-            {
-              assert(!"error in tile file");
-            }
+          std::cout << "id: " << id << " " << x << "x" << y << std::endl;
 
-          data = lisp_cdr(data);
+          tiles[id] = new Tile(chopped_image, 
+                               CL_Color(255, 255, 255),
+                               CL_Color(127, 127, 127), &*colmap.begin());
+          tiles[id]->id = id;
+          id += 1;
         }
     }
+
+  delete image;
 }
 
 void
 TileFactory::parse_tile(lisp_object_t* data)
 {
   // FIXME: Move this to scripting and add a TileFactory::add()
-  int id;
+  int id = 1;
   std::string image;
   CL_Color color(255, 255, 255, 255);
   CL_Color attribute_color(255, 255, 255, 255);
