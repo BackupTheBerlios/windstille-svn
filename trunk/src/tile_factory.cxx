@@ -60,6 +60,10 @@ TileFactory::TileFactory (const std::string& filename)
                 {
                   parse_tile(data);
                 }
+              else if (gh_equal_p(gh_symbol2scm("tiles"), name)) 
+                {
+                  parse_tiles(data);
+                }
               else
                 {
                   std::cout << "WindstilleLevel: Unknown tag: " << scm2string(name) << std::endl;
@@ -70,6 +74,36 @@ TileFactory::TileFactory (const std::string& filename)
               std::cout << "WindstilleLevel: Not a pair!"  << std::endl;
             }
           tree = gh_cdr(tree);
+        }
+    }
+}
+
+void
+TileFactory::parse_tiles(SCM data)
+{
+  while (!gh_null_p(data))
+    {
+      SCM current = gh_car(data);
+
+      if (gh_pair_p(current))
+        {
+          SCM name    = gh_car(current);
+          SCM data    = gh_cdr(current);
+
+          if (gh_equal_p(gh_symbol2scm("id"), name))           
+            {
+              //int id = gh_scm2int(gh_car(data));
+            }
+          else if (gh_equal_p(gh_symbol2scm("image"), name))
+            {
+              
+            }
+          else
+            {
+              assert(!"error in tile file");
+            }
+
+          data = gh_cdr(data);
         }
     }
 }

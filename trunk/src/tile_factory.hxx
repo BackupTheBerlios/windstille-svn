@@ -66,6 +66,7 @@ public:
 
 private:
   void parse_tile(SCM data);
+  void parse_tiles(SCM data);
 };
 
 #endif
