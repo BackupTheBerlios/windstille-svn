@@ -30,7 +30,7 @@ opts.Add('LIBPATH', 'additional library path', '')
 opts.Add('DESTDIR', 'destination directory which gets appended to PREFIX', '')
 opts.Add('PREFIX',  'PREFIX, ie. /usr/local', '/usr/local')
 
-# opts.Add('RUBYDIR', 'Ruby directory', os.popen('ruby -e "require \'rbconfig\'; puts Config::CONFIG[\'archdir\']"').read()[:-1])
+opts.Add('RUBYDIR', 'Ruby directory', os.popen('ruby -e "require \'rbconfig\'; puts Config::CONFIG[\'archdir\']"').read()[:-1])
 
 env = Environment(SHLIBPREFIX='',
                   ENV = os.environ,
@@ -39,6 +39,9 @@ Help(opts.GenerateHelpText(env))
 
 clanLib_env = Environment()
 clanLib_env.ParseConfig("pkg-config --cflags --libs clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7")
+
+env.Command('windstille_wrap.cxx', 'windstille.i',
+            "swig -runtime -ruby -o $TARGET -c++ $SOURCE")
 
 windstille_source = [
     'animation_obj.cxx',
@@ -57,17 +60,12 @@ windstille_source = [
     'game_world.cxx', 
     'gameobj.cxx', 
     'globals.cxx', 
-    'guile.cxx', 
-    'guile_gameobj.cxx', 
-    'guile_gameobj_factory.cxx', 
     'igel.cxx', 
     'laser_shoot.cxx', 
     'music_manager.cxx', 
     'player.cxx', 
     'player_view.cxx', 
     'power_up.cxx', 
-    'scm_functor.cxx', 
-    'scm_helper.cxx', 
     'screen.cxx', 
     'screenshot.cxx', 
     'tile.cxx', 
@@ -87,7 +85,6 @@ windstille_source = [
 
     # Scripting Subdirectory
     'scripting/game.cxx',
-    'scripting/windstille_wrap.cxx',
     
     # Input Subdirectory
     'input/controller.cxx', 
@@ -102,7 +99,13 @@ windstille_source = [
     'input/button_factory.cxx', 
     'input/axis_factory.cxx', 
     'input/input_recorder.cxx', 
-    'input/multi_button.cxx'
+    'input/multi_button.cxx',
+
+    # Guile Specific stuff 
+    'scm_functor.cxx', 
+    'scm_helper.cxx', 
+    'scripting/windstille_wrap.cxx',
+    'guile.cxx'
     ]
 
 windstille_data = glob.glob('../data/images/*.png')     + \

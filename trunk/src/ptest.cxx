@@ -89,6 +89,7 @@ public:
 
         // Loop until the user hits escape:
         int count = 0;
+        unsigned int start_time =  CL_System::get_time();
         while (CL_Keyboard::get_keycode(CL_KEY_ESCAPE) == false)
           {
             CL_Display::clear(CL_Color(0, 0, 0));
@@ -98,9 +99,14 @@ public:
             psystem3.set_spawn_point(CL_Mouse::get_x(), CL_Mouse::get_y());
         
             unsigned int cur_time = CL_System::get_time();
-            psystem.update((cur_time - last_time)/1000.f);
+
+            /*psystem.update((cur_time - last_time)/1000.f);
             psystem2.update((cur_time - last_time)/1000.f);
-            psystem3.update((cur_time - last_time)/1000.f);
+            psystem3.update((cur_time - last_time)/1000.f);*/
+            psystem.update(0.033f);
+            psystem2.update(0.033f);
+            psystem3.update(0.033f);
+
             last_time = cur_time;
 
             psystem3.draw();
@@ -115,22 +121,24 @@ public:
                 screenshot("/tmp/myshot.pnm");
               }
 
-            if (0)
+            if (1)
               {char str[1024];
               snprintf(str, 1024, "/tmp/shot%04d.pnm", count);
               //printf("%02d\n");
               screenshot(str);
-              if (count == 256)
+              if (count == 356)
                 exit(0);
               }
             count += 1;
 
             // Improve responsiveness:
-            CL_System::sleep(30);
+            //CL_System::sleep(30);
 				
             // Update keyboard input and handle system events:
             CL_System::keep_alive();
           }
+
+        std::cout << count << " " << CL_System::get_time() - start_time << std::endl;
       }
     catch (CL_Error err)
       {
