@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<page title="Windstille">
+  
+  <section title="Download">
+    <p>
+      Below you can download the source code and static-binaries for
+      Windstille, the 0.2.0 release should be a useable techdemo, its
+      a bit playable (one level, one type of enemy) and should give
+      you an impression of how Windstille might look like. Win32
+      releases always lack a bit behind. The static-binary requires a
+      working OpenGL installation, glibc version shouldn't matter.
+    </p>
+
+    <subsection title="0.2.0">
+      <ul>
+        <li>GNU/Linux binary+source: <a href="http://savannah.nongnu.org/download/windstille/windstille-0.2.0-binary-i386.tar.bz2">windstille-0.2.0-binary-i386.tar.bz2 [9.5mb]</a></li>
+        <li>Win32: <a href="http://savannah.nongnu.org/download/windstille/windstille-0.2.0-1-win32.zip">windstille-0.2.0-1-win32.zip [8.7mb]</a></li>
+      </ul>
+    </subsection>
+
+    <subsection title="0.1.0">
+      <ul>
+        <li>GNU/Linux binary: <a href="http://savannah.nongnu.org/download/windstille/windstille-0.1.0-binary-i386.tar.bz2">windstille-0.1.0-binary-i386.tar.bz2 [1.7MB]</a></li>
+        <li>Source: <a href="http://savannah.nongnu.org/download/windstille/windstille-0.1.0.tar.bz2">windstille-0.1.0.tar.bz2 [424KB]</a></li>
+      </ul>
+    </subsection>
+
+    <subsection title="0.0.0">
+      <ul>
+        <li>Source: <a href="http://savannah.nongnu.org/download/windstille/windstille-0.0.0.tar.bz2">windstille-0.0.0.tar.bz2 [57KB]</a></li>
+      </ul>
+    </subsection>
+
+    <subsection title="Music">
+      <ul>
+        <li><a href="http://savannah.nongnu.org/download/windstille/Windstille_Ralph_Weinert.ogg">Windstille Theme (Ralph Weinert) [1.5MB]</a></li>
+      </ul>
+    </subsection>
+
+  </section>
+
+</page>

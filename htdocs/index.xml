@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<page title="Windstille">
+  
+  <section title="Introduction">
+    
+    <img src="images/character.png" align="right" alt="" style="position: relative; left: 0px;"/>
+
+    <p>
+      In Windstille the player will be placed in a foreign alien world
+      and has to find its way back into safety. Special focus will be
+      on getting the foreign world and the players character itself
+      believable. Exploration will be more needed than plain shoot
+      action, even so the players-character will be equipped with a
+      multifunctional war-suit, so he will be far from defenseless.
+      The game will have slow placed explore and seak sequences as
+      well as more rough section that will feature fast shoot and jump
+      action. The game world should be presented in a consistent
+      state, enemies once destroyed should not respawn automatically.
+      The player is free to go forward and backward in the world as
+      long as the level design allows it.
+    </p>
+
+    <subsection title="Visuals">
+      <p>
+        The game will be presented in a classic 2d jump'n run
+        perspective, while multiple layers of tile-maps, zooms,
+        parallax scrolling and fluent animations should give the world
+        a plastic and realistic feeling.
+      </p>
+    </subsection>
+
+    <subsection title="Enemies">
+      <p>
+        The main opponents in the first few levels will be animals,
+        like insects or spiders, from the foreign world. Doding them
+        instead of fighting them might often be a valuabl choice, even
+        so the player should have a good amount of freedom about how
+        he solves the problem he is facing.
+      </p>
+    </subsection>
+
+    <subsection title="Scripting">
+      <p>
+        To allow a wide varity of puzzles and story events inside the
+        game, it will have to rely on a scripting engine, namly <a
+          href="http://www.gnu.org/software/guile/">Guile</a>. Game
+        content should be influencable quite a lot by scripting so
+        that level designers and script writers have the freedom
+        needed to create a compelling game.
+      </p>
+    </subsection>
+
+    <subsection title="Relations to other games">
+      <p>
+        If somebody now thinks this sounds similar to Another World,
+        Flashback, Turrican, Metroid or Prince of Persia he is quite
+        right, all these games have been a big source of inspiration,
+        but simply cloning them is not the point of this project.
+      </p>
+    </subsection>
+
+    <div style="text-align: right;">
+    <!-- Begin Nedstat Basic code -->
+    <!-- Title: Windstille -->
+    <!-- URL: http://www.nongnu.org/windstille/ -->
+    <script language="JavaScript" type="text/javascript" src="http://m1.nedstatbasic.net/basic.js">
+    </script>
+    <script language="JavaScript" type="text/javascript" >
+      <!--
+      nedstatbasic("ACX4aQxswZiE89THkqOnM7mV5Y/g", 0);
+      // -->
+    </script>
+    <noscript>
+      <a target="_blank" href="http://v1.nedstatbasic.net/stats?ACX4aQxswZiE89THkqOnM7mV5Y/g"><img
+          src="http://m1.nedstatbasic.net/n?id=ACX4aQxswZiE89THkqOnM7mV5Y/g"
+          border="0" width="18" height="18" 
+          alt="Nedstat Basic - Free web site statistics" /></a>
+    </noscript>
+    <!-- End Nedstat Basic code -->
+    </div>
+  </section>
+
+</page>

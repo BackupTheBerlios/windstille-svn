@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<page 
+  title="Windstille"
+  group="screenshots">
+
+  <section title="Screenshots">
+    <subsection title="Special Effects" id="effects">
+      <p>
+        The following videos demonstrate some OpenGL and GLSL based effects
+        which might be used in the game:
+      </p>
+      
+      <center>
+        <a href="http://pingus.seul.org/~grumbel/tmp/gl-fire2.avi"><img src="images/gl-fire_small.jpg" alt="Particle Fire" /></a>
+        <a href="http://pingus.seul.org/~grumbel/tmp/gl-light.avi"><img src="images/gl-light_small.jpg" alt="Flames" /></a>
+        <a href="http://pingus.seul.org/~grumbel/tmp/gl-colorlight.avi"><img src="images/gl-colorlight_small.jpg" alt="Flames" /></a>
+        
+        <a href="http://pingus.seul.org/~grumbel/tmp/glslflames-wmv.avi"><img src="images/glsl-fire_small.jpg" alt="Flames" /></a>
+        <a href="http://pingus.seul.org/~grumbel/tmp/glsl-shockwave.avi"><img src="images/glsl-shockwave_small.jpg" alt="Shockwave" /></a>
+      </center>
+    </subsection>
+
+  <p>
+    These are real screenshots, either from the game itself or from
+    of a particle and explosion test demos.
+  </p>
+
+  <center>
+    <a href="images/particlefire.jpg"><img src="images/particlefire_small.jpg" /></a>
+    <a href="images/explo.jpg"><img src="images/explo_small.jpg" /></a>   
+    <a href="images/explo2.jpg"><img src="images/explo2_small.jpg" /></a> 
+    <br />
+    <a href="images/screenshot3.jpg"><img src="images/screenshot3_small.jpg" /></a> 
+    <a href="images/screenshot4.jpg"><img src="images/screenshot4_small.jpg" /></a> 
+    <a href="images/screenshot5.jpg"><img src="images/screenshot5_small.jpg" /></a> 
+    <a href="images/screenshot6.jpg"><img src="images/screenshot6_small.jpg" /></a> 
+    <a href="images/screenshot7.jpg"><img src="images/screenshot7_small.jpg" /></a> 
+    <a href="images/screenshot8.jpg"><img src="images/screenshot8_small.jpg" /></a> 
+    <br />
+    <a href="images/editor1.jpg"><img src="images/editor1_small.jpg" /></a> 
+  </center>  
+  </section>
+</page>

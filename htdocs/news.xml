@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<page title="Windstille">
+  
+  <section title="News">
+    <news>
+      <item date="24. Oct 2004">
+        A video of a fire effect created by the particle system that
+        will be used in Windstille is now available in the <a
+        href="screenshots.html#effects">effects subsection</a>
+      </item>
+
+      <item date="16. Oct 2004">
+        Some more screenshots of hour hero and some more sketches of
+        scenery are available in the <a href="artworks.html">artwork
+        section</a> are available.
+      </item>
+
+      <item date="06. Oct 2004">
+        Some new lighting effects are now in the <a
+        href="screenshots.html#effects">artwork section</a>.
+      </item>
+
+      <item date="04. Oct 2004">
+        Not much news in the last few months, but don't worry, its not
+        dead yet, just developing rather slowly and jumpy. The <a
+        href="artworks.html">artwork section</a> contains some new
+        pieces (<a href="artworks.html#hero">here</a> and <a
+        href="screenshots.html#effects">here</a>) of graphics which might
+        be worth a look. You want to see the Windstille artwork in its
+        purest or rawest form, you can now find it in the <a
+      href="http://undone.clanlib.org/~grumbel/show.cgi?search=windstille">Game
+      Media Repository</a>.
+      </item>
+
+      <item date="08. Feb 2004">
+        A updated <a href="download.html">Win32 release</a> is
+        available, fixes the small bugs mentioned below.
+      </item>
+
+      <item date="08. Feb 2004">
+        Thanks to <a href="mailto:rkon@gmx.de">Robert Konrad</a> we
+        now have a Win32 build of the <a href="download.html">0.2.0
+        Windstille release</a>, known bugs for that release include
+        the lack of the exit-trigger, so once you have reached the
+        exit, you have to press Escape.
+      </item>
+
+      <item date="02. Feb 2004">
+        Added another, a bit more detailed, <a
+        href="images/artwork10.jpg">artwork of the Windstille
+        hero</a>. Win32 release will hopefully follow real soon. Hint:
+        If anybody wants to help maintaining the Win32 builds and thus
+        lead to faster release cycles and less workload on myself,
+        tools for doing that (MinGW, ClanLib, Voribs, etc.) are all
+        Free Software and freely downloadable from the net..
+      </item>
+
+      <item date="14. Jan 2004">
+        Windstille 0.2.0 is out, at the moment just the GNU/Linux is
+        available, Windows version will follow soon. There is also a
+        video of it available <a href="http://pingus.seul.org/~grumbel/tmp/windstille-400x300-xvid.avi">here</a>.
+      </item>
+
+      <item date="29. Aug 2003">
+        A first Win32 release got crossy-compiled, not public available,
+	but it should ensure that following Windows ports should be doable
+	in relativly small amounts of time.
+      </item>
+    
+      <item date="13. Aug 2003">
+        <a href="download.html">Windstille 0.1.0</a> is out, both the
+        full source and a static binary for GNU/Linux are provided,
+        this is the first useable Windstille version. Its currently
+        not more then a simple techdemo so don't expect anything
+        playable.
+      </item>
+
+      <item date="09. Aug 2003">
+        Added a few <a href="screenshots.html#pseudoscreen">pseudo
+        screenshots</a>, aka artworks that use in-game graphics and a
+        few other things to emulate special effects.
+      </item>
+
+      <item date="07. Aug 2003">
+        Added a few <a href="screenshots.html#posingtest">posing
+        tests</a>, rewrote the <a href="index.html">introduction</a>.
+      </item>
+
+      <item date="04. Aug 2003">
+        Added another artwork, some minor webpage cleanups.
+      </item>      
+
+      <item date="28. Dec 2002">
+        Added little <a href="images/background1.jpg">desktop background</a>.
+      </item>
+
+      <item date="1. Sep 2002">
+        Ported Windstille to ClanLib-0.7-CVS (compiles, but doesn't work).
+      </item>
+    </news>
+  </section>
+
+</page>

@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<page
+  title="Windstille"
+  group="screenshots">
+
+  <section title="Scenery" id="scenery">
+    <p>Some scenery which might be visible in the game.</p>
+
+    <center>
+      <a href="images/windstille-subway-2004-10-13-1.jpg"><img src="images/windstille-subway-2004-10-13-1_small.jpg" alt="scenery1"/></a>
+      <a href="images/windstille-subway-2004-10-13-2.jpg"><img src="images/windstille-subway-2004-10-13-2_small.jpg" alt="scenery2"/></a>
+      <a href="images/windstille-subway-2004-10-13-3.jpg"><img src="images/windstille-subway-2004-10-13-3_small.jpg" alt="scenery3"/></a>
+      <a href="images/windstille-subway-2004-10-13-4.jpg"><img src="images/windstille-subway-2004-10-13-4_small.jpg" alt="scenery4"/></a>
+      <a href="images/windstille-subway-2004-10-13-5.jpg"><img src="images/windstille-subway-2004-10-13-5_small.jpg" alt="scenery5"/></a>
+      <a href="images/windstille-sketch-2004-10-13.jpg"><img src="images/windstille-sketch-2004-10-13_small.jpg" alt="scenery6"/></a>
+    </center>
+  </section>
+
+  <section title="Hero" id="hero">
+    <p>
+      Below you can see some new work on the "hero {f}" which you will
+      play in the game.
+    </p>
+    <center>
+      <a href="images/windstille-2004-09-01-1.jpg"><img src="images/windstille-2004-09-01-1_small.jpg" alt="Hero 3D" /></a>
+      <a href="images/windstille-2004-09-01-2.jpg"><img src="images/windstille-2004-09-01-2_small.jpg" alt="Hero Sprite" /></a>
+      <a href="images/windstille-suit2.jpg"><img src="images/windstille-suit2_small.jpg" alt="hero in normal cloth" /></a>
+    </center>
+  </section>
+
+  <section title="Pseudo Gamescreens" id="pseudoscreen">
+    <p>
+      These are artworks assembled in Gimp while using real in-game
+      graphics and a few stuff for effects. If things go well the
+      final game should look pretty similar.
+    </p>
+    <center>
+      <a href="images/gamescreen1.jpg"><img src="images/gamescreen1_small.jpg"/></a>   
+      <a href="images/gamescreen2.jpg"><img src="images/gamescreen2_small.jpg"/></a>   
+      <a href="images/gamescreen3.jpg"><img src="images/gamescreen3_small.jpg"/></a>   
+    </center>
+  </section>
+
+  <section title="Artworks">
+    <p>
+      The pictures below are artworks and sketches, you can find some
+      more at <a
+      href="http://undone.clanlib.org/~grumbel/show.cgi?search=windstille">Game
+      Media Repository</a>.
+    </p>
+    
+    <center>
+      <a href="images/artwork1.jpg"><img src="images/artwork1_small.jpg"/></a>
+      <a href="images/artwork2.jpg"><img src="images/artwork2_small.jpg"/></a>   
+      <a href="images/artwork3.jpg"><img src="images/artwork3_small.jpg"/></a>   
+      <a href="images/artwork4.jpg"><img src="images/artwork4_small.jpg"/></a>   
+      <a href="images/artwork5.jpg"><img src="images/artwork5_small.jpg"/></a>   
+      <a href="images/artwork6.jpg"><img src="images/artwork6_small.jpg"/></a>   
+      <a href="images/artwork7.jpg"><img src="images/artwork7_small.jpg"/></a>   
+      <a href="images/artwork8.jpg"><img src="images/artwork8_small.jpg"/></a>   
+      <a href="images/artwork9.jpg"><img src="images/artwork9_small.jpg"/></a>   
+      <a href="images/artwork10.jpg"><img src="images/artwork10_small.jpg"/></a>   
+      <a href="images/background1.jpg"><img src="images/background1_small.jpg"/></a>   
+      <a href="images/heroiktest.jpg"><img src="images/heroiktest_small.jpg"/></a>   
+      <a href="images/spritetest.jpg"><img src="images/spritetest_small.jpg"/></a>   
+    </center>    
+  </section>
+</page>

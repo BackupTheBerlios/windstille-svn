@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<page title="Windstille">
+  <section title="Posing Tests" id="posingtest">
+    <p>
+      A few posing test, these are not yet animations, but just a few
+      test to see how the hero will look like in different situations
+      (the legs are too short...).
+    </p>
+
+    <p align="center">
+      <img src="images/climbanimtest.jpg" alt="Climb Test"/>
+      <br />
+      <img src="images/posing1.jpg" alt="Balance"/>
+      <img src="images/posing2.jpg" alt="Ladder"/>
+      <img src="images/posing3.jpg" alt="Hang Move"/>
+      <img src="images/posing4.jpg" alt="Hang"/>
+    </p>
+  </section>
+</page>

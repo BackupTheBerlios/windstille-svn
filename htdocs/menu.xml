@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<menu>
+  <item file="news.html">News</item>
+  <item file="index.html">Introduction</item>
+  <item file="screenshots.html">Screenshots</item>
+  <item file="download.html">Download</item>
+  <item file="development.html">Development</item>
+  <item file="contact.html">Contact</item>
+  <item file="http://savannah.nongnu.org/projects/windstille/">Savannah</item>
+</menu>
