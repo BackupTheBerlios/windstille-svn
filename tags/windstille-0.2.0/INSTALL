@@ -1,0 +1,32 @@
+Windstille Installation
+=======================
+
+Source
+======
+
+The Windstille source is available at the Windstille webpage. To
+compile it you need Guile 1.6 and ClanLib 0.7. Compiliation is just a
+matter of:
+
+ $ ./configure
+ $ make 
+
+then. There is no need to run 'make install', Windstille will run fine
+from its the source directory.
+
+Binary
+======
+
+The binary is build so that it should run out of the box on any
+x86 GNU/Linux system that has hardware 3d support, just run:
+
+ $ ./windstille
+
+to start the binary. Use the '--fullscreen' flag if you want to start
+into fullscreen, if you want to use a joystick to play start with
+'--controller data/controller/gamepad.scm', if the button
+configuration isn't correct you need to change gamepad.scm or pick
+another one of the provided controller files.
+
+
+# EOF #
