@@ -21,6 +21,7 @@
 #define HEADER_DRAWING_CONTEXT_HXX
 
 #include <ClanLib/Core/Math/rect.h>
+#include <ClanLib/Display/color.h>
 #include <vector>
 #include "drawing_request.hxx"
 
@@ -38,8 +39,7 @@ private:
   typedef std::vector<DrawingRequest*> DrawingRequests;
   DrawingRequests drawingrequests;
 
-  float translate_x;
-  float translate_y;
+  std::vector<CL_Pointf> translate_stack;
 
 public:
   DrawingContext();
@@ -50,10 +50,15 @@ public:
   /** Empties the drawing context */
   void clear();
 
+  /** Fills the screen with a given color, this is different from
+      clear() in that it doesn't remove other DrawingRequest from the
+      queue */
+  void fill_screen(const CL_Color& color);
+
   /*{ */
   void draw(DrawingRequest* request);
-  void draw(const CL_Sprite&   sprite,  float x, float y, float z);
-  void draw(const std::string& text,    float x, float y, float z);
+  void draw(const CL_Sprite&   sprite,  float x, float y, float z = 0);
+  void draw(const std::string& text,    float x, float y, float z = 0);
   /*} */
   
   /** Translate the drawing context */

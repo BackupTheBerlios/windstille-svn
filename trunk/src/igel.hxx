@@ -29,6 +29,8 @@ class Igel : public GameObj
 private:
   CL_Sprite sprite;
   CL_Sprite die_sprite;
+  CL_Sprite light;
+  CL_Sprite highlight;
 
   CL_Pointf pos;
   bool direction_left;

@@ -89,6 +89,19 @@
     <image file="images/energiebar.png" name="image1" />
   </sprite>
 
+  <sprite name="igel_light">
+    <image file="images/igel_light.png" />
+    <translation origin="center" x="0" y="0"/>
+    <scale x="4.0" y="4.0"/>
+  </sprite>
+
+  <sprite name="igel_highlight">
+    <image file="images/igel_highlight.png" />
+    <translation origin="center" x="0" y="0"/>
+    <scale x="2.0" y="2.0"/>
+  </sprite>
+
+
   <sprite name="igel_die">
     <animation speed="70" loop="no" />
     <translation origin="bottom_center" />
@@ -146,7 +159,9 @@
     </description>
 
     <sprite name="light">
-      <image file="images/hero_light.png" />
+      <image file="images/igel_light.png" />
+      <translation origin="center" x="0" y="-8"/>
+      <scale x="5.0" y="5.0"/>
     </sprite>
     
     <sprite name="dead">
@@ -223,11 +238,26 @@
     </sprite>
   </section>
 
+  <sprite name="bombhighlight">
+    <image file="images/bombhighlight.png" />
+    <translation origin="center" x="0" y="-8"/>
+  </sprite>
+
+  <sprite name="bomblight">
+    <image file="images/bomblight.png" />
+    <translation origin="center" x="0" y="-8"/>
+  </sprite>
+
   <sprite name="bomb">
     <animation speed="200" />
     <translation origin="bottom_center" />
     <image file="images/bomb.png" name="image1" />
     <image file="images/bomb1.png" name="image2" />
+  </sprite>
+
+  <sprite name="explolight">
+    <image file="images/explolight.png" />
+    <translation origin="center"/>
   </sprite>
 
   <sprite name="explo">

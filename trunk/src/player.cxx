@@ -49,6 +49,8 @@ Player::Player () :
   gun_state (GUN_READY),
   ground_state (IN_AIR)
 {
+  light.set_blend_func(blend_src_alpha, blend_one);
+
   jumping = false;
   energie = MAX_ENERGIE;
   current_ = this;
@@ -64,7 +66,7 @@ Player::Player () :
 void
 Player::draw (SceneContext& gc)
 {
-  gc.light().draw(light, 0, 0, 0);
+  gc.light().draw(light, pos.x, pos.y, 0);
   
   //std::cout << "onground: " << ground_state << std::endl;
   CL_Sprite* sprite = 0;
@@ -140,8 +142,8 @@ Player::draw (SceneContext& gc)
                             color);
     }
 
-  CL_Display::fill_rect(get_bounding_rect(),
-                        CL_Color(255, 0, 255, 155));
+  //CL_Display::fill_rect(get_bounding_rect(),
+  //                    CL_Color(255, 0, 255, 155));
 }
 
 CL_Rect

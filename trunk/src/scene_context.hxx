@@ -54,6 +54,18 @@ public:
       darkness */
   DrawingContext& highlight();
 
+  /** Translate the drawing context */
+  void translate(float x, float y);
+
+  /** Set the rotation of the drawing context */
+  void rotate(float angel);
+
+  /** Set the scaling of the drawing context */
+  void scale(float x, float y);
+
+  void push_modelview();
+  void pop_modelview();
+
   /** Takes all the buffers and combines them to form the final image
       that will be shown on the screen */
   void render();

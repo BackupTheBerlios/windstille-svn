@@ -30,6 +30,9 @@ class Bomb : public GameObj
 private:
   CL_Sprite sprite;
   CL_Sprite explo;
+  CL_Sprite light;
+  CL_Sprite highlight;
+  CL_Sprite explolight;
   CL_Point pos;
   float count;
   enum { COUNTDOWN, EXPLODE } state;

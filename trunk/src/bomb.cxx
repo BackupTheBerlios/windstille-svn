@@ -25,12 +25,17 @@
 Bomb::Bomb(int x, int y)
   : sprite("bomb", resources),
     explo("explo", resources),
-    pos(x,
+    light("bomblight", resources),
+    highlight("bombhighlight", resources),
+    explolight("explolight", resources),
+   pos(x,
         (y/SUBTILE_SIZE+1)*SUBTILE_SIZE),
     count(2.0f),
     state(COUNTDOWN),
     exploded(false)
 {
+  light.set_blend_func(blend_src_alpha, blend_one);
+  highlight.set_blend_func(blend_src_alpha, blend_one);
 }
 
 Bomb::~Bomb()
@@ -64,12 +69,21 @@ Bomb::update(float delta)
 }
 
 void
-Bomb::draw(SceneContext& gc)
+Bomb::draw(SceneContext& sc)
 {
   if (state == EXPLODE)
-    explo.draw(pos.x, pos.y);
+    {
+      explo.draw(pos.x, pos.y);
+      sc.light().draw(explolight, pos.x, pos.y, 0);
+    }
   else
-    sprite.draw(pos.x, pos.y);
+    {
+      sprite.draw(pos.x, pos.y);
+      if (sprite.get_current_frame() == 0) {
+        sc.light().draw(light, pos.x, pos.y, 0);
+        sc.highlight().draw(highlight, pos.x, pos.y, 0);
+      }
+    }
 }
 
 void 

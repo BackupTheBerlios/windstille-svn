@@ -26,10 +26,14 @@
 Igel::Igel(int x, int y)
   : sprite("igel", resources),
     die_sprite("igel_die", resources),
+    light("igel_light", resources),
+    highlight("igel_highlight", resources),
     pos(x, y)
 {
   direction_left = false;
   state = WALKING;
+  light.set_blend_func(blend_src_alpha, blend_one);
+  highlight.set_blend_func(blend_src_alpha, blend_one);
 }
 
 Igel::~Igel()
@@ -52,6 +56,8 @@ Igel::draw(SceneContext& gc)
     s->set_scale(-1.0f, 1.0f);
 
   s->draw(int(pos.x), int(pos.y));
+  gc.light().draw(light, pos.x, pos.y, 0);
+  gc.highlight().draw(highlight, pos.x, pos.y, 0);
 }
 
 void

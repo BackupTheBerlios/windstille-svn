@@ -71,6 +71,8 @@ GameWorld::~GameWorld()
 void
 GameWorld::draw (SceneContext& gc)
 {
+  gc.light().fill_screen(CL_Color(30, 30, 30));
+  
   background_tilemap->draw (gc);
 
   diamond_map->draw(gc);

@@ -68,23 +68,68 @@ SceneContext::highlight()
   return impl->highlight; 
 }
 
+
+/** Translate the drawing context */
+void
+SceneContext::translate(float x, float y)
+{
+  impl->color.translate(x, y);
+  impl->light.translate(x, y);
+  impl->highlight.translate(x, y);
+}
+
+/** Set the rotation of the drawing context */
+void
+SceneContext::rotate(float angel)
+{
+  impl->color.rotate(angel);
+  impl->light.rotate(angel);
+  impl->highlight.rotate(angel);
+}
+
+/** Set the scaling of the drawing context */
+void
+SceneContext::scale(float x, float y)
+{
+  impl->color.scale(x, y);
+  impl->light.scale(x, y);
+  impl->highlight.scale(x, y);
+}
+
+void
+SceneContext::push_modelview()
+{
+  impl->color.push_modelview();
+  impl->light.push_modelview();
+  impl->highlight.push_modelview();
+}
+
+void
+SceneContext::pop_modelview()
+{
+  impl->color.pop_modelview();
+  impl->light.pop_modelview();
+  impl->highlight.pop_modelview();
+}
+
 void
 SceneContext::render()
 {
   // Render all buffers
   // FIXME: Render all to pbuffer for later combining of them
-  //color_.render();
+  impl->color.render(0);
   
-  //impl->light.render(impl->canvas.get_gc());
-  //canvas.sync_surface();
+  impl->light.render(impl->canvas.get_gc());
+  impl->canvas.sync_surface();
 
   //impl->lightmap.set_blend_func(blend_src_alpha, blend_one);
   impl->lightmap.set_blend_func(blend_dest_color, blend_zero);
   //GL_DST_COLOR, GL_ZERO
   impl->lightmap.set_scale(4.0f, 4.0f);
   impl->lightmap.draw();
-  //impl->canvas.get_gc()->clear();
-  //highlight_.render();
+  impl->canvas.get_gc()->clear();
+
+  impl->highlight.render(0);
 
   // Clear all DrawingContexts
   impl->color.clear();
