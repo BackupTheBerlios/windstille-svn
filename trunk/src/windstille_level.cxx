@@ -23,6 +23,7 @@
 #include "globals.hxx"
 #include "windstille_level.hxx"
 #include "string_converter.hxx"
+#include "lispreader.hxx"
 #include "scm_helper.hxx"
 
 WindstilleLevel::WindstilleLevel (const std::string& filename)
@@ -41,63 +42,25 @@ WindstilleLevel::parse_file (const std::string& filename)
 
   if (debug)
     std::cout << "Windstille Level: " << filename << std::endl;
-  
-  SCM input_stream = scm_open_file(gh_str02scm(filename.c_str()), 
-                                   gh_str02scm("r"));
-  SCM tree = scm_read(input_stream);
-  
-  if (!(gh_symbol_p(gh_car(tree)) && gh_equal_p(gh_symbol2scm("windstille-level"), gh_car(tree))))
+
+  lisp_object_t* tree = lisp_read_from_file(filename.c_str());
+
+  if (strcmp(lisp_symbol(lisp_car(tree)), "windstille-level") != 0)
     {
-      std::cout << filename << ": not a Windstille Level file!" << std::endl;
+      std::cout << filename << ": not a Windstille Level file, type='" << lisp_symbol(lisp_car(tree)) << "'!" << std::endl;
     }
   else
     {
-      tree = gh_cdr(tree);
+      LispReader reader(lisp_cdr(tree));
 
-      while (!gh_null_p(tree))
-        {
-          SCM current = gh_car(tree);
-          if (gh_pair_p(current))
-            {
-              SCM name    = gh_car(current);
-              SCM data    = gh_cdr(current);
-      
-              if (gh_equal_p(gh_symbol2scm("tilemap"), name)) 
-                {
-                  parse_foreground_tilemap(data);
-                }
-              else if (gh_equal_p(gh_symbol2scm("background-tilemap"), name)) 
-                {
-                  parse_background_tilemap(data);
-                }
-              else if (gh_equal_p(gh_symbol2scm("water"), name)) 
-                {
-                  parse_water(data);
-                }
-              else if (gh_equal_p(gh_symbol2scm("properties"), name))
-                {
-                  parse_properties(data);
-                }
-              else if (gh_equal_p(gh_symbol2scm("diamond-map"), name)) 
-                {
-                  parse_diamond_map(data);
-                }
-              else if (gh_equal_p(gh_symbol2scm("scripts"), name)) 
-                {
-                  parse_scripts(data);
-                }
-              else
-                {
-                  std::cout << "WindstilleLevel: Unknown tag: " << scm2string(name) << std::endl;
-                }
-            }
-          else
-            {
-              std::cout << "WindstilleLevel: Not a pair!"  << std::endl;
-            }
-          tree = gh_cdr(tree);
-        }
+      parse_properties(reader.get("properties"));
+      //parse_foreground_tilemap(tree->getLisp("foreground-tilemap"));
+      parse_foreground_tilemap(reader.get("interactive-tilemap"));
+      parse_background_tilemap(reader.get("background-tilemap"));
+      parse_water(reader.get("water"));
+      parse_diamond_map(reader.get("diamond-map"));
     }
+
   if (!diamond_map)
     {
       std::cout << "No diamond map in level file" << std::endl;
@@ -106,67 +69,28 @@ WindstilleLevel::parse_file (const std::string& filename)
 }
 
 void
-WindstilleLevel::parse_water(SCM tree)
+WindstilleLevel::parse_water(lisp_object_t* tree)
 {
-  while (!gh_null_p(tree))
+  if (tree)
     {
-      SCM current = gh_car(tree);
-
-      if (gh_pair_p(current))
+      for(lisp_object_t* cur = tree; cur != 0; cur = lisp_cdr(cur))
         {
-          SCM name    = gh_car(current);
-          SCM data    = gh_cdr(current);
-      
-          if (gh_equal_p(gh_symbol2scm("water"), name)) 
-            {
-              //gh_display(data);
-              //gh_newline();
-              int x = gh_scm2int(gh_car(data));
-              int y = gh_scm2int(gh_cadr(data));
-              int w = gh_scm2int(gh_caddr(data));
-              int h = gh_scm2int(gh_car(gh_cdddr(data)));
-              std::cout << "Water: " << x << " " << y << " " << w << " " << h << std::endl;
-            }
-
-          tree = gh_cdr(tree);
+          // read (water x y w h)
         }
-    }  
+    }
 }
 
 void
-WindstilleLevel::parse_properties (SCM tree)
+WindstilleLevel::parse_properties (lisp_object_t* tree)
 {
-  while (!gh_null_p(tree))
+  if (tree)
     {
-      SCM current = gh_car(tree);
+      LispReader reader(tree);
 
-      if (gh_pair_p(current))
-        {
-          SCM name    = gh_car(current);
-          SCM data    = gh_cadr(current);
-      
-          if (gh_equal_p(gh_symbol2scm("width"), name)) 
-            {
-              width  = gh_scm2int(data);
-            }
-          else if (gh_equal_p(gh_symbol2scm("height"), name))
-            {
-              height = gh_scm2int(data);
-            }
-          else if (gh_equal_p(gh_symbol2scm("name"), name))
-            {
-            }
-          else
-            {
-              char* str = gh_symbol2newstr(name, 0);
-              std::cout << "WindstilleLevel::parse_properties: Unknown tag: "
-                        << str
-                        << std::endl;
-              free(str);
-            }
-
-          tree = gh_cdr(tree);
-        }
+      reader.read_int("width",  &width);
+      reader.read_int("height", &height);
+      //tree->get("name",   name);
+      reader.read_string_vector("scripts", &scripts);
     }
 
   if (debug)
@@ -174,58 +98,40 @@ WindstilleLevel::parse_properties (SCM tree)
 }
 
 void
-WindstilleLevel::parse_background_tilemap (SCM cur)
+WindstilleLevel::parse_background_tilemap (lisp_object_t* cur)
 {
   background_tilemap = parse_tilemap(cur);
 }
 
 void
-WindstilleLevel::parse_foreground_tilemap (SCM cur)
+WindstilleLevel::parse_foreground_tilemap (lisp_object_t* cur)
 {
   tilemap = parse_tilemap(cur);
 }
 
 Field<int>* 
-WindstilleLevel::parse_tilemap (SCM cur)
+WindstilleLevel::parse_tilemap (lisp_object_t* cur)
 {
   Field<int>* field = new Field<int>(width, height);
   
-  int x = 0;
-  int y = 0;
-  while (!gh_null_p(cur) && y < height)
-    {
-      SCM name = gh_caar(cur);
-      SCM data = gh_cdar(cur);
-      
-      if (gh_equal_p(gh_symbol2scm("data"), name))
-        {
-          while (!gh_null_p(data) && y < height)
-            {
-              int id = gh_scm2int(gh_car(data));
-              (*field)(x, y) = id;
-              
-              x += 1;
+  LispReader reader(cur);
+  reader.read_int_vector("data", &field->get_vector());
 
-              if (x >= width)
-                {
-                  x = 0;
-                  y += 1;
-                }
-              
-              data = gh_cdr(data);
-            }
-          if (y != height)
-            std::cout << "WindstilleLevel: Something went wrong: y=" << y << " height=" << height << std::endl;
-        }
-          
-      cur = gh_cdr(cur);
+  if ((static_cast<int>(field->get_vector().size()) != width*height))
+    {
+      std::cout << "Error: Size is " << field->get_vector().size() 
+                << " should be " << width*height << std::endl;
+      assert(0);
     }
+
   return field;
 }
 
 void
-WindstilleLevel::parse_diamond_map(SCM data)
+WindstilleLevel::parse_diamond_map(lisp_object_t* data)
 {
+  return;
+#if 0
   diamond_map = new Field<int>(width * 2, height * 2);
 
   for(Field<int>::iterator i = diamond_map->begin(); i != diamond_map->end(); ++i)
@@ -253,23 +159,11 @@ WindstilleLevel::parse_diamond_map(SCM data)
 
   if (y != height*2)
     std::cout << "WindstilleLevel: Something went wrong: y=" << y << " height=" << height << std::endl;
+#endif
 }
 
 void
-WindstilleLevel::parse_scripts(SCM data)
-{
-  while (!gh_null_p(data))
-    {
-      char* str = gh_scm2newstr(gh_car(data), 0);
-      scripts.push_back(str);
-      free(str);
-
-      data = gh_cdr(data);
-    }
-}
-
-void
-WindstilleLevel::parse_gameobjects (SCM cur)
+WindstilleLevel::parse_gameobjects (lisp_object_t* cur)
 {
 }
 

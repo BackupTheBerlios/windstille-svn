@@ -105,6 +105,9 @@ public:
     vec.clear();
   }
 
+  /** Provides raw access to the underlying vector */
+  std::vector<T>& get_vector() { return vec; }
+
   iterator begin () { return vec.begin (); }
   iterator end () { return vec.end (); }
 

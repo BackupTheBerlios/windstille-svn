@@ -2,9 +2,9 @@
   (properties
     (name "Hello World")
     (width 80)
-    (height 30))
-  (scripts "level9_script.rb")
-  (tilemap
+    (height 30)
+    (scripts "level9_script.rb"))
+  (interactive-tilemap
     (data 60
           46
           0

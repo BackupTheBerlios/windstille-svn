@@ -20,9 +20,9 @@
 #ifndef WINDSTILLELEVEL_HXX
 #define WINDSTILLELEVEL_HXX
 
-#include <guile/gh.h>
 #include <string>
 #include "field.hxx"
+#include "lispreader.hxx"
 
 /** FIXME: Move this to the guile side */
 class WindstilleLevel
@@ -42,16 +42,15 @@ private:
   std::vector<std::string> scripts;
 
   void parse_file (const std::string& filename);
-  void parse_properties (SCM cur);
+  void parse_properties (lisp_object_t* cur);
 
-  Field<int>* parse_tilemap (SCM cur);
-  void parse_foreground_tilemap (SCM cur);
-  void parse_background_tilemap (SCM cur);
-  void parse_water(SCM cur);
-  void parse_diamond_map(SCM cur);
-  void parse_backgound_tilemap (SCM cur);
-  void parse_gameobjects (SCM cur);
-  void parse_scripts(SCM cur);
+  Field<int>* parse_tilemap (lisp_object_t* cur);
+  void parse_foreground_tilemap (lisp_object_t* cur);
+  void parse_background_tilemap (lisp_object_t* cur);
+  void parse_water(lisp_object_t* cur);
+  void parse_diamond_map(lisp_object_t* cur);
+  void parse_backgound_tilemap (lisp_object_t* cur);
+  void parse_gameobjects (lisp_object_t* cur);
 public:
   WindstilleLevel (const std::string& filename);
 

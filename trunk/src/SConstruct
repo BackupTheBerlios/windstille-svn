@@ -87,10 +87,7 @@ windstille_source = [
     'windstille_menu.cxx',
 
     # Lisp
-    'lisp/Lexer.cxx',
-    'lisp/Lisp.cxx',
-    'lisp/Parser.cxx',
-    'lisp/Writer.cxx',
+    'lispreader.cxx',
 
     # Scripting Subdirectory
     'scripting/game.cxx',
