@@ -90,8 +90,6 @@ AC_CONFIG_FILES(
     src/input/Makefile
     src/guile/Makefile
     src/guistyle/Makefile
-    src/editor/Makefile
-    src/editor/scripting/Makefile
 )
 AC_OUTPUT
 
