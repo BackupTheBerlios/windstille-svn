@@ -117,6 +117,34 @@ add_region_trigger(6000, 3968, 9000, 5000, proc{end_dialog})
 puts "Ruby: adding coroutine"
 coroutine_add(MyDoSomething.new())
 
-spawn_entity('frog')
+$igel1 = spawn_entity('frog', 500, 500)
+$igel2 = spawn_entity('frog', 500, 550)
+$igel3 = spawn_entity('frog', 500, 600)
+
+$igel3.bind($igel2)
+$igel2.bind($igel1)
+
+class IgelMover<Coroutine
+  def initialize(entity, speed)
+    super()
+    @entity = entity
+    @speed  = speed
+  end
+  
+  def run() 
+    puts "Running coroutine: #{@entity}"
+    @entity.move_to(@speed/2, 0)
+    while true
+      waitFor(@entity)
+      @entity.move_to(-@speed, 0)
+      waitFor(@entity)
+      @entity.move_to(@speed, 0)
+    end
+  end
+end
+
+coroutine_add(IgelMover.new($igel1, 100))
+coroutine_add(IgelMover.new($igel2, 50))
+coroutine_add(IgelMover.new($igel3, 75))
 
 # EOF #

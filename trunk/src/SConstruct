@@ -89,6 +89,9 @@ windstille_source = [
 
     # Scripting Subdirectory
     'scripting/game.cxx',
+
+    # Collision stuff
+    #'collision/collision_manager.cxx',
     
     # Input Subdirectory
     'input/controller.cxx', 
@@ -135,6 +138,13 @@ windstille_prg = env.Program('windstille',
 
 ptest = env.Program('ptest',
                     ['ptest.cxx', 'particle_system.cxx', 'random.cxx'],
+                    CPPPATH   = [env['CPPPATH']] + clanLib_env['CPPPATH'],
+                    LINKFLAGS = clanLib_env['LINKFLAGS'],
+                    LIBPATH   = clanLib_env['LIBPATH'],
+                    LIBS      = clanLib_env['LIBS'])
+
+ctest = env.Program('ctest',
+                    ['ctest.cxx', 'collision/collision_manager.cxx'],
                     CPPPATH   = [env['CPPPATH']] + clanLib_env['CPPPATH'],
                     LINKFLAGS = clanLib_env['LINKFLAGS'],
                     LIBPATH   = clanLib_env['LIBPATH'],

@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include "entity.hxx"
 #include "coroutine_manager.hxx"
 
 CoroutineManager* CoroutineManager::current_ = 0;
@@ -86,12 +87,21 @@ Coroutine::Coroutine()
 void
 Coroutine::on_done()
 {
+  //std::cout << "on_done triggered" << std::endl;
   ready_to_run = true;
 }
 
 void 
 Coroutine::wait()
 {
+  ready_to_run = false;
+}
+
+void
+Coroutine::waitFor(Entity* entity)
+{
+  //std::cout << this << ": Coroutine::waitFor: " << entity << std::endl;
+  done_slot = entity->sig_done().connect(this, &Coroutine::on_done);
   ready_to_run = false;
 }
 

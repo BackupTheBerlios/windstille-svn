@@ -22,6 +22,7 @@
 
 #include <string>
 #include <ruby.h>
+#include "../entity.hxx"
 
 class GameWorld;
 
@@ -66,6 +67,7 @@ void dialog_clear();
 
 void coroutine_add(VALUE val);
 void coroutine_wait(int id);
+void coroutine_waitFor(Entity* entity);
 
 /** @return number of seconds since game start, time doesn't progress
     in pause mode */
@@ -77,7 +79,7 @@ int game_get_max_diamonds();
 float get_game_speed();
 void  set_game_speed(float s);
 
-void spawn_entity(const std::string& name);
+Entity* spawn_entity(const std::string& name, float x, float y);
 
 #endif
 

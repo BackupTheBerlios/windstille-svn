@@ -44,7 +44,8 @@ class Coroutine
   end
 
   def waitFor(entity)
-    coroutine_wait(entity)
+    #puts "waitFor: #{entity}"
+    coroutine_waitFor(entity)
     wait()
   end
 

@@ -21,6 +21,7 @@
 #define HEADER_ENTITY_HXX
 
 #include <ClanLib/Core/Math/cl_vector.h>
+#include <ClanLib/Display/sprite.h>
 #include "gameobj.hxx"
 
 /** A GameObject which has a position and some other properties which
@@ -29,11 +30,18 @@ class Entity : public GameObj
 {
 private:
   CL_Vector pos;
+  bool mover_active;
+  CL_Vector target_pos;
   
   /** Reference to the parent object, must not be deleted */
   Entity* parent;
+
+  CL_Sprite sprite;
+
+  CL_Signal_v0 done;
 public:
-  Entity();
+  Entity(const CL_Vector& pos_);
+  virtual ~Entity();
   
   /** Bind the entity to a parent, causing all movement to be affected
       by the parent entity
@@ -47,6 +55,14 @@ public:
   void unbind(bool recalc_pos = true);
   
   CL_Vector get_pos() const;
+
+  void set_pos(float x, float y);
+  void move_to(float x, float y);
+
+  void draw();
+  void update(float delta);
+
+  CL_Signal_v0& sig_done() { return done; }
 private:
   Entity (const Entity&);
   Entity& operator= (const Entity&);

@@ -21,12 +21,17 @@
 #define HEADER_COROUTINE_MANAGER_HXX
 
 #include <ruby.h>
+#include <ClanLib/Signals/slot.h>
 #include "ruby_object.hxx"
 #include <vector>
+
+class Entity;
 
 class Coroutine
 {
 public:
+  CL_Slot done_slot;
+
   enum COStatus { CO_WAITING, CO_RUNNING, CO_FINISHED }; 
 
   /** Run the given Cooroutine*/
@@ -35,10 +40,12 @@ public:
   virtual COStatus status()  =0;
 
   Coroutine();
+  virtual ~Coroutine() {}
 
   bool ready_to_run;
   void on_done();
   void wait();
+  void waitFor(Entity* entity);
 };
 
 class RubyCoroutine : public Coroutine
@@ -68,6 +75,8 @@ private:
   Coroutine* current_coroutine;
 public:
   CoroutineManager();
+
+  Coroutine* get_current_coroutine() { return current_coroutine; }
 
   void update(float delta);
   void add(Coroutine* co);

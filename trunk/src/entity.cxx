@@ -17,8 +17,22 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include <ClanLib/Display/display.h>
 #include <assert.h>
+#include "globals.hxx"
 #include "entity.hxx"
+
+Entity::Entity(const CL_Vector& pos_)
+  : pos(pos_),
+    parent(0),
+    sprite("igel", resources)
+{
+  mover_active = false;
+}
+
+Entity::~Entity()
+{
+}
 
 CL_Vector
 Entity::get_pos() const
@@ -45,6 +59,55 @@ Entity::unbind(bool recalc_pos)
   parent = 0;
   if (recalc_pos)
     pos += parent->get_pos();
+}
+
+void
+Entity::draw()
+{
+  sprite.draw(int(get_pos().x), int(get_pos().y));
+  if (parent)
+    CL_Display::draw_line(int(get_pos().x), int(get_pos().y),
+                          int(parent->get_pos().x), int(parent->get_pos().y),
+                          CL_Color(255, 255, 255, 255));
+}
+
+void
+Entity::update(float delta)
+{
+  sprite.update(delta);
+  
+  if (mover_active) 
+    {
+      float dir_x = (target_pos.x - pos.x) > 0? 100.0f : -100.0f;
+    
+      //std::cout << this << " " << target_pos.x << " " << pos.x << std::endl;
+
+      pos.x += dir_x * delta;
+
+      float dir_x2 = (target_pos.x - pos.x) > 0 ? 100.0f : -100.0f;
+    
+      if (dir_x != dir_x2)
+        {
+          //std::cout << "Done!!!" << std::endl;
+          mover_active = false;
+          done();
+        }
+    }
+}
+
+void
+Entity::set_pos(float x, float y)
+{
+  pos.x = x;
+  pos.y = y;
+}
+
+void
+Entity::move_to(float x, float y)
+{
+  mover_active = true;
+  target_pos.x = pos.x + x;
+  target_pos.y = pos.y + y;
 }
 
 /* EOF */

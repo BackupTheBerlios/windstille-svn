@@ -17,6 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include <assert.h>
 #include "game.hxx"
 #include "../water_map.hxx"
 #include "../game_world.hxx"
@@ -29,6 +30,7 @@
 #include "../dialog_manager.hxx"
 #include "../player.hxx"
 #include "../tile_factory.hxx"
+#include "../entity.hxx"
 #include "../coroutine_manager.hxx"
 
 void
@@ -247,9 +249,21 @@ void coroutine_wait(int id)
   CoroutineManager::current()->register_wait(id);
 }
 
-void spawn_entity(const std::string& name)
+void coroutine_waitFor(Entity* entity)
+{
+  //std::cout << "coroutine_waitFor: " << entity << std::endl;
+  assert(CoroutineManager::current()->get_current_coroutine());
+  
+  CoroutineManager::current()->get_current_coroutine()->waitFor(entity);
+}
+
+Entity*
+spawn_entity(const std::string& name, float x, float y)
 {
   std::cout << "Spawning entity: " << name << std::endl;
+  Entity* entity = new Entity(CL_Vector(x, y));
+  GameWorld::current()->add(entity);
+  return entity;
 }
 
 /* EOF */
