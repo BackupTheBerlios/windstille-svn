@@ -77,6 +77,7 @@ public:
         ParticleSystem psystem;
         psystem.set_count(100);
         surface1.set_blend_func(blend_src_alpha, blend_one);
+        surface1.set_alignment(origin_center);
         psystem.set_drawer(new SurfaceDrawer(surface1));
         psystem.set_pos(0,0);
         psystem.set_speed(200, 300);
@@ -108,6 +109,11 @@ public:
 
             // Flip front and backbuffer. This makes the changes visible:
             CL_Display::flip();
+
+            if (CL_Keyboard::get_keycode(CL_KEY_SPACE))
+              {
+                screenshot("/tmp/myshot.pnm");
+              }
 
             if (0)
               {char str[1024];

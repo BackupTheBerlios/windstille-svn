@@ -17,17 +17,17 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include "scripting/game.hxx"
-#include "water_map.hxx"
-#include "game_world.hxx"
-#include "igel.hxx"
-#include "brush.hxx"
-#include "bomb.hxx"
-#include "windstille_game.hxx"
-#include "trigger.hxx"
-#include "diamond_map.hxx"
-#include "dialog_manager.hxx"
-#include "player.hxx"
+#include "game.hxx"
+#include "../water_map.hxx"
+#include "../game_world.hxx"
+#include "../igel.hxx"
+#include "../brush.hxx"
+#include "../bomb.hxx"
+#include "../windstille_game.hxx"
+#include "../trigger.hxx"
+#include "../diamond_map.hxx"
+#include "../dialog_manager.hxx"
+#include "../player.hxx"
 #include "../tile_factory.hxx"
 
 void
