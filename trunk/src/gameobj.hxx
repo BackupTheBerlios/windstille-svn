@@ -20,7 +20,7 @@
 #ifndef GAMEOBJ_HXX
 #define GAMEOBJ_HXX
 
-#include "scene_context.hxx"
+#include "display/scene_context.hxx"
 
 class GameWorld;
 

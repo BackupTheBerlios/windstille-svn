@@ -19,7 +19,6 @@
 
 #include <ClanLib/display.h>
 #include <ClanLib/gl.h>
-#include "globals.hxx"
 #include "scene_context.hxx"
 
 class SceneContextImpl
@@ -33,7 +32,9 @@ public:
   CL_Canvas        canvas;
 
   SceneContextImpl() 
-    : lightmap("black", resources),
+    : lightmap(new CL_PixelBuffer(CL_Display::get_width(), 
+                                  CL_Display::get_height(),
+                                  CL_Display::get_width()*4, CL_PixelFormat::rgba8888), true),
       canvas(lightmap)
   {
     canvas.get_gc()->set_scale(0.25, 0.25);

@@ -96,8 +96,8 @@ windstille_source = [
     'collision_manager.cxx',
 
     # drawing
-    'drawing_context.cxx',
-    'scene_context.cxx',
+    'display/drawing_context.cxx',
+    'display/scene_context.cxx',
     
     # Input Subdirectory
     'input/controller.cxx', 

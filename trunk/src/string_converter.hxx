@@ -22,7 +22,6 @@
 
 #include <stdexcept>
 #include <sstream>
-#include "config.h"
 
 template <class T>
 std::string to_string(const T& any)

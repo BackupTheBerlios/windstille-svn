@@ -42,7 +42,6 @@ private:
   std::vector<std::string> scripts;
 
   void parse_file (const std::string& filename);
-  void parse_properties (lisp_object_t* cur);
 
   Field<int>* parse_tilemap (lisp_object_t* cur);
   void parse_foreground_tilemap (lisp_object_t* cur);

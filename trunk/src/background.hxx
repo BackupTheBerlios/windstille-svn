@@ -20,7 +20,7 @@
 #ifndef HEADER_BACKGROUND_HXX
 #define HEADER_BACKGROUND_HXX
 
-#include "scene_context.hxx"
+#include "display/scene_context.hxx"
 
 /** */
 class Background

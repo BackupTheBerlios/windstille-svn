@@ -39,7 +39,7 @@
 #include "dialog_manager.hxx"
 #include "windstille_main.hxx"
 #include "screenshot.hxx"
-#include "scene_context.hxx"
+#include "display/scene_context.hxx"
 #include "input/input_manager.hxx"
 
 #include "windstille_game.hxx"

@@ -19,7 +19,6 @@
 
 #include <assert.h>
 #include <iostream>
-#include "config.h"
 #include "globals.hxx"
 #include "windstille_level.hxx"
 #include "string_converter.hxx"
@@ -52,7 +51,10 @@ WindstilleLevel::parse_file (const std::string& filename)
     {
       LispReader reader(lisp_cdr(tree));
 
-      parse_properties(reader.get("properties"));
+      reader.read_int("width",  &width);
+      reader.read_int("height", &height);
+      reader.read_string_vector("scripts", &scripts);
+
       //parse_foreground_tilemap(tree->getLisp("foreground-tilemap"));
       parse_foreground_tilemap(reader.get("interactive-tilemap"));
       parse_background_tilemap(reader.get("background-tilemap"));
@@ -90,23 +92,6 @@ WindstilleLevel::parse_water(lisp_object_t* tree)
 }
 
 void
-WindstilleLevel::parse_properties (lisp_object_t* tree)
-{
-  if (tree)
-    {
-      LispReader reader(tree);
-
-      reader.read_int("width",  &width);
-      reader.read_int("height", &height);
-      //tree->get("name",   name);
-      reader.read_string_vector("scripts", &scripts);
-    }
-
-  if (debug)
-    std::cout << "WindstilleLevel: dimensions: " << width << "x" << height << std::endl;
-}
-
-void
 WindstilleLevel::parse_background_tilemap (lisp_object_t* cur)
 {
   background_tilemap = parse_tilemap(cur);
@@ -128,7 +113,7 @@ WindstilleLevel::parse_tilemap (lisp_object_t* cur)
 
   if ((static_cast<int>(field->get_vector().size()) != width*height))
     {
-      std::cout << "Error: Size is " << field->get_vector().size() 
+      std::cout << "WindstilleLevel: Error: Size is " << field->get_vector().size() 
                 << " should be " << width*height << std::endl;
       assert(0);
     }

@@ -25,13 +25,13 @@
 #include <ClanLib/Display/keyboard.h>
 #include "globals.hxx"
 #include "fonts.hxx"
-#include "config.h"
 #include "input/controller.hxx"
 #include "windstille_menu.hxx"
 #include "windstille_game.hxx"
 #include "music_manager.hxx"
 #include "windstille_bonus.hxx"
 #include "input/input_manager.hxx"
+#include "config.h"
 
 WindstilleMenu::WindstilleMenu()
   : background("menu_background", resources),
@@ -202,7 +202,7 @@ WindstilleMenu::draw()
 
   Fonts::copyright.set_alignment(origin_bottom_left);
   Fonts::copyright.draw(15, CL_Display::get_height() - 10,
-                        PACKAGE_STRING "\n"
+                        "Windstille " VERSION "\n"
                         "Copyright (c) 2003 Ingo Ruhnke <grumbel@gmx.de>\n"
                         "This game comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome\n"
                         "to redistribute it under certain conditions; see the file COPYING for details.\n");

@@ -24,7 +24,6 @@
 #include <ClanLib/sound.h>
 #include <ClanLib/display.h>
 
-#include "config.h"
 #include "ruby_functor.hxx"
 #include "string_converter.hxx"
 #include "windstille_error.hxx"

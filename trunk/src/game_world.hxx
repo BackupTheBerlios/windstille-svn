@@ -24,7 +24,7 @@
 #include <vector>
 #include <string>
 #include "coroutine_manager.hxx"
-#include "scene_context.hxx"
+#include "display/scene_context.hxx"
 
 class TileMap;
 class DiamondMap;

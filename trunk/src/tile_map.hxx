@@ -25,7 +25,7 @@
 
 #include "globals.hxx"
 #include "field.hxx"
-#include "scene_context.hxx"
+#include "display/scene_context.hxx"
 
 class WindstilleLevel;
 class Tile;

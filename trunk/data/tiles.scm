@@ -217,7 +217,7 @@
         (colmap 15 15 15 15 15 15 15 15))
 
   (tiles (id 1)
-        (image "../data/images/groundset.png")
+        (image "../data/images/groundset2.png")
         (colmap 255 255 255 255 255 255 255 255)))
 
 ;; EOF ;;
