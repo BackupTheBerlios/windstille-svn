@@ -69,16 +69,16 @@ GameWorld::~GameWorld()
 }
 
 void
-GameWorld::draw ()
+GameWorld::draw (DrawingContext& gc)
 {
-  background_tilemap->draw ();
+  background_tilemap->draw (gc);
 
-  diamond_map->draw();
+  diamond_map->draw(gc);
   for (std::list<GameObj*>::iterator i = objects.begin ();
        i != objects.end (); ++i)
-    (*i)->draw ();
-  water_map->draw();
-  tilemap->draw ();
+    (*i)->draw (gc);
+  water_map->draw(gc);
+  tilemap->draw (gc);
 }
 
 void

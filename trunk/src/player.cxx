@@ -61,7 +61,7 @@ Player::Player () :
 }
 
 void
-Player::draw ()
+Player::draw (DrawingContext& gc)
 {
   //std::cout << "onground: " << ground_state << std::endl;
   CL_Sprite* sprite = 0;

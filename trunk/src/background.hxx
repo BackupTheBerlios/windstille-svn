@@ -20,6 +20,8 @@
 #ifndef HEADER_BACKGROUND_HXX
 #define HEADER_BACKGROUND_HXX
 
+#include "drawing_context.hxx"
+
 /** */
 class Background
 {

@@ -53,7 +53,7 @@ Trigger::~Trigger()
 }
 
 void
-Trigger::draw ()
+Trigger::draw (DrawingContext& gc)
 {
   
 }

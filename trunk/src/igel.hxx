@@ -37,7 +37,7 @@ public:
   Igel(int x, int y);
   virtual ~Igel();
 
-  void draw();
+  void draw(DrawingContext& gc);
   void update(float delta);
   void die();
   CL_Pointf get_pos() { return pos; }

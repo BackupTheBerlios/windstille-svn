@@ -35,7 +35,7 @@ public:
   PowerUp (CL_Sprite s, const CL_Vector&);
   virtual ~PowerUp () {}
 
-  void draw ();
+  void draw (DrawingContext& gc);
   void update (float delta);
 protected:
   // Called

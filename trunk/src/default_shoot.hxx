@@ -41,7 +41,7 @@ public:
   DefaultShoot (const CL_Vector& arg_pos,
 		DefaultShoot::DirectionState);
   virtual ~DefaultShoot () {}
-  void draw ();
+  void draw (DrawingContext& gc);
   void update (float delta);
 private: 
   void explode ();

@@ -41,7 +41,7 @@ DiamondMap::~DiamondMap()
 }
 
 void
-DiamondMap::draw ()
+DiamondMap::draw (DrawingContext& gc)
 {
   CL_Rect rect = View::current()->get_clip_rect();
 

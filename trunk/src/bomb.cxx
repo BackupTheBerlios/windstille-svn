@@ -64,7 +64,7 @@ Bomb::update(float delta)
 }
 
 void
-Bomb::draw()
+Bomb::draw(DrawingContext& gc)
 {
   if (state == EXPLODE)
     explo.draw(pos.x, pos.y);

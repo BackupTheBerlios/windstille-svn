@@ -27,7 +27,7 @@ BonusFlyer::BonusFlyer (const CL_Vector2& arg_pos)
 }
 
 void
-BonusFlyer::draw ()
+BonusFlyer::draw (DrawingContext& gc)
 {
   sprite.draw ((int) pos.x, (int) pos.y);
 }

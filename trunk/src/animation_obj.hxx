@@ -38,7 +38,7 @@ public:
   AnimationObj (const std::string&, const CL_Vector& position);
   virtual ~AnimationObj() {}
   
-  void draw ();
+  void draw (DrawingContext& gc);
   void update (float);
 };
 

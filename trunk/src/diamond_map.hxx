@@ -37,7 +37,7 @@ public:
   DiamondMap(Field<int>* d);
   virtual ~DiamondMap();
 
-  void draw ();
+  void draw (DrawingContext& gc);
   void update (float delta);  
 
   int get_num_diamonds();

@@ -24,6 +24,7 @@
 #include <vector>
 #include <string>
 #include "coroutine_manager.hxx"
+#include "drawing_context.hxx"
 
 class TileMap;
 class DiamondMap;
@@ -62,7 +63,7 @@ public:
   void add_player (Player* obj);
   void remove_player (Player* obj);
 
-  void draw ();
+  void draw (DrawingContext& gc);
   void update (float delta);
 
   float get_time () { return passed_time; } 

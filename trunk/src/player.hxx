@@ -99,7 +99,7 @@ public:
 
   int get_movement_state() { return state; }
 
-  void draw ();
+  void draw (DrawingContext& gc);
   void update (float delta);
 
   void set_position (const CL_Vector& arg_pos);

@@ -77,7 +77,6 @@ windstille_source = [
     'tile_map.cxx', 
     'trigger.cxx', 
     'view.cxx', 
-    'view_component.cxx', 
     'water_map.cxx', 
     'water_splash.cxx',
     'windstille_bonus.cxx', 
@@ -91,7 +90,10 @@ windstille_source = [
     'scripting/game.cxx',
 
     # Collision stuff
-    #'collision/collision_manager.cxx',
+    'collision_manager.cxx',
+
+    # drawing
+    'drawing_context.cxx',
     
     # Input Subdirectory
     'input/controller.cxx', 
@@ -143,12 +145,12 @@ ptest = env.Program('ptest',
                     LIBPATH   = clanLib_env['LIBPATH'],
                     LIBS      = clanLib_env['LIBS'])
 
-ctest = env.Program('ctest',
-                    ['ctest.cxx', 'collision/collision_manager.cxx'],
-                    CPPPATH   = [env['CPPPATH']] + clanLib_env['CPPPATH'],
-                    LINKFLAGS = clanLib_env['LINKFLAGS'],
-                    LIBPATH   = clanLib_env['LIBPATH'],
-                    LIBS      = clanLib_env['LIBS'])
+#ctest = env.Program('ctest',
+#                    ['ctest.cxx', 'collision_manager.cxx'],
+#                    CPPPATH   = [env['CPPPATH']] + clanLib_env['CPPPATH'],
+#                    LINKFLAGS = clanLib_env['LINKFLAGS'],
+#                    LIBPATH   = clanLib_env['LIBPATH'],
+#                    LIBS      = clanLib_env['LIBS'])
 
 install_exec = env.Alias('install_exec',
                          Install(env['DESTDIR'] + env['PREFIX'] + '/games', windstille_prg))

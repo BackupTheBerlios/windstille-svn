@@ -29,7 +29,7 @@ pos (arg_pos),
 }
 
 void 
-Dog::draw ()
+Dog::draw (DrawingContext& gc)
 {
   if (direction == WEST)
     sprite.set_scale (-1.0, 1.0);

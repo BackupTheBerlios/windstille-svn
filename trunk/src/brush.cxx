@@ -35,7 +35,7 @@ Brush::~Brush()
 }
 
 void
-Brush::draw()
+Brush::draw(DrawingContext& gc)
 {
   sprite.draw(pos.x, pos.y);
 }

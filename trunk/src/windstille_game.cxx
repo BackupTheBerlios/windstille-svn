@@ -36,10 +36,10 @@
 #include "player_view.hxx"
 #include "energiebar.hxx"
 #include "background.hxx"
-#include "view_component.hxx"
 #include "dialog_manager.hxx"
 #include "windstille_main.hxx"
 #include "screenshot.hxx"
+#include "drawing_context.hxx"
 #include "input/input_manager.hxx"
 
 #include "windstille_game.hxx"
@@ -75,10 +75,12 @@ WindstilleGame::~WindstilleGame()
 void
 WindstilleGame::draw_game()
 {
+  DrawingContext gc;
+
   background->draw();
 
   // Draw the world
-  view->draw ();
+  view->draw (gc);
 
   // Draw HUD
   energiebar->draw();
@@ -203,9 +205,6 @@ WindstilleGame::on_startup ()
   player = new Player();
   view   = new PlayerView(player);
   
-  // FIXME: Mem leak
-  //new ViewComponent(GUIManager::current()->get_component(), view);
-
   energiebar = new Energiebar();
   background = new Background();
   dialog_manager = new DialogManager();

@@ -36,7 +36,7 @@ public:
   Brush(const std::string& res, CL_Point pos, bool blink);
   virtual ~Brush();
 
-  void draw();
+  void draw(DrawingContext& gc);
   void update(float delta);
 
 private:

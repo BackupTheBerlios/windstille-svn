@@ -35,7 +35,7 @@ public:
   Dog (const CL_Vector& arg_pos, Direction);
   virtual ~Dog () {}
   
-  void draw ();
+  void draw (DrawingContext& gc);
   void update (float);
 
   bool on_ground ();

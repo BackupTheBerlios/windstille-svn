@@ -1,4 +1,4 @@
-//  $Id: view_component.hxx,v 1.2 2003/10/12 11:58:09 grumbel Exp $
+//  $Id$
 // 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -17,30 +17,31 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef HEADER_VIEW_COMPONENT_HXX
-#define HEADER_VIEW_COMPONENT_HXX
+#ifndef HEADER_DRAWING_REQUEST_HXX
+#define HEADER_DRAWING_REQUEST_HXX
 
-#include <ClanLib/Signals/slot.h>
-#include <ClanLib/GUI/component.h>
+#include <ClanLib/Core/Math/cl_vector.h>
 
-class View;
-          
-/** clanGUI wrapper for View class, used for the debug GUI in the game */
-class ViewComponent : public CL_Component
+/** 
+ */
+class DrawingRequest
 {
-private:
-  View* view;
-  std::vector<CL_Slot> slots;
+protected:
+  CL_Vector pos;
 public:
-  ViewComponent(CL_Component* parent, View* view);
+  DrawingRequest(const CL_Vector& pos_) : pos(pos_) {}
+  
+  virtual void draw() = 0;
+  
+  /** Returns true if the request contains an alpha channel and needs
+      to be drawn in order */
+  virtual bool has_alpha() { return true; }
 
-  void draw();
-
-  void on_input_down(const CL_InputEvent& event);
-  void on_input_up(const CL_InputEvent& event);
+  /** Returns the position at which the request should be drawn */
+  virtual float get_z_pos() { return pos.z; }
 private:
-  ViewComponent (const ViewComponent&);
-  ViewComponent& operator= (const ViewComponent&);
+  DrawingRequest (const DrawingRequest&);
+  DrawingRequest& operator= (const DrawingRequest&);
 };
 
 #endif

@@ -43,7 +43,7 @@ public:
   WaterMap();
   ~WaterMap();
 
-  void draw();
+  void draw(DrawingContext& gc);
   void update(float delta);
 
   void add_water(int x, int y, int w, int h);

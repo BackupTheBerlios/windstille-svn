@@ -33,7 +33,7 @@ WaterMap::~WaterMap()
 }
 
 void
-WaterMap::draw()
+WaterMap::draw(DrawingContext& gc)
 {
   for (Waters::iterator i = waters.begin(); i != waters.end(); ++i)
     {

@@ -6,7 +6,7 @@
 #include <ClanLib/application.h>
 #include <ClanLib/display.h>
 #include <ClanLib/gl.h>
-#include "collision/collision_manager.hxx"
+#include "collision_manager.hxx"
 
 class SurfaceApp : public CL_ClanApplication
 {
