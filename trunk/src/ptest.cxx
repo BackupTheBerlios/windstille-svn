@@ -53,12 +53,15 @@ public:
         unsigned int last_time = CL_System::get_time();
 
         ParticleSystem psystem;
-        psystem.set_count(200);
+        psystem.set_count(100);
         psystem.set_surface(surface1);
         psystem.set_pos(0,0);
-        //psystem.set_line_distribution(-100, -50, 100, 50);
+        psystem.set_speed(300, 550);
+        psystem.set_cone(-25-90, 25-90);
+        psystem.set_gravity(0, 20);
+        psystem.set_line_distribution(-50, 0, 50, 0);
         //psystem.set_circle_distribution(100.0f);
-        psystem.set_rect_distribution(200.0f, 50);
+        //psystem.set_rect_distribution(200.0f, 50);
 
         // Loop until the user hits escape:
         int count = 0;

@@ -72,6 +72,9 @@ private:
   float size_start;
   float size_stop;
 
+  float speed_start;
+  float speed_stop;
+
   CL_Color color_start;
   CL_Color color_stop;
 
@@ -126,7 +129,7 @@ public:
   void set_rect_distribution(float width, float height);
 
   /** Limit the direction into which the new particles spawn by the
-      given angles, angles are given in radians */
+      given angles, angles are given in degrees */
   void set_cone(float start_angle, float stop_angle);
 
   /** The gravitiy that pulls the praticles up/down/left/right */

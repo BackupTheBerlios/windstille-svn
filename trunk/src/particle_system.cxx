@@ -18,6 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <math.h>
+#include <ClanLib/gl.h>
 #include "particle_system.hxx"
 #include "random.hxx"
 
@@ -95,6 +96,9 @@ ParticleSystem::ParticleSystem()
   size_start = 1.0f;
   size_stop  = 1.0f;
 
+  speed_start = 100.0;
+  speed_stop  = 200.0f;
+
   color_start = CL_Color(255, 255, 255, 255);
   color_stop  = CL_Color(255, 255, 255, 255);
 
@@ -111,36 +115,59 @@ ParticleSystem::~ParticleSystem()
 void
 ParticleSystem::draw()
 {
-  surface.set_blend_func(blend_src_alpha, blend_one);
-            
-  for(Particles::iterator i = start_particle; i != particles.end(); ++i)
+  if (1)
     {
-      // FIXME: use custom OpenGL here
-      if (i->t != -1.0f && i->t <= life_time) 
+      surface.set_blend_func(blend_src_alpha, blend_one);
+            
+      for(Particles::iterator i = start_particle; i != particles.end(); ++i)
         {
-          surface.set_color(CL_Color(255, 255, 255, std::min(255, 
-                                                             255-static_cast<int>(255*(i->t/life_time)))));
-          surface.set_scale(0.1+(i->t/life_time)*3.0f,
-                            0.1+(i->t/life_time)*3.0f);
-          surface.set_angle(i->angle);
-          surface.draw(int(x_pos + i->x),
-                       int(y_pos + i->y));
+          // FIXME: use custom OpenGL here
+          if (i->t != -1.0f && i->t <= life_time) 
+            {
+              surface.set_color(CL_Color(255, 255, 255, std::min(255, 
+                                                                 255-static_cast<int>(255*(i->t/life_time)))));
+              surface.set_scale(0.1+(i->t/life_time)*3.0f,
+                                0.1+(i->t/life_time)*3.0f);
+              surface.set_angle(i->angle);
+              surface.draw(int(x_pos + i->x),
+                           int(y_pos + i->y));
+            }
+        }
+
+      for(Particles::iterator i = particles.begin(); i != start_particle; ++i)
+        {
+          // FIXME: use custom OpenGL here
+          if (i->t != -1.0f && i->t <= life_time) 
+            {
+              surface.set_color(CL_Color(255, 255, 255, std::min(255, 
+                                                                 255-static_cast<int>(255*(i->t/life_time)))));
+              surface.set_scale(0.1+ (i->t/life_time)*3.0f,
+                                0.1+ (i->t/life_time)*3.0f);
+              surface.set_angle(i->angle);
+              surface.draw(int(x_pos + i->x),
+                           int(y_pos + i->y));
+            }
         }
     }
-
-  for(Particles::iterator i = particles.begin(); i != start_particle; ++i)
+  else
     {
-      // FIXME: use custom OpenGL here
-      if (i->t != -1.0f && i->t <= life_time) 
+      CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+      state.set_active();
+      state.setup_2d();
+      glBegin(GL_LINES);
+
+      for(Particles::iterator i = particles.begin(); i != particles.end(); ++i)
         {
-          surface.set_color(CL_Color(255, 255, 255, std::min(255, 
-                                                             255-static_cast<int>(255*(i->t/life_time)))));
-          surface.set_scale(0.1+ (i->t/life_time)*3.0f,
-                            0.1+ (i->t/life_time)*3.0f);
-          surface.set_angle(i->angle);
-          surface.draw(int(x_pos + i->x),
-                       int(y_pos + i->y));
+          /*CL_Display::draw_line(i->x, i->y,
+                                i->x - i->v_x/10.0f, i->y - i->v_y/10.0f, 
+                                CL_Color(255, 255, 255));*/
+          glColor3f(1.0, 1.0, 0);
+          glVertex2f(i->x, i->y);
+          glColor3f(0, 0, 0);
+          glVertex2f(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f);
+          //glVertex2f(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f);
         }
+      glEnd();
     }
 }
 
@@ -158,8 +185,10 @@ ParticleSystem::spawn(Particle& particle)
   particle.x   += spawn_x_pos;
   particle.y   += spawn_y_pos;
 
-  particle.v_x = rand()%100 - 50.0f;
-  particle.v_y = rand()%100 - 50;
+  float direction = rnd.drand(cone_start, cone_stop);
+  float speed     = rnd.drand(speed_start, speed_stop);
+  particle.v_x    = cos(direction) * speed;
+  particle.v_y    = sin(direction) * speed;
 
   particle.angle = rnd.drand(360);
 
@@ -271,8 +300,8 @@ ParticleSystem::set_rect_distribution(float width, float height)
 void
 ParticleSystem::set_cone(float start_angle, float stop_angle)
 {
-  cone_start = start_angle;
-  cone_stop  = stop_angle;
+  cone_start = start_angle * M_PI/180.0f;
+  cone_stop  = stop_angle  * M_PI/180.0f;
 }
 
 void
@@ -310,6 +339,13 @@ void
 ParticleSystem::set_fade_color(const CL_Color& color)
 {
   color_stop = color;
+}
+
+void
+ParticleSystem::set_speed(float from, float to)
+{
+  speed_start = from;
+  speed_stop  = to;
 }
 
 /* EOF */
