@@ -132,7 +132,7 @@ public:
             count += 1;
 
             // Improve responsiveness:
-            //CL_System::sleep(30);
+           CL_System::sleep(30);
 				
             // Update keyboard input and handle system events:
             CL_System::keep_alive();
