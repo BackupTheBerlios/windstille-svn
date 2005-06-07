@@ -3,6 +3,24 @@
   
   <section title="News">
     <news>
+      <item date="3. Jun 2005">
+        Some more pictures of our still nameless <a href="artworks.html#hero">hero {f}</a>.
+      </item>
+
+      <item date="5. Nov 2004">
+        We now have a <a
+        href="http://windstille.berlios.de/phpBB2">forum</a> where you
+        can post suggestion, comments and whatever you want. <em>Forum
+        is currently no longer online.</em>
+      </item>
+
+      <item date="3. Nov 2004">
+        The <a href="screenshots.html">screenshot section</a> has a
+        new <a href="images/screenshot9.jpg">screenshot</a> showing
+        the lightmap support in Windstille, there are also a few new
+        pics in the <a href="artworks.html#hero">artwork section</a>.
+      </item>
+
       <item date="24. Oct 2004">
         A video of a fire effect created by the particle system that
         will be used in Windstille is now available in the <a

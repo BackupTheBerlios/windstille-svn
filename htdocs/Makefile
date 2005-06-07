@@ -22,7 +22,7 @@ upload: berlios
 
 commit: berlios
 
-berlios:
+berlios: all
 	rsync -Ctrv . grumbel@shell.berlios.de:/home/groups/windstille/htdocs/
 
 .PHONY: all clean upload
