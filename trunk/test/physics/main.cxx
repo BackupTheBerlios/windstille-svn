@@ -38,6 +38,14 @@ int main()
   int x_pos;
   int y_pos;
 
+  //physics.add_object(PhysicObject(0, 0, 32, 600)).movable = false;
+  //physics.add_object(PhysicObject(800-32, 0, 32, 600)).movable = false;
+
+  //physics.add_object(PhysicObject(32, 0, 800-32, 32)).movable = false;
+  //physics.add_object(PhysicObject(32, 600-32, 800-32, 32)).movable = false;
+
+  physics.add_object(PhysicObject(400, 300, 100, 100)).movable = false;
+
   // Run Main Loop
   while(!CL_Keyboard::get_keycode(CL_KEY_ESCAPE))
     {

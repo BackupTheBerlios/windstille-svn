@@ -29,6 +29,8 @@ public:
   /** Uniq Id which identifies this object */
   int id;
 
+  bool movable;
+
   // Top/Right corner of the object
   float x_pos;
   float y_pos;
@@ -41,12 +43,15 @@ public:
   float x_velocity;
   float y_velocity;
 
+  bool collision;
+
   PhysicObject(float x_, float y_, float width_, float height_) 
   {
     id = -1;
-
+    movable = true;
     mass = 1.0f;
-
+    collision = false;
+    
     x_pos = x_;
     y_pos = y_;
     
@@ -57,6 +62,15 @@ public:
     y_velocity = 0.0f;
   }
 };
+
+inline
+std::ostream& operator<<(std::ostream& out, const PhysicObject& obj)
+{
+  out << obj.id << ":[(" << obj.x_pos << ", "
+      << obj.y_pos << "), "
+      << "(" << obj.width << ", " << obj.height << ")]+[" << obj.x_velocity << ", " << obj.y_velocity << "]";
+  return out;
+}
 
 /** */
 class Physics
@@ -70,6 +84,29 @@ private:
   float x_acceleration;
   float y_acceleration;
 
+  enum CollisionState { COL_AT, COL_ALWAYS, COL_NEVER };
+
+  struct CollisionResult 
+  {
+    CollisionState state;
+
+    // Time at which the collision starts, only valid if state == COL_AT
+    float u0;
+    
+    // Time at which the collisions ends, only valid if state == COL_AT
+    float u1;
+  };
+
+  /** Calculate when two objects, given by there position (a,b), there
+      width (aw,bw) and there velocity (av,bw) start colliding (u0)
+      and end colliding (u1). true is set when u0 and u1 could be
+      calculated, false when the relative velocity was zero.
+  */
+  CollisionResult simplesweep1d(float a, float aw, float av,
+                                float b, float bw, float bv);
+
+  void resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x, CollisionResult& y, 
+                         float delta);
 public:
 
   Physics();
