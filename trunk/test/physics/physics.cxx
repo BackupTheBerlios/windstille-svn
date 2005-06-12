@@ -27,7 +27,9 @@ Physics::Physics()
   friction       = 0.01f;
   
   x_acceleration = 0.0f;
-  y_acceleration = 5.0f;
+  y_acceleration = 0.0f;
+
+  unstuck_velocity = 50.0f;
 }
 
 Physics::~Physics()
@@ -70,7 +72,7 @@ Physics::simplesweep1d(float a, float aw, float av,
       res.u1 = (b + bw - a) / v;
       res.state = COL_AT;
 
-      assert(res.u0 < res.u1);
+      assert(res.u0 <= res.u1);
       return res;
     }
   else if (v < 0)
@@ -80,7 +82,7 @@ Physics::simplesweep1d(float a, float aw, float av,
       res.u1 = (b - (a + aw)) / v;
       res.state = COL_AT;
 
-      assert(res.u0 < res.u1);
+      assert(res.u0 <= res.u1);
       return res;
     }
   else // (v == 0)
@@ -110,6 +112,49 @@ Physics::collision(PhysicObject& a, PhysicObject& b, Side side)
       a.y_velocity = -a.y_velocity * 0.7f;
       b.y_velocity = -b.y_velocity * 0.7f;
       break;
+    }
+}
+
+void
+Physics::unstuck(PhysicObject& a, PhysicObject& b, float delta)
+{
+  // The distance A needs to unstuck from B in the given direction
+  float left   = fabsf(a.x_pos + a.width - b.x_pos);
+  float right  = fabsf(b.x_pos + b.width - a.x_pos);
+  float top    = fabsf(a.y_pos + a.height - b.y_pos);
+  float bottom = fabsf(b.y_pos + b.height - a.y_pos);
+
+  if (left < right && left < top && left < bottom)
+    {
+      if (a.movable)
+        a.x_pos -= unstuck_velocity * delta;
+      
+      if (b.movable)
+        b.x_pos += unstuck_velocity * delta;
+    }
+  else if (right < left && right < top && right < bottom)
+    {
+      if (a.movable)
+        a.x_pos += unstuck_velocity * delta;
+
+      if (b.movable)
+        b.x_pos -= unstuck_velocity * delta;
+    }
+  else if (top < left && top < right && top < bottom)
+    {
+      if (a.movable)
+        a.y_pos -= unstuck_velocity * delta;
+      
+      if (b.movable)
+        b.y_pos += unstuck_velocity * delta;
+    }
+  else // (bottom < left && bottom < right && bottom < top)
+    {
+      if (a.movable)
+        a.y_pos += unstuck_velocity * delta;
+      
+      if (b.movable)
+        b.y_pos -= unstuck_velocity * delta;
     }
 }
   
@@ -183,6 +228,7 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
               //std::cout << "col: " << a << " " << b << std::endl;
               a.collision = true;
               collision(a, b, STUCK);
+              unstuck(a, b, delta);
             }
           else
             {

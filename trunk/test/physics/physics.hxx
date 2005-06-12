@@ -43,6 +43,7 @@ public:
   float x_velocity;
   float y_velocity;
 
+  /** The velocity which is used to unstuck, stuck objects */
   bool collision;
 
   PhysicObject(float x_, float y_, float width_, float height_) 
@@ -80,6 +81,7 @@ private:
   Objects objects;
 
   float friction;
+  float unstuck_velocity;
 
   float x_acceleration;
   float y_acceleration;
@@ -105,6 +107,7 @@ private:
   CollisionResult simplesweep1d(float a, float aw, float av,
                                 float b, float bw, float bv);
 
+  void unstuck(PhysicObject& a, PhysicObject& b, float delta);
   void resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x, CollisionResult& y, 
                          float delta);
 public:
