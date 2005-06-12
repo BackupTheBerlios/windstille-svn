@@ -109,13 +109,35 @@ Physics::collision(PhysicObject& a, PhysicObject& b, Side side)
   switch(side)
     {
     case LEFT:
-      a.x_velocity = -a.x_velocity * 0.7f;
-      b.x_velocity = -b.x_velocity * 0.7f;
+      if (!a.movable)
+        {
+          b.x_velocity = -b.x_velocity * 0.7f;
+        }
+      else if (!b.movable)
+        {
+          a.x_velocity = -a.x_velocity * 0.7f;
+        }
+      else
+        {
+          a.x_velocity = b.x_velocity * 0.7f;
+          b.x_velocity = a.x_velocity * 0.7f;
+        }
       break;
 
     case TOP:
-      a.y_velocity = -a.y_velocity * 0.7f;
-      b.y_velocity = -b.y_velocity * 0.7f;
+      if (!a.movable)
+        {
+          b.y_velocity = -b.y_velocity * 0.7f;
+        }
+      else if (!b.movable)
+        {
+          a.y_velocity = -a.y_velocity * 0.7f;
+        }
+      else
+        {
+          a.y_velocity = b.y_velocity * 0.7f;
+          b.y_velocity = a.y_velocity * 0.7f;
+        }
       break;
     }
 }
@@ -196,7 +218,6 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
                     }
                   else
                     {
-                      //std::cout << "col: " << a << " " << b << std::endl;
                       a.collision = true;
 
                       if (y.u0 < 0 || x.u0 < 0) 
