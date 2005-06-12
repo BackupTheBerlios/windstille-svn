@@ -27,9 +27,10 @@ Physics::Physics()
   friction       = 0.01f;
   
   x_acceleration = 0.0f;
-  y_acceleration = 0.0f;
+  y_acceleration = 5.0f;
 
   unstuck_velocity = 50.0f;
+  minimum_velocity = .1f;
 }
 
 Physics::~Physics()
@@ -41,7 +42,7 @@ Physics::draw()
 {
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
     {
-      if (!i->collision)
+      if (!i->collision || !i->movable)
         CL_Display::fill_rect(CL_Rectf(CL_Pointf(i->x_pos, i->y_pos),
                                        CL_Sizef(i->width, i->height)),
                               CL_Color(255, 255, 255));        
@@ -49,6 +50,10 @@ Physics::draw()
         CL_Display::fill_rect(CL_Rectf(CL_Pointf(i->x_pos, i->y_pos),
                                        CL_Sizef(i->width, i->height)),
                               CL_Color(255, 0, 255));        
+
+      CL_Display::draw_rect(CL_Rectf(CL_Pointf(i->x_pos, i->y_pos),
+                                     CL_Sizef(i->width, i->height)),
+                            CL_Color(155, 155, 155));        
       
       CL_Display::draw_line(i->x_pos + i->width/2,
                             i->y_pos + i->height/2,
@@ -127,34 +132,34 @@ Physics::unstuck(PhysicObject& a, PhysicObject& b, float delta)
   if (left < right && left < top && left < bottom)
     {
       if (a.movable)
-        a.x_pos -= unstuck_velocity * delta;
+        a.x_pos -= std::min(left/2, unstuck_velocity * delta);
       
       if (b.movable)
-        b.x_pos += unstuck_velocity * delta;
+        b.x_pos += std::min(left/2, unstuck_velocity * delta);
     }
   else if (right < left && right < top && right < bottom)
     {
       if (a.movable)
-        a.x_pos += unstuck_velocity * delta;
+        a.x_pos += std::min(right/2, unstuck_velocity * delta);
 
       if (b.movable)
-        b.x_pos -= unstuck_velocity * delta;
+        b.x_pos -= std::min(right/2, unstuck_velocity * delta);
     }
   else if (top < left && top < right && top < bottom)
     {
       if (a.movable)
-        a.y_pos -= unstuck_velocity * delta;
+        a.y_pos -= std::min(top/2, unstuck_velocity * delta);
       
       if (b.movable)
-        b.y_pos += unstuck_velocity * delta;
+        b.y_pos += std::min(top/2, unstuck_velocity * delta);
     }
   else // (bottom < left && bottom < right && bottom < top)
     {
       if (a.movable)
-        a.y_pos += unstuck_velocity * delta;
+        a.y_pos += std::min(bottom/2, unstuck_velocity * delta);
       
       if (b.movable)
-        b.y_pos -= unstuck_velocity * delta;
+        b.y_pos -= std::min(bottom/2, unstuck_velocity * delta);
     }
 }
   
@@ -168,10 +173,8 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
     }
   else 
     {
-      // code here
       if (x.state == COL_AT)
         {
-          //std::cout << a.id << ": " << x.u0 << " " << x.u1 << " " << delta << std::endl;
           if (x.u1 < 0 || x.u0 > delta)
             {
               // miss, no collision in the current time frame
@@ -180,8 +183,9 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
             {
               if (y.state == COL_ALWAYS)
                 {
-                  //std::cout << "col: " << a << " " << b << std::endl;
                   a.collision = true;
+                  if (y.u0 < 0 || x.u0 < 0) 
+                    unstuck(a, b, delta);
                   collision(a, b, LEFT);
                 }
               else if (y.state == COL_AT)
@@ -194,6 +198,10 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
                     {
                       //std::cout << "col: " << a << " " << b << std::endl;
                       a.collision = true;
+
+                      if (y.u0 < 0 || x.u0 < 0) 
+                        unstuck(a, b, delta);                        
+
                       if (y.u0 > x.u0)
                         collision(a, b, TOP);
                       else
@@ -216,8 +224,10 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
                 }
               else
                 {
+                  if (y.u0 < 0 || x.u0 < 0) 
+                    unstuck(a, b, delta);
+
                   // collision
-                  //std::cout << "col: " << a << " " << b << std::endl;
                   a.collision = true;
                   collision(a, b, TOP);
                 }
@@ -225,7 +235,6 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
           else if (y.state == COL_ALWAYS)
             {
               // stuck
-              //std::cout << "col: " << a << " " << b << std::endl;
               a.collision = true;
               collision(a, b, STUCK);
               unstuck(a, b, delta);
@@ -249,24 +258,21 @@ Physics::update(float delta)
     {
       i->collision = false;
                 
-      if (i->movable)
+      //                        i - why doesn't this work?
+      for(Objects::iterator j = i+1/*objects.begin()*/; j != objects.end(); ++j)
         {
-          //                        i - why doesn't this work?
-          for(Objects::iterator j = objects.begin(); j != objects.end(); ++j)
+          if (i != j)
             {
-              if (i != j)
-                {
-                  CollisionResult x_res = simplesweep1d(i->x_pos, i->width, i->x_velocity,
-                                                        j->x_pos, j->width, j->x_velocity);
-                  CollisionResult y_res = simplesweep1d(i->y_pos, i->height, i->y_velocity,
-                                                        j->y_pos, j->height, j->y_velocity);
-                  resolve_collision(*i, *j, x_res, y_res, delta);
-                }
+              CollisionResult x_res = simplesweep1d(i->x_pos, i->width, i->x_velocity,
+                                                    j->x_pos, j->width, j->x_velocity);
+              CollisionResult y_res = simplesweep1d(i->y_pos, i->height, i->y_velocity,
+                                                    j->y_pos, j->height, j->y_velocity);
+              resolve_collision(*i, *j, x_res, y_res, delta);
             }
-
-          //if (!i->collision)
-            update(*i, delta);
         }
+      
+      if (i->movable)
+        update(*i, delta);
     }
 }
 
@@ -282,6 +288,12 @@ Physics::update(PhysicObject& obj, float delta)
               
   obj.x_velocity += x_acceleration * delta;
   obj.y_velocity += y_acceleration * delta;
+
+  if (fabsf(obj.x_velocity) < minimum_velocity)
+    obj.x_velocity = 0.0f;
+
+  if (fabsf(obj.y_velocity) < minimum_velocity)
+    obj.y_velocity = 0.0f;
 }
 
 PhysicObject&

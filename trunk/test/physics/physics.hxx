@@ -86,6 +86,8 @@ private:
   float x_acceleration;
   float y_acceleration;
 
+  float minimum_velocity;
+
   enum CollisionState { COL_AT, COL_ALWAYS, COL_NEVER };
 
   struct CollisionResult 
