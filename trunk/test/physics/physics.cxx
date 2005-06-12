@@ -151,37 +151,39 @@ Physics::unstuck(PhysicObject& a, PhysicObject& b, float delta)
   float top    = fabsf(a.y_pos + a.height - b.y_pos);
   float bottom = fabsf(b.y_pos + b.height - a.y_pos);
 
+  float grace =  1.0f;
+
   if (left < right && left < top && left < bottom)
     {
       if (a.movable)
-        a.x_pos -= std::min(left/2, unstuck_velocity * delta);
+        a.x_pos -= std::min(left/2 + grace, unstuck_velocity * delta);
       
       if (b.movable)
-        b.x_pos += std::min(left/2, unstuck_velocity * delta);
+        b.x_pos += std::min(left/2 + grace, unstuck_velocity * delta);
     }
   else if (right < left && right < top && right < bottom)
     {
       if (a.movable)
-        a.x_pos += std::min(right/2, unstuck_velocity * delta);
+        a.x_pos += std::min(right/2 + grace, unstuck_velocity * delta);
 
       if (b.movable)
-        b.x_pos -= std::min(right/2, unstuck_velocity * delta);
+        b.x_pos -= std::min(right/2 + grace, unstuck_velocity * delta);
     }
   else if (top < left && top < right && top < bottom)
     {
       if (a.movable)
-        a.y_pos -= std::min(top/2, unstuck_velocity * delta);
+        a.y_pos -= std::min(top/2 + grace, unstuck_velocity * delta);
       
       if (b.movable)
-        b.y_pos += std::min(top/2, unstuck_velocity * delta);
+        b.y_pos += std::min(top/2 + grace, unstuck_velocity * delta);
     }
   else // (bottom < left && bottom < right && bottom < top)
     {
       if (a.movable)
-        a.y_pos += std::min(bottom/2, unstuck_velocity * delta);
+        a.y_pos += std::min(bottom/2 + grace, unstuck_velocity * delta);
       
       if (b.movable)
-        b.y_pos -= std::min(bottom/2, unstuck_velocity * delta);
+        b.y_pos -= std::min(bottom/2 + grace, unstuck_velocity * delta);
     }
 }
   
