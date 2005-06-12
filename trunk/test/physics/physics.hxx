@@ -108,6 +108,7 @@ private:
   void resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x, CollisionResult& y, 
                          float delta);
 public:
+  enum Side { LEFT, RIGHT, TOP, BOTTOM, STUCK }; 
 
   Physics();
   ~Physics();
@@ -115,6 +116,7 @@ public:
   void draw();
   void update(float delta);
   void update(PhysicObject& obj, float delta);
+  void collision(PhysicObject& a, PhysicObject& b, Side side);
 
   PhysicObject& add_object(PhysicObject obj);
 };

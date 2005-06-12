@@ -27,7 +27,7 @@ Physics::Physics()
   friction       = 0.01f;
   
   x_acceleration = 0.0f;
-  y_acceleration = 0.0f;
+  y_acceleration = 5.0f;
 }
 
 Physics::~Physics()
@@ -95,6 +95,23 @@ Physics::simplesweep1d(float a, float aw, float av,
       return res;
     }
 }
+
+void
+Physics::collision(PhysicObject& a, PhysicObject& b, Side side)
+{
+  switch(side)
+    {
+    case LEFT:
+      a.x_velocity = -a.x_velocity * 0.7f;
+      b.x_velocity = -b.x_velocity * 0.7f;
+      break;
+
+    case TOP:
+      a.y_velocity = -a.y_velocity * 0.7f;
+      b.y_velocity = -b.y_velocity * 0.7f;
+      break;
+    }
+}
   
 void
 Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x, CollisionResult& y, 
@@ -120,6 +137,7 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
                 {
                   //std::cout << "col: " << a << " " << b << std::endl;
                   a.collision = true;
+                  collision(a, b, LEFT);
                 }
               else if (y.state == COL_AT)
                 {
@@ -131,6 +149,10 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
                     {
                       //std::cout << "col: " << a << " " << b << std::endl;
                       a.collision = true;
+                      if (y.u0 > x.u0)
+                        collision(a, b, TOP);
+                      else
+                        collision(a, b, LEFT);
                     }
                 }
               else
@@ -152,6 +174,7 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
                   // collision
                   //std::cout << "col: " << a << " " << b << std::endl;
                   a.collision = true;
+                  collision(a, b, TOP);
                 }
             }
           else if (y.state == COL_ALWAYS)
@@ -159,6 +182,7 @@ Physics::resolve_collision(PhysicObject& a, PhysicObject& b, CollisionResult& x,
               // stuck
               //std::cout << "col: " << a << " " << b << std::endl;
               a.collision = true;
+              collision(a, b, STUCK);
             }
           else
             {
@@ -194,7 +218,8 @@ Physics::update(float delta)
                 }
             }
 
-          update(*i, delta);
+          //if (!i->collision)
+            update(*i, delta);
         }
     }
 }
