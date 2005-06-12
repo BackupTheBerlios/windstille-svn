@@ -114,6 +114,7 @@ public:
 
   void draw();
   void update(float delta);
+  void update(PhysicObject& obj, float delta);
 
   PhysicObject& add_object(PhysicObject obj);
 };

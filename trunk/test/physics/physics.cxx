@@ -194,17 +194,23 @@ Physics::update(float delta)
                 }
             }
 
-          // Insert Collisions handling
-          i->x_pos += i->x_velocity * delta;
-          i->y_pos += i->y_velocity * delta;
-
-          i->x_velocity -= (i->x_velocity * friction) * delta;
-          i->y_velocity -= (i->y_velocity * friction) * delta;
-              
-          i->x_velocity += x_acceleration * delta;
-          i->y_velocity += y_acceleration * delta;
+          update(*i, delta);
         }
     }
+}
+
+void
+Physics::update(PhysicObject& obj, float delta)
+{
+  // Insert Collisions handling
+  obj.x_pos += obj.x_velocity * delta;
+  obj.y_pos += obj.y_velocity * delta;
+
+  obj.x_velocity -= (obj.x_velocity * friction) * delta;
+  obj.y_velocity -= (obj.y_velocity * friction) * delta;
+              
+  obj.x_velocity += x_acceleration * delta;
+  obj.y_velocity += y_acceleration * delta;
 }
 
 PhysicObject&
