@@ -144,6 +144,9 @@ ptest = env.Program('ptest',
                     LIBPATH   = clanLib_env['LIBPATH'],
                     LIBS      = clanLib_env['LIBS'])
 
+# Unkomment ctest and comment ptest and windstille to compile
+# ctest or alternativly fix the SConstruct file
+#
 #ctest = env.Program('ctest',
 #                    ['ctest.cxx', 'collision_manager.cxx'],
 #                    CPPPATH   = [env['CPPPATH']] + clanLib_env['CPPPATH'],
