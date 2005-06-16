@@ -285,7 +285,7 @@ WindstilleMain::init_modules()
       CL_SetupVorbis::init();
     }
 
-  window = new CL_DisplayWindow(PACKAGE_STRING,
+  window = new CL_DisplayWindow("Windstille",
                                 screen_width, screen_height, fullscreen, allow_resize);
   CL_Display::clear();
   CL_Display::flip();
