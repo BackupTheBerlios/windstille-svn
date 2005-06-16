@@ -90,7 +90,7 @@ WindstilleMenu::update(float delta)
                   MusicManager::current()->stop();
                   InputManager::clear();
                   fadeout();
-                  WindstilleGame game(datadir + "levels/level1.scm");
+                  WindstilleGame game(datadir + "levels/test.wst");
                   game.display ();
                   on_startup();
                   break;
