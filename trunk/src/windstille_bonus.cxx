@@ -32,7 +32,10 @@
 
 WindstilleBonus::WindstilleBonus()
 {
+  std::cout << "WindstilleBonus: " << resources << std::endl;
   lst = resources->get_all_resources("bonus");
+  std::cout << "Crash" << std::endl;
+  
   std::random_shuffle(lst.begin(), lst.end());
 
   lst.push_back("bonus_end");

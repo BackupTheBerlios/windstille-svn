@@ -17,8 +17,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ruby.h>
-#include "ruby_functor.hxx"
+//#include <ruby.h>
+//#include "ruby_functor.hxx"
 #include "display.hxx"
 #include "player.hxx"
 #include "gameobj.hxx"
@@ -86,7 +86,7 @@ GameWorld::draw (SceneContext& gc)
 void
 GameWorld::update (float delta)
 {
-  coroutines.update(delta);
+  //  coroutines.update(delta);
 
   passed_time += delta;
 
@@ -134,8 +134,7 @@ GameWorld::on_startup()
   for (std::vector<std::string>::iterator i = scripts.begin();
        i != scripts.end(); ++i)
     {
-      //gh_load((datadir + "levels/" + *i).c_str());
-      RubyFunctor::load_file((datadir + "levels/" + *i).c_str());
+      //RubyFunctor::load_file((datadir + "levels/" + *i).c_str());
     }
 }
 

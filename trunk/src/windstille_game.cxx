@@ -17,7 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ruby.h>
+//#include <ruby.h>
 #include <math.h>
 #include <ClanLib/gl.h>
 #include <sstream>
@@ -36,7 +36,7 @@
 #include "player_view.hxx"
 #include "energiebar.hxx"
 #include "background.hxx"
-#include "dialog_manager.hxx"
+//#include "dialog_manager.hxx"
 #include "windstille_main.hxx"
 #include "display/scene_context.hxx"
 #include "input/input_manager.hxx"
@@ -88,7 +88,7 @@ WindstilleGame::draw_game()
   switch (control_state)
     {
     case DIALOG:
-      dialog_manager->draw();      
+      //dialog_manager->draw();      
       break;
     default:
       break;
@@ -174,7 +174,7 @@ WindstilleGame::update(float delta)
       switch (control_state) 
         {
         case DIALOG:
-          dialog_manager->update(delta);
+          //dialog_manager->update(delta);
           break;
         case GAME:
           world->update (delta);
@@ -207,14 +207,14 @@ WindstilleGame::on_startup ()
   
   energiebar = new Energiebar();
   background = new Background();
-  dialog_manager = new DialogManager();
+  //dialog_manager = new DialogManager();
 
   world->add_player(player);
 
   //gh_load((datadir + "game.scm").c_str());
-  std::cout << "Loading game file: " << std::endl;
-  RubyFunctor::load_file((datadir + "game.rb").c_str());
-  std::cout << "Loading game file: done" << std::endl;
+  //std::cout << "Loading game file: " << std::endl;
+  //  RubyFunctor::load_file((datadir + "game.rb").c_str());
+  //std::cout << "Loading game file: done" << std::endl;
 
   logo       = CL_Sprite("logo", resources);
   portrait   = CL_Sprite("hero/portrait", resources);
@@ -231,7 +231,7 @@ WindstilleGame::on_shutdown ()
   delete energiebar;
   delete background;
   delete view;
-  delete dialog_manager;
+  //delete dialog_manager;
 }
 
 void

@@ -23,7 +23,7 @@
 #include <list>
 #include <vector>
 #include <string>
-#include "coroutine_manager.hxx"
+//#include "coroutine_manager.hxx"
 #include "display/scene_context.hxx"
 
 class TileMap;
@@ -45,7 +45,7 @@ private:
 
   std::vector<std::string> scripts;
 
-  CoroutineManager coroutines;
+  //  CoroutineManager coroutines;
 
   static GameWorld* current_;
 public:

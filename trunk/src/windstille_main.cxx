@@ -17,14 +17,14 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ruby.h>
+//#include <ruby.h>
 //#include <ClanLib/gl.h>
 #include <ClanLib/core.h>
 #include <ClanLib/vorbis.h>
 #include <ClanLib/sound.h>
 #include <ClanLib/display.h>
 
-#include "ruby_functor.hxx"
+//#include "ruby_functor.hxx"
 #include "windstille_error.hxx"
 #include "globals.hxx"
 #include "windstille_game.hxx"
@@ -37,7 +37,7 @@
 #include "music_manager.hxx"
 #include "tile_factory.hxx"
 
-extern "C" void Init_windstille(void);
+//extern "C" void Init_windstille(void);
 
 WindstilleMain main_app;
 CL_ResourceManager* resources;
@@ -268,8 +268,8 @@ WindstilleMain::key_down(const CL_InputEvent& event)
 void
 WindstilleMain::init_modules()
 {
-  ruby_init();
-  Init_windstille();
+  // ruby_init();
+  //  Init_windstille();
   
   // Init ClanLib
   CL_SetupCore::init();
@@ -303,7 +303,11 @@ WindstilleMain::init_modules()
 
   std::cout << "Loading Windstille startup script: " << game_definition_file << std::endl;
   //gh_load((datadir + game_definition_file).c_str());
-  RubyFunctor::load_file((datadir + game_definition_file).c_str());
+  //RubyFunctor::load_file((datadir + game_definition_file).c_str());
+  
+  resources->add_resources(CL_ResourceManager(datadir + std::string("tiles.xml"), false));
+  TileFactory::tile_def_file = "tiles.scm";
+  
   std::cout << "done" << std::endl;
 
   Fonts::init(); 

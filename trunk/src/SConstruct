@@ -30,7 +30,7 @@ opts.Add('LIBPATH', 'additional library path', '')
 opts.Add('DESTDIR', 'destination directory which gets appended to PREFIX', '')
 opts.Add('PREFIX',  'PREFIX, ie. /usr/local', '/usr/local')
 
-opts.Add('RUBYDIR', 'Ruby directory', os.popen('ruby -e "require \'rbconfig\'; puts Config::CONFIG[\'archdir\']"').read()[:-1])
+# opts.Add('RUBYDIR', 'Ruby directory', os.popen('ruby -e "require \'rbconfig\'; puts Config::CONFIG[\'archdir\']"').read()[:-1])
 
 env = Environment(SHLIBPREFIX='',
                   ENV = os.environ,
@@ -40,10 +40,10 @@ Help(opts.GenerateHelpText(env))
 clanLib_env = Environment()
 clanLib_env.ParseConfig("pkg-config --cflags --libs clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7")
 
-windstille_wrap = env.Command('windstille_wrap.cxx', 'windstille.i',
-                              "swig -runtime -ruby -o $TARGET -c++ $SOURCE")
+#windstille_wrap = env.Command('windstille_wrap.cxx', 'windstille.i',
+#                              "swig -runtime -ruby -o $TARGET -c++ $SOURCE")
 
-env.Depends(windstille_wrap, ['windstille.i', 'scripting/game.hxx'])
+#env.Depends(windstille_wrap, ['windstille.i', 'scripting/game.hxx'])
 
 
 windstille_source = [
@@ -54,7 +54,7 @@ windstille_source = [
     'brush.cxx', 
     'controller_def.cxx', 
     'default_shoot.cxx', 
-    'dialog_manager.cxx', 
+#    'dialog_manager.cxx', 
     'diamond_map.cxx', 
     'display.cxx', 
     'dog.cxx', 
@@ -74,7 +74,7 @@ windstille_source = [
     'tile.cxx', 
     'tile_factory.cxx', 
     'tile_map.cxx', 
-    'trigger.cxx', 
+#    'trigger.cxx', 
     'view.cxx', 
     'water_map.cxx', 
     'water_splash.cxx',
@@ -89,7 +89,7 @@ windstille_source = [
     'lispreader.cxx',
 
     # Scripting Subdirectory
-    'scripting/game.cxx',
+#    'scripting/game.cxx',
 
     # Collision stuff
     'collision_manager.cxx',
@@ -114,10 +114,10 @@ windstille_source = [
     'input/multi_button.cxx',
 
     # Ruby stuff
-    'windstille_wrap.cxx',
-    'ruby_functor.cxx',
-    'ruby_object.cxx',
-    'coroutine_manager.cxx'
+#    'windstille_wrap.cxx',
+#    'ruby_functor.cxx',
+#    'ruby_object.cxx',
+#    'coroutine_manager.cxx'
     ]
 
 windstille_data = glob.glob('../data/images/*.png')     + \
@@ -132,10 +132,10 @@ windstille_datadir = env['DESTDIR'] + env['PREFIX'] + '/share/games/windstille'
 
 windstille_prg = env.Program('windstille',
                          windstille_source,
-                         CPPPATH=[env['CPPPATH'], env['RUBYDIR']] + clanLib_env['CPPPATH'],
+                         CPPPATH=[env['CPPPATH']] + clanLib_env['CPPPATH'],
                          LINKFLAGS = clanLib_env['LINKFLAGS'],
                          LIBPATH=['.'] + clanLib_env['LIBPATH'],
-                         LIBS=clanLib_env['LIBS'] + ['ruby1.8'])
+                         LIBS=clanLib_env['LIBS'])
 
 ptest = env.Program('ptest',
                     ['ptest.cxx', 'particle_system.cxx', 'random.cxx'],
