@@ -20,7 +20,7 @@
 #include <ClanLib/Display/joystick.h>
 #include <ClanLib/Display/keyboard.h>
 #include "../lispreader.hxx"
-#include "../feuerkraft_error.hxx"
+#include "../windstille_error.hxx"
 #include "input_button.hxx"
 #include "input_axis.hxx"
 #include "input_button_input_device.hxx"
@@ -52,7 +52,7 @@ ButtonFactory::create(lisp_object_t* lst)
     }
   else
     {
-      throw FeuerkraftError("ButtonFactory::create: parse error: '");
+      throw WindstilleError("ButtonFactory::create: parse error: '");
                             //                            + Guile::scm2string(lst) + "'");
     }
       
@@ -78,7 +78,7 @@ ButtonFactory::create_joystick_button(lisp_object_t* lst)
     return new InputButtonInputDevice(CL_Joystick::get_device(device_num), button_num);
   else
     {
-      throw FeuerkraftError("Error: ButtonFactory::create_joystick_button: device out of range");
+      throw WindstilleError("Error: ButtonFactory::create_joystick_button: device out of range");
                             //                            + to_string(device_num) + " " + Guile::scm2string(lst));
     }
 }

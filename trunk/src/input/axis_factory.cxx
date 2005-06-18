@@ -19,7 +19,7 @@
 
 #include <ClanLib/Display/joystick.h>
 #include "input_axis_input_device.hxx"
-#include "../feuerkraft_error.hxx"
+#include "../windstille_error.hxx"
 #include "button_factory.hxx"
 #include "button_axis.hxx"
 #include "axis_factory.hxx"
@@ -42,7 +42,7 @@ AxisFactory::create(lisp_object_t* lst)
         }
       else
         {
-          throw FeuerkraftError("AxisFactory::create: parse error");
+          throw WindstilleError("AxisFactory::create: parse error");
         }
 
       lst = lisp_cdr(lst);
@@ -60,7 +60,7 @@ AxisFactory::create_joystick_axis(lisp_object_t* lst)
     return new InputAxisInputDevice(CL_Joystick::get_device(device_num), axis_num);
   else
     {
-      throw FeuerkraftError("Error: AxisFactory::create_joystick_axis: ");
+      throw WindstilleError("Error: AxisFactory::create_joystick_axis: ");
       //                            + lisp_string(lst));
       return 0;
     }

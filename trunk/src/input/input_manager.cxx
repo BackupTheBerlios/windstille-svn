@@ -23,7 +23,7 @@
 #include <sstream>
 #include <ClanLib/Display/joystick.h>
 
-#include "../feuerkraft_error.hxx"
+#include "../windstille_error.hxx"
 #include "input_manager_custom.hxx"
 #include "input_manager_player.hxx"
 #include "input_manager_impl.hxx"
@@ -51,7 +51,7 @@ InputManager::init(const std::string& filename)
     }
   else
     {
-      throw FeuerkraftError("Error: not a valid controller file: " + filename);
+      throw WindstilleError("Error: not a valid controller file: " + filename);
     }
   lisp_free(lst);
 }
