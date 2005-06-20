@@ -65,7 +65,6 @@ public:
   static TileFactory* current() { return current_; }
 
 private:
-  void parse_tile(lisp_object_t* data);
   void parse_tiles(lisp_object_t* data);
 };
 

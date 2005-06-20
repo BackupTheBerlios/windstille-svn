@@ -46,7 +46,7 @@ public:
   bool is_ground(float x, float y);
 
   /** @return the type of ground at the given subtile coordinates */
-  bool get_pixel(int x, int y);
+  unsigned int get_pixel(int x, int y);
   
   int get_width () const { return field.get_width(); }
   int get_height () const { return field.get_height (); }

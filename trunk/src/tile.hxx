@@ -35,43 +35,23 @@ private:
   /** Color used for the minimap to represent this tile */
   CL_Color  color;
 
-  /** Color used on 'Show Attributes', ie. to represent walkable areas
-      and such */
-  CL_Color  attribute_color;
-
 public:
   int id; 
-  unsigned char colmap[8];
+  /** Bitmaps that holds the collision attributes for this tile */
+  unsigned int colmap;
   std::string filename;
 
   /** @param filename Surface to use 
    *  @param arg_colmap a 8 char long array */
   Tile(const std::string& filename, 
-       const CL_Color& color, const CL_Color& attribute_color, unsigned char arg_colmap[]);
+       const CL_Color& color, unsigned int arg_colmap);
 
   Tile(const CL_PixelBuffer& buffer, 
-       const CL_Color& color, const CL_Color& attribute_color, unsigned char arg_colmap[]);
+       const CL_Color& color, unsigned int arg_colmap);
 
+  unsigned get_colmap() const { return colmap; }
   CL_Sprite& get_sprite();
   CL_Color   get_color();
-  CL_Color   get_attribute_color();
-
-  inline bool get_col(unsigned char x, unsigned char  y)
-  {
-    assert(x < 8);
-    assert(y < 8);
-    return (colmap[y] & (1 << (7-x)));
-  }
-
-  inline void set_col(unsigned char x, unsigned char  y, bool val)
-  {
-    assert(x < 8);
-    assert(y < 8);
-    if (val)
-      colmap[y] |= (1 << (7-x));
-    else
-      colmap[y] &= ~(1 << (7-x));
-  }
 };
 
 #endif

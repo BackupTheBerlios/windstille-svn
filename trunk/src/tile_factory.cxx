@@ -56,11 +56,7 @@ TileFactory::TileFactory (const std::string& filename)
               lisp_object_t* name    = lisp_car(current);
               lisp_object_t* data    = lisp_cdr(current);
       
-              if (strcmp(lisp_symbol(name), "tile") == 0)
-                {
-                  parse_tile(data);
-                }
-              else if (strcmp(lisp_symbol(name), "tiles") == 0)
+              if (strcmp(lisp_symbol(name), "tiles") == 0)
                 {
                   parse_tiles(data);
                 }
@@ -100,35 +96,19 @@ TileFactory::parse_tiles(lisp_object_t* data)
       return;
     }
 
-  std::vector<unsigned char> colmap;
-  if (!reader.read_unsigned_char_vector("colmap", &colmap))
-    {
-      // fill with default
-      colmap.push_back(255);
-      colmap.push_back(255);
-      colmap.push_back(255);
-      colmap.push_back(255);
-
-      colmap.push_back(255);
-      colmap.push_back(255);
-      colmap.push_back(255);
-      colmap.push_back(255);
-    }
+  int colmap = 0;
+  reader.read_int("colmap", &colmap);
   
-  if (colmap.size() != 8)
-    {
-      std::cout << "Error: Size does not match: " << colmap.size() << std::endl;
-    }
-
   CL_PixelBuffer image = CL_ProviderFactory::load(filename);
 
-  int num_tiles = (image.get_width()/64) * (image.get_height()/64);
+  int num_tiles = (image.get_width()/TILE_SIZE) * (image.get_height()/TILE_SIZE);
 
   if ((id + num_tiles) >= int(tiles.size()))
     {
       tiles.resize(id + num_tiles + 1);
     }
 
+  // FIMXE: Tiles should share one OpenGL texture
   for (int y = 0; y < image.get_height(); y += TILE_SIZE)
     {
       for (int x = 0; x < image.get_width(); x += TILE_SIZE)
@@ -148,98 +128,11 @@ TileFactory::parse_tiles(lisp_object_t* data)
 
           tiles[id] = new Tile(chopped_image, 
                                CL_Color(255, 255, 255),
-                               CL_Color(127, 127, 127), &*colmap.begin());
+                               colmap);
           tiles[id]->id = id;
           id += 1;
         }
     }
-}
-
-void
-TileFactory::parse_tile(lisp_object_t* data)
-{
-  // FIXME: Move this to scripting and add a TileFactory::add()
-  int id = 1;
-  std::string image;
-  CL_Color color(255, 255, 255, 255);
-  CL_Color attribute_color(255, 255, 255, 255);
-  unsigned char colmap[8];
-  
-  while (!lisp_nil_p(data))
-    {
-      lisp_object_t* current = lisp_car(data);
-          
-      if (lisp_cons_p(current))
-        {
-          lisp_object_t* name    = lisp_car(current);
-          lisp_object_t* data    = lisp_cdr(current);
-
-          if (strcmp(lisp_symbol(name), "id") == 0)
-            {
-              id = lisp_integer(lisp_car(data));
-            }
-          else if (strcmp(lisp_symbol(name), "color") == 0)
-            {
-              color = CL_Color(lisp_integer(lisp_list_nth(data, 0)),
-                               lisp_integer(lisp_list_nth(data, 1)),
-                               lisp_integer(lisp_list_nth(data, 2)),
-                               lisp_integer(lisp_list_nth(data, 3)));
-            }
-          else if (strcmp(lisp_symbol(name), "attribute-color") == 0)
-            {
-              attribute_color = CL_Color(lisp_integer(lisp_list_nth(data, 0)),
-                                         lisp_integer(lisp_list_nth(data, 1)),
-                                         lisp_integer(lisp_list_nth(data, 2)),
-                                         lisp_integer(lisp_list_nth(data, 3)));
-            }
-          else if (strcmp(lisp_symbol(name), "image") == 0)
-            {
-              image = lisp_string(lisp_car(data));
-            }
-          else if (strcmp(lisp_symbol(name), "colmap") == 0)
-            {
-              colmap[0] = lisp_integer(lisp_car(data));
-              data = lisp_cdr(data);
-              colmap[1] = lisp_integer(lisp_car(data));
-              data = lisp_cdr(data);
-              colmap[2] = lisp_integer(lisp_car(data));
-              data = lisp_cdr(data);
-              colmap[3] = lisp_integer(lisp_car(data));
-              data = lisp_cdr(data);
-              colmap[4] = lisp_integer(lisp_car(data));
-              data = lisp_cdr(data);
-              colmap[5] = lisp_integer(lisp_car(data));
-              data = lisp_cdr(data);
-              colmap[6] = lisp_integer(lisp_car(data));
-              data = lisp_cdr(data);
-              colmap[7] = lisp_integer(lisp_car(data));
-            }
-        }
-      data = lisp_cdr(data);
-    }
-
-  if (0) // Debugging code
-    {
-      std::cout << "Tile: id     = " << id << "\n"
-                << "      image  = " << image << "\n"
-                << "      colmap = " 
-                << int(colmap[0]) << ", "
-                << int(colmap[1]) << ", "
-                << int(colmap[2]) << ", "
-                << int(colmap[3]) << ", "
-                << int(colmap[4]) << ", "
-                << int(colmap[5]) << ", "
-                << int(colmap[6]) << ", "
-                << int(colmap[7])
-                << std::endl;
-    }
-
-  if (id >= int(tiles.size()))
-    {
-      tiles.resize(id+1);
-    }
-  tiles[id] = new Tile(image, color, attribute_color, colmap);
-  tiles[id]->id = id;
 }
 
 Tile* 

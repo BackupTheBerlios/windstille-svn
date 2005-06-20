@@ -26,22 +26,19 @@
 
 Tile::Tile(const std::string& filename_, 
            const CL_Color& color_, 
-           const CL_Color& attribute_color_, 
-           unsigned char arg_colmap[])
+           unsigned int arg_colmap)
   : color(color_),
-    attribute_color(attribute_color_),
+    colmap(arg_colmap),
     filename(filename_)
 {
   //sur.set_alignment(origin_center, 0, 0);
-  memcpy(colmap, arg_colmap, 8);
 }
 
 Tile::Tile(const CL_PixelBuffer& buffer, 
            const CL_Color& color_,
-           const CL_Color& attribute_color_,
-           unsigned char arg_colmap[])
+           unsigned int arg_colmap)
   : color(color_),
-    attribute_color(attribute_color_),
+    colmap(arg_colmap),
     filename("<unknown>")
 {
   CL_SpriteDescription desc;
@@ -49,19 +46,12 @@ Tile::Tile(const CL_PixelBuffer& buffer,
   sur = CL_Sprite(desc);
 
   //sur.set_alignment(origin_center, 0, 0);
-  memcpy(colmap, arg_colmap, 8);
 }
 
 CL_Color
 Tile::get_color()
 {
   return color;
-}
-
-CL_Color
-Tile::get_attribute_color()
-{
-  return attribute_color;
 }
 
 CL_Sprite&

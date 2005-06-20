@@ -79,24 +79,11 @@ TileMap::draw (SceneContext& gc)
 	  {
 	    field (x,y)->get_sprite().draw (x * TILE_SIZE, 
                                             y * TILE_SIZE);
-            if (0) // Draw subtiles
-              {
-                for(int tile_y = 0; tile_y < 8; ++tile_y)
-                  for(int tile_x = 0; tile_x < 8; ++tile_x)
-                    {
-                      if (field (x,y)->get_col(tile_x, tile_y))
-                        {
-                          CL_Display::fill_rect(CL_Rect(x * TILE_SIZE + tile_x*16, y*TILE_SIZE + tile_y*16,
-                                                        x * TILE_SIZE + tile_x*16 + 16, y * TILE_SIZE + tile_y*16 + 16),
-                                                CL_Color(255, 0, 0, 128));
-                        }
-                    }
-              }
 	  }
       }
 }
 
-bool
+unsigned int
 TileMap::get_pixel(int x, int y)
 {
   if (x < 0 || y < 0 
@@ -110,13 +97,9 @@ TileMap::get_pixel(int x, int y)
     {
       Tile* tile = field(x / SUBTILE_NUM,
                          y / SUBTILE_NUM);
-      if (0)
-        std::cout << "GetPixel: " << x / SUBTILE_NUM << "," << x % SUBTILE_NUM << " x "
-                << y / SUBTILE_NUM << "," << y % SUBTILE_NUM << std::endl;
-
+      
       if (tile)
-        return tile->get_col(x % SUBTILE_NUM,
-                             y % SUBTILE_NUM);
+        return tile->get_colmap();
       else
         return 0;     
     }
@@ -127,9 +110,6 @@ TileMap::is_ground (float x, float y)
 {
   int x_pos = int(x) / TILE_SIZE;
   int y_pos = int(y) / TILE_SIZE;
-
-  int sub_tile_x = int(x) / (TILE_SIZE/8) - x_pos*8;
-  int sub_tile_y = int(y) / (TILE_SIZE/8) - y_pos*8;
 
   if (x < 0 || x_pos >= field.get_width())
     {
@@ -143,7 +123,7 @@ TileMap::is_ground (float x, float y)
 
 
   if (field (x_pos, y_pos))
-    return field (x_pos, y_pos)->get_col(sub_tile_x, sub_tile_y);
+    return field(x_pos, y_pos)->get_colmap();
   else
     return 0;
 }
