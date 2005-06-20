@@ -22,6 +22,7 @@
 
 #include <ClanLib/core.h>
 #include <ClanLib/display.h>
+#include <string>
 
 #include "globals.hxx"
 #include "field.hxx"
@@ -34,8 +35,9 @@ class TileMap
 private:
   Field<Tile*> field;
   typedef Field<Tile*>::iterator FieldIter;
+  std::string name;
 public:
-  TileMap(int w, int h);
+  TileMap(const std::string& name, int w, int h);
   TileMap (Field<int>* data);
 
   void update (float delta);
@@ -51,6 +53,8 @@ public:
   int get_height () const { return field.get_height (); }
 
   int get_tile_size () const { return TILE_SIZE; }
+
+  std::string get_name() const { return name; }
 };
 
 #endif

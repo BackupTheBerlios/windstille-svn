@@ -28,11 +28,6 @@
 
 extern CL_ResourceManager* resources;
 
-TileMap::TileMap(int w, int h)
-  : field(w, h)
-{
-}
-
 TileMap::TileMap (Field<int>* data)
   : field(data->get_width(),
           data->get_height())

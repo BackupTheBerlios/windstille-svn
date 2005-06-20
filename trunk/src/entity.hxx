@@ -39,6 +39,7 @@ private:
   CL_Sprite sprite;
 
   CL_Signal_v0 done;
+
 public:
   Entity(const CL_Vector& pos_);
   virtual ~Entity();

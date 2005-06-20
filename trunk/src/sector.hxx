@@ -1,7 +1,7 @@
-//  $Id: dog.hxx,v 1.3 2003/09/12 16:31:21 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
-//  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
+//  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -17,29 +17,51 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef DOG_HXX
-#define DOG_HXX
+#ifndef HEADER_SECTOR_HXX
+#define HEADER_SECTOR_HXX
 
-#include <ClanLib/Core/Math/cl_vector.h>
-#include <ClanLib/Display/sprite.h>
-#include "gameobj.hxx"
-#include "globals.hxx"
+#include <string>
+#include <vector>
 
-class Dog : public GameObj
+class GameObj;
+class TileMap;
+class Player;
+class SceneContext;
+
+/** */
+class Sector
 {
 private:
-  CL_Sprite sprite;
-  CL_Vector pos;
-  Direction direction;
-public:
-  Dog (const CL_Vector& arg_pos, Direction);
-  virtual ~Dog () {}
-  
-  void draw (SceneContext& gc);
-  void update (float);
+  typedef std::vector<GameObj*> Objects;
+  Objects objects;
 
-  bool on_ground ();
-  bool stuck ();
+  std::vector<TileMap*> tilemaps;
+
+  /** The TileMap with which the player interacts */
+  TileMap* interactive_tilemap;
+
+  Player* player;
+
+  std::string name;
+
+  void parse_file(const std::string& filename);
+
+public:
+  Sector(const std::string& filename);
+  ~Sector();
+
+  void draw(SceneContext& gc);
+  void update(float delta);
+
+  int get_width () const;
+  int get_height () const;
+
+  void add(GameObj*);
+  void remove(GameObj*);
+
+private:
+  Sector (const Sector&);
+  Sector& operator= (const Sector&);
 };
 
 #endif

@@ -28,7 +28,6 @@
 
 class TileMap;
 class DiamondMap;
-class WaterMap;
 class GameObj;
 class Player;
 
@@ -40,7 +39,6 @@ private:
   TileMap* tilemap;
   TileMap* background_tilemap;
   float passed_time;
-  WaterMap*   water_map;
 
   std::vector<std::string> scripts;
 
@@ -50,7 +48,6 @@ private:
 public:
   static GameWorld* current() { return current_; }
 
-  GameWorld (int w, int h);
   GameWorld (const std::string& filename);
   ~GameWorld();
   
@@ -73,13 +70,10 @@ public:
   /** return height in pixels */
   int get_height () const;
 
-  void on_startup();
-
   std::list<Player*>* get_players () { return &player_objects; }
   std::list<GameObj*>* get_objects() { return &objects; }
 
   TileMap* get_tilemap () const { return tilemap; }
-  WaterMap* get_watermap () const { return water_map; }
 };
 
 #endif

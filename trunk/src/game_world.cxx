@@ -24,23 +24,12 @@
 #include "gameobj.hxx"
 #include "game_world.hxx"
 #include "tile_map.hxx"
-#include "water_map.hxx"
 #include "windstille_level.hxx"
 
 GameWorld* GameWorld::current_ = 0;
 
 bool removable (GameObj* obj) {
   return obj->is_removable ();
-}
-
-GameWorld::GameWorld (int w, int h)
-  : passed_time (0)
-{
-  current_ = this;
-
-  tilemap            = new TileMap(w, h);
-  background_tilemap = new TileMap(w, h);
-  water_map          = new WaterMap();
 }
 
 GameWorld::GameWorld (const std::string& filename)
@@ -52,14 +41,12 @@ GameWorld::GameWorld (const std::string& filename)
   
   tilemap            = new TileMap(level.get_tilemap());
   background_tilemap = new TileMap(level.get_background_tilemap());
-  water_map          = new WaterMap();
 
   scripts = *level.get_scripts();
 }
 
 GameWorld::~GameWorld()
 {
-  delete water_map;
   delete tilemap;
   delete background_tilemap;
 }
@@ -74,7 +61,7 @@ GameWorld::draw (SceneContext& gc)
   for (std::list<GameObj*>::iterator i = objects.begin ();
        i != objects.end (); ++i)
     (*i)->draw (gc);
-  water_map->draw(gc);
+
   tilemap->draw (gc);
 }
 
@@ -82,10 +69,7 @@ void
 GameWorld::update (float delta)
 {
   //  coroutines.update(delta);
-
   passed_time += delta;
-
-  water_map->update(delta);
 
   std::list<GameObj*> tmp_objects (objects);
 
@@ -120,16 +104,6 @@ GameWorld::remove_player (Player* obj)
 { 
   objects.remove (obj); 
   player_objects.remove (obj); 
-}
-
-void
-GameWorld::on_startup()
-{
-  for (std::vector<std::string>::iterator i = scripts.begin();
-       i != scripts.end(); ++i)
-    {
-      //RubyFunctor::load_file((datadir + "levels/" + *i).c_str());
-    }
 }
 
 /* EOF */

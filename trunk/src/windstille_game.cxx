@@ -28,7 +28,6 @@
 #include "player.hxx"
 #include "animation_obj.hxx"
 #include "tile_map.hxx"
-#include "dog.hxx"
 #include "music_manager.hxx"
 #include "power_up.hxx"
 #include "bonus_flyer.hxx"
@@ -219,8 +218,6 @@ WindstilleGame::on_startup ()
   logo       = CL_Sprite("logo", resources);
   portrait   = CL_Sprite("hero/portrait", resources);
   logo_black = CL_Sprite("logo_black", resources);
-
-  world->on_startup();
 }
 
 void
