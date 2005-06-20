@@ -124,7 +124,7 @@ TileFactory::parse_tiles(lisp_object_t* data)
                          CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
           chopped_image.unlock();
 
-          std::cout << "id: " << id << " " << x << "x" << y << std::endl;
+          //std::cout << "id: " << id << " " << x << "x" << y << std::endl;
 
           tiles[id] = new Tile(chopped_image, 
                                CL_Color(255, 255, 255),

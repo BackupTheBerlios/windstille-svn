@@ -32,6 +32,7 @@
 #include "windstille_main.hxx"
 #include "windstille_menu.hxx"
 #include "fonts.hxx"
+#include "sector.hxx"
 #include "input/input_manager.hxx"
 #include "music_manager.hxx"
 #include "tile_factory.hxx"
@@ -308,6 +309,12 @@ WindstilleMain::init_modules()
   TileFactory::tile_def_file = "tiles.scm";
   
   std::cout << "done" << std::endl;
+
+  std::cout << "Testing file reading..." << std::endl;
+  {
+    Sector sector("../data/levels/newformat.wst");
+  }
+  std::cout << "Testing file reading... done" << std::endl;
 
   Fonts::init(); 
   MusicManager::init();

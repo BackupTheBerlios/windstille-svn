@@ -26,6 +26,7 @@
 
 #include "globals.hxx"
 #include "field.hxx"
+#include "lispreader.hxx"
 #include "display/scene_context.hxx"
 
 class Tile;
@@ -37,6 +38,7 @@ private:
   typedef Field<Tile*>::iterator FieldIter;
   std::string name;
 public:
+  TileMap(LispReader reader);
   TileMap(const std::string& name, int w, int h);
   TileMap (Field<int>* data);
 

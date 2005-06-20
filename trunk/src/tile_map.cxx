@@ -28,6 +28,29 @@
 
 extern CL_ResourceManager* resources;
 
+TileMap::TileMap(LispReader reader)
+{
+  int width;
+  int height;
+
+  reader.read_string("name", &name);
+  if (reader.read_int("width",   &width) && 
+      reader.read_int("height",  &height))
+    {
+      field = Field<Tile*>(width, height);
+
+      std::cout << "\nTileMap" << std::endl;
+      std::cout << "Name:   " << name << std::endl;
+      std::cout << "Width:  " << width << std::endl;
+      std::cout << "Height: " << height << std::endl;
+      std::cout << "TileMap\n" << std::endl;
+    }
+  else
+    {
+      std::cout << "Couldn't parse tilemap" << std::endl;
+    }
+}
+
 TileMap::TileMap (Field<int>* data)
   : field(data->get_width(),
           data->get_height())

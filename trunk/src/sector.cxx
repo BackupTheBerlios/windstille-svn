@@ -54,7 +54,35 @@ Sector::parse_file(const std::string& filename)
       
       std::vector<std::string> scripts;
       reader.read_string_vector("scripts", &scripts);
-      
+
+      lisp_object_t* objects_ptr = 0;
+      if (reader.read_lisp("objects", &objects_ptr))
+        {
+          while(objects_ptr)
+            {
+              lisp_object_t* data = lisp_car(objects_ptr);
+              if (lisp_cons_p(data) && lisp_symbol_p(lisp_car(data)))
+                {
+                  std::string ident = lisp_symbol(lisp_car(data));
+                  std::cout << "Object: " << ident << std::endl;
+
+                  if (ident == "tilemap")
+                    {
+                      new TileMap(LispReader(lisp_cdr(data)));
+                    }
+                  else if (ident == "background")
+                    {
+                    }
+                  else
+                    {
+                      std::cout << "Sector: Unknown ident: " << ident << std::endl;
+                    }
+                }
+
+              objects_ptr = lisp_cdr(objects_ptr);
+            }
+        }
+
       //parse_foreground_tilemap(reader.get("interactive-tilemap"));
       //parse_background_tilemap(reader.get("background-tilemap"));
     }
