@@ -23,7 +23,6 @@
 #include "player.hxx"
 #include "gameobj.hxx"
 #include "game_world.hxx"
-#include "diamond_map.hxx"
 #include "tile_map.hxx"
 #include "water_map.hxx"
 #include "windstille_level.hxx"
@@ -41,7 +40,6 @@ GameWorld::GameWorld (int w, int h)
 
   tilemap            = new TileMap(w, h);
   background_tilemap = new TileMap(w, h);
-  diamond_map        = new DiamondMap(new Field<int>(w, h));
   water_map          = new WaterMap();
 }
 
@@ -54,7 +52,6 @@ GameWorld::GameWorld (const std::string& filename)
   
   tilemap            = new TileMap(level.get_tilemap());
   background_tilemap = new TileMap(level.get_background_tilemap());
-  diamond_map        = new DiamondMap(level.get_diamond_map());
   water_map          = new WaterMap();
 
   scripts = *level.get_scripts();
@@ -62,7 +59,6 @@ GameWorld::GameWorld (const std::string& filename)
 
 GameWorld::~GameWorld()
 {
-  delete diamond_map;
   delete water_map;
   delete tilemap;
   delete background_tilemap;
@@ -75,7 +71,6 @@ GameWorld::draw (SceneContext& gc)
   
   background_tilemap->draw (gc);
 
-  diamond_map->draw(gc);
   for (std::list<GameObj*>::iterator i = objects.begin ();
        i != objects.end (); ++i)
     (*i)->draw (gc);
@@ -90,7 +85,6 @@ GameWorld::update (float delta)
 
   passed_time += delta;
 
-  diamond_map->update(delta);
   water_map->update(delta);
 
   std::list<GameObj*> tmp_objects (objects);

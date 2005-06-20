@@ -35,8 +35,6 @@ WindstilleLevel::WindstilleLevel (const std::string& filename)
 void 
 WindstilleLevel::parse_file (const std::string& filename)
 {
-  diamond_map = 0;
-
   if (debug)
     std::cout << "Windstille Level: " << filename << std::endl;
 
@@ -58,13 +56,6 @@ WindstilleLevel::parse_file (const std::string& filename)
       parse_foreground_tilemap(reader.get("interactive-tilemap"));
       parse_background_tilemap(reader.get("background-tilemap"));
       parse_water(reader.get("water"));
-      parse_diamond_map(reader.get("diamond-map"));
-    }
-
-  if (!diamond_map)
-    {
-      std::cout << "No diamond map in level file" << std::endl;
-      diamond_map = new Field<int>(width * 2, height * 2);
     }
 
   lisp_free(tree);
@@ -118,41 +109,6 @@ WindstilleLevel::parse_tilemap (lisp_object_t* cur)
     }
 
   return field;
-}
-
-void
-WindstilleLevel::parse_diamond_map(lisp_object_t* data)
-{
-  return;
-#if 0
-  diamond_map = new Field<int>(width * 2, height * 2);
-
-  for(Field<int>::iterator i = diamond_map->begin(); i != diamond_map->end(); ++i)
-    {
-      *i = false;
-    }
-  
-  int x = 0;
-  int y = 0;
-
-  while (!gh_null_p(data) && y < height*2)
-    {
-      (*diamond_map)(x, y) = gh_scm2int(gh_car(data));
-              
-      x += 1;
-
-      if (x >= width*2)
-        {
-          x = 0;
-          y += 1;
-        }
-              
-      data = gh_cdr(data);
-    }
-
-  if (y != height*2)
-    std::cout << "WindstilleLevel: Something went wrong: y=" << y << " height=" << height << std::endl;
-#endif
 }
 
 void

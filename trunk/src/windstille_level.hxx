@@ -37,8 +37,6 @@ private:
   Field<int>* tilemap;
   Field<int>* background_tilemap;
 
-  Field<int>* diamond_map;
-
   std::vector<std::string> scripts;
 
   void parse_file (const std::string& filename);
@@ -47,7 +45,6 @@ private:
   void parse_foreground_tilemap (lisp_object_t* cur);
   void parse_background_tilemap (lisp_object_t* cur);
   void parse_water(lisp_object_t* cur);
-  void parse_diamond_map(lisp_object_t* cur);
   void parse_backgound_tilemap (lisp_object_t* cur);
   void parse_gameobjects (lisp_object_t* cur);
 public:
@@ -55,8 +52,6 @@ public:
 
   Field<int>* get_tilemap() const { return tilemap; }
   Field<int>* get_background_tilemap() const { return background_tilemap; }
-
-  Field<int>* get_diamond_map() { return diamond_map; }
 
   std::vector<std::string>* get_scripts() { return &scripts; }
 };

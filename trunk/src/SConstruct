@@ -55,7 +55,6 @@ windstille_source = [
     'controller_def.cxx', 
     'default_shoot.cxx', 
 #    'dialog_manager.cxx', 
-    'diamond_map.cxx', 
     'display.cxx', 
     'dog.cxx', 
     'energiebar.cxx',

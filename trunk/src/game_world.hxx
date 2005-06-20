@@ -40,7 +40,6 @@ private:
   TileMap* tilemap;
   TileMap* background_tilemap;
   float passed_time;
-  DiamondMap* diamond_map;
   WaterMap*   water_map;
 
   std::vector<std::string> scripts;
@@ -81,7 +80,6 @@ public:
 
   TileMap* get_tilemap () const { return tilemap; }
   WaterMap* get_watermap () const { return water_map; }
-  DiamondMap* get_diamond_map() const { return diamond_map; } 
 };
 
 #endif
