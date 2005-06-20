@@ -27,7 +27,6 @@
 #include "field.hxx"
 #include "display/scene_context.hxx"
 
-class WindstilleLevel;
 class Tile;
 
 class TileMap

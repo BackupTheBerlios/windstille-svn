@@ -77,8 +77,8 @@ TileMap::draw (SceneContext& gc)
 	//field (x,y)->sur->setScale (2.0f, 2.0f);
 	if (field (x,y))
 	  {
-	    field (x,y)->get_sprite().draw (x * TILE_SIZE, 
-                                            y * TILE_SIZE);
+	    field(x,y)->get_sprite().draw (x * TILE_SIZE, 
+                                           y * TILE_SIZE);
 	  }
       }
 }

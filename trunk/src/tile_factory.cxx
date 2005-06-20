@@ -62,12 +62,12 @@ TileFactory::TileFactory (const std::string& filename)
                 }
               else
                 {
-                  std::cout << "WindstilleLevel: Unknown tag: " << lisp_symbol(name) << std::endl;
+                  std::cout << "TileFactory: Unknown tag: " << lisp_symbol(name) << std::endl;
                 }
             }
           else
             {
-              std::cout << "WindstilleLevel: Not a pair!"  << std::endl;
+              std::cout << "TileFactory: Not a pair!"  << std::endl;
             }
           tree = lisp_cdr(tree);
         }
