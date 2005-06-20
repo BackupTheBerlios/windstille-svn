@@ -52,6 +52,8 @@ Sector::parse_file(const std::string& filename)
 
       reader.read_string("name",  &name);
       
+      std::cout << "Sector Name: " << name << std::endl;
+
       std::vector<std::string> scripts;
       reader.read_string_vector("scripts", &scripts);
 
@@ -68,7 +70,7 @@ Sector::parse_file(const std::string& filename)
 
                   if (ident == "tilemap")
                     {
-                      new TileMap(LispReader(lisp_cdr(data)));
+                      tilemaps.push_back(new TileMap(LispReader(lisp_cdr(data))));
                     }
                   else if (ident == "background")
                     {
