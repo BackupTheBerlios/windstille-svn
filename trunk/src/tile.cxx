@@ -24,52 +24,42 @@
 #include "globals.hxx"
 #include "tile.hxx"
 
-Tile::Tile(const std::string& filename_, 
-           const CL_Color& color_, 
+Tile::Tile(const std::string& filename, 
+           const std::string& highlight_filename,
            unsigned int arg_colmap)
-  : color(color_),
-    colmap(arg_colmap),
-    filename(filename_)
+  : colmap(arg_colmap)
 {
-  //sur.set_alignment(origin_center, 0, 0);
+  color     = CL_Sprite(filename, resources);
+  highlight = CL_Sprite(highlight_filename, resources);
 }
 
 Tile::Tile(const CL_PixelBuffer& buffer, 
-           const CL_Color& color_,
+           const CL_PixelBuffer& hl_buffer, 
            unsigned int arg_colmap)
-  : color(color_),
-    colmap(arg_colmap),
-    filename("<unknown>")
+  : colmap(arg_colmap)
 {
   CL_SpriteDescription desc;
   desc.add_frame(buffer);
-  sur = CL_Sprite(desc);
+  color = CL_Sprite(desc);
 
-  //sur.set_alignment(origin_center, 0, 0);
+  if (hl_buffer)
+    {
+      CL_SpriteDescription hl_desc;
+      hl_desc.add_frame(hl_buffer);
+      highlight = CL_Sprite(hl_desc);
+    }
 }
 
-CL_Color
-Tile::get_color()
+CL_Sprite&
+Tile::get_color_sprite()
 {
   return color;
 }
 
 CL_Sprite&
-Tile::get_sprite()
+Tile::get_highlight_sprite()
 {
-  if (sur)
-    return sur;
-  else
-    {
-      try {
-        //std::cout << "Loading Tile: " << filename << std::endl;
-        sur = CL_Sprite(filename, resources);
-        return sur;
-      } catch (CL_Error& err) {
-        std::cout << "Tile: CL_Error: " << err.message << std::endl;
-        assert(0);
-      }
-    }
+  return highlight;
 }
 
 /* EOF */

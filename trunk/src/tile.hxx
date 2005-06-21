@@ -30,28 +30,27 @@
 class Tile
 {
 private:
-  CL_Sprite sur;
-
-  /** Color used for the minimap to represent this tile */
-  CL_Color  color;
-
+  CL_Sprite color;
+  CL_Sprite highlight;
+  
 public:
   int id; 
   /** Bitmaps that holds the collision attributes for this tile */
   unsigned int colmap;
-  std::string filename;
 
   /** @param filename Surface to use 
    *  @param arg_colmap a 8 char long array */
   Tile(const std::string& filename, 
-       const CL_Color& color, unsigned int arg_colmap);
+       const std::string& highlight_filename, 
+       unsigned int arg_colmap);
 
   Tile(const CL_PixelBuffer& buffer, 
-       const CL_Color& color, unsigned int arg_colmap);
+       const CL_PixelBuffer& hl_buffer, 
+       unsigned int arg_colmap);
 
   unsigned get_colmap() const { return colmap; }
-  CL_Sprite& get_sprite();
-  CL_Color   get_color();
+  CL_Sprite& get_color_sprite();
+  CL_Sprite& get_highlight_sprite();
 };
 
 #endif

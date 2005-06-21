@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include <ClanLib/Display/color.h>
 
 class GameObj;
 class TileMap;
@@ -36,6 +37,8 @@ private:
 
   typedef std::vector<GameObj*> Objects;
   Objects objects;
+
+  CL_Color ambient_light;
 
   /** The TileMap with which the player interacts */
   TileMap* interactive_tilemap;

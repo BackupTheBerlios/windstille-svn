@@ -107,8 +107,12 @@ TileMap::draw (SceneContext& sc)
 	//field (x,y)->sur->setScale (2.0f, 2.0f);
 	if (field (x,y))
 	  {
-	    sc.color().draw(field(x,y)->get_sprite(),
+	    sc.color().draw(field(x,y)->get_color_sprite(),
                             x * TILE_SIZE, y * TILE_SIZE, z_pos);
+
+            if (field(x, y)->get_highlight_sprite())
+	    sc.highlight().draw(field(x,y)->get_highlight_sprite(),
+                                x * TILE_SIZE, y * TILE_SIZE, z_pos);
 	  }
       }
 }

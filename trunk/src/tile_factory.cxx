@@ -79,6 +79,7 @@ TileFactory::TileFactory (const std::string& filename)
 void
 TileFactory::parse_tiles(lisp_object_t* data)
 {
+  assert(data);
   LispReader reader(data);
 
   int id = 1;
@@ -90,16 +91,23 @@ TileFactory::parse_tiles(lisp_object_t* data)
     }
 
   std::string filename;
-  if (!reader.read_string("image", &filename))
+  if (!reader.read_string("color-image", &filename))
     {
       std::cout << "Error: image tag missing" << std::endl;
       return;
     }
 
+  std::string highlight_filename;
+  reader.read_string("highlight-image", &highlight_filename);
+
   std::vector<int> colmap;
   reader.read_int_vector("colmap", &colmap);
  
   CL_PixelBuffer image = CL_ProviderFactory::load(filename);
+  CL_PixelBuffer hl_image;
+
+  if (!highlight_filename.empty())
+    hl_image = CL_ProviderFactory::load(highlight_filename);
 
   int num_tiles = (image.get_width()/TILE_SIZE) * (image.get_height()/TILE_SIZE);
 
@@ -123,16 +131,29 @@ TileFactory::parse_tiles(lisp_object_t* data)
                                        image.get_format(), NULL);
           chopped_image.lock();
           image.convert(chopped_image.get_data(), 
-                         chopped_image.get_format(), 
-                         image.get_format().get_depth()*TILE_SIZE, 
-                         CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
-                         CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
+                        chopped_image.get_format(), 
+                        image.get_format().get_depth()*TILE_SIZE, 
+                        CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
+                        CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
           chopped_image.unlock();
 
-          //std::cout << "id: " << id << " " << x << "x" << y << std::endl;
+          CL_PixelBuffer hl_chopped_image;
 
-          tiles[id] = new Tile(chopped_image, 
-                               CL_Color(255, 255, 255),
+          if (hl_image)
+            {
+              hl_chopped_image = CL_PixelBuffer(TILE_SIZE, TILE_SIZE,
+                                                hl_image.get_format().get_depth()*TILE_SIZE,
+                                                hl_image.get_format(), NULL);
+              hl_chopped_image.lock();
+              hl_image.convert(hl_chopped_image.get_data(), 
+                               hl_chopped_image.get_format(), 
+                               hl_image.get_format().get_depth()*TILE_SIZE, 
+                               CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
+                               CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
+              hl_chopped_image.unlock();
+            }
+
+          tiles[id] = new Tile(chopped_image, hl_chopped_image,
                                colmap[y/TILE_SIZE * image.get_width()/TILE_SIZE + x/TILE_SIZE]);
           tiles[id]->id = id;
           id += 1;

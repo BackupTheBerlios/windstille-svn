@@ -31,6 +31,7 @@ Sector::Sector(const std::string& filename)
 {
   current_ = this;
   interactive_tilemap = 0;
+  ambient_light = CL_Color(0, 0, 0);
   parse_file(filename);
   if (!interactive_tilemap)
     std::cout << "Error: Sector: No interactive-tilemap available" << std::endl;
@@ -62,6 +63,15 @@ Sector::parse_file(const std::string& filename)
 
       std::vector<std::string> scripts;
       reader.read_string_vector("scripts", &scripts);
+
+      std::vector<int> ambient_colors;
+      reader.read_int_vector("ambient-color", &ambient_colors);
+      if (ambient_colors.size() == 3)
+        {
+          ambient_light = CL_Color(ambient_colors[0],
+                                   ambient_colors[1],
+                                   ambient_colors[2]);
+        }
 
       lisp_object_t* objects_ptr = 0;
       if (reader.read_lisp("objects", &objects_ptr))
@@ -107,8 +117,7 @@ Sector::parse_file(const std::string& filename)
 void
 Sector::draw(SceneContext& sc)
 {
-  // FIXME: Make baselight configurable
-  sc.light().fill_screen(CL_Color(255, 255, 255));
+  sc.light().fill_screen(ambient_light);
 
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
     {
