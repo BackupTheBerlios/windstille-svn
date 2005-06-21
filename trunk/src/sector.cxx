@@ -108,7 +108,7 @@ void
 Sector::draw(SceneContext& sc)
 {
   // FIXME: Make baselight configurable
-  sc.light().fill_screen(CL_Color(200, 200, 200));
+  sc.light().fill_screen(CL_Color(255, 255, 255));
 
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
     {

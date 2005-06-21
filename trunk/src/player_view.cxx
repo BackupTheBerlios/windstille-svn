@@ -49,7 +49,7 @@ void
 PlayerView::update (float delta)
 {
   int hscroll_threshold = 100;
-  int vscroll_threshold =  50;
+  int vscroll_threshold = 150;
 
   CL_Vector tpos = player->get_pos();
 

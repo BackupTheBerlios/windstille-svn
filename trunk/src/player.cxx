@@ -117,33 +117,8 @@ Player::draw (SceneContext& gc)
       else
         sprite->set_alpha(1.0f);
 
-      sprite->draw (int(pos.x), int(pos.y));
+      gc.color().draw(*sprite, pos.x, pos.y, 1.0f);
     }
-
-  if (0)
-    {
-      CL_Display::fill_rect(CL_Rect(int(pos.x - 5), int(pos.y - 5),
-                                    int(pos.x + 5), int(pos.y + 5)),
-                            CL_Color(255, 255, 255));
-
-      SubTilePos new_subtile_pos = get_subtile_pos();
- 
-      CL_Color color;
-
-      if (get_world()->get_tilemap()->get_pixel(new_subtile_pos.x, new_subtile_pos.y))
-        color = CL_Color(255, 255, 0, 128);
-      else
-        color = CL_Color(0,  0, 255, 128);
-
-      CL_Display::fill_rect(CL_Rect(new_subtile_pos.x*SUBTILE_SIZE,
-                                    new_subtile_pos.y*SUBTILE_SIZE,
-                                    new_subtile_pos.x*SUBTILE_SIZE + SUBTILE_SIZE,
-                                    new_subtile_pos.y*SUBTILE_SIZE + SUBTILE_SIZE),
-                            color);
-    }
-
-  //CL_Display::fill_rect(get_bounding_rect(),
-  //                    CL_Color(255, 0, 255, 155));
 }
 
 CL_Rect

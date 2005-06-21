@@ -32,8 +32,11 @@ TileMap::TileMap(LispReader reader)
 {
   int width;
   int height;
+  z_pos = 0;
 
   reader.read_string("name", &name);
+  reader.read_float("z-pos", &z_pos);
+
   if (reader.read_int("width",   &width) && 
       reader.read_int("height",  &height))
     {
@@ -89,7 +92,7 @@ TileMap::update (float delta)
 }
 
 void
-TileMap::draw (SceneContext& gc)
+TileMap::draw (SceneContext& sc)
 {
   CL_Rect rect = View::current()->get_clip_rect();
 
@@ -104,8 +107,8 @@ TileMap::draw (SceneContext& gc)
 	//field (x,y)->sur->setScale (2.0f, 2.0f);
 	if (field (x,y))
 	  {
-	    field(x,y)->get_sprite().draw (x * TILE_SIZE, 
-                                           y * TILE_SIZE);
+	    sc.color().draw(field(x,y)->get_sprite(),
+                            x * TILE_SIZE, y * TILE_SIZE, z_pos);
 	  }
       }
 }
