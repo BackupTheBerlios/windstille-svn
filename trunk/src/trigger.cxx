@@ -18,7 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <list>
-#include "game_world.hxx"
+#include "sector.hxx"
 #include "trigger.hxx"
 #include "player.hxx"
 
@@ -32,9 +32,9 @@ RegionTriggerCondition::RegionTriggerCondition(CL_Rectf rect)
 bool
 RegionTriggerCondition::check()
 {
-  GameWorld* world = GameWorld::current();
+  Sector* world = Sector::current();
 
-  Player* player = *(world->get_players()->begin());
+  Player* player = Player::current();
 
   return rect.is_inside(CL_Pointf(player->get_pos().x,
                                   player->get_pos().y));

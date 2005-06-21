@@ -20,7 +20,7 @@
 #include <ClanLib/Display/display.h>
 #include "globals.hxx"
 #include "player.hxx"
-#include "game_world.hxx"
+#include "sector.hxx"
 #include "water_map.hxx"
 #include "water_splash.hxx"
 
@@ -110,7 +110,7 @@ WaterMap::update(float delta)
           if ((old_pos.y < y && pos.y > y)
               || (old_pos.y > y && pos.y < y))
             {
-              GameWorld::current()->add(new WaterSplash(pos.x, y));
+              Sector::current()->add(new WaterSplash(pos.x, y));
             }
         }
     }

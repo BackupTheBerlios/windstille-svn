@@ -39,11 +39,16 @@ TileMap::TileMap(LispReader reader)
     {
       field = Field<Tile*>(width, height);
 
-      std::cout << "\nTileMap" << std::endl;
-      std::cout << "Name:   " << name << std::endl;
-      std::cout << "Width:  " << width << std::endl;
-      std::cout << "Height: " << height << std::endl;
-      std::cout << "TileMap\n" << std::endl;
+      Field<int> tmpfield(width, height);
+      reader.read_int_vector("data", &tmpfield.get_vector());
+
+      for (int y = 0; y < field.get_height (); ++y) 
+        {
+          for (int x = 0; x < field.get_width (); ++x)
+            {
+              field(x, y) = TileFactory::current()->create(tmpfield(x, y));
+            }
+        }
     }
   else
     {
@@ -68,6 +73,10 @@ TileMap::TileMap (Field<int>* data)
           field(x, y) = TileFactory::current()->create((*data)(x, y));
         }
     }
+}
+
+TileMap::~TileMap()
+{
 }
 
 void 

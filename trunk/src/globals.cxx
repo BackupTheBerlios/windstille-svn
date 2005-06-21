@@ -29,7 +29,7 @@ int SUBTILE_NUM  = (TILE_SIZE/SUBTILE_SIZE);
 
 bool bonus_active = true;
 float game_speed = 1.0f;
-int debug = 0;
+int debug = 1;
 bool sound_disabled = false;
 
 /* EOF */

@@ -19,6 +19,6 @@
 
 #include "gameobj.hxx"
 
-GameWorld* GameObj::world;
+Sector* GameObj::world;
 
 /* EOF */

@@ -19,7 +19,7 @@
 
 #include "globals.hxx"
 #include "player.hxx"
-#include "game_world.hxx"
+#include "sector.hxx"
 #include "tile_map.hxx"
 #include "igel.hxx"
 
@@ -109,30 +109,30 @@ Igel::update(float delta)
 bool
 Igel::in_wall()
 {
-  return GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE)*SUBTILE_SIZE,
+  return Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE)*SUBTILE_SIZE,
                                                         (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE)
-    || GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 1)*SUBTILE_SIZE,
+    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 1)*SUBTILE_SIZE,
                                                         (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE)
-    || GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 2)*SUBTILE_SIZE,
+    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 2)*SUBTILE_SIZE,
                                                         (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE)
-    || GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE + 1)*SUBTILE_SIZE,
+    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE + 1)*SUBTILE_SIZE,
                                                         (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE)
-    || GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE + 2)*SUBTILE_SIZE,
+    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE + 2)*SUBTILE_SIZE,
                                                       (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE);
 }
 
 bool
 Igel::on_ground()
 {
-  return GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE)*SUBTILE_SIZE,
+  return Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE)*SUBTILE_SIZE,
                                                         (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE)
-    && GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE+1)*SUBTILE_SIZE,
+    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE+1)*SUBTILE_SIZE,
                                                       (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE)
-    && GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE+2)*SUBTILE_SIZE,
+    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE+2)*SUBTILE_SIZE,
                                                       (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE)
-    && GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 1)*SUBTILE_SIZE,
+    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 1)*SUBTILE_SIZE,
                                                       (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE)
-    && GameWorld::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 2)*SUBTILE_SIZE,
+    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 2)*SUBTILE_SIZE,
                                                       (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE);
 }
 

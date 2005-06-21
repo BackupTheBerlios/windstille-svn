@@ -19,7 +19,7 @@
 
 #include "globals.hxx"
 #include "igel.hxx"
-#include "game_world.hxx"
+#include "sector.hxx"
 #include "bomb.hxx"
 
 Bomb::Bomb(int x, int y)
@@ -95,8 +95,8 @@ Bomb::draw(SceneContext& sc)
 void 
 Bomb::explode()
 {
-  std::list<GameObj*>* objs = GameWorld::current()->get_objects();
-  for(std::list<GameObj*>::iterator i = objs->begin(); i != objs->end(); ++i)
+  std::vector<GameObj*>* objs = Sector::current()->get_objects();
+  for(std::vector<GameObj*>::iterator i = objs->begin(); i != objs->end(); ++i)
     {
       Igel* igel = dynamic_cast<Igel*>(*i);
       if (igel)

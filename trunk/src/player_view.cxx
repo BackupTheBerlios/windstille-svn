@@ -20,7 +20,7 @@
 #include <ClanLib/gl.h>
 #include "player.hxx"
 #include "player_view.hxx"
-#include "game_world.hxx"
+#include "sector.hxx"
 
 PlayerView::PlayerView (Player* t)
   : player (t),
@@ -38,8 +38,8 @@ PlayerView::draw (SceneContext& gc)
 
   gc.push_modelview();
   gc.translate(-pos.x + CL_Display::get_width ()/2,
-                       -pos.y + CL_Display::get_height ()/2);
-  world->draw (gc);
+               -pos.y + CL_Display::get_height ()/2);
+  world->draw(gc);
   gc.pop_modelview();
 
   CL_Display::pop_modelview();

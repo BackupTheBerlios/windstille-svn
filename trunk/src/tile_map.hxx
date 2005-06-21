@@ -27,11 +27,12 @@
 #include "globals.hxx"
 #include "field.hxx"
 #include "lispreader.hxx"
+#include "gameobj.hxx"
 #include "display/scene_context.hxx"
 
 class Tile;
 
-class TileMap
+class TileMap : public GameObj
 {
 private:
   Field<Tile*> field;
@@ -41,6 +42,7 @@ public:
   TileMap(LispReader reader);
   TileMap(const std::string& name, int w, int h);
   TileMap (Field<int>* data);
+  virtual ~TileMap();
 
   void update (float delta);
   void draw (SceneContext& gc);

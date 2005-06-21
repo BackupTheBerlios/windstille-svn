@@ -25,9 +25,15 @@
 #include "gameobj.hxx"
 #include "sector.hxx"
 
+Sector* Sector::current_ = 0;
+
 Sector::Sector(const std::string& filename)
 {
+  current_ = this;
+  interactive_tilemap = 0;
   parse_file(filename);
+  if (!interactive_tilemap)
+    std::cout << "Error: Sector: No interactive-tilemap available" << std::endl;
 }
 
 Sector::~Sector()
@@ -42,7 +48,7 @@ Sector::parse_file(const std::string& filename)
 
   lisp_object_t* tree = lisp_read_from_file(filename.c_str());
 
-  if (strcmp(lisp_symbol(lisp_car(tree)), "windstille-sector") != 0)
+  if (tree && strcmp(lisp_symbol(lisp_car(tree)), "windstille-sector") != 0)
     {
       std::cout << filename << ": not a Windstille Sector file, type='" << lisp_symbol(lisp_car(tree)) << "'!" << std::endl;
     }
@@ -60,7 +66,7 @@ Sector::parse_file(const std::string& filename)
       lisp_object_t* objects_ptr = 0;
       if (reader.read_lisp("objects", &objects_ptr))
         {
-          while(objects_ptr)
+          while(!lisp_nil_p(objects_ptr))
             {
               lisp_object_t* data = lisp_car(objects_ptr);
               if (lisp_cons_p(data) && lisp_symbol_p(lisp_car(data)))
@@ -70,7 +76,13 @@ Sector::parse_file(const std::string& filename)
 
                   if (ident == "tilemap")
                     {
-                      tilemaps.push_back(new TileMap(LispReader(lisp_cdr(data))));
+                      TileMap* tilemap = new TileMap(LispReader(lisp_cdr(data)));
+
+                      std::cout << "TileMap: " << tilemap->get_name() << std::endl;
+
+                      objects.push_back(tilemap);
+                      if (tilemap->get_name() == "interactive")
+                        interactive_tilemap = tilemap;
                     }
                   else if (ident == "background")
                     {
@@ -100,6 +112,7 @@ Sector::draw(SceneContext& sc)
 
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
     {
+      //std::cout << *i << std::endl;
       (*i)->draw(sc);
     }
 }
@@ -116,13 +129,14 @@ Sector::update(float delta)
 void
 Sector::add(GameObj* obj)
 {
-  
+  // FIXME: This is not save to call in update(), should be changed accordingly
+  objects.push_back(obj);
 }
 
 void
 Sector::remove(GameObj* obj)
 {
-  
+  // not implemented
 }
 
 int

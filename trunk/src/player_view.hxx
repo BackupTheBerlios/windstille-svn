@@ -28,7 +28,7 @@ class PlayerView : public View
 {
 private:
   Player*  player;
-  GameWorld* world;
+  Sector* world;
   CL_Vector pos;
 public:
   PlayerView (Player*);

@@ -31,7 +31,7 @@ class CL_InputEvent;
 
 class Energiebar;
 class PlayerView;
-class GameWorld;
+class Sector;
 class Background;
 class Player;
 class DialogManager;
@@ -48,7 +48,7 @@ private:
   float fadeout_value;
 
   std::string filename;
-  GameWorld* world;
+  Sector* world;
   PlayerView* view;
   Energiebar* energiebar;
   Background* background;
@@ -71,7 +71,7 @@ public:
   static WindstilleGame* current() { return current_; } 
 
   WindstilleGame (const std::string& arg_filename);
-  WindstilleGame (GameWorld* w);
+  WindstilleGame (Sector* w);
   ~WindstilleGame ();
 
   void set_dialog_state() { control_state = DIALOG; }

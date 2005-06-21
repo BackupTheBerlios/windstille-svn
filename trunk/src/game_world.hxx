@@ -35,10 +35,8 @@ class GameWorld
 {
 private:
   std::list<GameObj*> objects;
-  std::list<Player*> player_objects;
   TileMap* tilemap;
   TileMap* background_tilemap;
-  float passed_time;
 
   std::vector<std::string> scripts;
 
@@ -54,15 +52,8 @@ public:
   void add (GameObj* obj) { objects.push_back (obj); }
   void remove (GameObj* obj) { objects.remove (obj); }
   
-  // FIXME: are add/remove for different game object types a good
-  // idea?
-  void add_player (Player* obj);
-  void remove_player (Player* obj);
-
   void draw (SceneContext& gc);
   void update (float delta);
-
-  float get_time () { return passed_time; } 
 
   /** return width in pixels */
   int get_width () const;
@@ -70,7 +61,6 @@ public:
   /** return height in pixels */
   int get_height () const;
 
-  std::list<Player*>* get_players () { return &player_objects; }
   std::list<GameObj*>* get_objects() { return &objects; }
 
   TileMap* get_tilemap () const { return tilemap; }

@@ -32,23 +32,24 @@ class SceneContext;
 class Sector
 {
 private:
+  std::string name;
+
   typedef std::vector<GameObj*> Objects;
   Objects objects;
-
-  std::vector<TileMap*> tilemaps;
 
   /** The TileMap with which the player interacts */
   TileMap* interactive_tilemap;
 
   Player* player;
 
-  std::string name;
-
   void parse_file(const std::string& filename);
 
+  static Sector* current_;
 public:
   Sector(const std::string& filename);
   ~Sector();
+
+  static Sector* current() { return current_; }
 
   void draw(SceneContext& gc);
   void update(float delta);
@@ -59,6 +60,8 @@ public:
   void add(GameObj*);
   void remove(GameObj*);
 
+  std::vector<GameObj*>* get_objects() { return &objects; }
+  TileMap* get_tilemap() { return interactive_tilemap; }
 private:
   Sector (const Sector&);
   Sector& operator= (const Sector&);

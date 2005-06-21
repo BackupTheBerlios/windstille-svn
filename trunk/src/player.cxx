@@ -19,7 +19,7 @@
 
 #include "tile_map.hxx"
 #include "display.hxx"
-#include "game_world.hxx"
+#include "sector.hxx"
 #include "default_shoot.hxx"
 #include "laser_shoot.hxx"
 #include "input/controller.hxx"
@@ -186,7 +186,7 @@ Player::update (float delta)
     {
       if (controller.get_button_state(FIRE_BUTTON))
         {
-          set_position(CL_Vector(258, 485));
+          set_position(CL_Vector(258, 0));
           set_direction(EAST);
           killed.restart();
           state = WALKING;
@@ -281,7 +281,7 @@ Player::update_ground (float delta)
           state = SITTING;
           if (controller.get_button_state(FIRE_BUTTON) && !bomb_placed)
             {
-              GameWorld::current()->add(new Bomb(int(pos.x), int(pos.y)));
+              Sector::current()->add(new Bomb(int(pos.x), int(pos.y)));
               bomb_placed = true;
             }
         }

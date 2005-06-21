@@ -33,7 +33,6 @@ bool removable (GameObj* obj) {
 }
 
 GameWorld::GameWorld (const std::string& filename)
-  : passed_time (0)
 {
   current_ = this;
   
@@ -69,8 +68,6 @@ void
 GameWorld::update (float delta)
 {
   //  coroutines.update(delta);
-  passed_time += delta;
-
   std::list<GameObj*> tmp_objects (objects);
 
   for (std::list<GameObj*>::iterator i = tmp_objects.begin ();
@@ -90,20 +87,6 @@ int
 GameWorld::get_height () const
 {
   return tilemap->get_height () * TILE_SIZE;
-}
-
-void
-GameWorld::add_player (Player* obj)
-{ 
-  objects.push_back (obj); 
-  player_objects.push_back (obj); 
-}
-
-void
-GameWorld::remove_player (Player* obj)
-{ 
-  objects.remove (obj); 
-  player_objects.remove (obj); 
 }
 
 /* EOF */

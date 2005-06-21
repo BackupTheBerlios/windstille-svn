@@ -22,7 +22,7 @@
 #include "display.hxx"
 #include "tile_map.hxx"
 #include "globals.hxx"
-#include "game_world.hxx"
+#include "sector.hxx"
 #include "animation_obj.hxx"
 #include "laser_shoot.hxx"
 

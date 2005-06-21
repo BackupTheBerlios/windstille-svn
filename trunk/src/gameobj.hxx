@@ -22,20 +22,20 @@
 
 #include "display/scene_context.hxx"
 
-class GameWorld;
+class Sector;
 
 class GameObj
 {
 private:
-  static GameWorld* world;
+  static Sector* world;
   bool remove_;
 protected:
   void remove () { remove_= true; } 
 public:
   bool is_removable () { return remove_; } 
-  static void set_world (GameWorld* w) { world = w; }
+  static void set_world (Sector* w) { world = w; }
   
-  GameWorld* get_world () { return world; }
+  Sector* get_world () { return world; }
 
   GameObj () : remove_ (false) {}
 

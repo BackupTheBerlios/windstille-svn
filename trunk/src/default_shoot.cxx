@@ -18,7 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "globals.hxx"
-#include "game_world.hxx"
+#include "sector.hxx"
 #include "animation_obj.hxx"
 #include "tile_map.hxx"
 #include "default_shoot.hxx"

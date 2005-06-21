@@ -310,12 +310,6 @@ WindstilleMain::init_modules()
   
   std::cout << "done" << std::endl;
 
-  std::cout << "Testing file reading..." << std::endl;
-  {
-    Sector sector("../data/levels/newformat.wst");
-  }
-  std::cout << "Testing file reading... done" << std::endl;
-
   Fonts::init(); 
   MusicManager::init();
 }

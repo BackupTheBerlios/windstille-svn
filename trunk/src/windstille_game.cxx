@@ -23,14 +23,12 @@
 #include <sstream>
 
 #include "fonts.hxx"
-#include "game_world.hxx"
+#include "sector.hxx"
 #include "gameobj.hxx"
 #include "player.hxx"
 #include "animation_obj.hxx"
 #include "tile_map.hxx"
 #include "music_manager.hxx"
-#include "power_up.hxx"
-#include "bonus_flyer.hxx"
 #include "display.hxx"
 #include "player_view.hxx"
 #include "energiebar.hxx"
@@ -50,7 +48,7 @@ WindstilleGame::WindstilleGame(const std::string& arg_filename)
   : frames(0), filename (arg_filename)
 {
   current_ = this;
-  world = new GameWorld(filename);
+  world = new Sector(filename);
 
   state = FADEIN;
   fadeout_value = 0;
@@ -58,7 +56,7 @@ WindstilleGame::WindstilleGame(const std::string& arg_filename)
   control_state = GAME;
 }
 
-WindstilleGame::WindstilleGame(GameWorld* w)
+WindstilleGame::WindstilleGame(Sector* w)
 {
   current_ = this;
   world = w;
@@ -76,7 +74,7 @@ WindstilleGame::draw_game()
   background->draw();
 
   // Draw the world
-  view->draw (sc);
+  view->draw(sc);
 
   // Render the scene to the screen
   sc.render();
@@ -208,12 +206,7 @@ WindstilleGame::on_startup ()
   background = new Background();
   //dialog_manager = new DialogManager();
 
-  world->add_player(player);
-
-  //gh_load((datadir + "game.scm").c_str());
-  //std::cout << "Loading game file: " << std::endl;
-  //  RubyFunctor::load_file((datadir + "game.rb").c_str());
-  //std::cout << "Loading game file: done" << std::endl;
+  world->add(player);
 
   logo       = CL_Sprite("logo", resources);
   portrait   = CL_Sprite("hero/portrait", resources);
