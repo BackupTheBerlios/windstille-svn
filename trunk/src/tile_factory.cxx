@@ -96,12 +96,17 @@ TileFactory::parse_tiles(lisp_object_t* data)
       return;
     }
 
-  int colmap = 0;
-  reader.read_int("colmap", &colmap);
-  
+  std::vector<int> colmap;
+  reader.read_int_vector("colmap", &colmap);
+ 
   CL_PixelBuffer image = CL_ProviderFactory::load(filename);
 
   int num_tiles = (image.get_width()/TILE_SIZE) * (image.get_height()/TILE_SIZE);
+
+  if (int(colmap.size()) != num_tiles)
+    {
+      std::cout << "Error: TileFactor: not enough colmap information for tiles" << std::endl;
+    }
 
   if ((id + num_tiles) >= int(tiles.size()))
     {
@@ -128,7 +133,7 @@ TileFactory::parse_tiles(lisp_object_t* data)
 
           tiles[id] = new Tile(chopped_image, 
                                CL_Color(255, 255, 255),
-                               colmap);
+                               colmap[y/TILE_SIZE * image.get_width()/TILE_SIZE + x/TILE_SIZE]);
           tiles[id]->id = id;
           id += 1;
         }
