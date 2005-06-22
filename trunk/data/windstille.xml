@@ -123,6 +123,14 @@
   </sprite>
   
   <section name="hero">
+    <sprite name="walk">
+    <animation speed="23" loop="yes" />
+    <translation origin="bottom_center" pos="0,12" />
+    <image file="images/hero_walk.png">
+      <grid array="46,1" size="89,128" />
+    </image>
+  </sprite>
+
     <description name="run1" play_speed="30">
       <image file="images/hero_run/hero-9.png" name="image1" />
       <image file="images/hero_run/hero-8.png" name="image2" />

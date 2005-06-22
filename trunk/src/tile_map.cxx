@@ -111,8 +111,8 @@ TileMap::draw (SceneContext& sc)
                             x * TILE_SIZE, y * TILE_SIZE, z_pos);
 
             if (field(x, y)->get_highlight_sprite())
-	    sc.highlight().draw(field(x,y)->get_highlight_sprite(),
-                                x * TILE_SIZE, y * TILE_SIZE, z_pos);
+              sc.highlight().draw(field(x,y)->get_highlight_sprite(),
+                                  x * TILE_SIZE, y * TILE_SIZE, z_pos);
 	  }
       }
 }

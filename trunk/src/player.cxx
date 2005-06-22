@@ -37,7 +37,7 @@ Player::Player () :
   pos (320, 200),
   velocity (0, 0),
   
-  walk     ("hero/run",   resources),
+  walk     ("hero/walk",   resources),
   sit      ("hero/sit",   resources),
   jump     ("hero/jump",  resources),
   stand    ("hero/stand", resources),
@@ -265,12 +265,12 @@ Player::update_ground (float delta)
           bomb_placed = false;
           if (controller.get_button_state(LEFT_BUTTON))
             {
-              pos.x -= 300 * delta;
+              pos.x -= 128 * delta;
               state = WALKING;
             }
           else if (controller.get_button_state(RIGHT_BUTTON))
             {
-              pos.x += 300 * delta;
+              pos.x += 128 * delta;
               state = WALKING;
             }
           else
