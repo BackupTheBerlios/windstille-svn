@@ -77,7 +77,7 @@ Igel::update(float delta)
       
       if (on_ground())
         {
-          pos.y = int(pos.y)/SUBTILE_SIZE * SUBTILE_SIZE;
+          pos.y = int(pos.y)/TILE_SIZE * TILE_SIZE;
           
           if (direction_left)
             pos.x -= 32 * delta;
@@ -109,31 +109,31 @@ Igel::update(float delta)
 bool
 Igel::in_wall()
 {
-  return Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE)*SUBTILE_SIZE,
-                                                        (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE)
-    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 1)*SUBTILE_SIZE,
-                                                        (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE)
-    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 2)*SUBTILE_SIZE,
-                                                        (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE)
-    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE + 1)*SUBTILE_SIZE,
-                                                        (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE)
-    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE + 2)*SUBTILE_SIZE,
-                                                      (int(pos.y)/SUBTILE_SIZE - 1)*SUBTILE_SIZE);
+  return Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE)*TILE_SIZE,
+                                                        (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE)
+    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE - 1)*TILE_SIZE,
+                                                        (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE)
+    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE - 2)*TILE_SIZE,
+                                                        (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE)
+    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE + 1)*TILE_SIZE,
+                                                        (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE)
+    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE + 2)*TILE_SIZE,
+                                                      (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE);
 }
 
 bool
 Igel::on_ground()
 {
-  return Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE)*SUBTILE_SIZE,
-                                                        (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE)
-    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE+1)*SUBTILE_SIZE,
-                                                      (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE)
-    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE+2)*SUBTILE_SIZE,
-                                                      (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE)
-    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 1)*SUBTILE_SIZE,
-                                                      (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE)
-    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/SUBTILE_SIZE - 2)*SUBTILE_SIZE,
-                                                      (int(pos.y)/SUBTILE_SIZE)*SUBTILE_SIZE);
+  return Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE)*TILE_SIZE,
+                                                        (int(pos.y)/TILE_SIZE)*TILE_SIZE)
+    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE+1)*TILE_SIZE,
+                                                      (int(pos.y)/TILE_SIZE)*TILE_SIZE)
+    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE+2)*TILE_SIZE,
+                                                      (int(pos.y)/TILE_SIZE)*TILE_SIZE)
+    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE - 1)*TILE_SIZE,
+                                                      (int(pos.y)/TILE_SIZE)*TILE_SIZE)
+    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE - 2)*TILE_SIZE,
+                                                      (int(pos.y)/TILE_SIZE)*TILE_SIZE);
 }
 
 void

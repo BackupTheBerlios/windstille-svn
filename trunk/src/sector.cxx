@@ -121,7 +121,8 @@ Sector::draw(SceneContext& sc)
 void
 Sector::update(float delta)
 {
-  for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
+  Objects tmpobjects = objects;
+  for(Objects::iterator i = tmpobjects.begin(); i != tmpobjects.end(); ++i)
     {
       (*i)->update(delta);
     }

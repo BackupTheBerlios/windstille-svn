@@ -56,7 +56,6 @@ private:
   enum { DIALOG, GAME } control_state;
 
   CL_Font font;
-  CL_Sprite portrait;
   CL_Sprite logo;
   CL_Sprite logo_black;
 

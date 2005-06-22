@@ -37,7 +37,7 @@ Player::Player () :
   pos (320, 200),
   velocity (0, 0),
   
-  walk     ("hero/walk",   resources),
+  walk     ("human/walk",   resources),
   sit      ("hero/sit",   resources),
   jump     ("hero/jump",  resources),
   stand    ("hero/stand", resources),
@@ -133,7 +133,7 @@ Player::get_bounding_rect() const
 SubTilePos
 Player::get_subtile_pos()
 {
-  return SubTilePos(int(pos.x/SUBTILE_SIZE), int(pos.y/SUBTILE_SIZE));
+  return SubTilePos(int(pos.x/TILE_SIZE), int(pos.y/TILE_SIZE));
 }
 
 void 
@@ -200,8 +200,8 @@ Player::update (float delta)
         {
           if (get_world()->get_tilemap()->get_pixel(new_subtile_pos.x, new_subtile_pos.y))
             {
-              pos.x = subtile_pos.x * SUBTILE_SIZE;
-              pos.y = subtile_pos.y * SUBTILE_SIZE;
+              pos.x = subtile_pos.x * TILE_SIZE;
+              pos.y = subtile_pos.y * TILE_SIZE;
             }
           else
             {
@@ -311,7 +311,7 @@ Player::update_air (float delta)
     {
       ground_state = ON_GROUND;
       // Cut the position to the tile size 
-      pos.y = int(pos.y / SUBTILE_SIZE) * SUBTILE_SIZE + SUBTILE_SIZE - 1;
+      pos.y = int(pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE - 1;
     } 
 }
   

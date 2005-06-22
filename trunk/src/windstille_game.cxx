@@ -32,7 +32,7 @@
 #include "display.hxx"
 #include "view.hxx"
 #include "energiebar.hxx"
-//#include "dialog_manager.hxx"
+#include "dialog_manager.hxx"
 #include "windstille_main.hxx"
 #include "display/scene_context.hxx"
 #include "input/input_manager.hxx"
@@ -93,7 +93,7 @@ WindstilleGame::draw_game()
   switch (control_state)
     {
     case DIALOG:
-      //dialog_manager->draw();      
+      dialog_manager->draw();      
       break;
     default:
       break;
@@ -179,7 +179,7 @@ WindstilleGame::update(float delta)
       switch (control_state) 
         {
         case DIALOG:
-          //dialog_manager->update(delta);
+          dialog_manager->update(delta);
           break;
         case GAME:
           world->update (delta);
@@ -211,13 +211,24 @@ WindstilleGame::on_startup ()
   view   = new View(player);
   
   energiebar = new Energiebar();
-  //dialog_manager = new DialogManager();
+  dialog_manager = new DialogManager();
 
   world->add(player);
 
   logo       = CL_Sprite("logo", resources);
-  portrait   = CL_Sprite("hero/portrait", resources);
   logo_black = CL_Sprite("logo_black", resources);
+
+  if (1)
+    {
+      // FIXME: Move this thing into the scripting part
+      DialogManager::current()->add_dialog("human/portrait", 
+                                           "Welcome to the VR training programm. Here you"
+                                           "will learn the basic manovering abilities of your "
+                                           "powersuit, jumping, running, climbing and shooting."
+                                           "We will start with climbing, see the block infront of"
+                                           "you? Press [Right] and [Jump] to hang on the ledge.");
+      set_dialog_state();
+    }
 }
 
 void
@@ -227,7 +238,7 @@ WindstilleGame::on_shutdown ()
 
   delete energiebar;
   delete view;
-  //delete dialog_manager;
+  delete dialog_manager;
 }
 
 void

@@ -24,7 +24,6 @@
 #include <ClanLib/sound.h>
 #include <ClanLib/display.h>
 
-//#include "ruby_functor.hxx"
 #include "windstille_error.hxx"
 #include "globals.hxx"
 #include "windstille_game.hxx"

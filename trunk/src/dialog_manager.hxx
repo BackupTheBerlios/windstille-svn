@@ -23,8 +23,13 @@
 #include <vector>
 #include <string>
 #include <ClanLib/Display/sprite.h>
-#include "ruby_functor.hxx"
 #include "globals.hxx"
+
+struct RubyFunctor
+{
+  // dummy class to make this thing compile
+  void operator()() {}
+};
 
 class Dialog {
 public:

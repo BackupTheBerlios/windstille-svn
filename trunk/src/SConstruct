@@ -52,7 +52,7 @@ windstille_source = [
     'brush.cxx', 
     'controller_def.cxx', 
     'default_shoot.cxx', 
-#    'dialog_manager.cxx', 
+    'dialog_manager.cxx', 
     'display.cxx', 
     'energiebar.cxx',
     'entity.cxx',

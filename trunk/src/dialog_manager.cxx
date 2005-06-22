@@ -72,9 +72,12 @@ DialogManager::draw()
                             CL_Color(255,255,255, 80));
       CL_Display::flush();
       
-      CL_Display::fill_rect(CL_Rect(CL_Point(120, 120), CL_Size(120, 120)),
-                            CL_Gradient(CL_Color(100,100,100,68), CL_Color(100,100,100,68),
-                                        CL_Color(255,255,255, 255), CL_Color(255,255,255, 255)));
+      if (0) // portrait background
+        {
+          CL_Display::fill_rect(CL_Rect(CL_Point(120, 120), CL_Size(120, 120)),
+                                CL_Gradient(CL_Color(100,100,100,68), CL_Color(100,100,100,68),
+                                            CL_Color(255,255,255, 255), CL_Color(255,255,255, 255)));
+        }
       
       dialog.portrait.draw(120, 120);
 
@@ -83,8 +86,6 @@ DialogManager::draw()
 
       Fonts::dialog.draw(CL_Rect(CL_Point(260, 120), CL_Size(420, 0)),
                          dialog.text);
-      //Fonts::dialog.set_alignment(origin_bottom_right);    
-      //Fonts::dialog.draw(680, 290, ">>>");
 
       Fonts::dialog.set_alignment(origin_top_center);
       Fonts::dialog_h.set_alignment(origin_top_center);

@@ -120,16 +120,15 @@ unsigned int
 TileMap::get_pixel(int x, int y)
 {
   if (x < 0 || y < 0 
-      || x >= int(field.get_width()*SUBTILE_NUM)
-      || y >= int(field.get_height()*SUBTILE_NUM))
+      || x >= int(field.get_width())
+      || y >= int(field.get_height()))
     {
       //std::cout << "Out of bounce: " << x << ", " << y << std::endl;
       return 0;
     }
   else
     {
-      Tile* tile = field(x / SUBTILE_NUM,
-                         y / SUBTILE_NUM);
+      Tile* tile = field(x, y);
       
       if (tile)
         return tile->get_colmap();

@@ -28,8 +28,7 @@ Bomb::Bomb(int x, int y)
     light("bomblight", resources),
     highlight("bombhighlight", resources),
     explolight("explolight", resources),
-   pos(x,
-        (y/SUBTILE_SIZE+1)*SUBTILE_SIZE),
+    pos(x, int(y/TILE_SIZE+1)*TILE_SIZE),
     count(2.0f),
     state(COUNTDOWN),
     exploded(false)
@@ -95,17 +94,20 @@ Bomb::draw(SceneContext& sc)
 void 
 Bomb::explode()
 {
-  std::vector<GameObject*>* objs = Sector::current()->get_objects();
-  for(std::vector<GameObject*>::iterator i = objs->begin(); i != objs->end(); ++i)
-    {
-      Igel* igel = dynamic_cast<Igel*>(*i);
-      if (igel)
+  if (0)
+    { // FIXME: Should be handled by the collision system
+      std::vector<GameObject*>* objs = Sector::current()->get_objects();
+      for(std::vector<GameObject*>::iterator i = objs->begin(); i != objs->end(); ++i)
         {
-          if (igel->get_pos().x > pos.x - 30 &&
-              igel->get_pos().x < pos.x + 30 &&
-              igel->get_pos().y > pos.y - 20 &&
-              igel->get_pos().y < pos.y + 20)
-          igel->die();
+          Igel* igel = dynamic_cast<Igel*>(*i);
+          if (igel)
+            {
+              if (igel->get_pos().x > pos.x - 30 &&
+                  igel->get_pos().x < pos.x + 30 &&
+                  igel->get_pos().y > pos.y - 20 &&
+                  igel->get_pos().y < pos.y + 20)
+                igel->die();
+            }
         }
     }
 }
