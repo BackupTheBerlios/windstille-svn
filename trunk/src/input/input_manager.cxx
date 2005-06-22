@@ -42,7 +42,7 @@ InputManager::init_playback(const std::string& filename)
 void
 InputManager::init(const std::string& filename)
 {
-  std::cout << "InputManager::init(" << filename << ")" << std::endl;
+  //std::cout << "InputManager::init(" << filename << ")" << std::endl;
   lisp_object_t* lst = lisp_read_from_file(filename.c_str());
 
   if (strcmp("feuerkraft-controller", lisp_symbol(lisp_car(lst))) == 0)

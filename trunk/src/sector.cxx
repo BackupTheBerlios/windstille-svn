@@ -44,9 +44,6 @@ Sector::~Sector()
 void
 Sector::parse_file(const std::string& filename)
 {
-  if (debug)
-    std::cout << "Windstille Sector: " << filename << std::endl;
-
   lisp_object_t* tree = lisp_read_from_file(filename.c_str());
 
   if (tree && strcmp(lisp_symbol(lisp_car(tree)), "windstille-sector") != 0)
@@ -59,8 +56,6 @@ Sector::parse_file(const std::string& filename)
 
       reader.read_string("name",  &name);
       
-      std::cout << "Sector Name: " << name << std::endl;
-
       std::vector<std::string> scripts;
       reader.read_string_vector("scripts", &scripts);
 
@@ -82,13 +77,10 @@ Sector::parse_file(const std::string& filename)
               if (lisp_cons_p(data) && lisp_symbol_p(lisp_car(data)))
                 {
                   std::string ident = lisp_symbol(lisp_car(data));
-                  std::cout << "Object: " << ident << std::endl;
 
                   if (ident == "tilemap")
                     {
                       TileMap* tilemap = new TileMap(LispReader(lisp_cdr(data)));
-
-                      std::cout << "TileMap: " << tilemap->get_name() << std::endl;
 
                       objects.push_back(tilemap);
                       if (tilemap->get_name() == "interactive")

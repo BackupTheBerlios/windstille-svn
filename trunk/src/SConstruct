@@ -58,7 +58,6 @@ windstille_source = [
     'energiebar.cxx',
     'entity.cxx',
     'fonts.cxx', 
-    'game_world.cxx', 
     'gameobj.cxx', 
     'globals.cxx', 
     'igel.cxx', 
@@ -78,7 +77,6 @@ windstille_source = [
     'windstille_bonus.cxx', 
     'windstille_error.cxx', 
     'windstille_game.cxx', 
-    'windstille_level.cxx', 
     'windstille_main.cxx', 
     'windstille_menu.cxx',
 

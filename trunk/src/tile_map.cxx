@@ -20,7 +20,6 @@
 #include <ClanLib/gl.h>
 #include <sstream>
 #include "tile_map.hxx"
-#include "windstille_level.hxx"
 #include "tile.hxx"
 #include "tile_factory.hxx"
 #include "globals.hxx"

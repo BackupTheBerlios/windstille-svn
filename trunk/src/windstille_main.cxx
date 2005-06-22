@@ -28,7 +28,6 @@
 #include "windstille_error.hxx"
 #include "globals.hxx"
 #include "windstille_game.hxx"
-#include "windstille_level.hxx"
 #include "windstille_main.hxx"
 #include "windstille_menu.hxx"
 #include "fonts.hxx"
@@ -196,8 +195,6 @@ WindstilleMain::main(int argc, char** argv)
     
     CL_Slot slot = CL_Keyboard::sig_key_down().connect(this, &WindstilleMain::key_down);
 
-    std::cout << "Detected " << CL_Joystick::get_device_count() << " joysticks" << std::endl;
-        
     if (playback_file.empty())
       {
         if (!controller_file.empty())
@@ -223,7 +220,6 @@ WindstilleMain::main(int argc, char** argv)
     else 
       {
         WindstilleGame game (levelfile);
-        if (debug) std::cout << "WindstilleMain: entering main-loop..." << std::endl;
         game.display ();
       }
     TileFactory::deinit();
@@ -275,7 +271,6 @@ WindstilleMain::init_modules()
   CL_SetupCore::init();
   
   CL_SetupGL::init();
-  //CL_SetupSDL::init();
 
   CL_SetupDisplay::init();
 
@@ -294,21 +289,8 @@ WindstilleMain::init_modules()
     sound = new CL_SoundOutput(44100);
 
   resources =  new CL_ResourceManager();
-  //resources->add_resources(CL_ResourceManager(datadir + "tiles.xml", false));
   resources->add_resources(CL_ResourceManager(datadir + "windstille.xml", false));
-  
-  //std::cout << "Loading all resources..." << std::endl;
-  //resources->load_all();
-  //std::cout << "Loading all resources... done" << std::endl;
-
-  std::cout << "Loading Windstille startup script: " << game_definition_file << std::endl;
-  //gh_load((datadir + game_definition_file).c_str());
-  //RubyFunctor::load_file((datadir + game_definition_file).c_str());
-  
-  resources->add_resources(CL_ResourceManager(datadir + std::string("tiles.xml"), false));
-  TileFactory::tile_def_file = "tiles.scm";
-  
-  std::cout << "done" << std::endl;
+  resources->add_resources(CL_ResourceManager(datadir + "tiles.xml", false));
 
   Fonts::init(); 
   MusicManager::init();
@@ -334,7 +316,6 @@ WindstilleMain::deinit_modules()
   CL_SetupDisplay::init();
 
   CL_SetupGL::init();
-  //CL_SetupSDL::init();
 
   CL_SetupCore::init(); 
 }
