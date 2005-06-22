@@ -30,9 +30,8 @@
 #include "tile_map.hxx"
 #include "music_manager.hxx"
 #include "display.hxx"
-#include "player_view.hxx"
+#include "view.hxx"
 #include "energiebar.hxx"
-#include "background.hxx"
 //#include "dialog_manager.hxx"
 #include "windstille_main.hxx"
 #include "display/scene_context.hxx"
@@ -71,9 +70,18 @@ WindstilleGame::~WindstilleGame()
 void
 WindstilleGame::draw_game()
 {
-  background->draw();
+  // Generic blue background
+  CL_Display::fill_rect(CL_Rect(0, 0, 800, 300),
+                        CL_Gradient(CL_Color(  0,   0,  50),
+                                    CL_Color(  0,   0,  50),
+                                    CL_Color( 50,  50, 128),
+                                    CL_Color( 50,  50, 128)));
+  CL_Display::fill_rect(CL_Rect(0, 300, 800, 600),
+                        CL_Gradient(CL_Color( 50,  50, 128),
+                                    CL_Color( 50,  50, 128),
+                                    CL_Color(  0,   0,   0),
+                                    CL_Color(  0,   0,   0)));
 
-  // Draw the world
   view->draw(sc);
 
   // Render the scene to the screen
@@ -152,7 +160,7 @@ WindstilleGame::update(float delta)
   InputManager::update(delta);
   delta *= game_speed;
 
-  view->update (delta);
+  view->update(delta);
 
   switch (state)
     {
@@ -200,10 +208,9 @@ WindstilleGame::on_startup ()
   GameObj::set_world (world);
   
   player = new Player();
-  view   = new PlayerView(player);
+  view   = new View(player);
   
   energiebar = new Energiebar();
-  background = new Background();
   //dialog_manager = new DialogManager();
 
   world->add(player);
@@ -219,7 +226,6 @@ WindstilleGame::on_shutdown ()
   MusicManager::current()->stop();
 
   delete energiebar;
-  delete background;
   delete view;
   //delete dialog_manager;
 }

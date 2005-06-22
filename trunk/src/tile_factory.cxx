@@ -76,6 +76,15 @@ TileFactory::TileFactory (const std::string& filename)
   lisp_free(tree);
 }
 
+TileFactory::~TileFactory()
+{
+  for(Tiles::iterator i = tiles.begin(); i != tiles.end(); ++i)
+    {
+      delete *i;
+    }
+  tiles.clear();
+}
+
 void
 TileFactory::parse_tiles(lisp_object_t* data)
 {
@@ -164,7 +173,6 @@ TileFactory::parse_tiles(lisp_object_t* data)
 Tile* 
 TileFactory::create (int id)
 {
-  // FIXME: this might cause throuble for some games
   // id 0 is always the empty tile
   if (id == 0)
     { 

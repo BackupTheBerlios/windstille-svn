@@ -43,6 +43,7 @@ private:
 
 public:
   DrawingContext();
+  ~DrawingContext();
 
   /** Draws everything in the drawing context to the screen */
   void render(CL_GraphicContext* gc);

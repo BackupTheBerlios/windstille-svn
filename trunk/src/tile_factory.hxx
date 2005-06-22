@@ -45,7 +45,8 @@ public:
   iterator end()   { return tiles.end(); }
 
   /** Create a TileFactory from a given tile definition file */
-  TileFactory (const std::string& filename);
+  TileFactory(const std::string& filename);
+  ~TileFactory();
 
   /** Check if the tile is already loaded and return it. If it is not
    *  already loaded, load it 

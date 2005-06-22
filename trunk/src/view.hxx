@@ -21,29 +21,37 @@
 #define HEADER_VIEW_HXX
 
 #include <ClanLib/Core/Math/rect.h>
+#include <ClanLib/Core/Math/cl_vector.h>
+
+class Player;
+class Sector;
+class SceneContext;
 
 /** */
 class View
 {
 private:
+  Player*  player;
+  Sector* world;
+  CL_Vector pos;
+
 public:
-  View() {}
+  View(Player*);
   virtual ~View() {}
 
   /** @return the rectangle which represents the currently visible
       area, everything outside of it doesn't have to be drawn */
-  virtual CL_Rect get_clip_rect() =0;
-  virtual CL_Pointf screen2world(CL_Pointf point) =0;
-  virtual CL_Pointf world2screen(CL_Pointf point) =0;
+  CL_Rect get_clip_rect();
+  CL_Pointf screen2world(CL_Pointf point);
+  CL_Pointf world2screen(CL_Pointf point);
+
+  void draw(SceneContext& gc);
+  void update(float delta);
 
   static View* current() { return current_; }
 
 protected:
   static View* current_;
-private:
-
-  View (const View&);
-  View& operator= (const View&);
 };
 
 #endif

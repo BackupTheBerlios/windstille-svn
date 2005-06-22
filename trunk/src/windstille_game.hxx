@@ -30,9 +30,8 @@
 class CL_InputEvent;
 
 class Energiebar;
-class PlayerView;
+class View;
 class Sector;
-class Background;
 class Player;
 class DialogManager;
 
@@ -49,9 +48,8 @@ private:
 
   std::string filename;
   Sector* world;
-  PlayerView* view;
+  View* view;
   Energiebar* energiebar;
-  Background* background;
   DialogManager* dialog_manager;
 
   enum { FADEIN, RUNNING, FADEOUT } state;

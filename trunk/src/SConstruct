@@ -48,7 +48,6 @@ clanLib_env.ParseConfig("pkg-config --cflags --libs clanApp-0.7 clanVorbis-0.7 c
 
 windstille_source = [
     'animation_obj.cxx',
-    'background.cxx', 
     'bomb.cxx', 
     'brush.cxx', 
     'controller_def.cxx', 
@@ -64,7 +63,6 @@ windstille_source = [
     'laser_shoot.cxx', 
     'music_manager.cxx', 
     'player.cxx', 
-    'player_view.cxx', 
     'screen.cxx',
     'sector.cxx',
     'tile.cxx', 

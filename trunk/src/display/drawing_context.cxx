@@ -84,6 +84,11 @@ DrawingContext::DrawingContext()
   translate_stack.push_back(CL_Pointf(0, 0));
 }
 
+DrawingContext::~DrawingContext()
+{
+  clear();
+}
+
 void
 DrawingContext::render(CL_GraphicContext* gc)
 {
