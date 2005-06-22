@@ -131,6 +131,11 @@
         <grid array="46,1" size="86,120" />
       </image>
     </sprite>
+
+    <sprite name="portrait">
+      <translation origin="top_left" x="-50" y="50" />
+      <image file="images/human_portrait.png" /> 
+    </sprite>
   </section>
 
   <section name="hero">
