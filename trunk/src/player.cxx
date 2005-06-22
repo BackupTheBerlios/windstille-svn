@@ -37,7 +37,7 @@ Player::Player () :
   pos (320, 200),
   velocity (0, 0),
   
-  walk     ("human/walk",   resources),
+  walk     ("hero/walk",   resources),
   sit      ("hero/sit",   resources),
   jump     ("hero/jump",  resources),
   stand    ("hero/stand", resources),

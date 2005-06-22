@@ -26,7 +26,7 @@
 
 #include "input/controller.hxx"
 #include "globals.hxx"
-#include "gameobj.hxx"
+#include "game_object.hxx"
 
 class Controller;
 
@@ -46,7 +46,7 @@ struct SubTilePos {
   int y;
 };
 
-class Player : public GameObj
+class Player : public GameObject
 {
 private:
   Controller controller;

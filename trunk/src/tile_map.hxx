@@ -27,12 +27,12 @@
 #include "globals.hxx"
 #include "field.hxx"
 #include "lispreader.hxx"
-#include "gameobj.hxx"
+#include "game_object.hxx"
 #include "display/scene_context.hxx"
 
 class Tile;
 
-class TileMap : public GameObj
+class TileMap : public GameObject
 {
 private:
   Field<Tile*> field;

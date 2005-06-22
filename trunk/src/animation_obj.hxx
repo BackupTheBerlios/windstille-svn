@@ -22,13 +22,13 @@
 
 #include <ClanLib/Display/sprite.h>
 #include <ClanLib/Core/Math/cl_vector.h>
-#include "gameobj.hxx"
+#include "game_object.hxx"
 
 /** Display a sequenze of frames and then remove itself. Usefull for
     explosions an other gfx only things which don't influence the game
     physics by itself.
  */
-class AnimationObj : public GameObj
+class AnimationObj : public GameObject
 {
 private:
   CL_Sprite sprite;

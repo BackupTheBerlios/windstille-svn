@@ -1,4 +1,4 @@
-//  $Id: gameobj.hxx,v 1.2 2003/08/12 08:24:41 grumbel Exp $
+//  $Id: game_object.hxx,v 1.2 2003/08/12 08:24:41 grumbel Exp $
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -17,14 +17,14 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef GAMEOBJ_HXX
-#define GAMEOBJ_HXX
+#ifndef GAME_OBJECT_HXX
+#define GAME_OBJECT_HXX
 
 #include "display/scene_context.hxx"
 
 class Sector;
 
-class GameObj
+class GameObject
 {
 private:
   static Sector* world;
@@ -37,7 +37,7 @@ public:
   
   Sector* get_world () { return world; }
 
-  GameObj () : remove_ (false) {}
+  GameObject() : remove_ (false) {}
 
   virtual void draw (SceneContext& sc) =0;
   virtual void update (float) =0;

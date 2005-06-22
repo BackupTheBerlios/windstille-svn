@@ -95,8 +95,8 @@ Bomb::draw(SceneContext& sc)
 void 
 Bomb::explode()
 {
-  std::vector<GameObj*>* objs = Sector::current()->get_objects();
-  for(std::vector<GameObj*>::iterator i = objs->begin(); i != objs->end(); ++i)
+  std::vector<GameObject*>* objs = Sector::current()->get_objects();
+  for(std::vector<GameObject*>::iterator i = objs->begin(); i != objs->end(); ++i)
     {
       Igel* igel = dynamic_cast<Igel*>(*i);
       if (igel)

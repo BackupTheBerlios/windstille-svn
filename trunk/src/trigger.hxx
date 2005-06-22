@@ -22,7 +22,7 @@
 
 #include <vector>
 #include <ClanLib/Core/Math/rect.h>
-#include "gameobj.hxx"
+#include "game_object.hxx"
 #include "ruby_functor.hxx"
 
 class TriggerCondition
@@ -45,7 +45,7 @@ public:
 };
 
 /** */
-class Trigger : public GameObj
+class Trigger : public GameObject
 {
 private:
   TriggerCondition* condition;

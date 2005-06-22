@@ -23,9 +23,9 @@
 #include <ClanLib/core.h>
 #include <ClanLib/display.h>
 
-#include "gameobj.hxx"
+#include "game_object.hxx"
 
-class DefaultShoot : public GameObj
+class DefaultShoot : public GameObject
 {
 private:
   CL_Vector pos;

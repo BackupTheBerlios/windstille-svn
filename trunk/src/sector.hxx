@@ -24,7 +24,7 @@
 #include <vector>
 #include <ClanLib/Display/color.h>
 
-class GameObj;
+class GameObject;
 class TileMap;
 class Player;
 class SceneContext;
@@ -35,7 +35,7 @@ class Sector
 private:
   std::string name;
 
-  typedef std::vector<GameObj*> Objects;
+  typedef std::vector<GameObject*> Objects;
   Objects objects;
 
   CL_Color ambient_light;
@@ -60,10 +60,10 @@ public:
   int get_width () const;
   int get_height () const;
 
-  void add(GameObj*);
-  void remove(GameObj*);
+  void add(GameObject*);
+  void remove(GameObject*);
 
-  std::vector<GameObj*>* get_objects() { return &objects; }
+  std::vector<GameObject*>* get_objects() { return &objects; }
   TileMap* get_tilemap() { return interactive_tilemap; }
 private:
   Sector (const Sector&);

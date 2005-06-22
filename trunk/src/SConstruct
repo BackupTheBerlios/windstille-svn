@@ -57,7 +57,7 @@ windstille_source = [
     'energiebar.cxx',
     'entity.cxx',
     'fonts.cxx', 
-    'gameobj.cxx', 
+    'game_object.cxx', 
     'globals.cxx', 
     'igel.cxx', 
     'laser_shoot.cxx', 

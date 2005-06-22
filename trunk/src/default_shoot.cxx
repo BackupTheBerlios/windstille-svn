@@ -63,7 +63,7 @@ void
 DefaultShoot::explode ()
 {
   remove ();
-  get_world ()->add (new AnimationObj ("shoot/explosion", pos));
+  get_world ()->add(new AnimationObj ("shoot/explosion", pos));
 }
 
 /* EOF */

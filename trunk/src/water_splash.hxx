@@ -22,10 +22,10 @@
 
 #include <ClanLib/Display/sprite.h>
 #include <ClanLib/Core/Math/cl_vector.h>
-#include "gameobj.hxx"
+#include "game_object.hxx"
 
 /** */
-class WaterSplash : public GameObj
+class WaterSplash : public GameObject
 {
 private:
   CL_Vector pos;

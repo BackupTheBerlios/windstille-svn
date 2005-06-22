@@ -21,10 +21,10 @@
 #define HEADER_BRUSH_HXX
 
 #include <ClanLib/Display/sprite.h>
-#include "gameobj.hxx"
+#include "game_object.hxx"
 
 /** */
-class Brush : public GameObj
+class Brush : public GameObject
 {
 private:
   CL_Sprite sprite;

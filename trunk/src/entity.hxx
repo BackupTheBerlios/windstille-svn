@@ -22,11 +22,11 @@
 
 #include <ClanLib/Core/Math/cl_vector.h>
 #include <ClanLib/Display/sprite.h>
-#include "gameobj.hxx"
+#include "game_object.hxx"
 
 /** A GameObject which has a position and some other properties which
     are shared among all/most things in the world */
-class Entity : public GameObj
+class Entity : public GameObject
 {
 private:
   CL_Vector pos;

@@ -22,9 +22,9 @@
 
 #include <ClanLib/core.h>
 #include "globals.hxx"
-#include "gameobj.hxx"
+#include "game_object.hxx"
 
-class LaserShoot : public GameObj
+class LaserShoot : public GameObject
 {
 private:
   CL_Vector pos;

@@ -22,10 +22,10 @@
 
 #include <ClanLib/Display/sprite.h>
 #include <ClanLib/Core/Math/point.h>
-#include "gameobj.hxx"
+#include "game_object.hxx"
 
 /** */
-class Bomb : public GameObj
+class Bomb : public GameObject
 {
 private:
   CL_Sprite sprite;

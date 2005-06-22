@@ -22,7 +22,7 @@
 #include "globals.hxx"
 #include "display/scene_context.hxx"
 #include "tile_map.hxx"
-#include "gameobj.hxx"
+#include "game_object.hxx"
 #include "player.hxx"
 #include "sector.hxx"
 
@@ -128,14 +128,14 @@ Sector::update(float delta)
 }
 
 void
-Sector::add(GameObj* obj)
+Sector::add(GameObject* obj)
 {
   // FIXME: This is not save to call in update(), should be changed accordingly
   objects.push_back(obj);
 }
 
 void
-Sector::remove(GameObj* obj)
+Sector::remove(GameObject* obj)
 {
   // not implemented
 }

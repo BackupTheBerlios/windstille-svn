@@ -24,7 +24,7 @@
 
 #include "fonts.hxx"
 #include "sector.hxx"
-#include "gameobj.hxx"
+#include "game_object.hxx"
 #include "player.hxx"
 #include "animation_obj.hxx"
 #include "tile_map.hxx"
@@ -205,7 +205,7 @@ WindstilleGame::on_startup ()
   MusicManager::current()->play(datadir + "music/techdemo.ogg", true);
   blink = 0.0f;
 
-  GameObj::set_world (world);
+  GameObject::set_world (world);
   
   player = new Player();
   view   = new View(player);
