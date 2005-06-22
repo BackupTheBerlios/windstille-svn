@@ -20,7 +20,7 @@
 #include <ClanLib/Display/display.h>
 #include <iostream>
 #include "fonts.hxx"
-#include "windstille_game.hxx"
+#include "game_session.hxx"
 #include "input/controller.hxx"
 #include "input/input_manager.hxx"
 #include "dialog_manager.hxx"
@@ -119,7 +119,7 @@ DialogManager::update(float delta)
             {
           if ((*i).button.name == FIRE_BUTTON && (*i).button.down == true)
             {
-              WindstilleGame::current()->set_game_state();
+              GameSession::current()->set_game_state();
               if (dialogs[current_dialog].answers.size() > 0)
                 dialogs[current_dialog].answers[current_choice].second();
             }
@@ -142,7 +142,7 @@ DialogManager::update(float delta)
   else
     {
       std::cout << "DialogManager: No dialog available" << std::endl;
-      WindstilleGame::current()->set_game_state();
+      GameSession::current()->set_game_state();
     }
 }
 

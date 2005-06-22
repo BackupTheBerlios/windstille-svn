@@ -27,7 +27,7 @@
 #include "fonts.hxx"
 #include "input/controller.hxx"
 #include "windstille_menu.hxx"
-#include "windstille_game.hxx"
+#include "game_session.hxx"
 #include "music_manager.hxx"
 #include "windstille_bonus.hxx"
 #include "input/input_manager.hxx"
@@ -90,7 +90,7 @@ WindstilleMenu::update(float delta)
                   MusicManager::current()->stop();
                   InputManager::clear();
                   fadeout();
-                  WindstilleGame game(datadir + "levels/newformat2.wst");
+                  GameSession game(datadir + "levels/newformat2.wst");
                   game.display ();
                   on_startup();
                   break;

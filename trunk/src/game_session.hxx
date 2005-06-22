@@ -17,8 +17,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef WINDSTILLEGAME_HXX
-#define WINDSTILLEGAME_HXX
+#ifndef GAME_SESSION_HXX
+#define GAME_SESSION_HXX
 
 #include <string>
 #include <ClanLib/Display/sprite.h>
@@ -35,7 +35,7 @@ class Sector;
 class Player;
 class DialogManager;
 
-class WindstilleGame : public Windstille::Screen
+class GameSession : public Windstille::Screen
 {
 private:
   SceneContext sc;
@@ -63,13 +63,13 @@ private:
   void on_mouse_down(const CL_InputEvent& event);
   void on_key_down  (const CL_InputEvent& event);
 
-  static WindstilleGame* current_; 
+  static GameSession* current_; 
 public:
-  static WindstilleGame* current() { return current_; } 
+  static GameSession* current() { return current_; } 
 
-  WindstilleGame (const std::string& arg_filename);
-  WindstilleGame (Sector* w);
-  ~WindstilleGame ();
+  GameSession (const std::string& arg_filename);
+  GameSession (Sector* w);
+  ~GameSession ();
 
   void set_dialog_state() { control_state = DIALOG; }
   void set_game_state()   { control_state = GAME; }

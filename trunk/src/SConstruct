@@ -74,7 +74,7 @@ windstille_source = [
     'water_splash.cxx',
     'windstille_bonus.cxx', 
     'windstille_error.cxx', 
-    'windstille_game.cxx', 
+    'game_session.cxx', 
     'windstille_main.cxx', 
     'windstille_menu.cxx',
 

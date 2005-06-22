@@ -26,7 +26,7 @@
 
 #include "windstille_error.hxx"
 #include "globals.hxx"
-#include "windstille_game.hxx"
+#include "game_session.hxx"
 #include "windstille_main.hxx"
 #include "windstille_menu.hxx"
 #include "fonts.hxx"
@@ -218,7 +218,7 @@ WindstilleMain::main(int argc, char** argv)
       }
     else 
       {
-        WindstilleGame game (levelfile);
+        GameSession game (levelfile);
         game.display ();
       }
     TileFactory::deinit();

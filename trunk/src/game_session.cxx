@@ -37,13 +37,13 @@
 #include "display/scene_context.hxx"
 #include "input/input_manager.hxx"
 
-#include "windstille_game.hxx"
+#include "game_session.hxx"
 
 using namespace Windstille;
 
-WindstilleGame* WindstilleGame::current_ = 0; 
+GameSession* GameSession::current_ = 0; 
 
-WindstilleGame::WindstilleGame(const std::string& arg_filename)
+GameSession::GameSession(const std::string& arg_filename)
   : frames(0), filename (arg_filename)
 {
   current_ = this;
@@ -55,20 +55,20 @@ WindstilleGame::WindstilleGame(const std::string& arg_filename)
   control_state = GAME;
 }
 
-WindstilleGame::WindstilleGame(Sector* w)
+GameSession::GameSession(Sector* w)
 {
   current_ = this;
   world = w;
   control_state = GAME;
 }
 
-WindstilleGame::~WindstilleGame()
+GameSession::~GameSession()
 {
   delete world;
 }
 
 void
-WindstilleGame::draw_game()
+GameSession::draw_game()
 {
   // Generic blue background
   CL_Display::fill_rect(CL_Rect(0, 0, 800, 300),
@@ -110,7 +110,7 @@ WindstilleGame::draw_game()
 }
 
 void
-WindstilleGame::draw()
+GameSession::draw()
 {
   draw_game();
 
@@ -155,7 +155,7 @@ WindstilleGame::draw()
 }
 
 void
-WindstilleGame::update(float delta)
+GameSession::update(float delta)
 {
   InputManager::update(delta);
   delta *= game_speed;
@@ -198,7 +198,7 @@ WindstilleGame::update(float delta)
 }
 
 void
-WindstilleGame::on_startup ()
+GameSession::on_startup ()
 { 
   CL_Display::get_current_window()->hide_cursor();
 
@@ -232,7 +232,7 @@ WindstilleGame::on_startup ()
 }
 
 void
-WindstilleGame::on_shutdown ()
+GameSession::on_shutdown ()
 {
   MusicManager::current()->stop();
 
@@ -242,7 +242,7 @@ WindstilleGame::on_shutdown ()
 }
 
 void
-WindstilleGame::quit()
+GameSession::quit()
 {
   fadeout_value = 0;
   state = FADEOUT;
