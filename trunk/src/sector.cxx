@@ -23,6 +23,7 @@
 #include "display/scene_context.hxx"
 #include "tile_map.hxx"
 #include "gameobj.hxx"
+#include "player.hxx"
 #include "sector.hxx"
 
 Sector* Sector::current_ = 0;
@@ -113,7 +114,6 @@ Sector::draw(SceneContext& sc)
 
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
     {
-      //std::cout << *i << std::endl;
       (*i)->draw(sc);
     }
 }
