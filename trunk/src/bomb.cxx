@@ -83,7 +83,7 @@ Bomb::draw(SceneContext& sc)
     }
   else
     {
-      sprite.draw(pos.x, pos.y);
+      sc.color().draw(sprite, pos.x, pos.y);
       if (sprite.get_current_frame() == 0) {
         sc.light().draw(light, pos.x, pos.y, 0);
         sc.highlight().draw(highlight, pos.x, pos.y, 0);

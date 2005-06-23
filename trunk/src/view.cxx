@@ -33,7 +33,16 @@ void
 View::draw (SceneContext& sc)
 {
   state.set_pos(camera.get_pos());
-  //state.set_zoom(0.5f);
+
+  static float zoom = 1.0f;
+
+  if (CL_Keyboard::get_keycode(CL_KEY_A))
+    zoom *= 1.01f/1.0f;
+  if (CL_Keyboard::get_keycode(CL_KEY_O))
+    zoom *= 1.0f/1.01f;
+  
+  state.set_zoom(zoom);
+
   state.push(sc);
   Sector::current()->draw(sc);
   state.pop(sc);

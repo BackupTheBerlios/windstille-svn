@@ -1,7 +1,7 @@
-//  $Id: game_object.hxx,v 1.2 2003/08/12 08:24:41 grumbel Exp $
+//  $Id$
 // 
-//  Windstille - A Jump'n Shoot Game
-//  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
+//  Pingus - A free Lemmings clone
+//  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -17,31 +17,28 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef GAME_OBJECT_HXX
-#define GAME_OBJECT_HXX
+#ifndef HEADER_DOOR_HXX
+#define HEADER_DOOR_HXX
 
-#include "display/scene_context.hxx"
+#include <ClanLib/Display/sprite.h>
+#include "game_object.hxx"
 
-class Sector;
-
-class GameObject
+/** */
+class Door : public GameObject
 {
 private:
-  static Sector* world;
-  bool remove_;
-protected:
-  void remove () { remove_= true; } 
+  CL_Sprite highlight;
+  CL_Sprite color;
+  CL_Vector pos;
 public:
-  bool is_removable () { return remove_; } 
-  static void set_world (Sector* w) { world = w; }
-  
-  Sector* get_world () { return world; }
+  Door();
+  virtual ~Door() {}
 
-  GameObject() : remove_ (false) {}
-  virtual ~GameObject() {}
-
-  virtual void draw (SceneContext& sc) =0;
-  virtual void update (float) =0;
+  void draw (SceneContext& sc);
+  void update (float);
+private:
+  Door (const Door&);
+  Door& operator= (const Door&);
 };
 
 #endif

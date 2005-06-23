@@ -1,4 +1,16 @@
 <resources>
+  <section name="vrdoor">
+    <sprite name="color">
+      <image file="images/objects/vrdoor-color.png" />
+      <translation origin="top_left" x="16" y="16" />
+    </sprite>
+
+    <sprite name="highlight">
+      <image file="images/objects/vrdoor-highlight.png" />
+      <translation origin="top_left" x="16" y="16" />
+    </sprite>
+  </section>
+
   <sprite name="controldialog">
     <image file="images/controldialog.png" />
   </sprite>

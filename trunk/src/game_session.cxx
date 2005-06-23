@@ -31,6 +31,7 @@
 #include "music_manager.hxx"
 #include "display.hxx"
 #include "view.hxx"
+#include "door.hxx"
 #include "energiebar.hxx"
 #include "dialog_manager.hxx"
 #include "windstille_main.hxx"
@@ -234,6 +235,8 @@ GameSession::on_startup ()
                                            "We will start with climbing, see the block infront of"
                                            "you? Press [Right] and [Jump] to hang on the ledge.");
       set_dialog_state();
+
+      world->add(new Door());
     }
 }
 
