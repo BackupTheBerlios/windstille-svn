@@ -70,6 +70,15 @@ public:
   /** Takes all the buffers and combines them to form the final image
       that will be shown on the screen */
   void render();
+
+  enum { COLORMAP     = 1<<0,
+         LIGHTMAP     = 1<<1,
+         HIGHLIGHTMAP = 1<<2,
+         CLEARMAP     = 1<<3
+  };
+
+  void set_render_mask(unsigned int mask);
+  unsigned int get_render_mask();
 private:
   SceneContextImpl* impl;
 

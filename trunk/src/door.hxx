@@ -31,7 +31,7 @@ private:
   CL_Sprite color;
   CL_Vector pos;
 public:
-  Door();
+  Door(int x, int y);
   virtual ~Door() {}
 
   void draw (SceneContext& sc);

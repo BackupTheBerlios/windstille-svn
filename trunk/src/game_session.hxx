@@ -61,8 +61,7 @@ private:
   CL_Sprite logo;
   CL_Sprite logo_black;
 
-  void on_mouse_up  (const CL_InputEvent& event);
-  void on_mouse_down(const CL_InputEvent& event);
+  std::vector<CL_Slot> slots;
   void on_key_down  (const CL_InputEvent& event);
 
   static GameSession* current_; 

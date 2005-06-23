@@ -73,17 +73,21 @@ GameSession::~GameSession()
 void
 GameSession::draw_game()
 {
-  // Generic blue background
-  CL_Display::fill_rect(CL_Rect(0, 0, 800, 300),
-                        CL_Gradient(CL_Color(  0,   0,  50),
-                                    CL_Color(  0,   0,  50),
-                                    CL_Color( 50,  50, 128),
-                                    CL_Color( 50,  50, 128)));
-  CL_Display::fill_rect(CL_Rect(0, 300, 800, 600),
-                        CL_Gradient(CL_Color( 50,  50, 128),
-                                    CL_Color( 50,  50, 128),
-                                    CL_Color(  0,   0,   0),
-                                    CL_Color(  0,   0,   0)));
+  if (0)
+    {
+      // Generic blue background
+      // FIXME: let the level decide which kind of background he wants 
+      CL_Display::fill_rect(CL_Rect(0, 0, 800, 300),
+                            CL_Gradient(CL_Color(  0,   0,  50),
+                                        CL_Color(  0,   0,  50),
+                                        CL_Color( 50,  50, 128),
+                                        CL_Color( 50,  50, 128)));
+      CL_Display::fill_rect(CL_Rect(0, 300, 800, 600),
+                            CL_Gradient(CL_Color( 50,  50, 128),
+                                        CL_Color( 50,  50, 128),
+                                        CL_Color(  0,   0,   0),
+                                        CL_Color(  0,   0,   0)));
+    }
 
   view->draw(sc);
 
@@ -207,6 +211,7 @@ GameSession::update(float delta)
 void
 GameSession::on_startup ()
 { 
+  slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
   CL_Display::get_current_window()->hide_cursor();
 
   MusicManager::current()->play(datadir + "music/techdemo.ogg", true);
@@ -236,7 +241,9 @@ GameSession::on_startup ()
                                            "you? Press [Right] and [Jump] to hang on the ledge.");
       set_dialog_state();
 
-      world->add(new Door());
+      world->add(new Door(24, 6));
+      world->add(new Door(32, 14));
+      world->add(new Door(8, 22));
     }
 }
 
@@ -256,6 +263,33 @@ GameSession::quit()
   fadeout_value = 0;
   state = FADEOUT;
   MusicManager::current()->stop();
+}
+
+void
+GameSession::on_key_down(const CL_InputEvent& event)
+{
+  switch(event.id)
+    {
+    case CL_KEY_1:
+      sc.set_render_mask(sc.get_render_mask() ^ SceneContext::CLEARMAP);
+      break;
+
+    case CL_KEY_2:
+      sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
+      break;
+
+    case CL_KEY_3:
+      sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
+      break;
+
+    case CL_KEY_4:
+      sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
+      break;      
+
+    default:
+      // ignore key
+      break;
+    }
 }
 
 /* EOF */

@@ -20,10 +20,10 @@
 #include "globals.hxx"
 #include "door.hxx"
 
-Door::Door()
+Door::Door(int x, int y)
   : highlight("vrdoor/highlight", resources),
     color("vrdoor/color", resources),
-    pos(32*24, 32*6)
+    pos(32*x, 32*y)
 {
 }
 

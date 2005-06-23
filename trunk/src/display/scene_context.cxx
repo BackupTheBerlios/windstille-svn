@@ -27,12 +27,14 @@ public:
   DrawingContext color;
   DrawingContext light;
   DrawingContext highlight; 
+  unsigned int render_mask;
 
   CL_OpenGLSurface lightmap;
   CL_Canvas        canvas;
 
   SceneContextImpl() 
-    : lightmap(CL_PixelBuffer(200, 
+    : render_mask(SceneContext::COLORMAP | SceneContext::LIGHTMAP | SceneContext::HIGHLIGHTMAP ),
+      lightmap(CL_PixelBuffer(200, 
                               150,
                               200*4, CL_PixelFormat::rgba8888)),
       canvas(lightmap)
@@ -124,26 +126,52 @@ SceneContext::reset_modelview()
 void
 SceneContext::render()
 {
+  if (impl->render_mask & CLEARMAP)
+    {
+      CL_Display::clear();
+    }
+
   // Render all buffers
   // FIXME: Render all to pbuffer for later combining of them
-  impl->color.render();
+  if (impl->render_mask & COLORMAP)
+    {
+      impl->color.render();
+    }
 
-  impl->light.render(impl->canvas.get_gc());
-  impl->canvas.sync_surface();
+  if (impl->render_mask & LIGHTMAP)
+    {
+      impl->light.render(impl->canvas.get_gc());
+      impl->canvas.sync_surface();
 
-  //impl->lightmap.set_blend_func(blend_src_alpha, blend_one);
-  impl->lightmap.set_blend_func(blend_dest_color, blend_zero);
-  //GL_DST_COLOR, GL_ZERO
-  impl->lightmap.set_scale(4.0f, 4.0f);
-  impl->lightmap.draw();
-  impl->canvas.get_gc()->clear();
+      //impl->lightmap.set_blend_func(blend_src_alpha, blend_one);
+      impl->lightmap.set_blend_func(blend_dest_color, blend_zero);
+      //GL_DST_COLOR, GL_ZERO
+      impl->lightmap.set_scale(4.0f, 4.0f);
+      impl->lightmap.draw();
+      impl->canvas.get_gc()->clear();
+    }
 
-  impl->highlight.render();
+  if (impl->render_mask & HIGHLIGHTMAP)
+    {
+      impl->highlight.render();
+    }
 
   // Clear all DrawingContexts
   impl->color.clear();
   impl->light.clear();
   impl->highlight.clear();
+}
+
+void
+SceneContext::set_render_mask(unsigned int mask)
+{
+  impl->render_mask = mask;
+}
+
+unsigned int
+SceneContext::get_render_mask()
+{
+  return impl->render_mask;
 }
 
 /* EOF */
