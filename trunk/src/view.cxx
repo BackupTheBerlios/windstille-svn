@@ -26,25 +26,19 @@ View* View::current_ = 0;
 
 View::View (Player* t)
   : player (t),
-    world (player->get_world ())
+    world (player->get_world ()),
+    state(CL_Display::get_width(), CL_Display::get_height())
 {
   current_ = this;
 }
 
 void
-View::draw (SceneContext& gc)
+View::draw (SceneContext& sc)
 {
-  CL_Display::push_modelview();
-  CL_Display::add_translate(int(-pos.x + CL_Display::get_width ()/2),
-                            int(-pos.y + CL_Display::get_height ()/2));
-
-  gc.push_modelview();
-  gc.translate(-pos.x + CL_Display::get_width ()/2,
-               -pos.y + CL_Display::get_height ()/2);
-  world->draw(gc);
-  gc.pop_modelview();
-
-  CL_Display::pop_modelview();
+  state.set_pos(pos);
+  state.push(sc);
+  world->draw(sc);
+  state.pop(sc);
 }
 
 void
@@ -86,26 +80,16 @@ View::update (float delta)
     pos.y = end_y;
 }
 
-CL_Rect
+CL_Rectf
 View::get_clip_rect()
 {
-  return CL_Rect(CL_Point(int(pos.x - CL_Display::get_width()/2),
-                          int(pos.y - CL_Display::get_height()/2)),
-                 CL_Size(800, 600));
+  return state.get_clip_rect();
 }
 
 CL_Pointf
 View::screen2world(CL_Pointf point)
 {
-  return CL_Pointf(point.x + pos.x - CL_Display::get_width()/2,
-                   point.y + pos.y - CL_Display::get_height()/2);
-}
-
-CL_Pointf
-View::world2screen(CL_Pointf point)
-{
-  return CL_Pointf(point.x - pos.x + CL_Display::get_width()/2,
-                   point.y - pos.y + CL_Display::get_height()/2);
+  return state.screen2world(CL_Point(point));
 }
 
 /* EOF */

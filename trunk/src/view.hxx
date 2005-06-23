@@ -22,6 +22,7 @@
 
 #include <ClanLib/Core/Math/rect.h>
 #include <ClanLib/Core/Math/cl_vector.h>
+#include "graphic_context_state.hxx"
 
 class Player;
 class Sector;
@@ -31,9 +32,10 @@ class SceneContext;
 class View
 {
 private:
-  Player*  player;
-  Sector* world;
-  CL_Vector pos;
+  Player*   player;
+  Sector*   world;
+  CL_Pointf pos;
+  GraphicContextState state;
 
 public:
   View(Player*);
@@ -41,9 +43,8 @@ public:
 
   /** @return the rectangle which represents the currently visible
       area, everything outside of it doesn't have to be drawn */
-  CL_Rect get_clip_rect();
+  CL_Rectf get_clip_rect();
   CL_Pointf screen2world(CL_Pointf point);
-  CL_Pointf world2screen(CL_Pointf point);
 
   void draw(SceneContext& gc);
   void update(float delta);

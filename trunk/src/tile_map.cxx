@@ -93,7 +93,7 @@ TileMap::update (float delta)
 void
 TileMap::draw (SceneContext& sc)
 {
-  CL_Rect rect = View::current()->get_clip_rect();
+  CL_Rect rect = CL_Rect(View::current()->get_clip_rect());
 
   int start_x = std::max(0, rect.left/TILE_SIZE);
   int start_y = std::max(0, rect.top/TILE_SIZE);
