@@ -1,5 +1,5 @@
-//  $Id: view.cxx,v 1.1 2003/09/21 18:05:21 grumbel Exp $
-//
+//  $Id$
+// 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
 //
@@ -12,48 +12,33 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-//
+// 
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include "player.hxx"
-#include "sector.hxx"
-#include "view.hxx"
+#ifndef HEADER_CAMERA_HXX
+#define HEADER_CAMERA_HXX
 
-View* View::current_ = 0;
-
-View::View()
-  : state(CL_Display::get_width(), CL_Display::get_height())
+/** */
+class Camera
 {
-  current_ = this;
-}
+private:
+  CL_Vector pos;
 
-void
-View::draw (SceneContext& sc)
-{
-  state.set_pos(camera.get_pos());
-  state.push(sc);
-  Sector::current()->draw(sc);
-  state.pop(sc);
-}
+  static Camera* current_;
+public:
+  static Camera* current() { return current_; }
 
-void
-View::update (float delta)
-{
-  camera.update(delta);
-}
+  Camera();
 
-CL_Rectf
-View::get_clip_rect()
-{
-  return state.get_clip_rect();
-}
+  void update(float delta);
+  CL_Pointf get_pos() const { return CL_Pointf(pos.x, pos.y); }
+private:
+  Camera (const Camera&);
+  Camera& operator= (const Camera&);
+};
 
-CL_Pointf
-View::screen2world(CL_Pointf point)
-{
-  return state.screen2world(CL_Point(point));
-}
+#endif
 
 /* EOF */

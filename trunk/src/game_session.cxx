@@ -208,7 +208,7 @@ GameSession::on_startup ()
   GameObject::set_world (world);
   
   player = new Player();
-  view   = new View(player);
+  view   = new View();
   
   energiebar = new Energiebar();
   dialog_manager = new DialogManager();

@@ -22,6 +22,7 @@
 
 #include <ClanLib/Core/Math/rect.h>
 #include <ClanLib/Core/Math/cl_vector.h>
+#include "camera.hxx"
 #include "graphic_context_state.hxx"
 
 class Player;
@@ -32,14 +33,11 @@ class SceneContext;
 class View
 {
 private:
-  Player*   player;
-  Sector*   world;
-  CL_Pointf pos;
   GraphicContextState state;
+  Camera camera;
 
 public:
-  View(Player*);
-  virtual ~View() {}
+  View();
 
   /** @return the rectangle which represents the currently visible
       area, everything outside of it doesn't have to be drawn */
