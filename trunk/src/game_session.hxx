@@ -25,6 +25,7 @@
 #include <ClanLib/Display/font.h>
 #include <ClanLib/Signals/slot_container.h>
 #include "display/scene_context.hxx"
+#include "console.hxx"
 #include "screen.hxx"
 
 class CL_InputEvent;
@@ -39,7 +40,7 @@ class GameSession : public Windstille::Screen
 {
 private:
   SceneContext sc;
-
+  Console console;
   int frames;
   Player* player;
 
@@ -69,7 +70,6 @@ public:
   static GameSession* current() { return current_; } 
 
   GameSession (const std::string& arg_filename);
-  GameSession (Sector* w);
   ~GameSession ();
 
   void set_dialog_state() { control_state = DIALOG; }

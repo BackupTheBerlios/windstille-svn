@@ -45,7 +45,8 @@ using namespace Windstille;
 GameSession* GameSession::current_ = 0; 
 
 GameSession::GameSession(const std::string& arg_filename)
-  : frames(0), 
+  : console(16, CL_Display::get_height()-16),
+    frames(0), 
     control_dialog("controldialog", resources),
     filename (arg_filename)
 {
@@ -55,13 +56,6 @@ GameSession::GameSession(const std::string& arg_filename)
   state = FADEIN;
   fadeout_value = 0;
 
-  control_state = GAME;
-}
-
-GameSession::GameSession(Sector* w)
-{
-  current_ = this;
-  world = w;
   control_state = GAME;
 }
 
@@ -107,7 +101,7 @@ GameSession::draw_game()
     }
   
   control_dialog.set_alignment(origin_bottom_right);
-  control_dialog.draw(800-10, 600-10);
+  control_dialog.draw(800-16, 600-16);
 
   // Draw Logo
   if (0)
@@ -123,6 +117,7 @@ void
 GameSession::draw()
 {
   draw_game();
+  console.draw();
 
   switch (state)
     {
@@ -167,6 +162,8 @@ GameSession::draw()
 void
 GameSession::update(float delta)
 {
+  console.update(delta);
+
   InputManager::update(delta);
   delta *= game_speed;
 
@@ -272,18 +269,22 @@ GameSession::on_key_down(const CL_InputEvent& event)
     {
     case CL_KEY_1:
       sc.set_render_mask(sc.get_render_mask() ^ SceneContext::CLEARMAP);
+      console.add("Toggled CLEARMAP: ",  (sc.get_render_mask() & SceneContext::CLEARMAP) > 0);
       break;
 
     case CL_KEY_2:
       sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
+      console.add("Toggled COLORMAP: ", (sc.get_render_mask() & SceneContext::COLORMAP) > 0);
       break;
 
     case CL_KEY_3:
       sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
+      console.add("Toggled LIGHTMAP: ", (sc.get_render_mask() & SceneContext::LIGHTMAP) > 0);
       break;
 
     case CL_KEY_4:
       sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
+      console.add("Toggled HIGHLIGHTMAP: ", (sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0);
       break;      
 
     default:
