@@ -80,7 +80,7 @@ public:
   /*} */
   
   /** Translate the drawing context */
-  void translate(float x, float y);
+  void translate(float x, float y, float z = 0.0f);
 
   /** Set the rotation of the drawing context */
   void rotate(float angle, float x = 0.0f, float y = 0.0f, float z = 1.0f);

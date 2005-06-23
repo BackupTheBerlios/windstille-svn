@@ -241,12 +241,12 @@ DrawingContext::scale(float x, float y, float z)
 }
 
 void
-DrawingContext::translate(float x, float y)
+DrawingContext::translate(float x, float y, float z)
 {
   CL_Matrix4x4 matrix(true);
   matrix[12] = x;
   matrix[13] = y;
-  matrix[14] = 0;
+  matrix[14] = z;
 
   modelview_stack.back() = modelview_stack.back().multiply(matrix);
 }

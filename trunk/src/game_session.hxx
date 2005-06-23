@@ -46,6 +46,8 @@ private:
   float blink;
   float fadeout_value;
 
+  CL_Sprite control_dialog;
+
   std::string filename;
   Sector* world;
   View* view;

@@ -20,7 +20,10 @@
 #ifndef HEADER_CAMERA_HXX
 #define HEADER_CAMERA_HXX
 
-/** */
+/** This class manages the virtual camera movement, it follows the
+    player, allows the player to watch around, might zoom out if
+    interesting stuff happens out of the screen and such
+ */
 class Camera
 {
 private:

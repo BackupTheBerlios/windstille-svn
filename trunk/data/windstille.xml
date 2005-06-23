@@ -1,4 +1,8 @@
 <resources>
+  <sprite name="controldialog">
+    <image file="images/controldialog.png" />
+  </sprite>
+
   <sprite name="font_glyphs">
     <image name="image1" file="images/verdana32_blue.png"><alpha /></image>
   </sprite>

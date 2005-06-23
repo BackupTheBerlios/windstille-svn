@@ -29,7 +29,8 @@ class Player;
 class Sector;
 class SceneContext;
 
-/** */
+/** This class is the gui component which renders the world to the
+    screen */
 class View
 {
 private:

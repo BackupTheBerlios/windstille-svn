@@ -33,6 +33,7 @@ void
 View::draw (SceneContext& sc)
 {
   state.set_pos(camera.get_pos());
+  //state.set_zoom(0.5f);
   state.push(sc);
   Sector::current()->draw(sc);
   state.pop(sc);

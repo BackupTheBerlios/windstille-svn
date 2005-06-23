@@ -44,7 +44,9 @@ using namespace Windstille;
 GameSession* GameSession::current_ = 0; 
 
 GameSession::GameSession(const std::string& arg_filename)
-  : frames(0), filename (arg_filename)
+  : frames(0), 
+    control_dialog("controldialog", resources),
+    filename (arg_filename)
 {
   current_ = this;
   world = new Sector(filename);
@@ -99,6 +101,9 @@ GameSession::draw_game()
       break;
     }
   
+  control_dialog.set_alignment(origin_bottom_right);
+  control_dialog.draw(800-10, 600-10);
+
   // Draw Logo
   if (0)
     {     
@@ -175,6 +180,7 @@ GameSession::update(float delta)
 
       fadeout_value += delta;
       break;
+
     case RUNNING:
       switch (control_state) 
         {
