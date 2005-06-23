@@ -19,9 +19,22 @@
 
 #include <assert.h>
 #include <ClanLib/Display/sprite.h>
+#include <ClanLib/Display/display.h>
+#include <ClanLib/Display/display_window.h>
 #include <ClanLib/Display/graphic_context.h>
 #include <iostream>
+#include <iosfwd>
 #include "drawing_context.hxx"
+
+std::ostream& operator<<(std::ostream& s, const CL_Matrix4x4& m)
+{
+  s << "[" << m[ 0] << ", " << m[ 4] << ", " << m[ 8] << ", " << m[12] << "\n";
+  s << " " << m[ 1] << ", " << m[ 5] << ", " << m[ 9] << ", " << m[13] << "\n";
+  s << " " << m[ 2] << ", " << m[ 6] << ", " << m[10] << ", " << m[14] << "\n";
+  s << " " << m[ 3] << ", " << m[ 7] << ", " << m[11] << ", " << m[15] << "]\n";
+
+  return s;
+}
 
 struct DrawingRequestsSorter
 {
@@ -52,14 +65,21 @@ private:
   CL_Sprite sprite;
 
 public:
-  SpriteDrawingRequest(const CL_Sprite& sprite_, const CL_Vector& pos_)
-    : DrawingRequest(pos_),
+  SpriteDrawingRequest(const CL_Sprite& sprite_, const CL_Vector& pos_, const CL_Matrix4x4& modelview_)
+    : DrawingRequest(pos_, modelview_),
       sprite(sprite_)
   {}
   virtual ~SpriteDrawingRequest() {}
 
   void draw(CL_GraphicContext* gc) {
-    sprite.draw(static_cast<int>(pos.x), static_cast<int>(pos.y), gc);
+    //sprite.draw(static_cast<int>(pos.x + modelview[12]),
+    //          static_cast<int>(pos.y + modelview[13]), gc);
+
+    gc->push_modelview();
+    gc->add_modelview(modelview);
+    sprite.draw(static_cast<int>(pos.x),
+                static_cast<int>(pos.y), gc);
+    gc->pop_modelview();
   }
 };
 
@@ -81,7 +101,7 @@ public:
 
 DrawingContext::DrawingContext()
 {
-  translate_stack.push_back(CL_Pointf(0, 0));
+  modelview_stack.push_back(CL_Matrix4x4(true));
 }
 
 DrawingContext::~DrawingContext()
@@ -92,6 +112,11 @@ DrawingContext::~DrawingContext()
 void
 DrawingContext::render(CL_GraphicContext* gc)
 {
+  if (gc == 0)
+    {
+      gc = CL_Display::get_current_window()->get_gc();
+    }
+
   std::stable_sort(drawingrequests.begin(), drawingrequests.end(), DrawingRequestsSorter());
   
   for(DrawingRequests::iterator i = drawingrequests.begin(); i != drawingrequests.end(); ++i)
@@ -120,9 +145,7 @@ void
 DrawingContext::draw(const CL_Sprite&   sprite,  float x, float y, float z)
 { // FIXME: This should get flattend down to a simple texture draw
   // command for easier sorting after texture-id/alpha
-  draw(new SpriteDrawingRequest(sprite, CL_Vector(translate_stack.back().x + x,
-                                                  translate_stack.back().y + y,
-                                                  z)));
+  draw(new SpriteDrawingRequest(sprite, CL_Vector(x, y, z), modelview_stack.back()));
 }
 
 void
@@ -176,49 +199,84 @@ DrawingContext::fill_screen(const CL_Color& color)
 }
 
 void
-DrawingContext::rotate(float angel)
+DrawingContext::rotate(float angle, float x, float y, float z)
 {
-  // FIXME: not implemented
+  double len2 = x*x+y*y+z*z;
+  if (len2 != 1.0)
+    {
+      double len = sqrt(len2);
+      x /= len;
+      y /= len;
+      z /= len;
+    }
+
+  double c = cos(angle*3.14159265/180);
+  double s = sin(angle*3.14159265/180);
+
+  CL_Matrix4x4 matrix(true);
+  matrix[0] = x*x*(1-c)+c;
+  matrix[1] = y*x*(1-c)+z*s;
+  matrix[2] = x*z*(1-c)-y*s;
+
+  matrix[4] = x*y*(1-c)-z*s;
+  matrix[5] = y*y*(1-c)+c;
+  matrix[6] = y*z*(1-c)+x*s;
+
+  matrix[8] = x*z*(1-c)+y*s;
+  matrix[9] = y*z*(1-c)-x*s;
+  matrix[10] = z*z*(1-c)+c;
+
+  modelview_stack.back() = modelview_stack.back().multiply(matrix);
 }
 
 void
-DrawingContext::scale(float x, float y)
+DrawingContext::scale(float x, float y, float z)
 {
-  // FIXME: not implemented
+  CL_Matrix4x4 matrix(true);
+  matrix[0] = x;
+  matrix[5] = y;
+  matrix[10] = z;
+
+  modelview_stack.back() = modelview_stack.back().multiply(matrix);
 }
 
 void
 DrawingContext::translate(float x, float y)
 {
-  translate_stack.back().x += x;
-  translate_stack.back().y += y;
+  CL_Matrix4x4 matrix(true);
+  matrix[12] = x;
+  matrix[13] = y;
+  matrix[14] = 0;
+
+  modelview_stack.back() = modelview_stack.back().multiply(matrix);
 }
 
 void
 DrawingContext::push_modelview()
 {
-  translate_stack.push_back(translate_stack.back());
+  modelview_stack.push_back(modelview_stack.back());
 }
 
 void
 DrawingContext::pop_modelview()
 {
-  translate_stack.pop_back();
-  assert(!translate_stack.empty());
+  modelview_stack.pop_back();
+  assert(!modelview_stack.empty());
 }
 
 void
 DrawingContext::reset_modelview()
 {
-  translate_stack.clear();
-  translate_stack.push_back(CL_Pointf(0, 0));
+  modelview_stack.clear();
+  modelview_stack.push_back(CL_Matrix4x4(true));
 }
 
 CL_Rect
 DrawingContext::get_clip_rect()
 {
-  return CL_Rect(CL_Point(static_cast<int>(translate_stack.back().x),
-                          static_cast<int>(translate_stack.back().y)),
+  // FIXME: Need to check the modelview matrix
+  return CL_Rect(CL_Point(int(modelview_stack.back()[12]),
+                          int(modelview_stack.back()[13])),
                  CL_Size(800, 600));
 }
 

@@ -30,8 +30,10 @@ class DrawingRequest
 {
 protected:
   CL_Vector pos;
+  CL_Matrix4x4 modelview;
 public:
-  DrawingRequest(const CL_Vector& pos_) : pos(pos_) {}
+  DrawingRequest(const CL_Vector& pos_, const CL_Matrix4x4& modelview_ = CL_Matrix4x4(true))
+    : pos(pos_), modelview(modelview_) {}
   virtual ~DrawingRequest() {}
   
   virtual void draw(CL_GraphicContext* gc) = 0;
@@ -42,6 +44,8 @@ public:
 
   /** Returns the position at which the request should be drawn */
   virtual float get_z_pos() { return pos.z; }
+
+  CL_Matrix4x4 get_modelview() const { return modelview; }
 private:
   DrawingRequest (const DrawingRequest&);
   DrawingRequest& operator= (const DrawingRequest&);

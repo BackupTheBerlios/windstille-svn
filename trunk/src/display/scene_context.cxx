@@ -126,7 +126,7 @@ SceneContext::render()
 {
   // Render all buffers
   // FIXME: Render all to pbuffer for later combining of them
-  impl->color.render(0);
+  impl->color.render();
 
   impl->light.render(impl->canvas.get_gc());
   impl->canvas.sync_surface();
@@ -138,7 +138,7 @@ SceneContext::render()
   impl->lightmap.draw();
   impl->canvas.get_gc()->clear();
 
-  impl->highlight.render(0);
+  impl->highlight.render();
 
   // Clear all DrawingContexts
   impl->color.clear();

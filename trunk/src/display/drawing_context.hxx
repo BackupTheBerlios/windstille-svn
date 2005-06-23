@@ -21,6 +21,7 @@
 #define HEADER_DRAWING_CONTEXT_HXX
 
 #include <ClanLib/Core/Math/rect.h>
+#include <ClanLib/Core/Math/matrix4x4.h>
 #include <ClanLib/Display/color.h>
 #include <vector>
 #include "drawing_request.hxx"
@@ -39,14 +40,14 @@ private:
   typedef std::vector<DrawingRequest*> DrawingRequests;
   DrawingRequests drawingrequests;
 
-  std::vector<CL_Pointf> translate_stack;
+  std::vector<CL_Matrix4x4> modelview_stack;
 
 public:
   DrawingContext();
   ~DrawingContext();
 
   /** Draws everything in the drawing context to the screen */
-  void render(CL_GraphicContext* gc);
+  void render(CL_GraphicContext* gc = 0);
 
   /** Empties the drawing context */
   void clear();
@@ -82,10 +83,10 @@ public:
   void translate(float x, float y);
 
   /** Set the rotation of the drawing context */
-  void rotate(float angel);
+  void rotate(float angle, float x = 0.0f, float y = 0.0f, float z = 1.0f);
 
   /** Set the scaling of the drawing context */
-  void scale(float x, float y);
+  void scale(float x, float y, float z = 1.0f);
 
   void push_modelview();
   void pop_modelview();
