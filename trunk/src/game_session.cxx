@@ -49,15 +49,10 @@ GameSession::GameSession(const std::string& arg_filename)
   : console(16, CL_Display::get_height()-16),
     frames(0), 
     control_dialog("controldialog", resources),
-    filename (arg_filename)
+    world (0)
 {
   current_ = this;
-  world = new Sector(filename);
-
-  state = FADEIN;
-  fadeout_value = 0;
-
-  control_state = GAME;
+  set_sector(arg_filename);
 }
 
 GameSession::~GameSession()
@@ -204,6 +199,21 @@ GameSession::update(float delta)
   InputManager::clear();
 
   blink += delta * 3.141f;
+}
+
+void
+GameSession::set_sector (const std::string& arg_filename)
+{
+  if (world)
+    delete world;
+
+  filename = arg_filename;
+  world = new Sector(filename);
+
+  state = FADEIN;
+  fadeout_value = 0;
+
+  control_state = GAME;
 }
 
 void
