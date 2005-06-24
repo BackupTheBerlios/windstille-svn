@@ -100,7 +100,7 @@ public:
 
                         r.read_vector("pos",    &vertex.pos);
                         r.read_vector("normal", &vertex.normal);
-
+                        
                         vertices.push_back(vertex);
                       }
                     else
@@ -179,7 +179,7 @@ Sprite3D::~Sprite3D()
 void
 Sprite3D::update(float delta)
 {
-  impl->angle += 10.0f* delta;
+  impl->angle += 30.0f* delta;
 }
 
 class Sprite3DDrawingRequest : public DrawingRequest
@@ -205,13 +205,15 @@ public:
     state.setup_2d();
   
     glPushMatrix();
-    glTranslatef(pos.x, pos.y, 0); //pos.z);
+    glTranslatef(pos.x, pos.y, pos.z); //pos.z);
     
+    glScalef(2.0f, 2.0f, 2.0f); // FIXME: Dirty hack to work around the wrong near/far clip settings 
+
     // FIXME: just for testing, remove for production
-    glRotated(impl->angle, 0, 0, 1.0f);
+    glRotated(impl->angle, 0, 1.0, 1.0);
 
-    glScalef(2.0f, 2.0f, 0.001f); // FIXME: Dirty hack to work around the wrong near/far clip settings 
-
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     impl->surface.bind();
 
@@ -219,25 +221,19 @@ public:
     for(Sprite3DImpl::Faces::iterator i = impl->faces.begin(); i != impl->faces.end(); ++i)
       {
         glTexCoord2f(i->v1.u, i->v1.v); 
-        glNormal3f(impl->vertices[i->v1.index].normal.x,
-                   impl->vertices[i->v1.index].normal.y,
-                   impl->vertices[i->v1.index].normal.z);
+        glNormal3f(impl->vertices[i->v1.index].normal.x, impl->vertices[i->v1.index].normal.y, impl->vertices[i->v1.index].normal.z);
         glVertex3f(impl->vertices[i->v1.index].pos.x,
                    impl->vertices[i->v1.index].pos.y,
                    impl->vertices[i->v1.index].pos.z);
 
         glTexCoord2f(i->v2.u, i->v2.v); 
-        glNormal3f(impl->vertices[i->v2.index].normal.x,
-                   impl->vertices[i->v2.index].normal.y,
-                   impl->vertices[i->v2.index].normal.z);
+        glNormal3f(impl->vertices[i->v2.index].normal.x, impl->vertices[i->v2.index].normal.y, impl->vertices[i->v2.index].normal.z);
         glVertex3f(impl->vertices[i->v2.index].pos.x,
                    impl->vertices[i->v2.index].pos.y,
                    impl->vertices[i->v2.index].pos.z);
 
         glTexCoord2f(i->v3.u, i->v3.v);
-        glNormal3f(impl->vertices[i->v3.index].normal.x,
-                   impl->vertices[i->v3.index].normal.y,
-                   impl->vertices[i->v3.index].normal.z); 
+        glNormal3f(impl->vertices[i->v3.index].normal.x, impl->vertices[i->v3.index].normal.y, impl->vertices[i->v3.index].normal.z); 
         glVertex3f(impl->vertices[i->v3.index].pos.x,
                    impl->vertices[i->v3.index].pos.y,
                    impl->vertices[i->v3.index].pos.z);
@@ -251,7 +247,7 @@ public:
 void
 Sprite3D::draw(SceneContext& sc)
 {
-  sc.color().draw(new Sprite3DDrawingRequest(impl, CL_Vector(250, 250, 10)));
+  sc.color().draw(new Sprite3DDrawingRequest(impl, CL_Vector(250, 250, 100)));
 }
 
 /* EOF */
