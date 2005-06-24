@@ -46,7 +46,7 @@
         href="http://subversion.tigris.de">Subversion</a> at:
     </p>
     <p>
-      <tt>svn co svn://svn.berlios.de/windstille/</tt>
+      <tt>svn co svn://svn.berlios.de/windstille/trunk/</tt>
     </p>
   </section>
 </page>

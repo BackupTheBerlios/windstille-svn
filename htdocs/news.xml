@@ -3,6 +3,22 @@
   
   <section title="News">
     <news>
+      <item date="23. Jun 2005">
+        On 25. June 2005, 18:00 GMT we will have a developer IRC
+        meeting in <tt>irc.freenode.net</tt>, channel
+        <tt>#windstille</tt>. Everybody interesting in joining is
+        welcome.
+      </item>
+
+      <item date="20. Jun 2005">
+        There is currently a lot of stuff happening to Windstille,
+        with a little luck we might have something actually playable
+        ready in a few month. All development specific information is
+        now collected in the <a
+        href="http://windstille.berlios.de/wiki/index.php/Main_Page">Windstille
+        Development Wiki</a>.
+      </item>
+
       <item date="3. Jun 2005">
         Some more pictures of our still nameless <a href="artworks.html#hero">hero {f}</a>.
       </item>
