@@ -302,9 +302,12 @@ GameSession::on_shutdown ()
 void
 GameSession::quit()
 {
-  fadeout_value = 0;
-  state = FADEOUT;
-  MusicManager::current()->stop();
+  if (state != FADEOUT)
+    {
+      fadeout_value = 0;
+      state = FADEOUT;
+      MusicManager::current()->stop();
+    }
 }
 
 void
