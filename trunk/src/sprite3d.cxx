@@ -56,6 +56,13 @@ public:
   Vertices vertices;
   Faces    faces;
 
+  float angle;
+
+  Sprite3DImpl()
+    : angle(0)
+  {
+  }
+
   void parse_file(const std::string& filename)
   {
     lisp_object_t* tree = lisp_read_from_file(filename.c_str());
@@ -87,9 +94,9 @@ public:
                         
                         vertex.x = lisp_real(lisp_list_nth(lisp_cdr(data), 0));
                         vertex.y = lisp_real(lisp_list_nth(lisp_cdr(data), 1));
-                        vertex.z = lisp_real(lisp_list_nth(lisp_cdr(data), 2));
+                        vertex.z = 0; //lisp_real(lisp_list_nth(lisp_cdr(data), 2));
 
-                        std::cout << "Vertex: " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
+                        //std::cout << "Vertex: " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
 
                         vertices.push_back(vertex);
                       }
@@ -135,9 +142,9 @@ public:
                         face.v3.v     =    lisp_real(lisp_list_nth(v3, 2));
 
 
-                        std::cout << "Face: " << face.v1.index << " " << face.v1.u << " " << face.v1.v << "\n"
-                                  << "      " << face.v2.index << " " << face.v2.u << " " << face.v2.v << "\n"
-                                  << "      " << face.v3.index << " " << face.v3.u << " " << face.v3.v << "\n";
+                        //std::cout << "Face: " << face.v1.index << " " << face.v1.u << " " << face.v1.v << "\n"
+                        //          << "      " << face.v2.index << " " << face.v2.u << " " << face.v2.v << "\n"
+                        //          << "      " << face.v3.index << " " << face.v3.u << " " << face.v3.v << "\n";
                           
                         faces.push_back(face);
                       }
@@ -169,7 +176,7 @@ Sprite3D::~Sprite3D()
 void
 Sprite3D::update(float delta)
 {
-  
+  impl->angle += 10.0f* delta;
 }
 
 class Sprite3DDrawingRequest : public DrawingRequest
@@ -195,9 +202,12 @@ public:
     state.setup_2d();
   
     glPushMatrix();
-    glTranslatef(pos.x, pos.y, pos.z);
+    glTranslatef(pos.x, pos.y, 0); //pos.z);
+    
+    // FIXME: just for testing, remove for production
+    glRotated(impl->angle, 0, 0, 1.0f);
 
-    glBegin(GL_TRIANGLES);
+    glBegin(GL_LINE_STRIP);
     for(Sprite3DImpl::Faces::iterator i = impl->faces.begin(); i != impl->faces.end(); ++i)
       {
         glTexCoord2f(i->v1.u, i->v1.v); 
@@ -224,7 +234,7 @@ public:
 void
 Sprite3D::draw(SceneContext& sc)
 {
-  sc.color().draw(new Sprite3DDrawingRequest(impl, CL_Vector(100, 100, 10)));
+  sc.color().draw(new Sprite3DDrawingRequest(impl, CL_Vector(250, 250, 10)));
 }
 
 /* EOF */
