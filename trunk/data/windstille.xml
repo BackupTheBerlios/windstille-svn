@@ -1,4 +1,9 @@
 <resources>
+  <section name="particles">
+    <surface name="smoke" file="images/particles/smoke.png" />
+    <surface name="smoke2" file="images/particles/smoke2.png" />
+  </section>
+  
   <section name="vrdoor">
     <sprite name="color">
       <image file="images/objects/vrdoor-color.png" />

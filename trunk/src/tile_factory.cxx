@@ -112,11 +112,11 @@ TileFactory::parse_tiles(lisp_object_t* data)
   std::vector<int> colmap;
   reader.read_int_vector("colmap", &colmap);
  
-  CL_PixelBuffer image = CL_ProviderFactory::load(filename);
+  CL_PixelBuffer image = CL_ProviderFactory::load(datadir + filename);
   CL_PixelBuffer hl_image;
 
   if (!highlight_filename.empty())
-    hl_image = CL_ProviderFactory::load(highlight_filename);
+    hl_image = CL_ProviderFactory::load(datadir + highlight_filename);
 
   int num_tiles = (image.get_width()/TILE_SIZE) * (image.get_height()/TILE_SIZE);
 

@@ -244,8 +244,8 @@ GameSession::on_startup ()
       world->add(new Door(32, 14));
       world->add(new Door(8, 22));
 
-      CL_Surface surface1("smoke.png");
-      CL_Surface surface2("smoke2.png");
+      CL_Surface surface1("particles/smoke", resources);
+      CL_Surface surface2("particles/smoke2", resources);
 
       ParticleSystem* psystem2 = new ParticleSystem();
       psystem2->set_drawer(new SparkDrawer());
