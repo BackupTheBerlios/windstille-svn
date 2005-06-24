@@ -21,6 +21,7 @@
 #define CONSOLE_HXX
 
 #include <vector>
+#include <sstream>
 
 struct ConsoleEntry {
   std::string message;
