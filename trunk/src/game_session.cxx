@@ -33,6 +33,7 @@
 #include "view.hxx"
 #include "door.hxx"
 #include "energiebar.hxx"
+#include "sprite3d.hxx"
 #include "dialog_manager.hxx"
 #include "windstille_main.hxx"
 #include "display/scene_context.hxx"
@@ -297,6 +298,8 @@ GameSession::on_startup ()
       world->add(psystem2);
       world->add(psystem);
     }
+  
+  world->add(new Sprite3D(datadir + "3dsprites/3dsprites"));
 }
 
 void
