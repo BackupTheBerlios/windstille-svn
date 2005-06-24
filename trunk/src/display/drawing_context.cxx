@@ -83,6 +83,28 @@ public:
   }
 };
 
+class SurfaceDrawingRequest : public DrawingRequest
+{
+private:
+  CL_Surface sprite;
+
+public:
+  SurfaceDrawingRequest(const CL_Surface& sprite_, const CL_Vector& pos_, const CL_Matrix4x4& modelview_)
+    : DrawingRequest(pos_, modelview_),
+      sprite(sprite_)
+  {}
+  virtual ~SurfaceDrawingRequest() {}
+
+  void draw(CL_GraphicContext* gc) {
+    // FIXME: frequent push/pops might be slow
+    gc->push_modelview();
+    gc->add_modelview(modelview);
+    sprite.draw(static_cast<int>(pos.x),
+                static_cast<int>(pos.y), gc);
+    gc->pop_modelview();
+  }
+};
+
 class TextDrawingRequest : public DrawingRequest
 {
 private:
@@ -139,6 +161,13 @@ void
 DrawingContext::draw(DrawingRequest* request)
 {
   drawingrequests.push_back(request);
+}
+
+void
+DrawingContext::draw(const CL_Surface&   sprite,  float x, float y, float z)
+{ // FIXME: This should get flattend down to a simple texture draw
+  // command for easier sorting after texture-id/alpha
+  draw(new SurfaceDrawingRequest(sprite, CL_Vector(x, y, z), modelview_stack.back()));
 }
 
 void

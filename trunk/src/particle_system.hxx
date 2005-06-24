@@ -22,7 +22,9 @@
 
 #include <ClanLib/display.h>
 #include <vector>
+#include "game_object.hxx"
 
+class SceneContext;
 class Randomizer;
 class Particle;
 class ParticleSystem;
@@ -31,13 +33,13 @@ class Drawer
 {
 public:
   virtual ~Drawer() {}
-  virtual void draw(ParticleSystem& psys) =0;
+  virtual void draw(SceneContext& sc, ParticleSystem& psys) =0;
 };
 
 class SparkDrawer : public Drawer
 {
 public:
-  void draw(ParticleSystem& psys);
+  void draw(SceneContext& sc, ParticleSystem& psys);
 };
 
 class SurfaceDrawer : public Drawer
@@ -50,7 +52,7 @@ public:
   virtual ~SurfaceDrawer();
   
   void set_surface(const CL_Surface& sur);
-  void draw(ParticleSystem& psys);
+  void draw(SceneContext& sc, ParticleSystem& psys);
 };
 
 struct Particle {
@@ -72,7 +74,7 @@ struct Particle {
 
 
 /** */
-class ParticleSystem
+class ParticleSystem : public GameObject
 {
 public:
   typedef std::vector<Particle> Particles;
@@ -117,7 +119,7 @@ public:
   void set_drawer(Drawer*);
 
   /** Draws the particle system to the screen */
-  virtual void draw();
+  virtual void draw(SceneContext& sc);
 
   /** Update the particle system \a delta seconds */
   virtual void update(float delta);

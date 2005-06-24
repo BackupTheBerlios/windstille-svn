@@ -37,6 +37,7 @@
 #include "windstille_main.hxx"
 #include "display/scene_context.hxx"
 #include "input/input_manager.hxx"
+#include "particle_system.hxx"
 
 #include "game_session.hxx"
 
@@ -209,7 +210,8 @@ void
 GameSession::on_startup ()
 { 
   slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
-  CL_Display::get_current_window()->hide_cursor();
+  slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
+  //CL_Display::get_current_window()->hide_cursor();
 
   MusicManager::current()->play(datadir + "music/techdemo.ogg", true);
   blink = 0.0f;
@@ -241,6 +243,49 @@ GameSession::on_startup ()
       world->add(new Door(24, 6));
       world->add(new Door(32, 14));
       world->add(new Door(8, 22));
+
+      CL_Surface surface1("smoke.png");
+      CL_Surface surface2("smoke2.png");
+
+      ParticleSystem* psystem2 = new ParticleSystem();
+      psystem2->set_drawer(new SparkDrawer());
+      psystem2->set_pos(0,0);
+      psystem2->set_speed(300, 550);
+      psystem2->set_cone(-25-90, 25-90);
+      psystem2->set_gravity(0, 20);
+      psystem2->set_line_distribution(-50, 0, 50, 0);
+
+      ParticleSystem* psystem3 = new ParticleSystem();
+      psystem3->set_lifetime(8);
+      psystem3->set_count(30);
+      surface2.set_blend_func(blend_src_alpha, blend_one_minus_src_alpha);
+      surface2.set_alignment(origin_center);
+      psystem3->set_drawer(new SurfaceDrawer(surface2));
+      psystem3->set_pos(0,0);
+      psystem3->set_speed(70, 100);
+      psystem3->set_cone(-25-90, 25-90);
+      psystem3->set_gravity(0, -1);
+      psystem3->set_size(1.0f, 3.0f);
+      psystem3->set_line_distribution(-50, 0, 50, 0);
+ 
+      ParticleSystem* psystem = new ParticleSystem();
+      psystem->set_count(100);
+      surface1.set_blend_func(blend_src_alpha, blend_one);
+      surface1.set_alignment(origin_center);
+      psystem->set_drawer(new SurfaceDrawer(surface1));
+      psystem->set_pos(0,0);
+      psystem->set_speed(200, 300);
+      psystem->set_cone(-5-90, 5-90);
+      psystem->set_gravity(0, 0);
+      psystem->set_line_distribution(-50, 0, 50, 0);
+
+      psystem->set_spawn_point (768, 832);
+      psystem2->set_spawn_point(768, 832);
+      psystem3->set_spawn_point(768, 832);
+
+      world->add(psystem3);
+      world->add(psystem2);
+      world->add(psystem);
     }
 }
 
@@ -260,6 +305,19 @@ GameSession::quit()
   fadeout_value = 0;
   state = FADEOUT;
   MusicManager::current()->stop();
+}
+
+void
+GameSession::on_mouse_down(const CL_InputEvent& event)
+{
+  switch(event.id)
+    {
+    case CL_MOUSE_LEFT:
+      console.add("Click at: ", CL_Point(view->screen2world(event.mouse_pos)));
+      break;
+    default:
+      break;
+    }
 }
 
 void
@@ -289,6 +347,7 @@ GameSession::on_key_down(const CL_InputEvent& event)
 
     default:
       // ignore key
+      //console.add("Key pressed:: ", event.id);
       break;
     }
 }

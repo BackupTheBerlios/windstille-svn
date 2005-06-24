@@ -26,6 +26,7 @@
 #include <vector>
 #include "drawing_request.hxx"
 
+class CL_Surface;
 class CL_Sprite;
 
 /** The DrawingContext collects all DrawingRequests and allows you to
@@ -60,6 +61,7 @@ public:
   /*{ */
   void draw(DrawingRequest* request);
   void draw(const CL_Sprite&   sprite,  float x, float y, float z = 0);
+  void draw(const CL_Surface&   sprite,  float x, float y, float z = 0);
   void draw(const std::string& text,    float x, float y, float z = 0);
 
   void draw_line (float x1, float y1, float x2, float y2, 

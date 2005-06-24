@@ -7,6 +7,7 @@
 #include <ClanLib/display.h>
 #include <ClanLib/gl.h>
 #include "particle_system.hxx"
+#include "display/scene_context.hxx"
 
 void screenshot(const char* filename)
 {
@@ -87,6 +88,8 @@ public:
         //psystem.set_circle_distribution(100.0f);
         //psystem.set_rect_distribution(200.0f, 50);
 
+        SceneContext sc;
+
         // Loop until the user hits escape:
         int count = 0;
         unsigned int start_time =  CL_System::get_time();
@@ -109,9 +112,9 @@ public:
 
             last_time = cur_time;
 
-            psystem3.draw();
-            psystem.draw();
-            psystem2.draw();
+            psystem3.draw(sc);
+            psystem.draw(sc);
+            psystem2.draw(sc);
 
             // Flip front and backbuffer. This makes the changes visible:
             CL_Display::flip();

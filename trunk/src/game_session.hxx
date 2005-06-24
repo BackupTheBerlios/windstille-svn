@@ -64,6 +64,7 @@ private:
 
   std::vector<CL_Slot> slots;
   void on_key_down  (const CL_InputEvent& event);
+  void on_mouse_down  (const CL_InputEvent& event);
 
   static GameSession* current_; 
 public:

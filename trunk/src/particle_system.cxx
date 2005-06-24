@@ -20,6 +20,7 @@
 #include <math.h>
 #include <ClanLib/gl.h>
 #include "particle_system.hxx"
+#include "display/scene_context.hxx"
 #include "random.hxx"
 
 class Randomizer 
@@ -97,7 +98,7 @@ SurfaceDrawer::set_surface(const CL_Surface& sur)
 }
 
 void
-SurfaceDrawer::draw(ParticleSystem& psys) 
+SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {          
   for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
     {
@@ -113,14 +114,16 @@ SurfaceDrawer::draw(ParticleSystem& psys)
           surface.set_scale(psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start),
                             psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start));
           surface.set_angle(i->angle);
-          surface.draw(int(psys.get_x_pos() + i->x),
-                       int(psys.get_y_pos() + i->y));
+          
+          sc.color().draw(surface, 
+                          psys.get_x_pos() + i->x,
+                          psys.get_y_pos() + i->y);
         }
     }
 }
 
 void
-SparkDrawer::draw(ParticleSystem& psys) 
+SparkDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {
   CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
   state.set_active();
@@ -180,11 +183,11 @@ ParticleSystem::set_drawer(Drawer* drawer_)
 }
   
 void
-ParticleSystem::draw()
+ParticleSystem::draw(SceneContext& sc)
 {
   if (drawer)
     {
-      drawer->draw(*this);
+      drawer->draw(sc, *this);
     }
   else
     {

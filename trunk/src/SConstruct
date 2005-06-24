@@ -91,6 +91,9 @@ windstille_source = [
     # Collision stuff
     'collision_manager.cxx',
 
+    'particle_system.cxx',
+    'random.cxx',
+
     # drawing
     'display/drawing_context.cxx',
     'display/scene_context.cxx',
@@ -134,12 +137,12 @@ windstille_prg = env.Program('windstille',
                          LIBPATH=['.'] + clanLib_env['LIBPATH'],
                          LIBS=clanLib_env['LIBS'])
 
-ptest = env.Program('ptest',
-                    ['ptest.cxx', 'particle_system.cxx', 'random.cxx'],
-                    CPPPATH   = [env['CPPPATH']] + clanLib_env['CPPPATH'],
-                    LINKFLAGS = clanLib_env['LINKFLAGS'],
-                    LIBPATH   = clanLib_env['LIBPATH'],
-                    LIBS      = clanLib_env['LIBS'])
+# ptest = env.Program('ptest',
+#                     ['ptest.cxx', 'particle_system.cxx', 'random.cxx'],
+#                    CPPPATH   = [env['CPPPATH']] + clanLib_env['CPPPATH'],
+#                    LINKFLAGS = clanLib_env['LINKFLAGS'],
+#                    LIBPATH   = clanLib_env['LIBPATH'],
+#                    LIBS      = clanLib_env['LIBS'])
 
 # Unkomment ctest and comment ptest and windstille to compile
 # ctest or alternativly fix the SConstruct file
