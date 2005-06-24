@@ -23,6 +23,8 @@ upload: berlios
 commit: berlios
 
 berlios: all
+	svn update && \
+	svn commit -m "--- some unknown new stuff (automatically inserted by the upload script) ---" && \
 	rsync -Crv . grumbel@shell.berlios.de:/home/groups/windstille/htdocs/
 
 .PHONY: all clean upload
