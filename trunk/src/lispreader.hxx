@@ -56,6 +56,8 @@
 #define LISP_PATTERN_LIST       7
 #define LISP_PATTERN_OR         8
 
+class CL_Vector;
+
 class LispReaderException : public std::exception
 {
   public:
@@ -197,6 +199,7 @@ public:
   bool read_string (const char* name, std::string* str);
   bool read_int (const char* name, int* i);
   bool read_float (const char* name, float* f);
+  bool read_vector (const char* name, CL_Vector* f);
   bool read_bool (const char* name, bool* b);
   bool read_lisp (const char* name, lisp_object_t** b);
 };

@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ClanLib/Core/System/clanstring.h>
+#include <ClanLib/Core/Math/cl_vector.h>
 #include "lispreader.hxx"
 
 #define TOKEN_ERROR                   -1
@@ -1079,6 +1080,23 @@ LispReader::read_lisp(const char* name, lisp_object_t** b)
     }
   else
     return false;
+}
+
+bool
+LispReader::read_vector (const char* name, CL_Vector* f)
+{
+  lisp_object_t* obj = get (name);
+  if (obj)
+    {
+      if (!lisp_real_p(lisp_car(obj)) && !lisp_integer_p(lisp_car(obj)))
+        throw LispReaderException("LispReader expected type 3 reals at token: ",
+                                  __FILE__, __LINE__);
+      f->x = lisp_real(lisp_list_nth(obj, 0));
+      f->y = lisp_real(lisp_list_nth(obj, 1));
+      f->z = lisp_real(lisp_list_nth(obj, 2));
+      return true;
+    }
+  return false; 
 }
 
 bool

@@ -24,12 +24,12 @@
 #include "display/drawing_request.hxx"
 #include "display/scene_context.hxx"
 #include "sprite3d.hxx"
+#include "globals.hxx"
 
 struct Vertex
 {
-  float x;
-  float y;
-  float z;
+  CL_Vector pos;
+  CL_Vector normal;
 };
 
 struct Vert
@@ -55,6 +55,7 @@ public:
 
   Vertices vertices;
   Faces    faces;
+  CL_OpenGLSurface surface;
 
   float angle;
 
@@ -76,7 +77,10 @@ public:
         LispReader reader(lisp_cdr(tree));
 
         std::string texture;
-        reader.read_string("texture",  &texture);
+        if (reader.read_string("texture",  &texture))
+          {
+            surface = CL_OpenGLSurface(datadir + texture);
+          }
         
         lisp_object_t* vertices_ptr = 0;
         if (reader.read_lisp("vertices", &vertices_ptr))
@@ -92,11 +96,10 @@ public:
                       {
                         Vertex vertex;
                         
-                        vertex.x = lisp_real(lisp_list_nth(lisp_cdr(data), 0));
-                        vertex.y = lisp_real(lisp_list_nth(lisp_cdr(data), 1));
-                        vertex.z = 0; //lisp_real(lisp_list_nth(lisp_cdr(data), 2));
+                        LispReader r(lisp_cdr(data));
 
-                        //std::cout << "Vertex: " << vertex.x << " " << vertex.y << " " << vertex.z << std::endl;
+                        r.read_vector("pos",    &vertex.pos);
+                        r.read_vector("normal", &vertex.normal);
 
                         vertices.push_back(vertex);
                       }
@@ -207,23 +210,37 @@ public:
     // FIXME: just for testing, remove for production
     glRotated(impl->angle, 0, 0, 1.0f);
 
-    glBegin(GL_LINE_STRIP);
+    glScalef(2.0f, 2.0f, 0.001f); // FIXME: Dirty hack to work around the wrong near/far clip settings 
+
+    glEnable(GL_TEXTURE_2D);
+    impl->surface.bind();
+
+    glBegin(GL_TRIANGLES);
     for(Sprite3DImpl::Faces::iterator i = impl->faces.begin(); i != impl->faces.end(); ++i)
       {
         glTexCoord2f(i->v1.u, i->v1.v); 
-        glVertex3f(impl->vertices[i->v1.index].x,
-                   impl->vertices[i->v1.index].y,
-                   impl->vertices[i->v1.index].z);
+        glNormal3f(impl->vertices[i->v1.index].normal.x,
+                   impl->vertices[i->v1.index].normal.y,
+                   impl->vertices[i->v1.index].normal.z);
+        glVertex3f(impl->vertices[i->v1.index].pos.x,
+                   impl->vertices[i->v1.index].pos.y,
+                   impl->vertices[i->v1.index].pos.z);
 
         glTexCoord2f(i->v2.u, i->v2.v); 
-        glVertex3f(impl->vertices[i->v2.index].x,
-                   impl->vertices[i->v2.index].y,
-                   impl->vertices[i->v2.index].z);
+        glNormal3f(impl->vertices[i->v2.index].normal.x,
+                   impl->vertices[i->v2.index].normal.y,
+                   impl->vertices[i->v2.index].normal.z);
+        glVertex3f(impl->vertices[i->v2.index].pos.x,
+                   impl->vertices[i->v2.index].pos.y,
+                   impl->vertices[i->v2.index].pos.z);
 
-        glTexCoord2f(i->v3.u, i->v3.v); 
-        glVertex3f(impl->vertices[i->v3.index].x,
-                   impl->vertices[i->v3.index].y,
-                   impl->vertices[i->v3.index].z);
+        glTexCoord2f(i->v3.u, i->v3.v);
+        glNormal3f(impl->vertices[i->v3.index].normal.x,
+                   impl->vertices[i->v3.index].normal.y,
+                   impl->vertices[i->v3.index].normal.z); 
+        glVertex3f(impl->vertices[i->v3.index].pos.x,
+                   impl->vertices[i->v3.index].pos.y,
+                   impl->vertices[i->v3.index].pos.z);
       }
     glEnd();
 
