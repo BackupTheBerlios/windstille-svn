@@ -19,6 +19,7 @@
 
 #include <ClanLib/display.h>
 
+#include "windstille_main.hxx"
 #include "delta_manager.hxx"
 #include "screen.hxx"
 #include "fonts.hxx"
@@ -105,8 +106,8 @@ Screen::key_down(const CL_InputEvent& event)
       if (CL_Display::is_fullscreen())
         CL_Display::set_windowed();
       else
-        CL_Display::set_fullscreen(CL_Display::get_width(),
-                                   CL_Display::get_height(),
+        CL_Display::set_fullscreen(WindstilleMain::screen_width,
+                                   WindstilleMain::screen_height,
                                    32);
       break;
     case CL_KEY_F12:

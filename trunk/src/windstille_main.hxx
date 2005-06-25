@@ -22,12 +22,13 @@
 
 #include <ClanLib/gl.h>
 #include <ClanLib/application.h>
+#include <ClanLib/sound.h>
 
 class WindstilleMain : public CL_ClanApplication
 {
 public:
-  int  screen_width;
-  int  screen_height;
+  static int screen_width;
+  static int screen_height;
   bool fullscreen;
   bool allow_resize;
 

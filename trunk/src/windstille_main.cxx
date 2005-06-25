@@ -21,7 +21,6 @@
 //#include <ClanLib/gl.h>
 #include <ClanLib/core.h>
 #include <ClanLib/vorbis.h>
-#include <ClanLib/sound.h>
 #include <ClanLib/display.h>
 
 #include "windstille_error.hxx"
@@ -39,6 +38,10 @@
 
 WindstilleMain main_app;
 CL_ResourceManager* resources;
+
+//static members
+int WindstilleMain::screen_width;
+int WindstilleMain::screen_height;
 
 WindstilleMain::WindstilleMain()
 {
