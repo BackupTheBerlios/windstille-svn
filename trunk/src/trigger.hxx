@@ -23,7 +23,7 @@
 #include <vector>
 #include <ClanLib/Core/Math/rect.h>
 #include "game_object.hxx"
-#include "ruby_functor.hxx"
+//#include "ruby_functor.hxx"
 
 class TriggerCondition
 {
@@ -44,6 +44,8 @@ public:
   bool check(); 
 };
 
+// Doesn't work at the moment because of missing ruby
+#if 0
 /** */
 class Trigger : public GameObject
 {
@@ -56,7 +58,7 @@ private:
 public:
   static Trigger* get_current() { return current_; }
 
-  Trigger(TriggerCondition*, const RubyFunctor& func);
+  Trigger(TriggerCondition* , const RubyFunctor& func);
   virtual ~Trigger();
 
   void draw (SceneContext& gc);
@@ -65,6 +67,7 @@ private:
   Trigger (const Trigger&);
   Trigger& operator= (const Trigger&);
 };
+#endif
 
 #endif
 

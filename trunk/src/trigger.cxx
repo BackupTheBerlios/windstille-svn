@@ -22,7 +22,7 @@
 #include "trigger.hxx"
 #include "player.hxx"
 
-Trigger* Trigger::current_ = 0;
+//Trigger* Trigger::current_ = 0;
 
 RegionTriggerCondition::RegionTriggerCondition(CL_Rectf rect)
   : rect(rect)
@@ -40,6 +40,7 @@ RegionTriggerCondition::check()
                                   player->get_pos().y));
 }
 
+#if 0
 Trigger::Trigger(TriggerCondition* condition, const RubyFunctor& func)
   : condition(condition),
     func(func),
@@ -67,12 +68,13 @@ Trigger::update (float delta)
     {
       triggered = true;
       current_ = this;
-      func();
+      //func();
     }
   else if (!condition->check())
     {
       triggered = false;
     }
 }
+#endif
 
 /* EOF */

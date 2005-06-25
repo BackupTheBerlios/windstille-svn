@@ -1,11 +1,22 @@
 #!/bin/sh
 
-echo "Just type 'scons'"
-exit 0
+# Correct working directory?
+if test ! -f configure.ac ; then
+  echo "*** Please invoke this script from directory containing configure.ac."
+  exit 1
+fi
 
-aclocal-1.7
-automake-1.7 -f --copy --add-missing
+aclocal -I mk/autoconf
 autoheader
+
+# generate Jamconfig.in
+autoconf --trace=AC_SUBST \
+  | sed -e 's/configure.ac:[0-9]*:AC_SUBST:\([^:]*\).*/\1 ?= "@\1@" ;/g' \
+  > Jamconfig.in~
+cat Jamconfig.in~ | sed -e 's/.*BACKSLASH.*//' > Jamconfig.in
+rm Jamconfig.in~
+echo 'INSTALL ?= "@INSTALL@" ;' >> Jamconfig.in
+echo 'JAMCONFIG_READ = yes ;' >> Jamconfig.in
+
 autoconf
 
-# EOF #
