@@ -48,7 +48,6 @@ GameSession* GameSession::current_ = 0;
 
 GameSession::GameSession(const std::string& arg_filename)
   : console(16, CL_Display::get_height()-16),
-    frames(0), 
     control_dialog("controldialog", resources),
     world (0)
 {
@@ -141,8 +140,6 @@ GameSession::draw()
                 "..:: Press Fire to restart ::..");
     }
 
-  CL_Display::flip();
-
   if (!main_app.screenshot_dir.empty())
     {
       std::stringstream filename;
@@ -153,7 +150,6 @@ GameSession::draw()
       filename << ".png";
       CL_ProviderFactory::save(CL_Display::get_front_buffer(), filename.str());
     }
-  ++frames;
 }
 
 void

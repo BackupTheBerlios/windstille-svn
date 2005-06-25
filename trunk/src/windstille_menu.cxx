@@ -206,8 +206,6 @@ WindstilleMenu::draw()
                         "Copyright (c) 2003 Ingo Ruhnke <grumbel@gmx.de>\n"
                         "This game comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome\n"
                         "to redistribute it under certain conditions; see the file COPYING for details.\n");
-
-  CL_Display::flip();
 }
 
 void

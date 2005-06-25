@@ -26,8 +26,17 @@ namespace Windstille {
 class Screen
 {
 private:
+  void draw_fps(float delta);
+  void key_down(const CL_InputEvent& event);
+  
   bool do_quit;
   bool do_pause;
+  bool show_fps;
+  CL_Slot slot;
+  
+protected:
+  int frames;
+  
 public:
   Screen();
   virtual ~Screen() {}

@@ -90,7 +90,6 @@ WindstilleBonus::draw()
     default:
       break;
     }
-  CL_Display::flip();
 }
 
 void
