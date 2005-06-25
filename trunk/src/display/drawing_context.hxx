@@ -93,6 +93,7 @@ public:
   void push_modelview();
   void pop_modelview();
   void reset_modelview();
+  CL_Matrix4x4 get_modelview() const { return modelview_stack.back(); }
 
   /** Return the area of the screen that will be visible*/
   CL_Rect get_clip_rect();

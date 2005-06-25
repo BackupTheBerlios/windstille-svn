@@ -205,12 +205,12 @@ public:
     state.setup_2d();
   
     glPushMatrix();
+
+    glMultMatrixd(modelview);
     glTranslatef(pos.x, pos.y, pos.z); //pos.z);
     
-    glScalef(2.0f, 2.0f, 2.0f); // FIXME: Dirty hack to work around the wrong near/far clip settings 
-
     // FIXME: just for testing, remove for production
-    glRotated(impl->angle, 0, 1.0, 1.0);
+    glRotated(impl->angle, 0, 1.0, 0);
 
     glClear(GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -247,7 +247,7 @@ public:
 void
 Sprite3D::draw(SceneContext& sc)
 {
-  sc.color().draw(new Sprite3DDrawingRequest(impl, CL_Vector(250, 250, 100)));
+  sc.color().draw(new Sprite3DDrawingRequest(impl, CL_Vector(12*32, 26*32, 100), sc.color().get_modelview()));
 }
 
 /* EOF */
