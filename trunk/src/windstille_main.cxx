@@ -191,8 +191,6 @@ WindstilleMain::main(int argc, char** argv)
   try {
     parse_command_line(argc, argv);
     init_modules();
-    
-    CL_Slot slot = CL_Keyboard::sig_key_down().connect(this, &WindstilleMain::key_down);
 
     if (playback_file.empty())
       {
@@ -237,27 +235,6 @@ WindstilleMain::main(int argc, char** argv)
   }
 
   return 0;
-}
-
-void
-WindstilleMain::key_down(const CL_InputEvent& event)
-{
-  if (event.id == CL_KEY_F12)
-    {
-      std::string filename = "screenshot.png";
-      std::cout << "Saving screenshot to: " << filename << std::endl;
-      CL_ProviderFactory::save(CL_Display::get_front_buffer(),
-                               filename);
-    } 
-  else if (event.id == CL_KEY_F11)
-    {
-      if (CL_Display::is_fullscreen())
-        CL_Display::set_windowed();
-      else
-        CL_Display::set_fullscreen(CL_Display::get_width(),
-                                   CL_Display::get_height(),
-                                   32);
-    }
 }
 
 void

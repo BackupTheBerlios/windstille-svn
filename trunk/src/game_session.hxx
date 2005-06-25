@@ -41,7 +41,6 @@ class GameSession : public Windstille::Screen
 private:
   SceneContext sc;
   Console console;
-  int frames;
   Player* player;
 
   float blink;

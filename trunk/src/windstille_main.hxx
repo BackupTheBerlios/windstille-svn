@@ -51,8 +51,6 @@ private:
   void parse_command_line(int argc, char** argv);
   void init_modules();
   void deinit_modules();
-
-  void key_down(const CL_InputEvent& event);
 };
 
 extern WindstilleMain main_app;
