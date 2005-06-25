@@ -171,7 +171,7 @@ WindstilleMain::main(int argc, char** argv)
   bindir  = CL_System::get_exe_path();
 
   if (datadir.empty())
-    datadir = bindir + "../data/";
+    datadir = bindir + "data/";
 
 #ifndef WIN32
   char* home_c = getenv("HOME");
