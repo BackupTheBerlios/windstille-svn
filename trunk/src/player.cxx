@@ -38,6 +38,7 @@ Player::Player () :
   velocity (0, 0),
   
   walk     ("human/walk",   resources),
+  run      ("human/run",   resources),
   sit      ("hero/sit",   resources),
   jump     ("hero/jump",  resources),
   stand    ("hero/stand", resources),
@@ -79,6 +80,10 @@ Player::draw (SceneContext& gc)
 	case  WALKING:
 	  sprite = &walk;
 	  break;
+
+        case RUNNING:
+          sprite = &run;
+          break;
 
 	case STANDING:
 	  sprite = &stand;
@@ -177,6 +182,7 @@ Player::update (float delta)
         hit_count -= delta;
 
       walk.update(delta);
+      run.update(delta);
   
       if (controller.get_button_state(LEFT_BUTTON))
         direction = WEST;
@@ -263,21 +269,37 @@ Player::update_ground (float delta)
       else
         {
           bomb_placed = false;
-          if (controller.get_button_state(LEFT_BUTTON))
+          if (controller.get_button_state(RUN_BUTTON))
             {
-              pos.x -= 128 * delta;
-              state = WALKING;
-            }
-          else if (controller.get_button_state(RIGHT_BUTTON))
-            {
-              pos.x += 128 * delta;
-              state = WALKING;
+              if (controller.get_button_state(LEFT_BUTTON))
+                {
+                  pos.x -= 256 * delta;
+                  state = RUNNING;
+                }
+              else if (controller.get_button_state(RIGHT_BUTTON))
+                {
+                  pos.x += 256 * delta;
+                  state = RUNNING;
+                }
             }
           else
             {
-              state = STANDING;
+              if (controller.get_button_state(LEFT_BUTTON))
+                {
+                  pos.x -= 128 * delta;
+                  state = WALKING;
+                }
+              else if (controller.get_button_state(RIGHT_BUTTON))
+                {
+                  pos.x += 128 * delta;
+                  state = WALKING;
+                }
+              else
+                {
+                  state = STANDING;
+                }
             }
-      
+          
           if (stuck ()) 
             {
               // FIXME: Calculate nearest position to colliding object here
