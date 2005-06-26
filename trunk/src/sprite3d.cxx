@@ -26,6 +26,7 @@
 #include "display/drawing_request.hxx"
 #include "display/scene_context.hxx"
 #include "sprite3d.hxx"
+#include "lisp_util.hpp"
 #include "globals.hxx"
 
 struct Vertex
@@ -48,7 +49,7 @@ struct Face
   Vert v[3];
 };
 
-static void read_vector(const lisp::Lisp* lisp, CL_Vector& vec)
+static inline void read_vector(const lisp::Lisp* lisp, CL_Vector& vec)
 {
   if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
     throw std::runtime_error("Invalid data when reading CL_Vector");
@@ -175,8 +176,6 @@ public:
           << iter.item() << "' in sprite3d\n";
       }
     }
-
-    printf("Sprite Loaded %d %d.\n", faces.size(), vertices.size());
   }
 };
 

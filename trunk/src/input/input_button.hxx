@@ -35,7 +35,7 @@ public:
   InputButton() {}
   virtual ~InputButton() {}
   
-  virtual void update(float delta) {}
+  virtual void update(float ) {}
 
   CL_Signal_v0& on_key_down() { return button_down; }
   CL_Signal_v0& on_key_up()   { return button_up; }

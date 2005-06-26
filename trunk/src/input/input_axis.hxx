@@ -33,7 +33,7 @@ public:
   InputAxis() {}
   virtual ~InputAxis() {}
 
-  virtual void update(float delta) {}
+  virtual void update(float ) {}
   CL_Signal_v1<float>& on_move() { return move; }
 };
 

@@ -34,7 +34,7 @@ AxisButton::~AxisButton()
 }
 
 void
-AxisButton::update(float delta)
+AxisButton::update(float )
 {
 }
 

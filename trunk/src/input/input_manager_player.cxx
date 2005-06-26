@@ -18,7 +18,6 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
-#include "../lispreader.hxx"
 #include "input_manager_player.hxx"
 
 InputManagerPlayer::InputManagerPlayer(const std::string& filename)
@@ -48,9 +47,10 @@ InputManagerPlayer::InputManagerPlayer(const std::string& filename)
 }
 
 InputEvent
-InputManagerPlayer::scm2event(lisp_object_t* entry)
+InputManagerPlayer::scm2event(const lisp::Lisp* )
 {
   InputEvent event;
+#if 0
   lisp_object_t* sym  = lisp_car(entry);
   lisp_object_t* data = lisp_cdr(entry);
 
@@ -70,6 +70,7 @@ InputManagerPlayer::scm2event(lisp_object_t* entry)
     {
       std::cout << "scm2event: Unknown sym: " << std::endl; //Guile::scm2string(sym) << std::endl;
     }
+#endif
   return event;
 }
   

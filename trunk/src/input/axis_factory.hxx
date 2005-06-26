@@ -20,17 +20,17 @@
 #ifndef HEADER_AXIS_FACTORY_HXX
 #define HEADER_AXIS_FACTORY_HXX
 
-#include "../lispreader.hxx"
+#include "lisp/lisp.hpp"
 #include "input_axis.hxx"
 
 /** */
 class AxisFactory
 {
 public:
-  static InputAxis* create(lisp_object_t* lst);
+  static InputAxis* create(const lisp::Lisp* lisp);
 private:
-  static InputAxis* create_joystick_axis(lisp_object_t* lst);
-  static InputAxis* create_button_axis(lisp_object_t* lst);
+  static InputAxis* create_joystick_axis(const lisp::Lisp* lisp);
+  static InputAxis* create_button_axis(const lisp::Lisp* lisp);
 };
 
 #endif

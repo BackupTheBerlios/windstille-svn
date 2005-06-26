@@ -20,13 +20,13 @@
 #ifndef HEADER_INPUT_MANAGER_CUSTOM_HXX
 #define HEADER_INPUT_MANAGER_CUSTOM_HXX
 
-#include "../lispreader.hxx"
 #include <ClanLib/Display/input_device.h>
 #include <ClanLib/Display/input_event.h>
 #include "input_event.hxx"
 #include "input_button.hxx"
 #include "input_axis.hxx"
 #include "input_manager_impl.hxx"
+#include "lisp/lisp.hpp"
 
 /** */
 class InputManagerCustom : public InputManagerImpl
@@ -41,7 +41,7 @@ private:
   Buttons buttons;
 
 public:
-  InputManagerCustom(lisp_object_t* lst);
+  InputManagerCustom(const lisp::Lisp* lisp);
   
   void update(float delta);
 
@@ -49,7 +49,7 @@ public:
   void on_button_down(int name);
   void on_axis_move(float pos, int name);
 private:
-  void init(lisp_object_t* lst);
+  void init(const lisp::Lisp* lisp);
 
   InputManagerCustom (const InputManagerCustom&);
   InputManagerCustom& operator= (const InputManagerCustom&);

@@ -23,9 +23,9 @@
 #include <ClanLib/Display/display_iostream.h>
 #include <ClanLib/Display/keys.h>
 
-#include "../lispreader.hxx"
-#include "../assert.hxx"
-#include "../controller_def.hxx"
+#include "lisp/list_iterator.hpp"
+#include "assert.hxx"
+#include "controller_def.hxx"
 #include "input_button_input_device.hxx"
 #include "input_axis_input_device.hxx"
 #include "button_factory.hxx"
@@ -33,9 +33,9 @@
 
 #include "input_manager_custom.hxx"
 
-InputManagerCustom::InputManagerCustom(lisp_object_t* lst)
+InputManagerCustom::InputManagerCustom(const lisp::Lisp* lisp)
 {
-  init(lst);
+  init(lisp);
 
   for (int i = 0; i < (int)buttons.size(); ++i)
     {
@@ -66,39 +66,34 @@ InputManagerCustom::InputManagerCustom(lisp_object_t* lst)
 }
 
 void 
-InputManagerCustom::init(lisp_object_t* lst)
+InputManagerCustom::init(const lisp::Lisp* lisp)
 {
   buttons.resize(ControllerDef::get_button_count());
   axes.resize(ControllerDef::get_axis_count());
-  
-  while (lisp_cons_p(lst))
+
+  lisp::ListIterator iter(lisp);
+  while(iter.next()) {
+    std::string name = iter.item();
+
+    int id = ControllerDef::button_name2id(name);
+    if (id != -1)
     {
-      lisp_object_t* sym  = lisp_cxr(lst, "aa");
-      lisp_object_t* data = lisp_cxr(lst, "ada");
-
-      std::string name = lisp_symbol(sym);
-
-      int id = ControllerDef::button_name2id(name);
-      if (id != -1)
-        {
-          buttons[id] = ButtonFactory::create(data);
-        }
-      else
-        {
-          id = ControllerDef::axis_name2id(name);
-          if (id != -1)
-            {
-              axes[id] = AxisFactory::create(data);
-            }
-          else
-            {
-              std::cout << "# Warning: InputManagerCustom::init: Error unknown tag: " << std::endl;
-                //                        << Guile::scm2string(sym) << std::endl;
-            }
-        }
-
-      lst = lisp_cdr(lst);
+      buttons[id] = ButtonFactory::create(iter.lisp());
     }
+    else
+    {
+      id = ControllerDef::axis_name2id(name);
+      if (id != -1)
+      {
+        axes[id] = AxisFactory::create(iter.lisp());
+      }
+      else
+      {
+        std::cout << "# Warning: InputManagerCustom::init: Error unknown tag: " << std::endl;
+        //                        << Guile::scm2string(sym) << std::endl;
+      }
+    }
+  }
 }  
 
 void

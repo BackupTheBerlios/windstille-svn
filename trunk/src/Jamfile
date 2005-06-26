@@ -100,8 +100,6 @@ Application windstille
         igel.hxx
         laser_shoot.cxx
         laser_shoot.hxx
-        lispreader.cxx
-        lispreader.hxx
         math.hxx
         music_manager.cxx
         music_manager.hxx

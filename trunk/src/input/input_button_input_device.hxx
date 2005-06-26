@@ -35,7 +35,7 @@ private:
 public:
   InputButtonInputDevice(CL_InputDevice& dev, int keycode);
   
-  void update(float delta) {}
+  void update(float ) {}
 };
 
 #endif

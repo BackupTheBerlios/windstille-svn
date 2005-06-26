@@ -19,74 +19,64 @@
 
 #include <ClanLib/Display/joystick.h>
 #include <ClanLib/Display/keyboard.h>
-#include "../lispreader.hxx"
-#include "../windstille_error.hxx"
+#include "windstille_error.hxx"
 #include "input_button.hxx"
 #include "input_axis.hxx"
 #include "input_button_input_device.hxx"
+#include "lisp/list_iterator.hpp"
+#include "lisp_util.hpp"
 #include "axis_factory.hxx"
 #include "axis_button.hxx"
 #include "multi_button.hxx"
 #include "button_factory.hxx"
 
 InputButton* 
-ButtonFactory::create(lisp_object_t* lst)
+ButtonFactory::create(const lisp::Lisp* lisp)
 {
-  lisp_object_t* sym = lisp_car(lst);
-
-  if (strcmp(lisp_symbol(sym), "joystick-button") == 0)
-    {
-      return create_joystick_button(lisp_cdr(lst));
+  lisp::ListIterator iter(lisp);
+  while(iter.next()) {
+    if(iter.item() == "joystick-button") {
+      return create_joystick_button(iter.lisp());
+    } else if(iter.item() == "keyboard-button") {
+      return create_keyboard_button(iter.lisp());
+    } else if(iter.item() == "axis-button") {
+      return create_axis_button(iter.lisp());
+    } else if(iter.item() == "multi-button") {
+      return create_multi_button(iter.lisp());
+    } else {
+      std::cerr << "Skipping unknown tag '" << iter.item() 
+        << "' in controller file\n";
     }
-  else if (strcmp(lisp_symbol(sym), "keyboard-button") == 0)
-    {
-      return create_keyboard_button(lisp_cdr(lst));
-    }
-  else if (strcmp(lisp_symbol(sym), "axis-button") == 0)
-    {
-      return create_axis_button(lisp_cdr(lst));
-    }
-  else if (strcmp(lisp_symbol(sym), "multi-button") == 0)
-    {
-      return create_multi_button(lisp_cdr(lst));
-    }
-  else
-    {
-      throw WindstilleError("ButtonFactory::create: parse error: '");
-                            //                            + Guile::scm2string(lst) + "'");
-    }
+  }
       
   return 0;
 }
 
 InputButton*
-ButtonFactory::create_axis_button(lisp_object_t* lst)
+ButtonFactory::create_axis_button(const lisp::Lisp* lisp)
 {
-  InputAxis* axis = AxisFactory::create(lisp_list_nth(lst, 0));
-  bool top = lisp_boolean(lisp_list_nth(lst, 1));
+  InputAxis* axis = AxisFactory::create(lisp_get_list_nth(lisp, 0));
+  bool top = lisp_get_list_nth(lisp, 1)->get_bool();
   
   return new AxisButton(axis, top);
 }
 
 InputButton*
-ButtonFactory::create_joystick_button(lisp_object_t* lst)
+ButtonFactory::create_joystick_button(const lisp::Lisp* lisp)
 {
-  int device_num = lisp_integer(lisp_list_nth(lst, 0));
-  int button_num = lisp_integer(lisp_list_nth(lst, 1));
+  int device_num = lisp_get_list_nth(lisp, 0)->get_int();
+  int button_num = lisp_get_list_nth(lisp, 1)->get_int();
   
   if (device_num >= 0 && device_num < CL_Joystick::get_device_count())
     return new InputButtonInputDevice(CL_Joystick::get_device(device_num), button_num);
   else
-    {
-      throw WindstilleError("Error: ButtonFactory::create_joystick_button: device out of range");
-                            //                            + to_string(device_num) + " " + Guile::scm2string(lst));
-    }
+    throw WindstilleError("Error: ButtonFactory::create_joystick_button: device out of range");
 }
 
 InputButton*
-ButtonFactory::create_keyboard_button(lisp_object_t* lst)
+ButtonFactory::create_keyboard_button(const lisp::Lisp* lisp)
 {
-  std::string key_str = lisp_string(lisp_car(lst));
+  std::string key_str = lisp->get_car()->get_string();
   int key_num         = CL_Keyboard::get_device().string_to_keyid(key_str);
 
   // FIXME: No error checking
@@ -94,15 +84,13 @@ ButtonFactory::create_keyboard_button(lisp_object_t* lst)
 }
 
 InputButton*
-ButtonFactory::create_multi_button(lisp_object_t* lst)
+ButtonFactory::create_multi_button(const lisp::Lisp* lisp)
 {
   MultiButton* button = new MultiButton();
-  
-  while (!lisp_nil_p(lst))
-    {
-      button->add(create(lisp_car(lst)));
-      lst = lisp_cdr(lst);
-    }
+ 
+  for( ; lisp != 0; lisp = lisp->get_cdr()) {
+    button->add(create(lisp->get_car()));
+  }
   
   return button;
 }

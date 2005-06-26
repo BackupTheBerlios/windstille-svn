@@ -20,7 +20,7 @@
 #ifndef HEADER_BUTTON_FACTORY_HXX
 #define HEADER_BUTTON_FACTORY_HXX
 
-#include "../lispreader.hxx"
+#include "lisp/lisp.hpp"
 
 class InputButton;
 
@@ -29,13 +29,13 @@ class ButtonFactory
 {
 private:
 public:
-  static InputButton* create(lisp_object_t* lst);
+  static InputButton* create(const lisp::Lisp* lisp);
 
 private:
-  static InputButton* create_joystick_button(lisp_object_t* lst);
-  static InputButton* create_keyboard_button(lisp_object_t* lst);
-  static InputButton* create_axis_button(lisp_object_t* lst);
-  static InputButton* create_multi_button(lisp_object_t* lst);
+  static InputButton* create_joystick_button(const lisp::Lisp* lisp);
+  static InputButton* create_keyboard_button(const lisp::Lisp* lisp);
+  static InputButton* create_axis_button(const lisp::Lisp* lisp);
+  static InputButton* create_multi_button(const lisp::Lisp* lisp);
 
   ButtonFactory (const ButtonFactory&);
   ButtonFactory& operator= (const ButtonFactory&);

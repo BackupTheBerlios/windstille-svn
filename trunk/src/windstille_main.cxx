@@ -210,7 +210,7 @@ WindstilleMain::main(int argc, char** argv)
         if (!controller_file.empty())
           InputManager::init(controller_file);
         else
-          InputManager::init(datadir + "controller/keyboard.scm");
+          InputManager::init("controller/keyboard.scm");
       }
     else
       {

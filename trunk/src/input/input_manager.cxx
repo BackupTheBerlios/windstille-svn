@@ -21,9 +21,11 @@
 #include <assert.h>
 #include <stdexcept>
 #include <sstream>
+#include <memory>
 #include <ClanLib/Display/joystick.h>
 
-#include "../windstille_error.hxx"
+#include "lisp/parser.hpp"
+#include "windstille_error.hxx"
 #include "input_manager_custom.hxx"
 #include "input_manager_player.hxx"
 #include "input_manager_impl.hxx"
@@ -42,17 +44,16 @@ InputManager::init_playback(const std::string& filename)
 void
 InputManager::init(const std::string& filename)
 {
-  lisp_object_t* lst = lisp_read_from_file(filename.c_str());
+  std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
 
-  if (strcmp("feuerkraft-controller", lisp_symbol(lisp_car(lst))) == 0)
-    {
-      impl = new InputManagerCustom(lisp_cdr(lst));
-    }
-  else
-    {
-      throw WindstilleError("Error: not a valid controller file: " + filename);
-    }
-  lisp_free(lst);
+  const lisp::Lisp* controller = root->get_lisp("windstille-controller");
+  if(controller == 0) {
+    std::ostringstream msg;
+    msg << "'" << filename << "' is not a windstille-controller file";
+    throw std::runtime_error(msg.str());
+  }
+  
+  impl = new InputManagerCustom(controller);
 }
 
 void

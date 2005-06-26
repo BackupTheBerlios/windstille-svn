@@ -1,4 +1,4 @@
-(feuerkraft-controller
+(windstille-controller
  (up    (axis-button (joystick-axis 1 1) #f))
  (down  (axis-button (joystick-axis 1 1) #t))
  (left  (axis-button (joystick-axis 1 0) #f))

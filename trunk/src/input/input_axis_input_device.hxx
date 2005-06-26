@@ -33,7 +33,7 @@ private:
 
 public:
   InputAxisInputDevice(CL_InputDevice& dev, int num);
-  void update(float delta) {}
+  void update(float ) {}
 };
 
 #endif

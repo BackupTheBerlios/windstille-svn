@@ -22,8 +22,8 @@
 
 #include <queue>
 #include <string>
-#include "../lispreader.hxx"
 #include "input_manager_impl.hxx"
+#include "lisp/lisp.hpp"
 
 /** Playback class for events recorded my the InputRecorder */
 class InputManagerPlayer : public InputManagerImpl
@@ -44,7 +44,7 @@ public:
   
   void update(float delta);
 private:
-  InputEvent scm2event(lisp_object_t* lst);
+  InputEvent scm2event(const lisp::Lisp* lisp);
 
   InputManagerPlayer (const InputManagerPlayer&);
   InputManagerPlayer& operator= (const InputManagerPlayer&);
