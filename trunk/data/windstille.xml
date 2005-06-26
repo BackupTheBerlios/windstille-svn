@@ -145,6 +145,19 @@
   
 
   <section name="human">
+    <sprite name="turn">
+      <animation speed="15" loop="yes" />
+      <translation origin="bottom_center" pos="0,12" />
+      <image file="images/human_walk.png">
+        <grid array="80,1" size="95,125" />
+      </image>
+    </sprite>
+
+    <sprite name="stand">
+      <translation origin="bottom_center" pos="0,12" />
+      <image file="images/human_stand.png" />
+    </sprite>
+
     <sprite name="walk">
       <animation speed="15" loop="yes" />
       <translation origin="bottom_center" pos="0,12" />
@@ -154,7 +167,7 @@
     </sprite>
 
     <sprite name="run">
-      <animation speed="10" loop="yes" />
+      <animation speed="8" loop="yes" />
       <translation origin="bottom_center" x="4" y="6" />
       <image file="images/human_run.png">
         <grid array="80,1" size="98,127" />

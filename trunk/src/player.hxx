@@ -65,6 +65,7 @@ private:
   
   CL_Sprite walk;
   CL_Sprite run;
+  CL_Sprite turn;
   CL_Sprite sit;
   CL_Sprite jump;
   CL_Sprite stand;
@@ -80,7 +81,7 @@ private:
   float hit_count;
   int energie;
 public:
-  typedef enum { WALKING, RUNNING, SITTING, STANDING, KILLED, DEAD } MovementState;
+  typedef enum { WALKING, RUNNING, TURN, SITTING, STANDING, KILLED, DEAD } MovementState;
   typedef enum { GUN_READY, GUN_RELOADING } GunState;
   typedef enum { ON_GROUND, IN_AIR } GroundState;
 

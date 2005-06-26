@@ -41,7 +41,7 @@ Player::Player () :
   run      ("human/run",   resources),
   sit      ("hero/sit",   resources),
   jump     ("hero/jump",  resources),
-  stand    ("hero/stand", resources),
+  stand    ("human/stand", resources),
   killed   ("hero/kill",  resources),
   dead     ("hero/dead",  resources),
   light    ("hero/light", resources),
@@ -69,7 +69,6 @@ Player::draw (SceneContext& gc)
 {
   gc.light().draw(light, pos.x, pos.y, 0);
   
-  //std::cout << "onground: " << ground_state << std::endl;
   CL_Sprite* sprite = 0;
 
   switch (ground_state)
@@ -97,6 +96,10 @@ Player::draw (SceneContext& gc)
           break;
         case DEAD:
           sprite = &dead;
+          break;
+          
+        case TURN:
+          sprite = &turn;
           break;
 	}
       break;
