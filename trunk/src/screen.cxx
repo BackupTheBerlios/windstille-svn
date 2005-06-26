@@ -47,17 +47,17 @@ Screen::display()
       draw();
       float delta = delta_manager.getset ();
       float step = 10/1000.0f;
-      if (show_fps)
-        draw_fps(delta);
-      CL_Display::flip();
-      
-      ++frames;
-      
       while (delta > step)
         {
           update(step);
           delta -= step;
         }
+      if (show_fps)
+        draw_fps(delta);
+      CL_Display::flip();
+      
+      ++frames;      
+      
       // FIXME: non constant delta isn't a good idea
       update(delta);
       
