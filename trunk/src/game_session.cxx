@@ -259,7 +259,7 @@ GameSession::on_startup ()
       psystem2->set_pos(0,0);
       psystem2->set_speed(300, 550);
       psystem2->set_cone(-25-90, 25-90);
-      psystem2->set_gravity(0, 20);
+      psystem2->set_gravity(0, 5);
       psystem2->set_line_distribution(-50, 0, 50, 0);
 
       ParticleSystem* psystem3 = new ParticleSystem();
