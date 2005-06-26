@@ -290,12 +290,12 @@ GameSession::on_startup ()
       psystem2->set_spawn_point(768, 832);
       psystem3->set_spawn_point(768, 832);
 
-      world->add(psystem3);
-      world->add(psystem2);
-      world->add(psystem);
+      //world->add(psystem3);
+      //world->add(psystem2);
+      //world->add(psystem);
     }
   
-  world->add(new Sprite3D(datadir + "3dsprites/3dsprites"));
+  //world->add(new Sprite3D(datadir + "3dsprites/3dsprites"));
 }
 
 void
