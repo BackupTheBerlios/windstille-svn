@@ -35,10 +35,12 @@ class Tile;
 class TileMap : public GameObject
 {
 private:
+  friend class TileMapDrawingRequest;
   Field<Tile*> field;
   typedef Field<Tile*>::iterator FieldIter;
   std::string name;
   float z_pos; 
+
 public:
   TileMap(LispReader reader);
   TileMap(const std::string& name, int w, int h);

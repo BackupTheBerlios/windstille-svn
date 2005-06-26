@@ -24,6 +24,7 @@
 #include "tile_factory.hxx"
 #include "globals.hxx"
 #include "view.hxx"
+#include "display/drawing_request.hxx"
 
 extern CL_ResourceManager* resources;
 
@@ -90,6 +91,50 @@ TileMap::update (float delta)
       }*/
 }
 
+class TileMapDrawingRequest : public DrawingRequest
+{
+private:
+  TileMap* tilemap;
+  bool highlight;
+  CL_Rect rect;
+public:
+  TileMapDrawingRequest(TileMap* tilemap_, bool highlight_,
+                        const CL_Rect& rect_,
+                        const CL_Vector& pos, const CL_Matrix4x4& modelview)
+    : DrawingRequest(pos, modelview),
+      tilemap(tilemap_),
+      highlight(highlight_),
+      rect(rect_)
+  {}
+
+  void draw(CL_GraphicContext* gc)
+  {
+    Field<Tile*>& field = tilemap->field;
+
+    gc->push_modelview();
+    gc->add_modelview(modelview);
+
+    for (int y = rect.top;   y < rect.bottom; ++y)
+      for (int x = rect.left; x < rect.right; ++x)
+        {
+          if (field(x,y))
+            {
+              if (!highlight)
+                {
+                  field(x,y)->get_color_sprite().draw(x * TILE_SIZE, y * TILE_SIZE);
+                }
+              else
+                {
+                  if (field(x, y)->get_highlight_sprite())
+                    field(x,y)->get_highlight_sprite().draw(x * TILE_SIZE, y * TILE_SIZE);
+                }
+            }
+        }
+
+    gc->pop_modelview();
+  }
+};
+
 void
 TileMap::draw (SceneContext& sc)
 {
@@ -100,20 +145,14 @@ TileMap::draw (SceneContext& sc)
   int end_x   = std::min(field.get_width(),  rect.right/TILE_SIZE + 1);
   int end_y   = std::min(field.get_height(), rect.bottom/TILE_SIZE + 1);
 
-  for (int y = start_y;   y < end_y; ++y)
-    for (int x = start_x; x < end_x; ++x)
-      {
-	//field (x,y)->sur->setScale (2.0f, 2.0f);
-	if (field (x,y))
-	  {
-	    sc.color().draw(field(x,y)->get_color_sprite(),
-                            x * TILE_SIZE, y * TILE_SIZE, z_pos);
-
-            if (field(x, y)->get_highlight_sprite())
-              sc.highlight().draw(field(x,y)->get_highlight_sprite(),
-                                  x * TILE_SIZE, y * TILE_SIZE, z_pos);
-	  }
-      }
+  sc.color().draw(new TileMapDrawingRequest(this, false, CL_Rect(start_x, start_y,
+                                                                 end_x,   end_y),
+                                            CL_Vector(0,0,z_pos),
+                                            sc.color().get_modelview()));
+  sc.highlight().draw(new TileMapDrawingRequest(this, true, CL_Rect(start_x, start_y,
+                                                                    end_x,   end_y),
+                                                CL_Vector(0,0,z_pos),
+                                                sc.color().get_modelview()));
 }
 
 unsigned int
