@@ -131,7 +131,7 @@ windstille_data = glob.glob('../data/images/*.png')     + \
 
 windstille_datadir = env['DESTDIR'] + env['PREFIX'] + '/share/games/windstille'
 
-windstille_prg = env.Program('windstille',
+windstille_prg = env.Program('../windstille',
                          windstille_source,
                          CPPPATH=[env['CPPPATH']] + clanLib_env['CPPPATH'],
                          LINKFLAGS = clanLib_env['LINKFLAGS'],
