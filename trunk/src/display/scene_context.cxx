@@ -21,6 +21,9 @@
 #include <ClanLib/gl.h>
 #include "scene_context.hxx"
 
+// The lightmap has a resolution of screen.w/LIGHTMAP, screen.h/LIGHTMAP
+#define LIGHTMAP_DIV 4
+
 class SceneContextImpl
 {
 public:
@@ -30,16 +33,13 @@ public:
   unsigned int render_mask;
 
   CL_OpenGLSurface lightmap;
-  CL_Canvas        canvas;
 
   SceneContextImpl() 
     : render_mask(SceneContext::COLORMAP | SceneContext::LIGHTMAP | SceneContext::HIGHLIGHTMAP ),
-      lightmap(CL_PixelBuffer(200, 
-                              150,
-                              200*4, CL_PixelFormat::rgba8888)),
-      canvas(lightmap)
+      lightmap(CL_PixelBuffer(800/LIGHTMAP_DIV, 
+                              600/LIGHTMAP_DIV,
+                              800/LIGHTMAP_DIV*4, CL_PixelFormat::rgba8888))
   {
-    canvas.get_gc()->set_scale(0.25, 0.25);
   }
 };
 
@@ -126,10 +126,23 @@ SceneContext::reset_modelview()
 void
 SceneContext::render()
 {
-  if (impl->render_mask & CLEARMAP)
+  if (impl->render_mask & LIGHTMAP)
     {
       CL_Display::clear();
+      
+      CL_Display::push_modelview();
+      CL_Display::add_scale(1.0f/LIGHTMAP_DIV, 1.0f/LIGHTMAP_DIV, 1.0f);
+      impl->light.render();
+      CL_Display::pop_modelview();
+      
+      // Weird y-pos is needed since OpenGL is upside down when it comes to y-coordinate
+      impl->lightmap.bind();
+      glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
+                          0, 0, 
+                          0, 600 - impl->lightmap.get_height(),
+                          impl->lightmap.get_width(), impl->lightmap.get_height());
     }
+
 
   // Render all buffers
   // FIXME: Render all to pbuffer for later combining of them
@@ -138,17 +151,11 @@ SceneContext::render()
       impl->color.render();
     }
 
-  if (impl->render_mask & LIGHTMAP)
+  if (impl->render_mask & LIGHTMAP && impl->render_mask & COLORMAP)
     {
-      impl->light.render(impl->canvas.get_gc());
-      impl->canvas.sync_surface();
-
-      //impl->lightmap.set_blend_func(blend_src_alpha, blend_one);
       impl->lightmap.set_blend_func(blend_dest_color, blend_zero);
-      //GL_DST_COLOR, GL_ZERO
-      impl->lightmap.set_scale(4.0f, 4.0f);
-      impl->lightmap.draw();
-      impl->canvas.get_gc()->clear();
+      impl->lightmap.set_scale(LIGHTMAP_DIV, -LIGHTMAP_DIV);
+      impl->lightmap.draw(0, 600);
     }
 
   if (impl->render_mask & HIGHLIGHTMAP)

@@ -73,8 +73,7 @@ public:
 
   enum { COLORMAP     = 1<<0,
          LIGHTMAP     = 1<<1,
-         HIGHLIGHTMAP = 1<<2,
-         CLEARMAP     = 1<<3
+         HIGHLIGHTMAP = 1<<2
   };
 
   void set_render_mask(unsigned int mask);

@@ -338,21 +338,16 @@ GameSession::on_key_down(const CL_InputEvent& event)
   switch(event.id)
     {
     case CL_KEY_1:
-      sc.set_render_mask(sc.get_render_mask() ^ SceneContext::CLEARMAP);
-      console.add("Toggled CLEARMAP: ",  (sc.get_render_mask() & SceneContext::CLEARMAP) > 0);
-      break;
-
-    case CL_KEY_2:
       sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
       console.add("Toggled COLORMAP: ", (sc.get_render_mask() & SceneContext::COLORMAP) > 0);
       break;
 
-    case CL_KEY_3:
+    case CL_KEY_2:
       sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
       console.add("Toggled LIGHTMAP: ", (sc.get_render_mask() & SceneContext::LIGHTMAP) > 0);
       break;
 
-    case CL_KEY_4:
+    case CL_KEY_3:
       sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
       console.add("Toggled HIGHLIGHTMAP: ", (sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0);
       break;      
