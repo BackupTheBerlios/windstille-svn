@@ -26,7 +26,7 @@
 
 #include "globals.hxx"
 #include "field.hxx"
-#include "lispreader.hxx"
+#include "lisp/lisp.hpp"
 #include "game_object.hxx"
 #include "display/scene_context.hxx"
 
@@ -42,9 +42,9 @@ private:
   float z_pos; 
 
 public:
-  TileMap(LispReader reader);
+  TileMap(const lisp::Lisp* lisp);
   TileMap(const std::string& name, int w, int h);
-  TileMap (Field<int>* data);
+  TileMap(Field<int>* data);
   virtual ~TileMap();
 
   void update (float delta);

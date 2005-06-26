@@ -31,7 +31,6 @@
 #include "music_manager.hxx"
 #include "windstille_bonus.hxx"
 #include "input/input_manager.hxx"
-#include "config.h"
 
 WindstilleMenu::WindstilleMenu()
   : background("menu_background", resources),
@@ -90,7 +89,7 @@ WindstilleMenu::update(float delta)
                   MusicManager::current()->stop();
                   InputManager::clear();
                   fadeout();
-                  GameSession game(datadir + "levels/newformat2.wst");
+                  GameSession game("levels/newformat2.wst");
                   game.display ();
                   on_startup();
                   break;
@@ -202,7 +201,7 @@ WindstilleMenu::draw()
 
   Fonts::copyright.set_alignment(origin_bottom_left);
   Fonts::copyright.draw(15, CL_Display::get_height() - 10,
-                        "Windstille " VERSION "\n"
+                        "Windstille " PACKAGE_VERSION "\n"
                         "Copyright (c) 2003 Ingo Ruhnke <grumbel@gmx.de>\n"
                         "This game comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome\n"
                         "to redistribute it under certain conditions; see the file COPYING for details.\n");

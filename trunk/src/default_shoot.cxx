@@ -32,7 +32,7 @@ DefaultShoot::DefaultShoot (const CL_Vector& arg_pos,
 }
 
 void
-DefaultShoot::draw (SceneContext& gc)
+DefaultShoot::draw (SceneContext& )
 {
   if (direction)
     sprite.set_scale (1.0, 1.0);

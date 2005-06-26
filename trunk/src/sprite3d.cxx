@@ -20,7 +20,9 @@
 #include <vector>
 #include <ClanLib/gl.h>
 #include <ClanLib/display.h>
-#include "lispreader.hxx"
+#include "lisp/lisp.hpp"
+#include "lisp/parser.hpp"
+#include "lisp/list_iterator.hpp"
 #include "display/drawing_request.hxx"
 #include "display/scene_context.hxx"
 #include "sprite3d.hxx"
@@ -42,10 +44,66 @@ struct Vert
 
 struct Face
 {
-  Vert v1;
-  Vert v2;
-  Vert v3;
+  // Vertices
+  Vert v[3];
 };
+
+static void read_vector(const lisp::Lisp* lisp, CL_Vector& vec)
+{
+  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
+    throw std::runtime_error("Invalid data when reading CL_Vector");
+  vec.x = lisp->get_car()->get_float();
+  if(lisp->get_cdr() == 0)
+    throw std::runtime_error("Must specified 3 floats for CL_vector");
+  lisp = lisp->get_cdr();
+  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
+    throw std::runtime_error("Invalid data when reading CL_Vector");
+  vec.y = lisp->get_car()->get_float();
+  if(lisp->get_cdr() == 0)
+    throw std::runtime_error("Must specified 3 floats for CL_vector");
+  lisp = lisp->get_cdr();
+  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
+    throw std::runtime_error("Invalid data when reading CL_Vector");
+  vec.z = lisp->get_car()->get_float();
+}
+
+static void read_vert(const lisp::Lisp* lisp, Vert& vert)
+{
+  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
+    throw std::runtime_error("Invalid data when reading CL_Vector");
+  vert.index = lisp->get_car()->get_int();
+  if(lisp->get_cdr() == 0)
+    throw std::runtime_error("Must specified 3 floats for CL_vector");
+  lisp = lisp->get_cdr();
+  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
+    throw std::runtime_error("Invalid data when reading CL_Vector");
+  vert.u = lisp->get_car()->get_float();
+  if(lisp->get_cdr() == 0)
+    throw std::runtime_error("Must specified 3 floats for CL_vector");
+  lisp = lisp->get_cdr();
+  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
+    throw std::runtime_error("Invalid data when reading CL_Vector");
+  vert.v = lisp->get_car()->get_float();
+}
+
+static void read_face(const lisp::Lisp* lisp, Face& face)
+{
+  lisp::ListIterator iter(lisp);
+  int i = 0;
+  while(iter.next()) {
+    if(iter.item() == "vert") {
+      if(i >= 3)
+        throw std::runtime_error("Too many vertices for face (should be 3)");
+      read_vert(iter.lisp(), face.v[i]);
+      i++;
+    } else {
+      std::cerr << "Skipping unknown tag '" << iter.item() << "' in face.\n";
+    }
+  }
+  if(i < 2) {
+    throw std::runtime_error("Too few vertices in face (should be 3)");
+  }
+}
 
 class Sprite3DImpl
 {
@@ -66,103 +124,60 @@ public:
 
   void parse_file(const std::string& filename)
   {
-    lisp_object_t* tree = lisp_read_from_file(filename.c_str());
+    std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
 
-    if (tree && strcmp(lisp_symbol(lisp_car(tree)), "windstille-3dsprite") != 0)
-      {
-        std::cout << filename << ": not a Windstille 3DSprite file, type='" << lisp_symbol(lisp_car(tree)) << "'!" << std::endl;
+    const lisp::Lisp* spritelisp = root->get_lisp("windstille-3dsprite");
+    if(!spritelisp) {
+      std::ostringstream msg;
+      msg << "'" << filename << "' is not a windstille-3dsprite file";
+      throw std::runtime_error(msg.str());
+    }
+
+    lisp::ListIterator iter(spritelisp);
+    while(iter.next()) {
+      if(iter.item() == "texture") {
+        surface = CL_OpenGLSurface(datadir + iter.value().get_string());
+      } else if(iter.item() == "vertices") {
+        lisp::ListIterator vertices_iter(iter.lisp());
+        while(vertices_iter.next()) {
+          if(vertices_iter.item() == "vertex") {
+            const lisp::Lisp* vlisp = vertices_iter.lisp();
+            Vertex vertex;
+            const lisp::Lisp* poslisp = vlisp->get_lisp("pos");
+            if(poslisp == 0)
+              throw std::runtime_error("Vertex without pos found");
+            read_vector(poslisp, vertex.pos);
+            const lisp::Lisp* normallisp = vlisp->get_lisp("normal");
+            if(normallisp == 0)
+              throw std::runtime_error("Vertex without normal found");
+            read_vector(normallisp, vertex.normal);
+                        
+            vertices.push_back(vertex);
+          } else {
+            std::cerr << "Skipping unknown tag '" 
+              << vertices_iter.item() << "' in vertices\n";
+          }
+        }
+      } else if(iter.item() == "faces") {
+        lisp::ListIterator faces_iter(iter.lisp());
+        while(faces_iter.next()) {
+          if(faces_iter.item() == "face") {
+            Face face;
+            read_face(faces_iter.lisp(), face);
+            faces.push_back(face);                        
+          } else {
+            std::cerr << "Skipping unknown tag '"
+              << faces_iter.item() << "' in faces\n";
+          }
+        }
+      } else {
+        std::cerr << "Skipping unknown tag '"
+          << iter.item() << "' in sprite3d\n";
       }
-    else
-      {
-        LispReader reader(lisp_cdr(tree));
+    }
 
-        std::string texture;
-        if (reader.read_string("texture",  &texture))
-          {
-            surface = CL_OpenGLSurface(datadir + texture);
-          }
-        
-        lisp_object_t* vertices_ptr = 0;
-        if (reader.read_lisp("vertices", &vertices_ptr))
-          {
-            while(!lisp_nil_p(vertices_ptr))
-              {
-                lisp_object_t* data = lisp_car(vertices_ptr);
-                if (lisp_cons_p(data) && lisp_symbol_p(lisp_car(data)))
-                  {
-                    std::string ident = lisp_symbol(lisp_car(data));
-                    
-                    if (ident == "vertex")
-                      {
-                        Vertex vertex;
-                        
-                        LispReader r(lisp_cdr(data));
-
-                        r.read_vector("pos",    &vertex.pos);
-                        r.read_vector("normal", &vertex.normal);
-                        
-                        vertices.push_back(vertex);
-                      }
-                    else
-                      {
-                        
-                      }
-                  }
-
-                vertices_ptr = lisp_cdr(vertices_ptr);
-              }
-          }
-
-        lisp_object_t* faces_ptr = 0;
-        if (reader.read_lisp("faces", &faces_ptr))
-          {
-            while(!lisp_nil_p(faces_ptr))
-              {
-                lisp_object_t* data = lisp_car(faces_ptr);
-                if (lisp_cons_p(data) && lisp_symbol_p(lisp_car(data)))
-                  {
-                    std::string ident = lisp_symbol(lisp_car(data));
-                    
-                    if (ident == "face")
-                      {
-                        Face face;
-                        
-                        lisp_object_t* v1 = lisp_cdr(lisp_list_nth(lisp_cdr(data), 0));
-                        lisp_object_t* v2 = lisp_cdr(lisp_list_nth(lisp_cdr(data), 1));
-                        lisp_object_t* v3 = lisp_cdr(lisp_list_nth(lisp_cdr(data), 2));
-
-
-                        face.v1.index = lisp_integer(lisp_list_nth(v1, 0));
-                        face.v1.u     =    lisp_real(lisp_list_nth(v1, 1));
-                        face.v1.v     =    lisp_real(lisp_list_nth(v1, 2));
-
-                        face.v2.index = lisp_integer(lisp_list_nth(v2, 0));
-                        face.v2.u     =    lisp_real(lisp_list_nth(v2, 1));
-                        face.v2.v     =    lisp_real(lisp_list_nth(v2, 2));
-
-                        face.v3.index = lisp_integer(lisp_list_nth(v3, 0));
-                        face.v3.u     =    lisp_real(lisp_list_nth(v3, 1));
-                        face.v3.v     =    lisp_real(lisp_list_nth(v3, 2));
-
-
-                        //std::cout << "Face: " << face.v1.index << " " << face.v1.u << " " << face.v1.v << "\n"
-                        //          << "      " << face.v2.index << " " << face.v2.u << " " << face.v2.v << "\n"
-                        //          << "      " << face.v3.index << " " << face.v3.u << " " << face.v3.v << "\n";
-                          
-                        faces.push_back(face);
-                      }
-                    else
-                      {
-                        
-                      }
-                  }
-
-                faces_ptr = lisp_cdr(faces_ptr);
-              }
-          }        
-      }      
-
-  }  
+    printf("Sprite Loaded %d %d.\n", faces.size(), vertices.size());
+  }
 };
 
 Sprite3D::Sprite3D(const std::string& filename)
@@ -220,23 +235,14 @@ public:
     glBegin(GL_TRIANGLES);
     for(Sprite3DImpl::Faces::iterator i = impl->faces.begin(); i != impl->faces.end(); ++i)
       {
-        glTexCoord2f(i->v1.u, i->v1.v); 
-        glNormal3f(impl->vertices[i->v1.index].normal.x, impl->vertices[i->v1.index].normal.y, impl->vertices[i->v1.index].normal.z);
-        glVertex3f(impl->vertices[i->v1.index].pos.x,
-                   impl->vertices[i->v1.index].pos.y,
-                   impl->vertices[i->v1.index].pos.z);
-
-        glTexCoord2f(i->v2.u, i->v2.v); 
-        glNormal3f(impl->vertices[i->v2.index].normal.x, impl->vertices[i->v2.index].normal.y, impl->vertices[i->v2.index].normal.z);
-        glVertex3f(impl->vertices[i->v2.index].pos.x,
-                   impl->vertices[i->v2.index].pos.y,
-                   impl->vertices[i->v2.index].pos.z);
-
-        glTexCoord2f(i->v3.u, i->v3.v);
-        glNormal3f(impl->vertices[i->v3.index].normal.x, impl->vertices[i->v3.index].normal.y, impl->vertices[i->v3.index].normal.z); 
-        glVertex3f(impl->vertices[i->v3.index].pos.x,
-                   impl->vertices[i->v3.index].pos.y,
-                   impl->vertices[i->v3.index].pos.z);
+        const Face& face = *i;
+        for(int v = 0; v < 3; ++v) {
+          const Vert& vert = face.v[v];
+          glTexCoord2f(vert.u, vert.v); 
+          const Vertex& vertex = impl->vertices[vert.index];
+          glNormal3f(vertex.normal.x, vertex.normal.y, vertex.normal.z);
+          glVertex3f(vertex.pos.x, vertex.pos.y, vertex.pos.z);
+        }
       }
     glEnd();
 

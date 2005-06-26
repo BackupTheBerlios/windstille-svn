@@ -19,6 +19,7 @@
 
 #include <ClanLib/gl.h>
 #include <sstream>
+#include "lisp/list_iterator.hpp"
 #include "tile_map.hxx"
 #include "tile.hxx"
 #include "tile_factory.hxx"
@@ -28,22 +29,32 @@
 
 extern CL_ResourceManager* resources;
 
-TileMap::TileMap(LispReader reader)
+TileMap::TileMap(const lisp::Lisp* lisp)
 {
-  int width;
-  int height;
+  int width = -1;
+  int height = -1;
   z_pos = 0;
-
-  reader.read_string("name", &name);
-  reader.read_float("z-pos", &z_pos);
-
-  if (reader.read_int("width",   &width) && 
-      reader.read_int("height",  &height))
-    {
-      field = Field<Tile*>(width, height);
-
+  
+  lisp::ListIterator iter(lisp);
+  while(iter.next()) {
+    if(iter.item() == "name") {
+      name = iter.value().get_string();
+    } else if(iter.item() == "z-pos") {
+      z_pos = iter.value().get_float();
+    } else if(iter.item() == "width") {
+      width = iter.value().get_int();
+    } else if(iter.item() == "height") {
+      height = iter.value().get_int();
+    } else if(iter.item() == "data") {
+      if(width <= 0 || height <= 0) {
+        throw std::runtime_error(
+            "Invalid width or height defined or "
+            "data defined before width and height");
+      }
       Field<int> tmpfield(width, height);
-      reader.read_int_vector("data", &tmpfield.get_vector());
+      iter.lisp()->get_vector(tmpfield.get_vector());
+    
+      field = Field<Tile*>(width, height);
 
       for (int y = 0; y < field.get_height (); ++y) 
         {
@@ -52,11 +63,13 @@ TileMap::TileMap(LispReader reader)
               field(x, y) = TileFactory::current()->create(tmpfield(x, y));
             }
         }
+    } else {
+      std::cout << "Skipping unknown Tag '" << iter.item() << "' in tilemap\n";
     }
-  else
-    {
-      std::cout << "Couldn't parse tilemap" << std::endl;
-    }
+  }
+
+  if(field.size() == 0)
+    throw std::runtime_error("No tiles defined in tilemap");  
 }
 
 TileMap::TileMap (Field<int>* data)
@@ -83,7 +96,7 @@ TileMap::~TileMap()
 }
 
 void 
-TileMap::update (float delta)
+TileMap::update (float )
 {
   /*for (FieldIter i = field.begin (); i != field.end (); ++i)
     {

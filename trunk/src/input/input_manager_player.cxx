@@ -23,6 +23,7 @@
 
 InputManagerPlayer::InputManagerPlayer(const std::string& filename)
 {
+  (void) filename;
 #if 0
   // FIXME
   std::cout << "InputManagerPlayer::InputManagerPlayer(" << filename << ")" << std::endl;
@@ -75,6 +76,7 @@ InputManagerPlayer::scm2event(lisp_object_t* entry)
 void
 InputManagerPlayer::update(float delta)
 {
+  (void) delta;
   if (entries.front().entry_num == entry_counter)
     {
       events = entries.front().events;

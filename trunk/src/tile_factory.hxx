@@ -22,7 +22,7 @@
 
 #include <map>
 #include <string>
-#include "lispreader.hxx"
+#include "lisp/lisp.hpp"
 
 class Tile;
 
@@ -66,7 +66,7 @@ public:
   static TileFactory* current() { return current_; }
 
 private:
-  void parse_tiles(lisp_object_t* data);
+  void parse_tiles(const lisp::Lisp* data);
 };
 
 #endif

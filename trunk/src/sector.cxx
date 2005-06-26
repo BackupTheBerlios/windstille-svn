@@ -18,7 +18,10 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
-#include "lispreader.hxx"
+#include <sstream>
+#include <stdexcept>
+#include "lisp/list_iterator.hpp"
+#include "lisp/parser.hpp"
 #include "globals.hxx"
 #include "display/scene_context.hxx"
 #include "tile_map.hxx"
@@ -45,66 +48,55 @@ Sector::~Sector()
 void
 Sector::parse_file(const std::string& filename)
 {
-  lisp_object_t* tree = lisp_read_from_file(filename.c_str());
+  std::auto_ptr<lisp::Lisp> root(lisp::Parser::parse(filename));
 
-  if (tree && strcmp(lisp_symbol(lisp_car(tree)), "windstille-sector") != 0)
-    {
-      std::cout << filename << ": not a Windstille Sector file, type='" << lisp_symbol(lisp_car(tree)) << "'!" << std::endl;
+  const lisp::Lisp* sector = root->get_lisp("windstille-sector");
+  if(!sector) {
+    std::ostringstream msg;
+    msg << "'" << filename << "' is not a windstille-sector file";
+    throw std::runtime_error(msg.str());
+  }
+
+  std::vector<std::string> scripts;
+  std::vector<int> ambient_colors;
+  
+  lisp::ListIterator iter(sector);
+  while(iter.next()) {
+    if(iter.item() == "name") {
+      name = iter.value().get_string();
+    } else if(iter.item() == "scripts") {
+      iter.value().get_vector(scripts);
+    } else if(iter.item() == "ambient-color") {
+      iter.lisp()->get_vector(ambient_colors);
+      if(ambient_colors.size() != 3)
+        throw std::runtime_error(
+            "ambient-color contains has to contain exactly 3 values");
+      ambient_light 
+        = CL_Color(ambient_colors[0], ambient_colors[1], ambient_colors[2]);
+    } else if(iter.item() == "objects") {
+      lisp::ListIterator oiter(iter.lisp());
+      while(oiter.next()) {
+        parse_object(oiter.item(), oiter.lisp());
+      }
+    } else {
+      std::cerr << "Skipping unknown tag '" << iter.item() << "' in sector\n";
     }
-  else
-    {
-      LispReader reader(lisp_cdr(tree));
+  }
+}
 
-      reader.read_string("name",  &name);
-      
-      std::vector<std::string> scripts;
-      reader.read_string_vector("scripts", &scripts);
-
-      std::vector<int> ambient_colors;
-      reader.read_int_vector("ambient-color", &ambient_colors);
-      if (ambient_colors.size() == 3)
-        {
-          ambient_light = CL_Color(ambient_colors[0],
-                                   ambient_colors[1],
-                                   ambient_colors[2]);
-        }
-
-      lisp_object_t* objects_ptr = 0;
-      if (reader.read_lisp("objects", &objects_ptr))
-        {
-          while(!lisp_nil_p(objects_ptr))
-            {
-              lisp_object_t* data = lisp_car(objects_ptr);
-              if (lisp_cons_p(data) && lisp_symbol_p(lisp_car(data)))
-                {
-                  std::string ident = lisp_symbol(lisp_car(data));
-
-                  if (ident == "tilemap")
-                    {
-                      TileMap* tilemap = new TileMap(LispReader(lisp_cdr(data)));
-
-                      objects.push_back(tilemap);
-                      if (tilemap->get_name() == "interactive")
-                        interactive_tilemap = tilemap;
-                    }
-                  else if (ident == "background")
-                    {
-                    }
-                  else
-                    {
-                      std::cout << "Sector: Unknown ident: " << ident << std::endl;
-                    }
-                }
-
-              objects_ptr = lisp_cdr(objects_ptr);
-            }
-        }
-
-      //parse_foreground_tilemap(reader.get("interactive-tilemap"));
-      //parse_background_tilemap(reader.get("background-tilemap"));
-    }
-
-  lisp_free(tree);
+void
+Sector::parse_object(const std::string& name, const lisp::Lisp* lisp)
+{
+  if(name == "tilemap") {
+    TileMap* tilemap = new TileMap(lisp);
+    objects.push_back(tilemap);
+    if (tilemap->get_name() == "interactive")
+      interactive_tilemap = tilemap;
+  } else if(name == "background") {
+    // TODO
+  } else {
+    std::cout << "Skipping unknown Object: " << name << "\n";
+  }
 }
 
 void
@@ -138,6 +130,7 @@ Sector::add(GameObject* obj)
 void
 Sector::remove(GameObject* obj)
 {
+  (void) obj;
   // not implemented
 }
 

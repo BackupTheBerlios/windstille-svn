@@ -22,6 +22,7 @@
 #include <ClanLib/core.h>
 #include <ClanLib/vorbis.h>
 #include <ClanLib/display.h>
+#include <physfs.h>
 
 #include "windstille_error.hxx"
 #include "globals.hxx"
@@ -167,6 +168,13 @@ WindstilleMain::main(int argc, char** argv)
   console.redirect_stdio("windstille.log");
 #endif
 
+  try {
+    init_physfs(argv[0]);
+  } catch(std::exception& e) {
+    std::cout << "std::exception: " << e.what() << std::endl;
+    return 1;
+  }
+
   // Init the path
   bindir  = CL_System::get_exe_path();
 
@@ -190,8 +198,10 @@ WindstilleMain::main(int argc, char** argv)
 #else
   homedir = "config/";
 #endif
-  
+
+#ifndef DEBUG // we wanna have a stacktrace in debug mode
   try {
+#endif
     parse_command_line(argc, argv);
     init_modules();
 
@@ -227,6 +237,7 @@ WindstilleMain::main(int argc, char** argv)
 
     deinit_modules();
 
+#ifndef DEBUG
   } catch (CL_Error& error) {
     std::cout << "CL_Error: " << error.message << std::endl;
   } catch (WindstilleError& err) {
@@ -236,6 +247,7 @@ WindstilleMain::main(int argc, char** argv)
   } catch (...) {
     std::cout << "Error catched something unknown?!" << std::endl;
   }
+#endif
 
   return 0;
 }
@@ -297,6 +309,112 @@ WindstilleMain::deinit_modules()
   CL_SetupGL::init();
 
   CL_SetupCore::init(); 
+}
+
+void
+WindstilleMain::init_physfs(const char* argv0)
+{
+  if(!PHYSFS_init(argv0)) {
+    std::stringstream msg;
+    msg << "Couldn't initialize physfs: " << PHYSFS_getLastError();
+    throw std::runtime_error(msg.str());
+  }
+
+  // Initialize physfs (this is a slightly modified version of
+  // PHYSFS_setSaneConfig
+  const char* application = PACKAGE_NAME;
+  const char* userdir = PHYSFS_getUserDir();
+  const char* dirsep = PHYSFS_getDirSeparator();
+  char* writedir = new char[strlen(userdir) + strlen(application) + 2];
+
+  // Set configuration directory
+  sprintf(writedir, "%s.%s", userdir, application);
+  if(!PHYSFS_setWriteDir(writedir)) {
+    // try to create the directory
+    char* mkdir = new char[strlen(application) + 2];
+    sprintf(mkdir, ".%s", application);
+    if(!PHYSFS_setWriteDir(userdir) || !PHYSFS_mkdir(mkdir)) {
+      std::ostringstream msg;
+      msg << "Failed creating configuration directory '"
+          << writedir << "': " << PHYSFS_getLastError();
+      delete[] writedir;
+      delete[] mkdir;
+      throw std::runtime_error(msg.str());
+    }
+    delete[] mkdir;
+
+    if(!PHYSFS_setWriteDir(writedir)) {
+      std::ostringstream msg;
+      msg << "Failed to use configuration directory '"
+          <<  writedir << "': " << PHYSFS_getLastError();
+      delete[] writedir;
+      throw std::runtime_error(msg.str());
+    }
+  }
+  PHYSFS_addToSearchPath(writedir, 0);
+  delete[] writedir;
+
+  // Search for archives and add them to the search path
+  const char* archiveExt = "zip";
+  char** rc = PHYSFS_enumerateFiles("/");
+  size_t extlen = strlen(archiveExt);
+
+  for(char** i = rc; *i != 0; ++i) {
+    size_t l = strlen(*i);
+    if((l > extlen) && ((*i)[l - extlen - 1] == '.')) {
+      const char* ext = (*i) + (l - extlen);
+      if(strcasecmp(ext, archiveExt) == 0) {
+        const char* d = PHYSFS_getRealDir(*i);
+        char* str = new char[strlen(d) + strlen(dirsep) + l + 1];
+        sprintf(str, "%s%s%s", d, dirsep, *i);
+        PHYSFS_addToSearchPath(str, 1);
+        delete[] str;
+      }
+    }
+  }
+
+  PHYSFS_freeList(rc);
+
+  // when started from source dir...
+  std::string dir = PHYSFS_getBaseDir();
+  dir += "/data";
+  std::string testfname = dir;
+  testfname += "/tiles.scm";
+  bool sourcedir = false;
+  FILE* f = fopen(testfname.c_str(), "r");
+  if(f) {
+    fclose(f);
+    if(!PHYSFS_addToSearchPath(dir.c_str(), 1)) {
+      std::cout << "Warning: Couldn't add '" << dir
+                << "' to physfs searchpath: " << PHYSFS_getLastError() << "\n";
+    } else {
+      sourcedir = true;
+    }
+  }
+
+  if(!sourcedir) {
+#if defined(APPDATADIR) || defined(ENABLE_BINRELOC)
+    std::string datadir;
+#ifdef ENABLE_BINRELOC
+    char* brdatadir = br_strcat(DATADIR, "/" PACKAGE_NAME);
+    datadir = brdatadir;
+    free(brdatadir);
+#else
+    datadir = APPDATADIR;
+#endif
+    if(!PHYSFS_addToSearchPath(datadir.c_str(), 1)) {
+      std::cout << "Couldn't add '" << datadir
+        << "' to physfs searchpath: " << PHYSFS_getLastError() << "\n";
+    }
+#endif
+  }
+
+  // allow symbolic links
+  PHYSFS_permitSymbolicLinks(1);
+
+  //show search Path
+  for(char** i = PHYSFS_getSearchPath(); *i != NULL; i++)
+    printf("[%s] is in the search path.\n", *i);
 }
 
 /* EOF */

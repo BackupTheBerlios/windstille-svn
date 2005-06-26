@@ -16,17 +16,21 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 #include <string>
 #include <ClanLib/Core/System/system.h>
 #include <ClanLib/Display/pixel_buffer.h>
 #include <ClanLib/Display/pixel_format.h>
 #include <ClanLib/Display/Providers/provider_factory.h>
 #include <assert.h>
+#include <sstream>
 #include <iostream>
+#include <memory>
 #include "globals.hxx"
 #include "tile.hxx"
 #include "tile_factory.hxx"
+#include "lisp/lisp.hpp"
+#include "lisp/parser.hpp"
+#include "lisp/list_iterator.hpp"
 
 extern CL_ResourceManager* resources;
 
@@ -36,44 +40,23 @@ std::string TileFactory::tile_def_file = "tiles.scm";
 
 TileFactory::TileFactory (const std::string& filename)
 {
-  lisp_object_t* tree = lisp_read_from_file(filename.c_str());
-  
-  if (!(lisp_symbol_p(lisp_car(tree)) && 
-        strcmp("windstille-tiles", lisp_symbol(lisp_car(tree))) == 0))
-    {
-      std::cout << "Not a Windstille Tile File!" << std::endl;
-    }
-  else
-    {
-      tree = lisp_cdr(tree);
+  std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
 
-      while (!lisp_nil_p(tree))
-        {
-          lisp_object_t* current = lisp_car(tree);
-          
-          if (lisp_cons_p(current))
-            {
-              lisp_object_t* name    = lisp_car(current);
-              lisp_object_t* data    = lisp_cdr(current);
-      
-              if (strcmp(lisp_symbol(name), "tiles") == 0)
-                {
-                  parse_tiles(data);
-                }
-              else
-                {
-                  std::cout << "TileFactory: Unknown tag: " << lisp_symbol(name) << std::endl;
-                }
-            }
-          else
-            {
-              std::cout << "TileFactory: Not a pair!"  << std::endl;
-            }
-          tree = lisp_cdr(tree);
-        }
-    }
+  const lisp::Lisp* tiles_lisp = root->get_lisp("windstille-tiles");
+  if(!tiles_lisp) {
+    std::ostringstream msg;
+    msg << "'" << filename << "' is not a windstille tiles file";
+    throw std::runtime_error(msg.str());
+  }
 
-  lisp_free(tree);
+  lisp::ListIterator iter(tiles_lisp);
+  while(iter.next()) {
+    if(iter.item() == "tiles") {
+      parse_tiles(iter.lisp());
+    } else {
+      std::cout << "Unknown tag in tiles file: " << iter.item() << "\n";
+    }
+  }
 }
 
 TileFactory::~TileFactory()
@@ -86,49 +69,47 @@ TileFactory::~TileFactory()
 }
 
 void
-TileFactory::parse_tiles(lisp_object_t* data)
+TileFactory::parse_tiles(const lisp::Lisp* data)
 {
   assert(data);
-  LispReader reader(data);
-
-  int id = 1;
-
-  if (!reader.read_int("id", &id))
-    {
-      std::cout << "Error: Id tag missing" << std::endl;
-      return;
-    }
 
   std::string filename;
-  if (!reader.read_string("color-image", &filename))
-    {
-      std::cout << "Error: image tag missing" << std::endl;
-      return;
-    }
-
   std::string highlight_filename;
-  reader.read_string("highlight-image", &highlight_filename);
-
   std::vector<int> colmap;
-  reader.read_int_vector("colmap", &colmap);
- 
+  int id = -1;
+  
+  lisp::ListIterator iter(data);
+  while(iter.next()) {
+    if(iter.item() == "id") {
+      id = iter.value().get_int();
+    } else if(iter.item() == "color-image") {
+      filename = iter.value().get_string();
+    } else if(iter.item() == "highlight-image") {
+      highlight_filename = iter.value().get_string();
+    } else if(iter.item() == "colmap") {
+      iter.lisp()->get_vector(colmap);
+    } else {
+      std::cerr << "Unknown tag '" << iter.item() << "' found in tiles\n";
+    }
+  }
+
+  if(id < 0)
+    throw std::runtime_error("Invalid or missing tile id");
+  if(filename == "")
+    throw std::runtime_error("Missing color-image");
+  
   CL_PixelBuffer image = CL_ProviderFactory::load(datadir + filename);
   CL_PixelBuffer hl_image;
-
-  if (!highlight_filename.empty())
+  
+  if(highlight_filename != "")
     hl_image = CL_ProviderFactory::load(datadir + highlight_filename);
 
   int num_tiles = (image.get_width()/TILE_SIZE) * (image.get_height()/TILE_SIZE);
-
   if (int(colmap.size()) != num_tiles)
-    {
-      std::cout << "Error: TileFactor: not enough colmap information for tiles" << std::endl;
-    }
-
+    throw std::runtime_error("Not enough colmap information for tiles");
+  
   if ((id + num_tiles) >= int(tiles.size()))
-    {
-      tiles.resize(id + num_tiles + 1);
-    }
+    tiles.resize(id + num_tiles + 1);
 
   // FIMXE: Tiles should share one OpenGL texture
   for (int y = 0; y < image.get_height(); y += TILE_SIZE)
@@ -191,7 +172,7 @@ void
 TileFactory::init()
 {
   assert(current_ == 0);
-  current_ = new TileFactory(datadir + tile_def_file);
+  current_ = new TileFactory(tile_def_file);
 }
 
 /** Destroy the default TileFactor*/

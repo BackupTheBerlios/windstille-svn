@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include <ClanLib/Display/color.h>
+#include "lisp/lisp.hpp"
 
 class GameObject;
 class TileMap;
@@ -65,7 +66,10 @@ public:
 
   std::vector<GameObject*>* get_objects() { return &objects; }
   TileMap* get_tilemap() { return interactive_tilemap; }
+  
 private:
+  void parse_object(const std::string& name, const lisp::Lisp* lisp);
+  
   Sector (const Sector&);
   Sector& operator= (const Sector&);
 };

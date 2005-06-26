@@ -45,6 +45,13 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 AC_CHECK_PROGS([XGETTEXT], xgettext)
 
+# bison + flex
+AC_PROG_LEX
+LEX_LIBS=$LEXLIB
+AC_SUBST([LEX_LIBS])
+AC_CHECK_PROGS([BISON], bison)
+AC_SUBST([BISON])
+
 # check if our c++ compiler is gcc3.2 or newer
 AC_MSG_CHECKING([whether g++ is new enough])
 AC_LANG_SAVE
@@ -85,8 +92,14 @@ fi
 
 PKG_CHECK_MODULES([CLANLIB], [clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7])
 
-#AM_PATH_SDL([1.2.5], , AC_MSG_ERROR([Please install libsdl >= 1.2.5]))
-
+NP_FINDLIB([PHYSFS], [physfs], [physfs >= 1.0.0],
+        NP_LANG_PROGRAM([#include <physfs.h>
+#if PHYSFS_VER_MAJOR < 1
+# error PHYSFS is too old
+#endif]),
+        [], [-lphysfs],
+        [],
+        [AC_MSG_ERROR([Please install physfs >= 1.0])])
 
 AC_INIT_JAM
 AC_CONFIG_FILES([Jamconfig])

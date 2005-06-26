@@ -1,5 +1,7 @@
 SubDir TOP src ;
 
+SubInclude TOP src squirrel ;
+
 Application windstille 
     :   display/drawing_context.hxx
         display/drawing_context.cxx
@@ -36,6 +38,23 @@ Application windstille
         input/input_recorder.hxx
         input/multi_button.cxx
         input/multi_button.hxx
+
+        lisp/lexer.cpp
+        lisp/lexer.h
+        lisp/lisp.cpp
+        lisp/lisp.h
+        lisp/list_iterator.cpp
+        lisp/list_iterator.h
+        lisp/parser.cpp
+        lisp/parser.h
+        lisp/writer.cpp
+        lisp/writer.h
+
+        physfs/physfs_stream.cpp
+        physfs/physfs_stream.h
+
+        tinygettext/tinygettext.cpp
+        tinygettext/tinygettext.h          
 
         animation_obj.cxx
         animation_obj.hxx
@@ -121,4 +140,4 @@ Application windstille
         windstille_menu.cxx
         windstille_menu.hxx
 ;
-ExternalLibs windstille : CLANLIB ;
+ExternalLibs windstille : CLANLIB PHYSFS ;

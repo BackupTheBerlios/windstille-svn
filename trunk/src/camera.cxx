@@ -30,7 +30,7 @@ Camera::Camera()
 }
 
 void
-Camera::update(float delta)
+Camera::update(float )
 {
   int hscroll_threshold = 100;
   int vscroll_threshold = 150;

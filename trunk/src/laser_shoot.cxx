@@ -35,7 +35,7 @@ LaserShoot::LaserShoot (const CL_Vector& arg_pos, Direction arg_dir, int arg_sta
 }
 
 void
-LaserShoot::draw (SceneContext& gc)
+LaserShoot::draw (SceneContext& )
 {
   if (direction == WEST)
     sprite.set_scale (-1.0, 1.0);
