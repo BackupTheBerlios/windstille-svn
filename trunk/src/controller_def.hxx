@@ -32,6 +32,7 @@ private:
 public:
   static int         get_button_count();
   static int         get_axis_count();
+  static int         get_keyboard_count();
 
   static std::string button_id2name(int id);
   static int         button_name2id(const std::string& name);

@@ -31,6 +31,12 @@ ControllerDef::get_axis_count()
   return 0;
 }
 
+int
+ControllerDef::get_keyboard_count()
+{
+  return 1;
+}
+
 std::string
 ControllerDef::button_id2name(int id)
 {
