@@ -22,7 +22,14 @@
 
 #include <vector>
 
-enum InputEventType { BUTTON_EVENT, AXIS_EVENT };
+enum InputEventType { BUTTON_EVENT, AXIS_EVENT, KEYBOARD_EVENT };
+
+/** Used for textual input */
+struct KeyboardEvent
+{
+  enum KeyType { LETTER, SPECIAL } key_type;
+  int code;
+};
 
 struct ButtonEvent
 {
@@ -51,8 +58,9 @@ struct InputEvent
     
   union 
   {
-    struct ButtonEvent button;
-    struct AxisEvent   axis;
+    struct ButtonEvent   button;
+    struct AxisEvent     axis;
+    struct KeyboardEvent keyboard;
   };
 };
 

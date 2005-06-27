@@ -17,8 +17,10 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include <ClanLib/Display/keys.h>
 #include "assert.hxx"
 #include "fonts.hxx"
+#include "input/input_manager.hxx"
 #include "console.hxx"
 
 Console* Console::current_ = 0;
@@ -49,9 +51,8 @@ Console::add(const std::string& str)
 void
 Console::draw()
 {
-  int y = y_pos;
-
   CL_Font font = Fonts::copyright;
+  int y = y_pos - font.get_height() - 2;
 
   font.set_alignment(origin_bottom_left);
   for(Buffer::reverse_iterator i = buffer.rbegin(); i != buffer.rend(); ++i)
@@ -67,6 +68,10 @@ Console::draw()
         }
       y -= font.get_height() + 2;
     }
+
+  font.set_alignment(origin_bottom_left);
+  font.set_alpha(1.0f);
+  font.draw(x_pos, y_pos, ">" + command_line);
 }
 
 void
@@ -76,6 +81,35 @@ Console::update(float delta)
     {
       i->display_time += delta;
     }  
+
+  InputEventLst events = InputManager::get_controller().get_events();
+  
+  for (InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+    {
+      if ((*i).type == KEYBOARD_EVENT)
+        {
+          if ((*i).keyboard.key_type == KeyboardEvent::LETTER)
+            {
+              //std::cout << "Key: '" << (char)((*i).keyboard.code) << "' " << (*i).keyboard.code << std::endl;
+              command_line += (char)(*i).keyboard.code;
+            }
+          else if ((*i).keyboard.key_type == KeyboardEvent::SPECIAL)
+            {
+              switch (i->keyboard.code)
+                {
+                case CL_KEY_BACKSPACE:
+                  if (!command_line.empty())
+                    command_line = command_line.substr(0, command_line.size() - 2);
+                  break;
+
+                case CL_KEY_ENTER:
+                  add(command_line);
+                  command_line = "";
+                  break;
+                }
+            }
+        }
+    }
 }
 
 /* EOF */

@@ -1,5 +1,5 @@
-//  $Id: input_manager_impl.hxx,v 1.3 2003/06/06 18:36:24 grumbel Exp $
-// 
+//  $Id$
+//
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
 //
@@ -12,43 +12,36 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-// 
+//
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef HEADER_INPUT_MANAGER_IMPL_HXX
-#define HEADER_INPUT_MANAGER_IMPL_HXX
-
-#include "controller.hxx"
+#include <ctype.h>
+#include <ClanLib/Display/input_event.h>
 #include "input_event.hxx"
+#include "input_keyboard_input_device.hxx"
 
-/** */
-class InputManagerImpl
+InputKeyboardInputDevice::InputKeyboardInputDevice(CL_InputDevice& dev_)
+  : dev(dev_)
 {
-protected:
-  Controller controller;
-  InputEventLst events;
+  slots.push_back(dev.sig_key_down().connect(this, &InputKeyboardInputDevice::on_key_down)); 
+  slots.push_back(dev.sig_key_up().connect(this, &InputKeyboardInputDevice::on_key_up)); 
+}
 
-public:
-  InputManagerImpl() {}
-  virtual ~InputManagerImpl() {}
-
-  virtual void update(float delta) =0;
+void
+InputKeyboardInputDevice::on_key_up(const CL_InputEvent& event)
+{
   
-  InputEventLst get_events();
+}
 
-  Controller get_controller();
-  void clear();
-
-  void add_axis_event  (int name, float pos);
-  void add_button_event(int name, bool down);
-  void add_keyboard_event(int name, KeyboardEvent::KeyType key_type, int code);
-private:
-  InputManagerImpl(const InputManagerImpl&);
-  InputManagerImpl& operator=(const InputManagerImpl&);
-};
-
-#endif
+void
+InputKeyboardInputDevice::on_key_down(const CL_InputEvent& event)
+{
+  if (!event.str.empty() && (isgraph(event.str[0]) || event.str[0] == ' ' ||  event.str[0] == '\t'))
+    key(KeyboardEvent::LETTER, event.str[0]);
+  else
+    key(KeyboardEvent::SPECIAL, event.id);
+}
 
 /* EOF */

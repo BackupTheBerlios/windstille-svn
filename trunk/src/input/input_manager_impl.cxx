@@ -53,6 +53,16 @@ InputManagerImpl::add_button_event(int name, bool down)
 }
 
 void
+InputManagerImpl::add_keyboard_event(int name, KeyboardEvent::KeyType key_type, int code)
+{
+  InputEvent event;
+  event.type = KEYBOARD_EVENT;
+  event.keyboard.key_type = key_type;
+  event.keyboard.code     = code;
+  events.push_back(event);  
+}
+
+void
 InputManagerImpl::clear()
 {
   events.clear();

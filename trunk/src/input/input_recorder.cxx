@@ -50,6 +50,10 @@ InputRecorder::record(const Controller& controller)
             case BUTTON_EVENT:
               out << "  (button " << i->button.name << " " << i->button.down << ")" << std::endl;
               break;
+              
+            case KEYBOARD_EVENT:
+              out << "  (keyboard " << i->keyboard.key_type << " " << i->keyboard.code << ")" << std::endl;
+              break;
             }
         }
       out << ")\n" << std::endl;

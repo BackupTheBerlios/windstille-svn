@@ -1,4 +1,4 @@
-//  $Id: input_manager_impl.hxx,v 1.3 2003/06/06 18:36:24 grumbel Exp $
+//  $Id$
 // 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -17,36 +17,25 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef HEADER_INPUT_MANAGER_IMPL_HXX
-#define HEADER_INPUT_MANAGER_IMPL_HXX
+#ifndef HEADER_INPUT_KEYBOARD_HXX
+#define HEADER_INPUT_KEYBOARD_HXX
 
-#include "controller.hxx"
 #include "input_event.hxx"
 
 /** */
-class InputManagerImpl
+class InputKeyboard
 {
 protected:
-  Controller controller;
-  InputEventLst events;
+  std::vector<CL_Slot> slots;
+  CL_Signal_v2<KeyboardEvent::KeyType, int> key;
 
 public:
-  InputManagerImpl() {}
-  virtual ~InputManagerImpl() {}
-
-  virtual void update(float delta) =0;
+  InputKeyboard() {}
+  virtual ~InputKeyboard() {}
   
-  InputEventLst get_events();
+  virtual void update(float ) {}
 
-  Controller get_controller();
-  void clear();
-
-  void add_axis_event  (int name, float pos);
-  void add_button_event(int name, bool down);
-  void add_keyboard_event(int name, KeyboardEvent::KeyType key_type, int code);
-private:
-  InputManagerImpl(const InputManagerImpl&);
-  InputManagerImpl& operator=(const InputManagerImpl&);
+  CL_Signal_v2<KeyboardEvent::KeyType, int>& on_key() { return key; }
 };
 
 #endif

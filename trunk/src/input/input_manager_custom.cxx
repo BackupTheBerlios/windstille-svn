@@ -28,6 +28,7 @@
 #include "controller_def.hxx"
 #include "input_button_input_device.hxx"
 #include "input_axis_input_device.hxx"
+#include "input_keyboard_input_device.hxx"
 #include "button_factory.hxx"
 #include "axis_factory.hxx"
 
@@ -63,6 +64,18 @@ InputManagerCustom::InputManagerCustom(const lisp::Lisp* lisp)
                     << "' not configured and will not be usable" << std::endl;
         }
     }
+
+  for (int i = 0; i < (int)keyboards.size(); ++i)
+    {
+      if (keyboards[i])
+        {
+          slots.push_back(keyboards[i]->on_key().connect(this, &InputManagerCustom::on_key));
+        }
+      else
+        {
+          std::cout << "# Warrning: Keyboard not configured" << std::endl;
+        }
+    }
 }
 
 void 
@@ -70,6 +83,7 @@ InputManagerCustom::init(const lisp::Lisp* lisp)
 {
   buttons.resize(ControllerDef::get_button_count());
   axes.resize(ControllerDef::get_axis_count());
+  keyboards.resize(ControllerDef::get_keyboard_count());
 
   lisp::ListIterator iter(lisp);
   while(iter.next()) {
@@ -77,22 +91,25 @@ InputManagerCustom::init(const lisp::Lisp* lisp)
 
     int id = ControllerDef::button_name2id(name);
     if (id != -1)
-    {
-      buttons[id] = ButtonFactory::create(iter.lisp());
-    }
+      {
+        buttons[id] = ButtonFactory::create(iter.lisp());
+      }
+    else if (name == "keyboard")
+      {
+        keyboards[0] = new InputKeyboardInputDevice(CL_Keyboard::get_device());
+      }
     else
-    {
-      id = ControllerDef::axis_name2id(name);
-      if (id != -1)
       {
-        axes[id] = AxisFactory::create(iter.lisp());
+        id = ControllerDef::axis_name2id(name);
+        if (id != -1)
+          {
+            axes[id] = AxisFactory::create(iter.lisp());
+          }
+        else
+          {
+            std::cout << "# Warning: InputManagerCustom::init: Error unknown tag: " << std::endl;
+          }
       }
-      else
-      {
-        std::cout << "# Warning: InputManagerCustom::init: Error unknown tag: " << std::endl;
-        //                        << Guile::scm2string(sym) << std::endl;
-      }
-    }
   }
 }  
 
@@ -118,6 +135,12 @@ InputManagerCustom::on_button_down(int name)
 }
 
 void
+InputManagerCustom::on_key(KeyboardEvent::KeyType key_type, int code)
+{
+  add_keyboard_event(0, key_type, code);
+}
+
+void
 InputManagerCustom::update(float delta)
 {
   for (int i = 0; i < (int)buttons.size(); ++i)
@@ -130,6 +153,12 @@ InputManagerCustom::update(float delta)
     {
       if (axes[i])
         axes[i]->update(delta);
+    }
+
+  for (int i = 0; i < (int)keyboards.size(); ++i)
+    {
+      if (keyboards[i])
+        keyboards[i]->update(delta);
     }
 }
 

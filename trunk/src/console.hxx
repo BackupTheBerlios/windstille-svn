@@ -37,6 +37,7 @@ private:
   typedef std::vector<ConsoleEntry> Buffer;
   Buffer buffer;
   static Console* current_;
+  std::string command_line;
 public:
   static Console* current();
 

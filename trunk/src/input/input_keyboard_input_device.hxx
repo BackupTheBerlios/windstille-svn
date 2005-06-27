@@ -17,46 +17,24 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef HEADER_INPUT_MANAGER_CUSTOM_HXX
-#define HEADER_INPUT_MANAGER_CUSTOM_HXX
+#ifndef HEADER_INPUT_KEYBOARD_INPUT_DEVICE_HXX
+#define HEADER_INPUT_KEYBOARD_INPUT_DEVICE_HXX
 
 #include <ClanLib/Display/input_device.h>
-#include <ClanLib/Display/input_event.h>
-#include "input_event.hxx"
-#include "input_button.hxx"
-#include "input_axis.hxx"
 #include "input_keyboard.hxx"
-#include "input_manager_impl.hxx"
-#include "lisp/lisp.hpp"
 
 /** */
-class InputManagerCustom : public InputManagerImpl
+class InputKeyboardInputDevice : public InputKeyboard
 {
 private:
-  std::vector<CL_Slot> slots;
+  CL_InputDevice dev;
 
-  typedef std::vector<InputAxis*>     Axes;
-  typedef std::vector<InputButton*>   Buttons;
-  typedef std::vector<InputKeyboard*> Keyboards;
-
-  Axes      axes;
-  Buttons   buttons;
-  Keyboards keyboards;
+  void on_key_up(const CL_InputEvent& event);
+  void on_key_down(const CL_InputEvent& event);
 
 public:
-  InputManagerCustom(const lisp::Lisp* lisp);
-  
-  void update(float delta);
-
-  void on_button_up(int name);
-  void on_button_down(int name);
-  void on_axis_move(float pos, int name);
-  void on_key(KeyboardEvent::KeyType key_type, int code);
-private:
-  void init(const lisp::Lisp* lisp);
-
-  InputManagerCustom (const InputManagerCustom&);
-  InputManagerCustom& operator= (const InputManagerCustom&);
+  InputKeyboardInputDevice(CL_InputDevice& dev);
+  void update(float) {}
 };
 
 #endif

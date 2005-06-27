@@ -24,8 +24,11 @@ Application windstille
         input/input_axis_input_device.cxx
         input/input_axis_input_device.hxx
         input/input_button.hxx
+        input/input_keyboard.hxx
         input/input_button_input_device.cxx
         input/input_button_input_device.hxx
+        input/input_keyboard_input_device.hxx
+        input/input_keyboard_input_device.cxx
         input/input_event.hxx
         input/input_manager_custom.cxx
         input/input_manager_custom.hxx
@@ -97,7 +100,6 @@ Application windstille
         field.hxx
         fonts.cxx
         fonts.hxx
-        game_delta.hxx
         game_object.cxx
         game_object.hxx
         game_session.cxx
