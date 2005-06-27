@@ -121,24 +121,26 @@ public:
   Floats raw_data;
   int    normals_offset;
   int    texcoord_offset;
+  bool   use_vbo;
 
   float angle;
 
   Sprite3DImpl()
-    : buffer_id(0), angle(0)
+    : buffer_id(0), 
+      use_vbo(false),
+      angle(0)
   {
   }
 
   ~Sprite3DImpl()
   {
-    /* FIXME: is this the same?
-       int buffer[1] = {buffer_id};
-       DeleteBuffersARB(1, buffer);
-    */
-    clDeleteBuffers(1, &buffer_id);
+    if (use_vbo)
+      {
+        clDeleteBuffers(1, &buffer_id);
+      }
   }
 
-  void create_vbo()
+  void create_vertex_arrays()
   {
     Floats raw_texcoords;
     Floats raw_normals;
@@ -172,9 +174,12 @@ public:
     normals_offset  = raw_vertices.size() * sizeof(float);
     texcoord_offset = normals_offset + raw_normals.size() * sizeof(float);
 
-    clGenBuffers(1, &buffer_id);
-    clBindBuffer(CL_ARRAY_BUFFER, buffer_id);
-    clBufferData(CL_ARRAY_BUFFER, raw_data.size() * sizeof(float), &*raw_data.begin(), CL_STATIC_DRAW);
+    if (use_vbo)
+      {
+        clGenBuffers(1, &buffer_id);
+        clBindBuffer(CL_ARRAY_BUFFER, buffer_id);
+        clBufferData(CL_ARRAY_BUFFER, raw_data.size() * sizeof(float), &(*raw_data.begin()), CL_STATIC_DRAW);
+      }
   }
 
   void parse_file(const std::string& filename)
@@ -231,7 +236,7 @@ public:
       }
     }
 
-    create_vbo();
+    create_vertex_arrays();
   }
 };
 
@@ -267,55 +272,6 @@ public:
 
   virtual ~Sprite3DDrawingRequest() {}
 
-  void draw_with_vbo(CL_GraphicContext* gc)
-  {
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
-
-    if (0)
-      {
-        clBindBuffer(CL_ARRAY_BUFFER, impl->buffer_id);
-
-        clVertexPointer  (3, CL_FLOAT, 0, BUFFER_OFFSET(0));
-        clNormalPointer     (CL_FLOAT, 0, BUFFER_OFFSET(impl->normals_offset));
-        clTexCoordPointer(2, CL_FLOAT, 0, BUFFER_OFFSET(impl->texcoord_offset));
-    
-        // Enable arrays
-        clEnableClientState(CL_TEXTURE_COORD_ARRAY);
-        clEnableClientState(CL_NORMAL_ARRAY);
-        clEnableClientState(CL_VERTEX_ARRAY);
-
-        std::cout << "DRaw" << std::endl;
-        // Draw arrays
-        clDrawArrays(CL_TRIANGLES, 0, impl->faces.size()*3);
-        std::cout << "DRaw1" << std::endl;
-
-        // Disable arrays
-        clDisableClientState(CL_TEXTURE_COORD_ARRAY);
-        clDisableClientState(CL_NORMAL_ARRAY);
-        clDisableClientState(CL_VERTEX_ARRAY);
-      }
-    else
-      {
-        GLbyte* data = reinterpret_cast<GLbyte*>(&*impl->raw_data.begin());
-        clVertexPointer  (3, CL_FLOAT, 0, data);
-        clNormalPointer     (CL_FLOAT, 0, data + impl->normals_offset);
-        clTexCoordPointer(2, CL_FLOAT, 0, data + impl->texcoord_offset);
-    
-        // Enable arrays
-        clEnableClientState(CL_TEXTURE_COORD_ARRAY);
-        clEnableClientState(CL_NORMAL_ARRAY);
-        clEnableClientState(CL_VERTEX_ARRAY);
-    
-        // Draw arrays
-        clDrawArrays(CL_TRIANGLES, 0, impl->faces.size()*3);
-
-        // Disable arrays
-        clDisableClientState(CL_TEXTURE_COORD_ARRAY);
-        clDisableClientState(CL_NORMAL_ARRAY);
-        clDisableClientState(CL_VERTEX_ARRAY);
-      }
-  }
-  
   void draw(CL_GraphicContext* gc) 
   {
     // FIXME: This must be moved into a DrawingRequest
@@ -337,27 +293,31 @@ public:
     glEnable(GL_TEXTURE_2D);
     impl->surface.bind();
 
-    //draw_classic(gc);
-    draw_with_vbo(gc);
+    {
+      GLbyte* data = impl->use_vbo ? 0 : reinterpret_cast<GLbyte*>(&*impl->raw_data.begin());
+
+      if (impl->use_vbo)
+        clBindBuffer(CL_ARRAY_BUFFER, impl->buffer_id);
+
+      clVertexPointer  (3, CL_FLOAT, 0, data);
+      clNormalPointer     (CL_FLOAT, 0, data + impl->normals_offset);
+      clTexCoordPointer(2, CL_FLOAT, 0, data + impl->texcoord_offset);
+    
+      // Enable arrays
+      clEnableClientState(CL_TEXTURE_COORD_ARRAY);
+      clEnableClientState(CL_NORMAL_ARRAY);
+      clEnableClientState(CL_VERTEX_ARRAY);
+    
+      // Draw arrays
+      clDrawArrays(CL_TRIANGLES, 0, impl->faces.size()*3);
+
+      // Disable arrays
+      clDisableClientState(CL_TEXTURE_COORD_ARRAY);
+      clDisableClientState(CL_NORMAL_ARRAY);
+      clDisableClientState(CL_VERTEX_ARRAY);
+    }
 
     glPopMatrix();   
-  }
-
-  void draw_classic(CL_GraphicContext* gc) 
-  {
-    glBegin(GL_TRIANGLES);
-    for(Sprite3DImpl::Faces::iterator i = impl->faces.begin(); i != impl->faces.end(); ++i)
-      {
-        const Face& face = *i;
-        for(int v = 0; v < 3; ++v) {
-          const Vert& vert = face.v[v];
-          glTexCoord2f(vert.u, vert.v); 
-          const Vertex& vertex = impl->vertices[vert.index];
-          glNormal3f(vertex.normal.x, vertex.normal.y, vertex.normal.z);
-          glVertex3f(vertex.pos.x, vertex.pos.y, vertex.pos.z);
-        }
-      }
-    glEnd();
   }
 };
 
