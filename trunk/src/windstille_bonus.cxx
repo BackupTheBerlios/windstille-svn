@@ -27,8 +27,8 @@
 #include <list>
 #include "fonts.hxx"
 #include "globals.hxx"
-#include "music_manager.hxx"
 #include "windstille_bonus.hxx"
+#include "sound/sound_manager.hpp"
 
 WindstilleBonus::WindstilleBonus()
 {
@@ -101,7 +101,7 @@ WindstilleBonus::update(float delta)
       if (fadeout_value > 1.0f)
         {
           state = RUNNING;
-          MusicManager::current()->play(datadir + "music/Windstille_Ralph_Weinert.ogg", true);
+          sound_manager->play_music("music/Windstille_Ralph_Weinert.ogg");
         }
       fadeout_value += delta;
       break;
@@ -156,6 +156,7 @@ WindstilleBonus::update(float delta)
 void
 WindstilleBonus::quit()
 {
+  sound_manager->stop_music();
   state = FADEOUT;
   fadeout_value = 0;
 }
@@ -164,13 +165,11 @@ void
 WindstilleBonus::on_startup()
 {
   CL_Display::get_current_window()->hide_cursor();
-  MusicManager::current()->stop();
 }
 
 void
 WindstilleBonus::on_shutdown()
 {
-  MusicManager::current()->stop();
 }
 
 /* EOF */

@@ -21,7 +21,6 @@
 #define HEADER_WINDESTILLE_MENU_HXX
 
 #include <ClanLib/Display/sprite.h>
-#include <ClanLib/Sound/soundbuffer.h>
 #include "screen.hxx"
 
 /** */

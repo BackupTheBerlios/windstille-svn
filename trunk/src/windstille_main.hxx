@@ -22,7 +22,6 @@
 
 #include <ClanLib/gl.h>
 #include <ClanLib/application.h>
-#include <ClanLib/sound.h>
 
 class WindstilleMain : public CL_ClanApplication
 {
@@ -39,7 +38,6 @@ public:
   std::string playback_file;
   std::string screenshot_dir;
   
-  CL_SoundOutput*   sound;
   CL_DisplayWindow* window;
 public:
   WindstilleMain();

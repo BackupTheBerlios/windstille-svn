@@ -53,6 +53,15 @@ Application windstille
         physfs/physfs_stream.cpp
         physfs/physfs_stream.h
 
+        sound/sound_file.cpp
+        sound/sound_file.hpp
+        sound/sound_manager.cpp
+        sound/sound_manager.hpp
+        sound/sound_source.cpp
+        sound/sound_source.hpp
+        sound/stream_sound_source.cpp
+        sound/stream_sound_source.hpp
+
         tinygettext/tinygettext.cpp
         tinygettext/tinygettext.h          
 
@@ -101,8 +110,6 @@ Application windstille
         laser_shoot.cxx
         laser_shoot.hxx
         math.hxx
-        music_manager.cxx
-        music_manager.hxx
         particle_system.cxx
         particle_system.hxx
         player.cxx
@@ -138,4 +145,4 @@ Application windstille
         windstille_menu.cxx
         windstille_menu.hxx
 ;
-ExternalLibs windstille : CLANLIB PHYSFS ;
+ExternalLibs windstille : CLANLIB PHYSFS OPENAL ;

@@ -28,7 +28,7 @@
 #include "input/controller.hxx"
 #include "windstille_menu.hxx"
 #include "game_session.hxx"
-#include "music_manager.hxx"
+#include "sound/sound_manager.hpp"
 #include "windstille_bonus.hxx"
 #include "input/input_manager.hxx"
 
@@ -71,13 +71,14 @@ WindstilleMenu::update(float delta)
               if ((current_choice == 1 && !bonus_active)
                   || (current_choice == 2 && bonus_active))// QUIT
                 {
+                  sound_manager->stop_music();
                   fadeout();
                   quit();
                   break;
                 }
               else if (current_choice == 1 && bonus_active)
                 {
-                  MusicManager::current()->stop();
+                  sound_manager->stop_music();
                   fadeout();
                   WindstilleBonus bonus;
                   bonus.display();
@@ -86,8 +87,8 @@ WindstilleMenu::update(float delta)
                 }
               else if (current_choice == 0) // start game
                 {
-                  MusicManager::current()->stop();
                   InputManager::clear();
+                  sound_manager->stop_music();
                   fadeout();
                   GameSession game("levels/newformat2.wst");
                   game.display ();
@@ -97,7 +98,6 @@ WindstilleMenu::update(float delta)
               else if (current_choice == 1) // start editor
                 {
                   /*
-                  MusicManager::current()->stop();
                   InputManager::clear();
                   fadeout();
                   Editor editor;
@@ -221,6 +221,7 @@ WindstilleMenu::fadeout()
                                     CL_Display::get_width(), CL_Display::get_height()),
                             CL_Color(0,0,0, std::min(alpha, 255)));
       CL_Display::flip();
+      sound_manager->update();
       CL_System::keep_alive();
       CL_System::sleep(50);
       alpha += 15;
@@ -231,13 +232,12 @@ void
 WindstilleMenu::on_startup()
 {
   CL_Display::get_current_window()->hide_cursor();
-  MusicManager::current()->play(datadir + "music/jingle.ogg", false);
+  sound_manager->play_music("music/jingle.ogg");
 }
 
 void
 WindstilleMenu::on_shutdown()
 {
-  MusicManager::current()->stop();
 }
 
 /* EOF */

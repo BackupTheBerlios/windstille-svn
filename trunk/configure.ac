@@ -92,6 +92,14 @@ fi
 
 PKG_CHECK_MODULES([CLANLIB], [clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7])
 
+NP_FINDLIB([OPENAL], [OpenAL], [OpenAL],
+         NP_LANG_PROGRAM([#include <AL/al.h>],
+           [alcOpenDevice(0);]),
+         [], [-lopenal],
+         [],
+         [AC_MSG_ERROR([Please intall OpenAL])],
+         [], [])
+
 NP_FINDLIB([PHYSFS], [physfs], [physfs >= 1.0.0],
         NP_LANG_PROGRAM([#include <physfs.h>
 #if PHYSFS_VER_MAJOR < 1

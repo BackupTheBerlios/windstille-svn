@@ -32,7 +32,7 @@
 #include "fonts.hxx"
 #include "sector.hxx"
 #include "input/input_manager.hxx"
-#include "music_manager.hxx"
+#include "sound/sound_manager.hpp"
 #include "tile_factory.hxx"
 
 //extern "C" void Init_windstille(void);
@@ -265,44 +265,27 @@ WindstilleMain::init_modules()
 
   CL_SetupDisplay::init();
 
-  if (!sound_disabled)
-    {
-      CL_SetupSound::init();
-      CL_SetupVorbis::init();
-    }
-
   window = new CL_DisplayWindow("Windstille",
                                 screen_width, screen_height, fullscreen, allow_resize);
   CL_Display::clear();
   CL_Display::flip();
-
-  if (!sound_disabled)
-    sound = new CL_SoundOutput(44100);
 
   resources =  new CL_ResourceManager();
   resources->add_resources(CL_ResourceManager(datadir + "windstille.xml", false));
   resources->add_resources(CL_ResourceManager(datadir + "tiles.xml", false));
 
   Fonts::init(); 
-  MusicManager::init();
+  sound_manager = new SoundManager();
 }
 
 void
 WindstilleMain::deinit_modules()
 {
-  MusicManager::deinit();
+  delete sound_manager;
+  sound_manager = 0;
   Fonts::deinit();
 
-  if (!sound_disabled)
-    delete sound;
-  
   delete window;
-
-  if (!sound_disabled)
-    {
-      CL_SetupVorbis::init();
-      CL_SetupSound::init();
-    }
 
   CL_SetupDisplay::init();
 

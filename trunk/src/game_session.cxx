@@ -28,7 +28,6 @@
 #include "player.hxx"
 #include "animation_obj.hxx"
 #include "tile_map.hxx"
-#include "music_manager.hxx"
 #include "display.hxx"
 #include "view.hxx"
 #include "door.hxx"
@@ -39,6 +38,7 @@
 #include "display/scene_context.hxx"
 #include "input/input_manager.hxx"
 #include "particle_system.hxx"
+#include "sound/sound_manager.hpp"
 
 #include "game_session.hxx"
 
@@ -220,7 +220,7 @@ GameSession::on_startup ()
   slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
   //CL_Display::get_current_window()->hide_cursor();
 
-  MusicManager::current()->play(datadir + "music/techdemo.ogg", true);
+  sound_manager->play_music("music/techdemo.ogg");
   blink = 0.0f;
 
   GameObject::set_world (world);
@@ -301,8 +301,6 @@ GameSession::on_startup ()
 void
 GameSession::on_shutdown ()
 {
-  MusicManager::current()->stop();
-
   delete energiebar;
   delete view;
   delete dialog_manager;
@@ -314,8 +312,8 @@ GameSession::quit()
   if (state != FADEOUT)
     {
       fadeout_value = 0;
+      sound_manager->stop_music();
       state = FADEOUT;
-      MusicManager::current()->stop();
     }
 }
 
