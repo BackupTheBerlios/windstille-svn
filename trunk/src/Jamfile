@@ -71,7 +71,6 @@ Application windstille
 
         animation_obj.cxx
         animation_obj.hxx
-        assert.hxx
         bomb.cxx
         bomb.hxx
         brush.cxx
