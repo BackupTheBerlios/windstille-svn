@@ -1,6 +1,7 @@
 SubDir TOP src ;
 
 SubInclude TOP src squirrel ;
+SubInclude TOP src scripting ;
 
 Application windstille 
     :   display/drawing_context.hxx
@@ -144,5 +145,11 @@ Application windstille
         windstille_main.hxx
         windstille_menu.cxx
         windstille_menu.hxx
+
+        $(wrapper_objects)
 ;
 ExternalLibs windstille : CLANLIB PHYSFS OPENAL ;
+C++Flags windstille : -DAPPDATADIR='\"$(appdatadir)\"' ;
+LinkWith windstille : squirrel ;
+IncludeDir windstille : squirrel/include ;
+Help windstille : "Build the windstille executable" ;

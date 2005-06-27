@@ -51,7 +51,8 @@ rule C++Rule
     Depends $(object) : $(<) ;
     return $(object) ;
 }
-RegisterFileType C++Rule : .cpp .cxx .cc .c++ ;
+RegisterFileType C++Rule : .cpp .cxx .cc .c++ ; # we can't register .C here because
+                                           # of windows being case-insensitive.
 RegisterHeaderRule HeaderRule : $(HDRPATTERN) : .cpp .cxx .cc .c++ ;
 
 actions C++

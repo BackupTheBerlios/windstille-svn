@@ -157,7 +157,7 @@ SoundManager::stop_music(bool fade)
   if(fade) {
     if(music_source
         && music_source->getFadeState() != StreamSoundSource::FadingOff)
-      music_source->setFading(StreamSoundSource::FadingOff, 1);
+      music_source->setFading(StreamSoundSource::FadingOff, .7f);
   } else {
     delete music_source;
     music_source = 0;
@@ -182,7 +182,7 @@ SoundManager::play_music(const std::string& filename, bool fade)
     if(fade) {
       if(music_source 
           && music_source->getFadeState() != StreamSoundSource::FadingOff)
-        music_source->setFading(StreamSoundSource::FadingOff, .5f);
+        music_source->setFading(StreamSoundSource::FadingOff, .7f);
       delete next_music_source;
       next_music_source = newmusic;
     } else {
