@@ -32,8 +32,6 @@ RegionTriggerCondition::RegionTriggerCondition(CL_Rectf rect)
 bool
 RegionTriggerCondition::check()
 {
-  Sector* world = Sector::current();
-
   Player* player = Player::current();
 
   return rect.is_inside(CL_Pointf(player->get_pos().x,
