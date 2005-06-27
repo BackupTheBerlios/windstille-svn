@@ -24,6 +24,7 @@
 
 #include "fonts.hxx"
 #include "sector.hxx"
+#include "console.hxx"
 #include "game_object.hxx"
 #include "player.hxx"
 #include "animation_obj.hxx"
@@ -112,6 +113,8 @@ GameSession::draw_game()
 void
 GameSession::draw()
 {
+  //std::cout << gluErrorString(glGetError()) << std::endl;
+
   draw_game();
   console.draw();
 
@@ -289,10 +292,10 @@ GameSession::on_startup ()
       psystem->set_spawn_point (768, 832);
       psystem2->set_spawn_point(768, 832);
       psystem3->set_spawn_point(768, 832);
-
-      //world->add(psystem3);
-      //world->add(psystem2);
-      //world->add(psystem);
+      
+      world->add(psystem3);
+      world->add(psystem2);
+      world->add(psystem);
     }
   
   world->add(new Sprite3D("3dsprites/3dsprites"));
@@ -333,27 +336,34 @@ GameSession::on_mouse_down(const CL_InputEvent& event)
 void
 GameSession::on_key_down(const CL_InputEvent& event)
 {
-  switch(event.id)
+  if (!console.is_active())
     {
-    case CL_KEY_1:
-      sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
-      console.add("Toggled COLORMAP: ", (sc.get_render_mask() & SceneContext::COLORMAP) > 0);
-      break;
+      switch(event.id)
+        {
+        case CL_KEY_F1:
+          console.activate();
+          break;
 
-    case CL_KEY_2:
-      sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
-      console.add("Toggled LIGHTMAP: ", (sc.get_render_mask() & SceneContext::LIGHTMAP) > 0);
-      break;
+        case CL_KEY_1:
+          sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
+          console.add("Toggled COLORMAP: ", (sc.get_render_mask() & SceneContext::COLORMAP) > 0);
+          break;
 
-    case CL_KEY_3:
-      sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
-      console.add("Toggled HIGHLIGHTMAP: ", (sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0);
-      break;      
+        case CL_KEY_2:
+          sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
+          console.add("Toggled LIGHTMAP: ", (sc.get_render_mask() & SceneContext::LIGHTMAP) > 0);
+          break;
 
-    default:
-      // ignore key
-      //console.add("Key pressed:: ", event.id);
-      break;
+        case CL_KEY_3:
+          sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
+          console.add("Toggled HIGHLIGHTMAP: ", (sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0);
+          break;      
+
+        default:
+          // ignore key
+          //console.add("Key pressed:: ", event.id);
+          break;
+        }
     }
 }
 

@@ -38,6 +38,7 @@ private:
   Buffer buffer;
   static Console* current_;
   std::string command_line;
+  bool active;
 public:
   static Console* current();
 
@@ -60,6 +61,10 @@ public:
 
   void draw();
   void update(float delta);
+
+  void activate();
+  void deactive();
+  bool is_active() const;
 private:
   Console (const Console&);
   Console& operator= (const Console&);
