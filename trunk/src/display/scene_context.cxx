@@ -143,15 +143,12 @@ SceneContext::render()
                           impl->lightmap.get_width(), impl->lightmap.get_height());
     }
 
-
-  // Render all buffers
-  // FIXME: Render all to pbuffer for later combining of them
   if (impl->render_mask & COLORMAP)
     {
       impl->color.render();
     }
 
-  if (impl->render_mask & LIGHTMAP && impl->render_mask & COLORMAP)
+  if (impl->render_mask & LIGHTMAP)
     {
       impl->lightmap.set_blend_func(blend_dest_color, blend_zero);
       impl->lightmap.set_scale(LIGHTMAP_DIV, -LIGHTMAP_DIV);
