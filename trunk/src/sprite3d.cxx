@@ -134,7 +134,7 @@ public:
     /* FIXME: is this the same?
        int buffer[1] = {buffer_id};
        DeleteBuffersARB(1, buffer);
-     */
+    */
     clDeleteBuffers(1, &buffer_id);
   }
 
@@ -172,15 +172,9 @@ public:
     normals_offset  = raw_vertices.size() * sizeof(float);
     texcoord_offset = normals_offset + raw_normals.size() * sizeof(float);
 
-    std::cout << "Trying to allocate VBO" << std::endl;
-
     clGenBuffers(1, &buffer_id);
-
-    std::cout << "BufferId: " << buffer_id << std::endl;
     clBindBuffer(CL_ARRAY_BUFFER, buffer_id);
     clBufferData(CL_ARRAY_BUFFER, raw_data.size() * sizeof(float), &*raw_data.begin(), CL_STATIC_DRAW);
-
-    std::cout << "Trying to allocate VBO: done: " << raw_data.size() << std::endl;
   }
 
   void parse_file(const std::string& filename)
@@ -216,7 +210,7 @@ public:
             vertices.push_back(vertex);
           } else {
             std::cerr << "Skipping unknown tag '" 
-              << vertices_iter.item() << "' in vertices\n";
+                      << vertices_iter.item() << "' in vertices\n";
           }
         }
       } else if(iter.item() == "faces") {
@@ -228,12 +222,12 @@ public:
             faces.push_back(face);                        
           } else {
             std::cerr << "Skipping unknown tag '"
-              << faces_iter.item() << "' in faces\n";
+                      << faces_iter.item() << "' in faces\n";
           }
         }
       } else {
         std::cerr << "Skipping unknown tag '"
-          << iter.item() << "' in sprite3d\n";
+                  << iter.item() << "' in sprite3d\n";
       }
     }
 
@@ -285,26 +279,20 @@ public:
         clNormalPointer     (CL_FLOAT, 0, BUFFER_OFFSET(impl->normals_offset));
         clTexCoordPointer(2, CL_FLOAT, 0, BUFFER_OFFSET(impl->texcoord_offset));
     
-        std::cout << "Pointer sucessfull" << std::endl;
-
         // Enable arrays
         clEnableClientState(CL_TEXTURE_COORD_ARRAY);
         clEnableClientState(CL_NORMAL_ARRAY);
         clEnableClientState(CL_VERTEX_ARRAY);
-    
+
         std::cout << "DRaw" << std::endl;
-
         // Draw arrays
-        clDrawArrays(CL_TRIANGLE_STRIP, 0, impl->normals_offset);
-
+        clDrawArrays(CL_TRIANGLES, 0, impl->faces.size()*3);
         std::cout << "DRaw1" << std::endl;
 
         // Disable arrays
         clDisableClientState(CL_TEXTURE_COORD_ARRAY);
         clDisableClientState(CL_NORMAL_ARRAY);
         clDisableClientState(CL_VERTEX_ARRAY);
-    
-        std::cout << "Drawing done " << std::endl; 
       }
     else
       {
@@ -319,7 +307,7 @@ public:
         clEnableClientState(CL_VERTEX_ARRAY);
     
         // Draw arrays
-        clDrawArrays(CL_TRIANGLE_STRIP, 0, impl->faces.size()*3);
+        clDrawArrays(CL_TRIANGLES, 0, impl->faces.size()*3);
 
         // Disable arrays
         clDisableClientState(CL_TEXTURE_COORD_ARRAY);
@@ -349,8 +337,8 @@ public:
     glEnable(GL_TEXTURE_2D);
     impl->surface.bind();
 
-    draw_classic(gc);
-    //draw_with_vbo(gc);
+    //draw_classic(gc);
+    draw_with_vbo(gc);
 
     glPopMatrix();   
   }
