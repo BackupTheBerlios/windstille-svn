@@ -21,6 +21,7 @@
 #include <ClanLib/Display/keyboard.h>
 #include <ClanLib/core.h>
 #include "fonts.hxx"
+#include "game_session.hxx"
 #include "input/input_manager.hxx"
 #include "console.hxx"
 
@@ -113,7 +114,20 @@ Console::update(float delta)
                       break;
 
                     case CL_KEY_ENTER:
-                      add(command_line);
+                      add(">" + command_line);
+                      if (command_line == "quit" || command_line == "exit")
+                        {
+                          deactive();
+                        }
+                      else if (command_line == "help")
+                        {
+                          add("This is a script console, can enter stuff in here that will then be evaluated.");
+                          add("Type 'quit' to exit the console.");
+                        }
+                      else if (command_line == "reset")
+                        {
+                          GameSession::current()->set_sector("levels/newformat2.wst");
+                        }
                       command_line = "";
                       break;
 
