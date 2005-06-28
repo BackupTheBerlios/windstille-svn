@@ -2,6 +2,7 @@
 #define __SCRIPT_INTERPRETER_H__
 
 #include <vector>
+#include <list>
 #include <squirrel.h>
 #include <iostream>
 #include "timer.hpp"
@@ -14,21 +15,25 @@ public:
 
   void update();
 
+  void run_script(const std::string& script, const std::string& sourcename = "");
   void run_script(std::istream& in, const std::string& sourcename = "");
   
   void expose_object(void* object, const std::string& name,
                      const std::string& type);
 
-  void set_wakeup_time(float seconds);
-
   HSQUIRRELVM create_coroutine();
 
+  void set_wakeup_time(HSQUIRRELVM vm, float time);
+
 private:
+  void cleanup_coroutine(HSQUIRRELVM vm);
+  
   struct WaitingVM {
     HSQUIRRELVM vm;
     float wakeup_time;
   };
-  std::vector<WaitingVM> waiting_vms;
+  typedef std::list<WaitingVM> WaitingVMs;
+  WaitingVMs waiting_vms;
   
   HSQUIRRELVM v;
 };

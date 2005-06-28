@@ -1,73 +1,28 @@
 SubDir TOP src ;
 
 SubInclude TOP src squirrel ;
+SubInclude TOP src display ;
+SubInclude TOP src input ;
+SubInclude TOP src lisp ;
+SubInclude TOP src physfs ;
+SubInclude TOP src sound ;
+SubInclude TOP src tinygettext ;
 SubInclude TOP src scripting ;
 
 Application windstille 
-    :   display/drawing_context.hxx
-        display/drawing_context.cxx
-        display/drawing_request.hxx
-        display/scene_context.cxx
-        display/scene_context.hxx
+    :   $(display_objects)
+    
+        $(input_objects)
 
-        input/axis_button.cxx                
-        input/axis_button.hxx
-        input/axis_factory.cxx
-        input/axis_factory.hxx
-        input/button_axis.cxx
-        input/button_axis.hxx
-        input/button_factory.cxx
-        input/button_factory.hxx
-        input/controller.cxx
-        input/controller.hxx
-        input/input_axis.hxx
-        input/input_axis_input_device.cxx
-        input/input_axis_input_device.hxx
-        input/input_button.hxx
-        input/input_keyboard.hxx
-        input/input_button_input_device.cxx
-        input/input_button_input_device.hxx
-        input/input_keyboard_input_device.hxx
-        input/input_keyboard_input_device.cxx
-        input/input_event.hxx
-        input/input_manager_custom.cxx
-        input/input_manager_custom.hxx
-        input/input_manager.cxx
-        input/input_manager.hxx
-        input/input_manager_impl.cxx
-        input/input_manager_impl.hxx
-        input/input_manager_player.cxx
-        input/input_manager_player.hxx
-        input/input_recorder.cxx
-        input/input_recorder.hxx
-        input/multi_button.cxx
-        input/multi_button.hxx
+        $(lisp_objects)
 
-        lisp/lexer.cpp
-        lisp/lexer.h
-        lisp/lisp.cpp
-        lisp/lisp.h
-        lisp/list_iterator.cpp
-        lisp/list_iterator.h
-        lisp/parser.cpp
-        lisp/parser.h
-        lisp/writer.cpp
-        lisp/writer.h
+        $(physfs_objects)
 
-        physfs/physfs_stream.cpp
-        physfs/physfs_stream.h
+        $(sound_objects)
 
-        sound/sound_file.cpp
-        sound/sound_file.hpp
-        sound/sound_manager.cpp
-        sound/sound_manager.hpp
-        sound/sound_source.cpp
-        sound/sound_source.hpp
-        sound/stream_sound_source.cpp
-        sound/stream_sound_source.hpp
+        $(tinygettext_objects)
 
-        tinygettext/tinygettext.cpp
-        tinygettext/tinygettext.h          
+        $(scripting_objects)
 
         animation_obj.cxx
         animation_obj.hxx
@@ -150,11 +105,7 @@ Application windstille
         windstille_main.hxx
         windstille_menu.cxx
         windstille_menu.hxx
-
-        $(wrapper_objects)
 ;
-ExternalLibs windstille : CLANLIB PHYSFS OPENAL ;
 C++Flags windstille : -DAPPDATADIR='\"$(appdatadir)\"' ;
 LinkWith windstille : squirrel ;
-IncludeDir windstille : squirrel/include ;
 Help windstille : "Build the windstille executable" ;

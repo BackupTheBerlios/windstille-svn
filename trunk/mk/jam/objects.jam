@@ -42,6 +42,9 @@ rule RegisterHeaderRule
 ##    with LOCATE set.
 ##    Normally you don't have to use this rule. The Application or Library rules
 ##    are taking care of calling it for you.
+##    If the SUBDIR_OBJECTS_COMPILE variable is set, then the objects will be
+##    made dependnecies of the "all" target when jam was invoked from the same
+##    subdir the CompileObjects rule was invoked.
 rule CompileObjects
 {
     local s ;
@@ -52,6 +55,11 @@ rule CompileObjects
     {
         # compile the sourcefile to targetfile
         targets += [ CompileObject $(s) : $(2) ] ;
+    }
+
+    if $(SUBDIR_OBJECTS_COMPILE) && $(_INVOKING_SUBDIR)
+    {
+        Depends all : $(targets) ;
     }
 
     return $(targets) ;

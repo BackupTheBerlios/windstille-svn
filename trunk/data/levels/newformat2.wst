@@ -5,6 +5,18 @@
   (music  "")
   (ambient-color 170 170 170)
   (objects
+    (trigger
+      (x 768)
+      (y 632)
+      (width 200)
+      (height 200)
+      (script "
+print(\"Script was here\");
+play_music(\"music/jingle.ogg\");
+set_wakeup_time(2);
+
+")
+    )
   (tilemap (name "background") (width 100) (height 30)
     (data
       37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 41 42 37 38 39 40 

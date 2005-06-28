@@ -23,51 +23,26 @@
 #include <vector>
 #include <ClanLib/Core/Math/rect.h>
 #include "game_object.hxx"
-//#include "ruby_functor.hxx"
 
-class TriggerCondition
-{
-private:
-public:
-  TriggerCondition() {}
-  virtual ~TriggerCondition() {}
-  virtual bool check() =0;
-  virtual void update(float delta) {}
-};
-
-class RegionTriggerCondition : public TriggerCondition
-{
-private:
-  CL_Rectf rect;
-public:
-  RegionTriggerCondition(CL_Rectf rect);
-  bool check(); 
-};
-
-// Doesn't work at the moment because of missing ruby
-#if 0
 /** */
 class Trigger : public GameObject
 {
 private:
-  TriggerCondition* condition;
-  RubyFunctor func;
+  CL_Rectf area;
+  std::string script;
+  /// has the trigger been activated at least once
   bool triggered;
+  /// trigger active in last frame
+  bool last_trigger;
+  bool one_time_trigger;
   
-  static Trigger* current_;
 public:
-  static Trigger* get_current() { return current_; }
-
-  Trigger(TriggerCondition* , const RubyFunctor& func);
+  Trigger(const lisp::Lisp* lisp);
   virtual ~Trigger();
 
   void draw (SceneContext& gc);
   void update (float delta);
-private:
-  Trigger (const Trigger&);
-  Trigger& operator= (const Trigger&);
 };
-#endif
 
 #endif
 

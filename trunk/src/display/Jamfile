@@ -1,0 +1,8 @@
+SubDir TOP src display ;
+
+display_objects = [ CompileObjects
+  drawing_context.hxx
+  drawing_context.cxx
+  scene_context.hxx
+  scene_context.cxx
+] ;

@@ -1,0 +1,7 @@
+SubDir TOP src physfs ;
+
+physfs_objects = [ CompileObjects
+    physfs_stream.cpp
+    physfs_stream.hpp
+] ;
+

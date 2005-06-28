@@ -62,7 +62,7 @@ Entity::unbind(bool recalc_pos)
 }
 
 void
-Entity::draw(SceneContext& gc)
+Entity::draw(SceneContext& )
 {
   sprite.draw(int(get_pos().x), int(get_pos().y));
   if (parent)

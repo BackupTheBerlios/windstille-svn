@@ -35,15 +35,15 @@ if $(MINISWIG)
     }
 }
 
-wrapper_sources = [ Filter [ Wildcard *.cpp *.hpp ] : wrapper.cpp wrapper.hpp ] ;
+scripting_sources = [ Filter [ Wildcard *.cpp *.hpp ] : wrapper.cpp wrapper.hpp ] ;
 if ! $(MINISWIG)
 {
-    wrapper_sources += [ SearchSource wrapper.cpp ] ;
+    scripting_sources += [ SearchSource wrapper.cpp ] ;
 }
-wrapper_objects = [ CompileObjects $(wrapper_sources) ] ;
+scripting_objects = [ CompileObjects $(scripting_sources) ] ;
 if $(MINISWIG)
 {
-    wrapper_objects += 
+    scripting_objects += 
         [ MiniSwigRule wrapper.cpp : wrapper.interface.hpp : windstille : --select-namespace Scripting ] ;
 }
 

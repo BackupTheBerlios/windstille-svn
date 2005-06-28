@@ -1,0 +1,15 @@
+SubDir TOP src lisp ;
+
+lisp_objects = [ CompileObjects
+  lexer.cpp
+  lexer.hpp
+  lisp.cpp
+  lisp.hpp
+  list_iterator.cpp
+  list_iterator.hpp
+  parser.cpp
+  parser.hpp
+  writer.cpp
+  writer.hpp
+] ;
+

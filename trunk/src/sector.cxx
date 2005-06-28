@@ -27,6 +27,7 @@
 #include "tile_map.hxx"
 #include "game_object.hxx"
 #include "player.hxx"
+#include "trigger.hxx"
 #include "sector.hxx"
 
 Sector* Sector::current_ = 0;
@@ -94,6 +95,9 @@ Sector::parse_object(const std::string& name, const lisp::Lisp* lisp)
       interactive_tilemap = tilemap;
   } else if(name == "background") {
     // TODO
+  } else if(name == "trigger") {
+    Trigger* trigger = new Trigger(lisp);
+    objects.push_back(trigger);
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }

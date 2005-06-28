@@ -2,6 +2,7 @@
 #include "sound/sound_manager.hpp"
 #include "game_session.hxx"
 #include "dialog_manager.hxx"
+#include "script_manager.hpp"
 
 namespace Scripting
 {
@@ -29,6 +30,11 @@ void clear_dialog()
 void show_dialog()
 {
   GameSession::current()->set_dialog_state();
+}
+
+void set_wakeup_time(HSQUIRRELVM vm, float time)
+{
+  script_manager->set_wakeup_time(vm, time);
 }
 
 }

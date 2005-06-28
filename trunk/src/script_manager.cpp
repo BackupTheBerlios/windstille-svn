@@ -12,6 +12,7 @@
 #include <sqstdstring.h>
 
 #include "console.hxx"
+#include "timer.hpp"
 #include "scripting/wrapper.hpp"
 #include "scripting/wrapper_util.hpp"
 
@@ -72,23 +73,30 @@ static SQInteger squirrel_read_char(SQUserPointer file)
 }
 
 void
+ScriptManager::run_script(const std::string& script,
+        const std::string& sourcename)
+{
+  std::istringstream stream(script);
+  run_script(stream, sourcename);
+}
+
+void
 ScriptManager::run_script(std::istream& in, const std::string& sourcename)
 {
+  HSQUIRRELVM vm = create_coroutine();
+  
   printf("Stackbefore:\n");
-  print_squirrel_stack(v);
-  if(sq_compile(v, squirrel_read_char, &in, sourcename.c_str(), true) < 0)
-    throw SquirrelError(v, "Couldn't parse script");
+  print_squirrel_stack(vm);
+  if(sq_compile(vm, squirrel_read_char, &in, sourcename.c_str(), true) < 0)
+    throw SquirrelError(vm, "Couldn't parse script");
  
-  sq_push(v, -2);
-  if(sq_call(v, 1, false) < 0)
-    throw SquirrelError(v, "Couldn't start script");
-  if(sq_getvmstate(v) != SQ_VMSTATE_SUSPENDED) {
-    printf("ended.\n");
-    // remove closure from stack
-    sq_pop(v, 1);
-  }
+  sq_push(vm, -2);
+  if(sq_call(vm, 1, false) < 0)
+    throw SquirrelError(vm, "Couldn't start script");
+  cleanup_coroutine(vm);
+
   printf("After:\n");
-  print_squirrel_stack(v);
+  print_squirrel_stack(vm);
 }
 
 void
@@ -125,10 +133,73 @@ ScriptManager::expose_object(void* object, const std::string& name,
 }
 
 void
+ScriptManager::cleanup_coroutine(HSQUIRRELVM vm)
+{
+  if(sq_getvmstate(vm) != SQ_VMSTATE_SUSPENDED) {
+    // FIXME
+    // sq_close(vm);
+  } else {
+    bool found = false;
+    for(WaitingVMs::iterator i = waiting_vms.begin();
+        i != waiting_vms.end(); ++i) {
+      if(i->vm == vm) {
+        found = true;
+        break;
+      }
+    }
+    if(!found) {
+      std::cerr << "Warning: Script suspended but not in wakeup list!\n";
+      // FIXME
+      //sq_close(vm);
+    }  
+  }
+}
+
+void
 ScriptManager::update()
 {
+  for(WaitingVMs::iterator i = waiting_vms.begin(); i != waiting_vms.end(); ) {
+    WaitingVM& waiting_vm = *i;
+    
+    if(waiting_vm.wakeup_time > game_time) {
+      try {
+        if(sq_wakeupvm(waiting_vm.vm, false, false) < 0) {
+          throw SquirrelError(waiting_vm.vm, "Couldn't resume script");
+        }
 
+        cleanup_coroutine(waiting_vm.vm);
+      } catch(std::exception& e) {
+        std::cerr << "Problem executing script: " << e.what() << "\n";
+      }
+
+      // remove (but check that the script hasn't set a new wakeup_time)
+      if(waiting_vm.wakeup_time > game_time)
+        i = waiting_vms.erase(i);
+    } else {
+      ++i;
+    }
+  }
 }
+
+void
+ScriptManager::set_wakeup_time(HSQUIRRELVM vm, float time)
+{
+  // search if the VM is already in the wakeup list and update it
+  for(WaitingVMs::iterator i = waiting_vms.begin();
+      i != waiting_vms.end(); ++i) {
+    WaitingVM& waiting_vm = *i;
+    if(waiting_vm.vm == vm) {
+      waiting_vm.wakeup_time = game_time + time;
+      return;
+    }
+  }
+
+  // create a new entry
+  WaitingVM waiting_vm;
+  waiting_vm.vm = vm;
+  waiting_vm.wakeup_time = game_time + time;
+}
+
 
 HSQUIRRELVM
 ScriptManager::create_coroutine()
@@ -139,4 +210,3 @@ ScriptManager::create_coroutine()
 
   return vm;
 }
-

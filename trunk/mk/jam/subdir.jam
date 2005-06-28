@@ -19,6 +19,15 @@ rule FixSubDirPath
 
     # We need to package the Jamfile (a bit hacky here...)
     Package Jamfile ;
+
+    if $(TOP) = [ FSubDir $(SUBDIR_TOKENS) ]
+    {
+        _INVOKING_SUBDIR = 1 ;
+    }
+    else
+    {
+        _INVOKING_SUBDIR = ;
+    }
 }
 
 # fix bug in Jambase where SubInclude in the middle of a jam file made it break

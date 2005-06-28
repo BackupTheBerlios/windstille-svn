@@ -21,58 +21,74 @@
 #include "sector.hxx"
 #include "trigger.hxx"
 #include "player.hxx"
+#include "script_manager.hpp"
+#include "lisp/lisp.hpp"
+#include "lisp/list_iterator.hpp"
 
-//Trigger* Trigger::current_ = 0;
-
-RegionTriggerCondition::RegionTriggerCondition(CL_Rectf rect)
-  : rect(rect)
+Trigger::Trigger(const lisp::Lisp* lisp)
+  : triggered(false), one_time_trigger(false)
 {
-}
+  float x = -1;
+  float y = -1;
+  float width = -1;
+  float height = -1;
+  
+  lisp::ListIterator iter(lisp);
+  while(iter.next()) {
+    if(iter.item() == "x") {
+      x = iter.value().get_float();
+    } else if(iter.item() == "y") {
+      y = iter.value().get_float();
+    } else if(iter.item() == "width") {
+      width = iter.value().get_float();
+    } else if(iter.item() == "height") {
+      height = iter.value().get_float();
+    } else if(iter.item() == "script") {
+      script = iter.value().get_string();
+    } else if(iter.item() == "one_time_trigger") {
+      one_time_trigger = iter.value().get_bool();
+    } else {
+      std::cerr << "Skipping unknown tag '"
+                << iter.item() << "' in Trigger object.\n";
+    }
+  }
 
-bool
-RegionTriggerCondition::check()
-{
-  Player* player = Player::current();
-
-  return rect.is_inside(CL_Pointf(player->get_pos().x,
-                                  player->get_pos().y));
-}
-
-#if 0
-Trigger::Trigger(TriggerCondition* condition, const RubyFunctor& func)
-  : condition(condition),
-    func(func),
-    triggered(false)
-{
+  if(x < 0 || y < 0 || width < 0 || height < 0)
+    throw std::runtime_error("Invalid or missing area in Trigger object");
+ 
+  area.left = x;
+  area.top = y;
+  area.right = area.left + width;
+  area.bottom = area.top + height;
 }
 
 Trigger::~Trigger()
 {
-  delete condition;
 }
 
 void
-Trigger::draw (SceneContext& gc)
+Trigger::draw (SceneContext& )
 {
+}
+
+void
+Trigger::update (float )
+{
+  Player* player = Player::current();
+  if(!area.is_inside(CL_Pointf(player->get_pos().x,
+                                  player->get_pos().y))) {
+    last_trigger = false;
+    return;
+  }
   
-}
+  if(triggered && one_time_trigger)
+    return;
 
-void
-Trigger::update (float delta)
-{
-  condition->update(delta);
-
-  if (!triggered && condition->check())
-    {
-      triggered = true;
-      current_ = this;
-      //func();
-    }
-  else if (!condition->check())
-    {
-      triggered = false;
-    }
+  if(last_trigger == false) {
+    triggered = true;
+    script_manager->run_script(script, "TriggerObject");
+  }
+  last_trigger = true;
 }
-#endif
 
 /* EOF */

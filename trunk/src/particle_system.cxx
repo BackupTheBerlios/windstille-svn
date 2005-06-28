@@ -276,13 +276,13 @@ ParticleSystem::set_count(int num)
 void
 ParticleSystem::set_bunching(float factor)
 {
-  
+  (void) factor; 
 }
 
 void
 ParticleSystem::set_cycles(float num)
 {
-  
+  (void) num;
 }
 
 void
@@ -358,6 +358,8 @@ ParticleSystem::set_size(float from, float to)
 void
 ParticleSystem::set_aspect(float from, float to)
 {
+  (void) from;
+  (void) to;
 }
 
 void
