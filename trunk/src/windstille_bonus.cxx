@@ -164,7 +164,6 @@ WindstilleBonus::quit()
 void
 WindstilleBonus::on_startup()
 {
-  CL_Display::get_current_window()->hide_cursor();
 }
 
 void

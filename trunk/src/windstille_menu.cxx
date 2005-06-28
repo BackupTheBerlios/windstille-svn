@@ -231,7 +231,6 @@ WindstilleMenu::fadeout()
 void
 WindstilleMenu::on_startup()
 {
-  CL_Display::get_current_window()->hide_cursor();
   sound_manager->play_music("music/jingle.ogg");
 }
 

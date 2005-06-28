@@ -232,7 +232,6 @@ GameSession::on_startup ()
 { 
   slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
   slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
-  //CL_Display::get_current_window()->hide_cursor();
 
   sound_manager->play_music("music/techdemo.ogg");
   blink = 0.0f;
@@ -381,19 +380,20 @@ GameSession::on_key_down(const CL_InputEvent& event)
 void
 GameSession::execute(const std::string& str_)
 {
-  std::string str = "return (" + str_ + ")";
+  std::string str = str_; //"return (" + str_ + ")";
 
   int i = str.length();
   const char* buffer = str.c_str();
 
   try {
+    int retval = 0;
     HSQUIRRELVM vm = script_manager->create_coroutine();
 
     if(i>0){
       int oldtop=sq_gettop(vm);
       if(SQ_SUCCEEDED(sq_compilebuffer(vm,buffer,i,_SC("interactive console"),SQTrue))){
         sq_pushroottable(vm);
-        if(SQ_SUCCEEDED(sq_call(vm,1, 1))) {
+        if(SQ_SUCCEEDED(sq_call(vm,1, retval))) {
           scprintf(_SC("\n"));
           sq_pushroottable(vm);
           sq_pushstring(vm,_SC("print"),-1);
