@@ -60,6 +60,7 @@ rule CompileObjects
     if $(SUBDIR_OBJECTS_COMPILE) && $(_INVOKING_SUBDIR)
     {
         Depends all : $(targets) ;
+        Clean clean : $(targets) ;
     }
 
     return $(targets) ;
