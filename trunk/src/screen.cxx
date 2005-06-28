@@ -50,7 +50,7 @@ Screen::display()
       float step = 10/1000.0f;
       if (show_fps)
         draw_fps(delta);
-      CL_Display::flip();
+      CL_Display::flip(0);
       
       ++frames;
       

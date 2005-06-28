@@ -269,7 +269,7 @@ WindstilleMain::init_modules()
   window = new CL_DisplayWindow("Windstille",
                                 screen_width, screen_height, fullscreen, allow_resize);
   CL_Display::clear();
-  CL_Display::flip();
+  CL_Display::flip(0);
 
   resources =  new CL_ResourceManager();
   resources->add_resources(CL_ResourceManager(datadir + "windstille.xml", false));

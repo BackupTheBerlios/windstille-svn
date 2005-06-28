@@ -315,6 +315,9 @@ public:
       clDisableClientState(CL_TEXTURE_COORD_ARRAY);
       clDisableClientState(CL_NORMAL_ARRAY);
       clDisableClientState(CL_VERTEX_ARRAY);
+
+      if (impl->use_vbo)
+        clBindBuffer(CL_ARRAY_BUFFER, 0);
     }
 
     glPopMatrix();   

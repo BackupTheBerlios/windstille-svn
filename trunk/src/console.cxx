@@ -62,12 +62,13 @@ Console::draw()
     y -= font.get_height() + 2;
 
   font.set_alignment(origin_bottom_left);
+  // FIXME: only display stuff that would end up on the screen
   for(Buffer::reverse_iterator i = buffer.rbegin(); i != buffer.rend(); ++i)
     {
-      if (i->display_time < 5.0f)
+      if (i->display_time < 5.0f || is_active())
         {
           font.set_color(CL_Color(225, 225, 255));
-          if (i->display_time > 4.0f)
+          if (i->display_time > 4.0f && !is_active())
             font.set_alpha(1.0f - (i->display_time - 4.0f));
           else
             font.set_alpha(1.0f);

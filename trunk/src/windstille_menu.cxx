@@ -220,7 +220,7 @@ WindstilleMenu::fadeout()
       CL_Display::fill_rect(CL_Rect(0, 0, 
                                     CL_Display::get_width(), CL_Display::get_height()),
                             CL_Color(0,0,0, std::min(alpha, 255)));
-      CL_Display::flip();
+      CL_Display::flip(0);
       sound_manager->update();
       CL_System::keep_alive();
       CL_System::sleep(50);
