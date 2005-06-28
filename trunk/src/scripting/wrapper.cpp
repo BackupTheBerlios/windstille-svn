@@ -55,11 +55,21 @@ static int clear_dialog_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int show_dialog_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::show_dialog();
+  
+  return 0;
+}
+
 WrappedFunction supertux_global_functions[] = {
   { "play_music", &play_music_wrapper },
   { "play_sound", &play_sound_wrapper },
   { "create_dialog", &create_dialog_wrapper },
   { "clear_dialog", &clear_dialog_wrapper },
+  { "show_dialog", &show_dialog_wrapper },
   { 0, 0 }
 };
 

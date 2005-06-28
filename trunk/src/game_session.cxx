@@ -42,6 +42,8 @@
 #include "dialog_manager.hxx"
 #include "windstille_main.hxx"
 #include "display/scene_context.hxx"
+#include "scripting/wrapper_util.hpp"
+#include "scripting/wrapper.hpp"
 #include "input/input_manager.hxx"
 #include "particle_system.hxx"
 #include "sound/sound_manager.hpp"
@@ -243,6 +245,7 @@ GameSession::on_startup ()
   vm = sq_open(1024);
   sqstd_seterrorhandlers(vm);
   sq_setprintfunc(vm, printfunc); //sets the print function
+  register_functions(vm, supertux_global_functions);
 
   sound_manager->play_music("music/techdemo.ogg");
   blink = 0.0f;

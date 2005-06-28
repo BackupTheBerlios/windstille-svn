@@ -16,6 +16,8 @@ void create_dialog(const std::string& portrait, const std::string& text);
 
 void clear_dialog();
 
+void show_dialog();
+
 }
 
 #endif

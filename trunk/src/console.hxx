@@ -39,6 +39,8 @@ private:
   static Console* current_;
   std::string command_line;
   bool active;
+  std::vector<std::string> history;
+  int history_position;
 public:
   static Console* current();
 

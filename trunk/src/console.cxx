@@ -33,6 +33,7 @@ Console::Console(int arg_x, int arg_y)
   x_pos = arg_x;
   y_pos = arg_y;
   active = false;
+  history_position = 1;
 }
 
 Console* 
@@ -65,6 +66,7 @@ Console::draw()
     {
       if (i->display_time < 5.0f)
         {
+          font.set_color(CL_Color(225, 225, 255));
           if (i->display_time > 4.0f)
             font.set_alpha(1.0f - (i->display_time - 4.0f));
           else
@@ -75,6 +77,7 @@ Console::draw()
       y -= font.get_height() + 2;
     }
 
+  font.set_color(CL_Color(255, 255, 255));
   if (active)
     {
       font.set_alignment(origin_bottom_left);
@@ -113,8 +116,34 @@ Console::update(float delta)
                         command_line = command_line.substr(0, command_line.size() - 1);
                       break;
 
+                    case CL_KEY_DOWN:
+                      if (!history.empty())
+                        {
+                          history_position += 1;
+                          if (history_position > int(history.size())-1)
+                            history_position = int(history.size())-1;
+                          command_line = history[history_position];
+                        }
+                      break;
+
+                    case CL_KEY_UP:
+                      if (!history.empty())
+                        {
+                          history_position -= 1;
+                          if (history_position < 0)
+                            history_position = 0;
+
+                          command_line = history[history_position];
+                        }
+                      break;
+
                     case CL_KEY_ENTER:
-                      add("#" + command_line);
+                      if (history.empty() || history.back() != command_line)
+                        {
+                          history.push_back(command_line);
+                          history_position = history.size();
+                        }
+                      add(">" + command_line);
                       if (command_line == "quit" || command_line == "exit")
                         {
                           deactive();

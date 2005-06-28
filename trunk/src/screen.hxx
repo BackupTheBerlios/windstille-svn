@@ -20,6 +20,8 @@
 #ifndef HEADER_SCREEN_HXX
 #define HEADER_SCREEN_HXX
 
+class CL_InputEvent;
+
 namespace Windstille {
 
 /** */

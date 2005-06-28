@@ -1,5 +1,6 @@
 #include "interface.hpp"
 #include "sound/sound_manager.hpp"
+#include "game_session.hxx"
 #include "dialog_manager.hxx"
 
 namespace Scripting
@@ -23,6 +24,11 @@ void create_dialog(const std::string& portrait, const std::string& text)
 void clear_dialog()
 {
   DialogManager::current()->clear();
+}
+
+void show_dialog()
+{
+  GameSession::current()->set_dialog_state();
 }
 
 }
