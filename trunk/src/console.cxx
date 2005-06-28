@@ -114,7 +114,7 @@ Console::update(float delta)
                       break;
 
                     case CL_KEY_ENTER:
-                      add(">" + command_line);
+                      add("#" + command_line);
                       if (command_line == "quit" || command_line == "exit")
                         {
                           deactive();
@@ -127,6 +127,10 @@ Console::update(float delta)
                       else if (command_line == "reset")
                         {
                           GameSession::current()->set_sector("levels/newformat2.wst");
+                        }
+                      else
+                        {
+                          GameSession::current()->execute(command_line);
                         }
                       command_line = "";
                       break;

@@ -21,6 +21,11 @@
 #include <math.h>
 #include <ClanLib/gl.h>
 #include <sstream>
+#include <stdarg.h>
+
+#include <squirrel.h> 
+#include <sqstdio.h> 
+#include <sqstdaux.h> 
 
 #include "fonts.hxx"
 #include "sector.hxx"
@@ -216,12 +221,28 @@ GameSession::set_sector (const std::string& arg_filename)
   control_state = GAME;
 }
 
+static void printfunc(HSQUIRRELVM vm, const SQChar *s,...)
+{
+  char buf[4096];
+  va_list arglist; 
+  va_start(arglist, s); 
+  //vprintf(s, arglist);
+  vsprintf(buf, s, arglist);
+  Console::current()->add(buf);
+  va_end(arglist); 
+}
+
 void
 GameSession::on_startup ()
 { 
   slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
   slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
   //CL_Display::get_current_window()->hide_cursor();
+
+ // creates a VM with initial stack size 1024 
+  vm = sq_open(1024);
+  sqstd_seterrorhandlers(vm);
+  sq_setprintfunc(vm, printfunc); //sets the print function
 
   sound_manager->play_music("music/techdemo.ogg");
   blink = 0.0f;
@@ -365,6 +386,34 @@ GameSession::on_key_down(const CL_InputEvent& event)
           break;
         }
     }
+}
+
+void
+GameSession::execute(const std::string& str_)
+{
+  std::string str = "return (" + str_ + ")";
+
+  int i = str.length();
+  const char* buffer = str.c_str();
+
+  if(i>0){
+    int oldtop=sq_gettop(vm);
+    if(SQ_SUCCEEDED(sq_compilebuffer(vm,buffer,i,_SC("interactive console"),SQTrue))){
+      sq_pushroottable(vm);
+      if(SQ_SUCCEEDED(sq_call(vm,1, 1))) {
+        scprintf(_SC("\n"));
+        sq_pushroottable(vm);
+        sq_pushstring(vm,_SC("print"),-1);
+        sq_get(vm,-2);
+        sq_pushroottable(vm);
+        sq_push(vm,-4);
+        sq_call(vm,2,SQFalse);
+        scprintf(_SC("\n"));
+      }
+    }
+
+    sq_settop(vm,oldtop);
+  }
 }
 
 /* EOF */

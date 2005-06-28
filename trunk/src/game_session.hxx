@@ -26,6 +26,7 @@
 #include <ClanLib/Signals/slot_container.h>
 #include "display/scene_context.hxx"
 #include "console.hxx"
+#include "squirrel/include/squirrel.h"
 #include "screen.hxx"
 
 class CL_InputEvent;
@@ -65,6 +66,8 @@ private:
   void on_key_down  (const CL_InputEvent& event);
   void on_mouse_down  (const CL_InputEvent& event);
 
+  HSQUIRRELVM vm; 
+
   static GameSession* current_; 
 public:
   static GameSession* current() { return current_; } 
@@ -82,6 +85,9 @@ public:
   void draw();
   void draw_game();
   void update(float delta);
+
+  /** execute the given string in the scripting environment */
+  void execute(const std::string& str);
 
   void quit();
 };
