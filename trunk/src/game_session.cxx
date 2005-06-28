@@ -17,7 +17,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-//#include <ruby.h>
 #include <math.h>
 #include <ClanLib/gl.h>
 #include <sstream>
@@ -46,6 +45,7 @@
 #include "scripting/wrapper.hpp"
 #include "input/input_manager.hxx"
 #include "particle_system.hxx"
+#include "script_manager.hpp"
 #include "sound/sound_manager.hpp"
 
 #include "game_session.hxx"
@@ -223,29 +223,12 @@ GameSession::set_sector (const std::string& arg_filename)
   control_state = GAME;
 }
 
-static void printfunc(HSQUIRRELVM vm, const SQChar *s,...)
-{
-  char buf[4096];
-  va_list arglist; 
-  va_start(arglist, s); 
-  //vprintf(s, arglist);
-  vsprintf(buf, s, arglist);
-  Console::current()->add(buf);
-  va_end(arglist); 
-}
-
 void
 GameSession::on_startup ()
 { 
   slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
   slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
   //CL_Display::get_current_window()->hide_cursor();
-
- // creates a VM with initial stack size 1024 
-  vm = sq_open(1024);
-  sqstd_seterrorhandlers(vm);
-  sq_setprintfunc(vm, printfunc); //sets the print function
-  register_functions(vm, supertux_global_functions);
 
   sound_manager->play_music("music/techdemo.ogg");
   blink = 0.0f;
@@ -399,23 +382,33 @@ GameSession::execute(const std::string& str_)
   int i = str.length();
   const char* buffer = str.c_str();
 
-  if(i>0){
-    int oldtop=sq_gettop(vm);
-    if(SQ_SUCCEEDED(sq_compilebuffer(vm,buffer,i,_SC("interactive console"),SQTrue))){
-      sq_pushroottable(vm);
-      if(SQ_SUCCEEDED(sq_call(vm,1, 1))) {
-        scprintf(_SC("\n"));
+  try {
+    HSQUIRRELVM vm = script_manager->create_coroutine();
+
+    if(i>0){
+      int oldtop=sq_gettop(vm);
+      if(SQ_SUCCEEDED(sq_compilebuffer(vm,buffer,i,_SC("interactive console"),SQTrue))){
         sq_pushroottable(vm);
-        sq_pushstring(vm,_SC("print"),-1);
-        sq_get(vm,-2);
-        sq_pushroottable(vm);
-        sq_push(vm,-4);
-        sq_call(vm,2,SQFalse);
-        scprintf(_SC("\n"));
+        if(SQ_SUCCEEDED(sq_call(vm,1, 1))) {
+          scprintf(_SC("\n"));
+          sq_pushroottable(vm);
+          sq_pushstring(vm,_SC("print"),-1);
+          sq_get(vm,-2);
+          sq_pushroottable(vm);
+          sq_push(vm,-4);
+          sq_call(vm,2,SQFalse);
+          scprintf(_SC("\n"));
+        }
       }
+
+      sq_settop(vm,oldtop);
     }
 
-    sq_settop(vm,oldtop);
+    // FIXME: leads to crashs...
+    //sq_close(vm);
+  } catch(std::exception& e) {
+    std::cerr << "Couldn't execute command '" << str_ << "': "
+      << e.what() << "\n";
   }
 }
 

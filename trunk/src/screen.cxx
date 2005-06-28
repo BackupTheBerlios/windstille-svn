@@ -66,7 +66,7 @@ Screen::display()
 
       sound_manager->update();
       CL_System::keep_alive ();
-      CL_System::sleep (1);
+      //CL_System::sleep (1);
     }
 
   on_shutdown();

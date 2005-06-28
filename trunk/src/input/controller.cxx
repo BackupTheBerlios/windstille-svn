@@ -16,8 +16,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-#include "../assert.hxx"
 #include "controller.hxx"
 
 Controller::Controller()
@@ -29,7 +27,7 @@ Controller::Controller()
 float
 Controller::get_axis_state(int name) const
 {
-  AssertMsg(name < int(axes.size()), "Controllor: Unknown AxisName");  
+  assert(name < int(axes.size()));
   return axes[name];
 }
         
@@ -37,21 +35,21 @@ Controller::get_axis_state(int name) const
 bool
 Controller::get_button_state(int name) const
 {
-  AssertMsg(name < int(buttons.size()), "Controllor: Unknown ButtonName");  
+  assert(name < int(buttons.size()));
   return buttons[name];
 }
 
 void
 Controller::set_axis_state(int name, float pos)
 {
-  AssertMsg(name < static_cast<int>(axes.size()), "Controllor: Unknown AxisName");
+  assert(name < static_cast<int> (axes.size()));
   axes[name] = pos;
 }
 
 void
 Controller::set_button_state(int name, bool down)
 {
-  AssertMsg(name < static_cast<int>(buttons.size()), "Controller: Unknown ButtonName");
+  assert(name < static_cast<int>(buttons.size()));
   buttons[name] = down;
 }
 

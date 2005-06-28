@@ -107,7 +107,7 @@ DialogManager::draw()
 }
 
 void
-DialogManager::update(float delta)
+DialogManager::update(float )
 {
   if (current_dialog != -1)
     {

@@ -64,7 +64,7 @@ static int show_dialog_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-WrappedFunction supertux_global_functions[] = {
+WrappedFunction windstille_global_functions[] = {
   { "play_music", &play_music_wrapper },
   { "play_sound", &play_sound_wrapper },
   { "create_dialog", &create_dialog_wrapper },
@@ -73,7 +73,7 @@ WrappedFunction supertux_global_functions[] = {
   { 0, 0 }
 };
 
-WrappedClass supertux_classes[] = {
+WrappedClass windstille_classes[] = {
   { 0, 0 }
 };
 

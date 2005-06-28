@@ -66,8 +66,6 @@ private:
   void on_key_down  (const CL_InputEvent& event);
   void on_mouse_down  (const CL_InputEvent& event);
 
-  HSQUIRRELVM vm; 
-
   static GameSession* current_; 
 public:
   static GameSession* current() { return current_; } 

@@ -34,6 +34,7 @@
 #include "input/input_manager.hxx"
 #include "sound/sound_manager.hpp"
 #include "tile_factory.hxx"
+#include "script_manager.hpp"
 
 //extern "C" void Init_windstille(void);
 
@@ -276,11 +277,16 @@ WindstilleMain::init_modules()
 
   Fonts::init(); 
   sound_manager = new SoundManager();
+
+  script_manager = new ScriptManager();
 }
 
 void
 WindstilleMain::deinit_modules()
 {
+  delete script_manager;
+  script_manager = 0;
+  
   delete sound_manager;
   sound_manager = 0;
   Fonts::deinit();

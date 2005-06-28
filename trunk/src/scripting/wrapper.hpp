@@ -3,13 +3,13 @@
  *  'src/scripting/wrapper.interface.hpp'
  * DO NOT CHANGE
  */
-#ifndef __supertux_WRAPPER_H__
-#define __supertux_WRAPPER_H__
+#ifndef __windstille_WRAPPER_H__
+#define __windstille_WRAPPER_H__
 
 #include "wrapper_util.hpp"
 
-extern WrappedFunction supertux_global_functions[];
-extern WrappedClass supertux_classes[];
+extern WrappedFunction windstille_global_functions[];
+extern WrappedClass windstille_classes[];
 
 #endif
 

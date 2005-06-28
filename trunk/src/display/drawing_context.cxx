@@ -117,6 +117,7 @@ public:
   virtual ~TextDrawingRequest() {}
 
   void draw(CL_GraphicContext* gc) {
+    (void) gc;
     // FIXME: not implemented
   }
 };
@@ -184,40 +185,38 @@ DrawingContext::draw(const std::string& text,    float x, float y, float z)
 }
 
 void
-DrawingContext::draw_line (float x1, float y1, float x2, float y2, 
-                           const CL_Color& color)
+DrawingContext::draw_line (float , float , float , float , 
+                           const CL_Color& )
 {
 }
 
 void
-DrawingContext::draw_fillrect (float x1, float y1, float x2, float y2, 
-		      const CL_Color& color)
+DrawingContext::draw_fillrect (float , float , float , float , 
+		      const CL_Color& )
 {
 }
 
 void
-DrawingContext::draw_rect (float x1, float y1, float x2, float y2, 
-		  const CL_Color& color)
+DrawingContext::draw_rect (float , float , float , float , 
+		  const CL_Color& )
 {
 }
 
 void
-DrawingContext::draw_pixel (float x_pos, float y_pos, 
-		   const CL_Color& color)
+DrawingContext::draw_pixel (float , float , const CL_Color& )
 {
 }
 
 void
-DrawingContext::draw_circle (float x_pos, float y_pos, float radius,
-                             const CL_Color& color)
+DrawingContext::draw_circle (float , float , float , const CL_Color& )
 {
 }
 
 /** Draws an arc, starting from angle_start to angle_end in
       counterclockwise direction. Angles are taken in radian */
 void
-DrawingContext::draw_arc (float x_pos, float y_pos, float radius, float angle_start, float angle_end,
-                          const CL_Color& color)
+DrawingContext::draw_arc (float , float , float , float , float ,
+                          const CL_Color& )
 {
 }
 

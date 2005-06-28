@@ -120,6 +120,8 @@ Application windstille
         random.hxx
         screen.cxx
         screen.hxx
+        script_manager.hpp
+        script_manager.cpp
         sector.cxx
         sector.hxx
         sprite3d.cxx
@@ -130,6 +132,8 @@ Application windstille
         tile.hxx
         tile_map.cxx
         tile_map.hxx
+        timer.hpp
+        timer.cpp
         trigger.cxx
         trigger.hxx
         view.cxx
