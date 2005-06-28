@@ -92,6 +92,9 @@ fi
 
 PKG_CHECK_MODULES([CLANLIB], [clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7])
 
+XIPH_PATH_VORBIS(, [AC_MSG_ERROR([Please install libvorbis])])
+XIPH_PATH_OGG(, [AC_MSG_ERROR([Please install libogg])])
+
 NP_FINDLIB([OPENAL], [OpenAL], [OpenAL],
          NP_LANG_PROGRAM([#include <AL/al.h>],
            [alcOpenDevice(0);]),
