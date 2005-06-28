@@ -52,9 +52,11 @@ IncludeDir $(top_srcdir)/src ;
 IncludeDir $(top_srcdir)/src/squirrel/include ;
 
 # use CLANLIB, OPENAL and PHYSFS
-CXXFLAGS += $(CLANLIB_CFLAGS) $(OPENAL_CFLAGS) $(PHYSFS_CFLAGS) ;
-CFLAGS += $(CLANLIB_CFLAGS) $(OPENAL_CFLAGS) $(PHYSFS_CFLAGS) ;
-LIBS += $(CLANLIB_LIBS) $(OPENAL_LIBS) $(PHYSFS_LIBS) ;
+CXXFLAGS += $(CLANLIB_CFLAGS) $(OPENAL_CFLAGS) $(PHYSFS_CFLAGS)
+    $(VORBIS_CFLAGS) $(OGG_CFLAGS) ;
+CFLAGS += $(CLANLIB_CFLAGS) $(OPENAL_CFLAGS) $(PHYSFS_CFLAGS) $(VORBIS_CFLAGS)
+    $(OGG_CFLAGS) ;
+LIBS += $(CLANLIB_LIBS) $(OPENAL_LIBS) $(PHYSFS_LIBS) $(VORBIS_LIBS) $(OGG_LIBS) ;
 
 # for the emacsers out there (compiles all objects in current subdir if jam is
 # invoked in a subdir)
