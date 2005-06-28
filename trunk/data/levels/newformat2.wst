@@ -12,9 +12,16 @@
       (height 200)
       (script "
 print(\"Script was here\");
-play_music(\"music/jingle.ogg\");
 set_wakeup_time(2);
-
+suspend();
+print(\"1\");
+set_wakeup_time(2);
+suspend();
+print(\"2\");
+set_wakeup_time(2);
+suspend();
+print(\"3\");
+play_music(\"music/jingle.ogg\");
 ")
     )
   (tilemap (name "background") (width 100) (height 30)

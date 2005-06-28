@@ -161,7 +161,7 @@ ScriptManager::update()
   for(WaitingVMs::iterator i = waiting_vms.begin(); i != waiting_vms.end(); ) {
     WaitingVM& waiting_vm = *i;
     
-    if(waiting_vm.wakeup_time > game_time) {
+    if(game_time >= waiting_vm.wakeup_time) {
       try {
         if(sq_wakeupvm(waiting_vm.vm, false, false) < 0) {
           throw SquirrelError(waiting_vm.vm, "Couldn't resume script");
@@ -173,7 +173,7 @@ ScriptManager::update()
       }
 
       // remove (but check that the script hasn't set a new wakeup_time)
-      if(waiting_vm.wakeup_time > game_time)
+      if(game_time >= waiting_vm.wakeup_time)
         i = waiting_vms.erase(i);
     } else {
       ++i;
@@ -198,6 +198,7 @@ ScriptManager::set_wakeup_time(HSQUIRRELVM vm, float time)
   WaitingVM waiting_vm;
   waiting_vm.vm = vm;
   waiting_vm.wakeup_time = game_time + time;
+  waiting_vms.push_back(waiting_vm);
 }
 
 

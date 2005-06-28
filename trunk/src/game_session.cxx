@@ -36,6 +36,7 @@
 #include "display.hxx"
 #include "view.hxx"
 #include "door.hxx"
+#include "timer.hpp"
 #include "energiebar.hxx"
 #include "sprite3d.hxx"
 #include "dialog_manager.hxx"
@@ -169,6 +170,9 @@ GameSession::update(float delta)
 
   InputManager::update(delta);
   delta *= game_speed;
+
+  game_time += delta;
+  script_manager->update();
 
   view->update(delta);
 
