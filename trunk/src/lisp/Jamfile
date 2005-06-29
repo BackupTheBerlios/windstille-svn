@@ -1,6 +1,6 @@
 SubDir TOP src lisp ;
 
-lisp_objects = [ CompileObjects
+sources =
   lexer.cpp
   lexer.hpp
   lisp.cpp
@@ -11,5 +11,8 @@ lisp_objects = [ CompileObjects
   parser.hpp
   writer.cpp
   writer.hpp
-] ;
+;
+
+TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
+lisp_objects = [ CompileObjects $(sources) ] ;
 

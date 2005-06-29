@@ -83,13 +83,13 @@ ControllerDef::button_name2id(const std::string& name)
 }
 
 std::string
-ControllerDef::axis_id2name(int id)
+ControllerDef::axis_id2name(int )
 {
   return "unknown";
 }
 
 int 
-ControllerDef::axis_name2id(const std::string& name)
+ControllerDef::axis_name2id(const std::string& )
 {
   return -1;
 }

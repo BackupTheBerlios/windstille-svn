@@ -1,6 +1,6 @@
 SubDir TOP src input ;
 
-input_objects = [ CompileObjects
+sources =
     axis_button.cxx                
     axis_button.hxx
     axis_factory.cxx
@@ -33,5 +33,8 @@ input_objects = [ CompileObjects
     input_recorder.hxx
     multi_button.cxx
     multi_button.hxx
-] ;
+;
+
+TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
+input_objects = [ CompileObjects $(sources) ] ;
 

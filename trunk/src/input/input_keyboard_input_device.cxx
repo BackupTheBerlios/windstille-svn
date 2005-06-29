@@ -30,9 +30,8 @@ InputKeyboardInputDevice::InputKeyboardInputDevice(CL_InputDevice& dev_)
 }
 
 void
-InputKeyboardInputDevice::on_key_up(const CL_InputEvent& event)
+InputKeyboardInputDevice::on_key_up(const CL_InputEvent& )
 {
-  
 }
 
 void

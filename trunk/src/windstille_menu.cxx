@@ -31,6 +31,7 @@
 #include "sound/sound_manager.hpp"
 #include "windstille_bonus.hxx"
 #include "input/input_manager.hxx"
+#include "tinygettext/gettext.hpp"
 
 WindstilleMenu::WindstilleMenu()
   : background("menu_background", resources),
@@ -164,47 +165,50 @@ WindstilleMenu::draw()
 
   if (current_choice == 0)
     {
-      Fonts::menu.draw(580, 330, "[Start Game]");
-      Fonts::menu_h.draw(580, 330, "[Start Game]");
+      Fonts::menu.draw(580, 330, _("[Start Game]"));
+      Fonts::menu_h.draw(580, 330, _("[Start Game]"));
     }
   else
-    Fonts::menu.draw(580, 330, "Start Game");
+    Fonts::menu.draw(580, 330, _("Start Game"));
 
   if (bonus_active)
     {
       if (current_choice == 1)
         {
-          Fonts::menu.draw(580, 385, "[Extras]");
-          Fonts::menu_h.draw(580, 385, "[Extras]");
+          Fonts::menu.draw(580, 385, _("[Extras]"));
+          Fonts::menu_h.draw(580, 385, _("[Extras]"));
         }
       else
-        Fonts::menu.draw(580, 385, "Extras");
+        Fonts::menu.draw(580, 385, _("Extras"));
 
       if (current_choice == 2)
         {
-          Fonts::menu.draw(580, 440, "[Quit]");
-          Fonts::menu_h.draw(580, 440, "[Quit]");
+          Fonts::menu.draw(580, 440, _("[Quit]"));
+          Fonts::menu_h.draw(580, 440, _("[Quit]"));
         }
       else
-        Fonts::menu.draw(580, 440, "Quit");
+        Fonts::menu.draw(580, 440, _("Quit"));
     }
   else
     {
       if (current_choice == 1 || (bonus_active && current_choice == 3))
         {
-          Fonts::menu.draw(580, 440, "[Quit]");
-          Fonts::menu_h.draw(580, 440, "[Quit]");
+          Fonts::menu.draw(580, 440, _("[Quit]"));
+          Fonts::menu_h.draw(580, 440, _("[Quit]"));
         }
       else
         Fonts::menu.draw(580, 440, "Quit");
     }
 
+  std::string copyright = "Windstille " PACKAGE_VERSION "\n";
+  copyright += _("Copyright (c) 2003 Ingo Ruhnke <grumbel@gmx.de>\n"
+                 "This game comes with ABSOLUTELY NO WARRANTY. "
+                 "This is free software, and you are welcome\n"
+                 "to redistribute it under certain conditions; "
+                 "see the file COPYING for details.\n");
+
   Fonts::copyright.set_alignment(origin_bottom_left);
-  Fonts::copyright.draw(15, CL_Display::get_height() - 10,
-                        "Windstille " PACKAGE_VERSION "\n"
-                        "Copyright (c) 2003 Ingo Ruhnke <grumbel@gmx.de>\n"
-                        "This game comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome\n"
-                        "to redistribute it under certain conditions; see the file COPYING for details.\n");
+  Fonts::copyright.draw(15, CL_Display::get_height() - 10, copyright.c_str());
 }
 
 void

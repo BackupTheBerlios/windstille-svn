@@ -33,7 +33,7 @@ WaterMap::~WaterMap()
 }
 
 void
-WaterMap::draw(SceneContext& gc)
+WaterMap::draw(SceneContext& )
 {
   for (Waters::iterator i = waters.begin(); i != waters.end(); ++i)
     {
@@ -93,7 +93,7 @@ WaterMap::draw(SceneContext& gc)
 }
 
 void
-WaterMap::update(float delta)
+WaterMap::update(float )
 {
   CL_Vector pos = Player::current()->get_pos();
 

@@ -17,8 +17,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-//#include <ruby.h>
-//#include <ClanLib/gl.h>
 #include <ClanLib/core.h>
 #include <ClanLib/vorbis.h>
 #include <ClanLib/display.h>
@@ -35,8 +33,7 @@
 #include "sound/sound_manager.hpp"
 #include "tile_factory.hxx"
 #include "script_manager.hpp"
-
-//extern "C" void Init_windstille(void);
+#include "tinygettext/gettext.hpp"
 
 WindstilleMain main_app;
 CL_ResourceManager* resources;
@@ -171,6 +168,9 @@ WindstilleMain::main(int argc, char** argv)
 
   try {
     init_physfs(argv[0]);
+    dictionaryManager = new TinyGetText::DictionaryManager();
+    dictionaryManager->set_charset("iso8859-1");
+    dictionaryManager->add_directory("locale");                    
   } catch(std::exception& e) {
     std::cout << "std::exception: " << e.what() << std::endl;
     return 1;
@@ -250,15 +250,16 @@ WindstilleMain::main(int argc, char** argv)
   }
 #endif
 
+  delete dictionaryManager;
+  dictionaryManager = 0;
+  PHYSFS_deinit();
+
   return 0;
 }
 
 void
 WindstilleMain::init_modules()
 {
-  // ruby_init();
-  //  Init_windstille();
-  
   // Init ClanLib
   CL_SetupCore::init();
   

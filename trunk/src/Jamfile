@@ -9,21 +9,7 @@ SubInclude TOP src sound ;
 SubInclude TOP src tinygettext ;
 SubInclude TOP src scripting ;
 
-Application windstille 
-    :   $(display_objects)
-    
-        $(input_objects)
-
-        $(lisp_objects)
-
-        $(physfs_objects)
-
-        $(sound_objects)
-
-        $(tinygettext_objects)
-
-        $(scripting_objects)
-
+sources = 
         animation_obj.cxx
         animation_obj.hxx
         bomb.cxx
@@ -106,6 +92,27 @@ Application windstille
         windstille_menu.cxx
         windstille_menu.hxx
 ;
+
+TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
+
+Application windstille 
+    :   $(display_objects)
+    
+        $(input_objects)
+
+        $(lisp_objects)
+
+        $(physfs_objects)
+
+        $(sound_objects)
+
+        $(tinygettext_objects)
+
+        $(scripting_objects)
+
+        $(sources)
+;
+
 C++Flags windstille : -DAPPDATADIR='\"$(appdatadir)\"' ;
 LinkWith windstille : squirrel ;
 Help windstille : "Build the windstille executable" ;

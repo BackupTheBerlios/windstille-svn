@@ -1,6 +1,6 @@
 SubDir TOP src sound ;
 
-sound_objects = [ CompileObjects
+sources =
     sound_file.cpp
     sound_file.hpp
     sound_manager.cpp
@@ -9,5 +9,8 @@ sound_objects = [ CompileObjects
     sound_source.hpp
     stream_sound_source.cpp
     stream_sound_source.hpp
-] ;
+;
+
+TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
+sound_objects = [ CompileObjects $(sources) ] ;
 
