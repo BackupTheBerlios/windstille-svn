@@ -1,0 +1,53 @@
+//  $Id$
+// 
+//  Pingus - A free Lemmings clone
+//  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
+//
+//  This program is free software; you can redistribute it and/or
+//  modify it under the terms of the GNU General Public License
+//  as published by the Free Software Foundation; either version 2
+//  of the License, or (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+// 
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+#ifndef HEADER_TILE_PACKER_HXX
+#define HEADER_TILE_PACKER_HXX
+
+#include <ClanLib/GL/opengl_surface.h>
+
+class TilePackerImpl;
+
+/** Creates a pixelbuffer of the given size and packs 32x32 large
+    tiles into it for later conversion to a texture */
+class TilePacker
+{
+private:
+public:
+  /** Let the texture be width/height large (only power of two values
+      recomment) */
+  TilePacker(int width, int height);
+  ~TilePacker();
+
+  /** Pack a tile and return the position where it is placed in the
+      pixel buffer */
+  CL_Rect pack(CL_PixelBuffer buffer);
+
+  /** Return true if the PixelBuffer is full */
+  bool is_full() const;
+
+  CL_OpenGLSurface create_texture();
+
+private:
+  TilePackerImpl* impl;
+};
+
+#endif
+
+/* EOF */
