@@ -122,10 +122,87 @@ public:
 
   void draw(CL_GraphicContext* gc)
   {
-    Field<Tile*>& field = tilemap->field;
-
     gc->push_modelview();
     gc->add_modelview(modelview);
+
+    draw_classic(gc);
+
+    gc->pop_modelview();
+  }
+
+  void draw_new(CL_GraphicContext* gc)
+  {
+    Field<Tile*>& field = tilemap->field;
+    std::vector<float> raw_texcoords;
+    std::vector<float> raw_vertices;
+
+    // FIXME: handle texture somewhere here
+    for (int y = rect.top;   y < rect.bottom; ++y)
+      for (int x = rect.left; x < rect.right; ++x)
+        {
+          Tile* tile = field(x, y);
+          if (tile && !highlight)
+            {
+              raw_vertices.push_back(x * TILE_SIZE);
+              raw_vertices.push_back(y * TILE_SIZE);
+              raw_vertices.push_back(0);
+
+              raw_texcoords.push_back(tile->color_rect.left / 1024.0f);
+              raw_texcoords.push_back(tile->color_rect.top  / 1024.0f);
+
+
+              raw_vertices.push_back(x * TILE_SIZE + TILE_SIZE);
+              raw_vertices.push_back(y * TILE_SIZE);
+              raw_vertices.push_back(0);
+
+              raw_texcoords.push_back(tile->color_rect.right / 1024.0f);
+              raw_texcoords.push_back(tile->color_rect.top  / 1024.0f);
+
+
+              raw_vertices.push_back(x * TILE_SIZE + TILE_SIZE);
+              raw_vertices.push_back(y * TILE_SIZE + TILE_SIZE);
+              raw_vertices.push_back(0);
+
+              raw_texcoords.push_back(tile->color_rect.right / 1024.0f);
+              raw_texcoords.push_back(tile->color_rect.bottom  / 1024.0f);
+
+
+              raw_vertices.push_back(x * TILE_SIZE);
+              raw_vertices.push_back(y * TILE_SIZE + TILE_SIZE);
+              raw_vertices.push_back(0);
+
+              raw_texcoords.push_back(tile->color_rect.left / 1024.0f);
+              raw_texcoords.push_back(tile->color_rect.bottom  / 1024.0f);
+            }
+        }
+
+    std::vector<float> raw_data;
+
+    // FIXME: this can be optimized away
+    std::copy(raw_vertices.begin(),  raw_vertices.end(),  std::back_inserter(raw_data));
+    std::copy(raw_texcoords.begin(),  raw_texcoords.end(),  std::back_inserter(raw_data));
+
+    int texcoord_offset = raw_vertices.size() * sizeof(float);
+
+    float* data = &*raw_data.begin();
+
+    clVertexPointer  (3, CL_FLOAT, 0, data);
+    clTexCoordPointer(2, CL_FLOAT, 0, data + texcoord_offset);
+    
+    clEnableClientState(CL_TEXTURE_COORD_ARRAY);
+    clEnableClientState(CL_VERTEX_ARRAY);
+
+    // Draw arrays
+    clDrawArrays(CL_QUADS, 0, raw_vertices.size()/4);
+
+    // Disable arrays
+    clDisableClientState(CL_TEXTURE_COORD_ARRAY);
+    clDisableClientState(CL_VERTEX_ARRAY);
+  }
+
+  void draw_classic(CL_GraphicContext* gc)
+  {
+    Field<Tile*>& field = tilemap->field;
 
     for (int y = rect.top;   y < rect.bottom; ++y)
       for (int x = rect.left; x < rect.right; ++x)
@@ -143,8 +220,6 @@ public:
                 }
             }
         }
-
-    gc->pop_modelview();
   }
 };
 

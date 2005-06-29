@@ -25,6 +25,7 @@
 #include "lisp/lisp.hpp"
 
 class Tile;
+class TilePacker;
 
 /** */
 class TileFactory
@@ -34,6 +35,9 @@ private:
   //typedef std::map<int, Tile*> Tiles;
   typedef std::vector<Tile*> Tiles;
   Tiles tiles;
+  std::vector<TilePacker*> packers;
+  int highlight_packer;
+  int color_packer;
 
   static TileFactory* current_;
 public:

@@ -22,6 +22,7 @@
 
 #include <assert.h>
 #include <ClanLib/Display/sprite.h>
+#include <ClanLib/GL/opengl_surface.h>
 
 /** A Tile is a surface or sprite together with information for
  *  collision detection (aka colmap). The collision map is at a
@@ -32,8 +33,14 @@ class Tile
 private:
   CL_Sprite color;
   CL_Sprite highlight;
-  
+
 public:
+  CL_Rect          color_rect;
+  int              color_packer;
+
+  CL_Rect          highlight_rect;
+  int              highlight_packer;
+
   int id; 
   /** Bitmaps that holds the collision attributes for this tile */
   unsigned int colmap;

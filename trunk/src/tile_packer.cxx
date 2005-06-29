@@ -22,6 +22,7 @@
 #include <ClanLib/Core/Math/point.h>
 #include <ClanLib/Display/pixel_buffer.h>
 #include <ClanLib/Display/pixel_format.h>
+#include <ClanLib/gl.h>
 #include "windstille_error.hxx"
 #include "blitter.hxx"
 #include "globals.hxx"
@@ -30,9 +31,6 @@
 class TilePackerImpl
 {
 public:
-  int width;
-  int height;
-  
   // Position for the next tile
   int x_pos;
   int y_pos;
@@ -43,13 +41,10 @@ public:
 TilePacker::TilePacker(int width, int height)
   : impl(new TilePackerImpl())
 {
-  impl->width  = width;
-  impl->height = height;
-
   impl->x_pos = 0;
   impl->y_pos = 0;
 
-  impl->buffer = CL_PixelBuffer(impl->width, impl->height, impl->width*4,
+  impl->buffer = CL_PixelBuffer(width, height, width*4,
                                 CL_PixelFormat::rgba8888);
 }
 
@@ -74,7 +69,12 @@ TilePacker::pack(CL_PixelBuffer tile)
   // we move by TILE_SIZE+1 to avoid tiles bleeding into each other
   // when blending
   impl->x_pos += TILE_SIZE + 1; 
-  impl->y_pos += TILE_SIZE + 1;
+
+  if (impl->x_pos + TILE_SIZE > impl->buffer.get_width())
+    {
+      impl->x_pos = 0;
+      impl->y_pos += TILE_SIZE + 1;
+    }
 
   return rect;
 }
@@ -83,13 +83,13 @@ TilePacker::pack(CL_PixelBuffer tile)
 bool
 TilePacker::is_full() const
 {
-  return (impl->y_pos + TILE_SIZE > impl->height);
+  return (impl->y_pos + TILE_SIZE > impl->buffer.get_height());
 }
 
-CL_OpenGLSurface
+CL_Texture
 TilePacker::create_texture()
 {
-  return CL_OpenGLSurface(impl->buffer);
+  return CL_Texture(CL_TEXTURE_2D, impl->buffer);
 }
 
 /* EOF */

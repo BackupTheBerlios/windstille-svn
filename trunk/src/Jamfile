@@ -16,6 +16,8 @@ sources =
         bomb.hxx
         brush.cxx
         brush.hxx
+        blitter.cxx
+        blitter.hxx
         camera.cxx
         camera.hxx
         collision_manager.cxx
@@ -72,6 +74,8 @@ sources =
         tile.cxx
         tile_factory.cxx
         tile_factory.hxx
+        tile_packer.cxx
+        tile_packer.hxx
         tile.hxx
         tile_map.cxx
         tile_map.hxx

@@ -20,7 +20,7 @@
 #ifndef HEADER_TILE_PACKER_HXX
 #define HEADER_TILE_PACKER_HXX
 
-#include <ClanLib/GL/opengl_surface.h>
+#include <ClanLib/GL/texture.h>
 
 class TilePackerImpl;
 
@@ -42,7 +42,7 @@ public:
   /** Return true if the PixelBuffer is full */
   bool is_full() const;
 
-  CL_OpenGLSurface create_texture();
+  CL_Texture create_texture();
 
 private:
   TilePackerImpl* impl;
