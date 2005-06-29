@@ -60,11 +60,11 @@ ScriptManager::ScriptManager()
 
 ScriptManager::~ScriptManager()
 {
-  sq_close(v);
   for(WaitingVMs::iterator i = waiting_vms.begin();
       i != waiting_vms.end(); ++i) {
     sq_release(v, &(i->vm_obj));
   }
+  sq_close(v);
 }
 
 static SQInteger squirrel_read_char(SQUserPointer file)
