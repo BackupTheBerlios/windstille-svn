@@ -17,7 +17,7 @@ void play_sound(const std::string& soundfile)
   sound_manager->play(soundfile);
 }
 
-void create_dialog(const std::string& portrait, const std::string& text)
+void show_dialog(const std::string& portrait, const std::string& text)
 {
   DialogManager::current()->add_dialog(portrait, text);
   GameSession::current()->set_dialog_state();

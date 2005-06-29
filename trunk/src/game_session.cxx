@@ -233,11 +233,10 @@ GameSession::on_startup ()
   slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
   slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
 
-  sound_manager->play_music("music/techdemo.ogg");
   blink = 0.0f;
 
   GameObject::set_world (world);
-  
+
   player = new Player();
   view   = new View();
   
@@ -251,15 +250,6 @@ GameSession::on_startup ()
 
   if (1)
     {
-      // FIXME: Move this thing into the scripting part
-      DialogManager::current()->add_dialog("human/portrait", 
-                                           "Welcome to the VR training programm. Here you"
-                                           "will learn the basic manovering abilities of your "
-                                           "powersuit, jumping, running, climbing and shooting."
-                                           "We will start with climbing, see the block infront of"
-                                           "you? Press [Right] and [Jump] to hang on the ledge.");
-      set_dialog_state();
-
       world->add(new Door(24, 6));
       world->add(new Door(32, 14));
       world->add(new Door(8, 22));
@@ -309,6 +299,8 @@ GameSession::on_startup ()
     }
   
   world->add(new Sprite3D("3dsprites/3dsprites"));
+
+  world->activate();
 }
 
 void

@@ -29,6 +29,8 @@
 #include "player.hxx"
 #include "trigger.hxx"
 #include "sector.hxx"
+#include "sound/sound_manager.hpp"
+#include "script_manager.hpp"
 
 Sector* Sector::current_ = 0;
 
@@ -58,15 +60,20 @@ Sector::parse_file(const std::string& filename)
     throw std::runtime_error(msg.str());
   }
 
-  std::vector<std::string> scripts;
   std::vector<int> ambient_colors;
   
   lisp::ListIterator iter(sector);
   while(iter.next()) {
-    if(iter.item() == "name") {
+    if(iter.item() == "version") {
+      if(iter.value().get_int() > 2) {
+        std::cerr << "Warning: Levelformat is newer than game.\n";
+      }
+    } else if(iter.item() == "name") {
       name = iter.value().get_string();
-    } else if(iter.item() == "scripts") {
-      iter.value().get_vector(scripts);
+    } else if(iter.item() == "music") {
+      music = iter.value().get_string();
+    } else if(iter.item() == "init-script") {
+      init_script = iter.value().get_string();
     } else if(iter.item() == "ambient-color") {
       iter.lisp()->get_vector(ambient_colors);
       if(ambient_colors.size() != 3)
@@ -90,17 +97,26 @@ Sector::parse_object(const std::string& name, const lisp::Lisp* lisp)
 {
   if(name == "tilemap") {
     TileMap* tilemap = new TileMap(lisp);
-    objects.push_back(tilemap);
+    add(tilemap);
     if (tilemap->get_name() == "interactive")
       interactive_tilemap = tilemap;
   } else if(name == "background") {
     // TODO
   } else if(name == "trigger") {
-    Trigger* trigger = new Trigger(lisp);
-    objects.push_back(trigger);
+    add(new Trigger(lisp));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }
+}
+
+void
+Sector::activate()
+{
+  commit_adds();
+  commit_removes();
+
+  sound_manager->play_music(music);
+  script_manager->run_script(init_script, "sector-init");
 }
 
 void
@@ -114,28 +130,45 @@ Sector::draw(SceneContext& sc)
     }
 }
 
-void
-Sector::update(float delta)
+void Sector::commit_adds()
 {
-  Objects tmpobjects = objects;
-  for(Objects::iterator i = tmpobjects.begin(); i != tmpobjects.end(); ++i)
-    {
-      (*i)->update(delta);
+  // Add new game objects
+  for(Objects::iterator i = new_objects.begin(); i != new_objects.end(); ++i) {
+    objects.push_back(*i);
+  }
+  new_objects.clear();
+}
+
+void Sector::update(float delta)
+{
+  commit_adds();
+  for(Objects::iterator i = objects.begin(); i != objects.end(); ++i) {
+    GameObject* object = *i;
+    object->update(delta);
+  }
+  commit_removes();
+}
+
+void
+Sector::commit_removes()
+{
+  // remove objects
+  for(Objects::iterator i = objects.begin(); i != objects.end(); ) {
+    GameObject* object = *i;
+    if(object->is_removable()) {
+      delete object;
+      i = objects.erase(i);
+      continue;
     }
+
+    ++i;
+  }
 }
 
 void
 Sector::add(GameObject* obj)
 {
-  // FIXME: This is not save to call in update(), should be changed accordingly
-  objects.push_back(obj);
-}
-
-void
-Sector::remove(GameObject* obj)
-{
-  (void) obj;
-  // not implemented
+  new_objects.push_back(obj);
 }
 
 int

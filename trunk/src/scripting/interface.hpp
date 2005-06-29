@@ -13,7 +13,7 @@ void play_music(const std::string& musicfile);
 
 void play_sound(const std::string& soundfile);
 
-void create_dialog(const std::string& portrait, const std::string& text);
+void show_dialog(const std::string& portrait, const std::string& text);
 
 void clear_dialog();
 

@@ -2,8 +2,16 @@
 (windstille-sector
   (version 2)
   (name   "")
-  (music  "")
+  (music  "music/techdemo.ogg")
   (ambient-color 170 170 170)
+  (init-script "
+show_dialog(\"human/portrait\",
+\"Welcome to the VR training programm. Here you \" +
+\"will learn the basic manovering abilities of your \" +
+\"powersuit, jumping, running, climbing and shooting.\" +
+\"We will start with climbing. See the block infront \" +
+\"of you? Press [Right] and [Jump] to hang on the ledge.\");
+")
   (objects
     (trigger
       (x 768)

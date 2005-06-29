@@ -34,14 +34,14 @@ static int play_sound_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int create_dialog_wrapper(HSQUIRRELVM v)
+static int show_dialog_wrapper(HSQUIRRELVM v)
 {
   const char* arg0;
   sq_getstring(v, 2, &arg0);
   const char* arg1;
   sq_getstring(v, 3, &arg1);
   
-  Scripting::create_dialog(arg0, arg1);
+  Scripting::show_dialog(arg0, arg1);
   
   return 0;
 }
@@ -69,7 +69,7 @@ static int wait_wrapper(HSQUIRRELVM v)
 WrappedFunction windstille_global_functions[] = {
   { "play_music", &play_music_wrapper },
   { "play_sound", &play_sound_wrapper },
-  { "create_dialog", &create_dialog_wrapper },
+  { "show_dialog", &show_dialog_wrapper },
   { "clear_dialog", &clear_dialog_wrapper },
   { "wait", &wait_wrapper },
   { 0, 0 }

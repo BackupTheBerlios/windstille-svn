@@ -35,9 +35,15 @@ class Sector
 {
 private:
   std::string name;
+  std::string music;
+  std::string init_script;
 
   typedef std::vector<GameObject*> Objects;
   Objects objects;
+  /** container for newly created GameObjects (they'll be added once per frame
+   * in the update function
+   */
+  Objects new_objects;
 
   CL_Color ambient_light;
 
@@ -47,8 +53,12 @@ private:
   Player* player;
 
   void parse_file(const std::string& filename);
+  void parse_object(const std::string& name, const lisp::Lisp* lisp);
 
   static Sector* current_;
+
+  void commit_adds();
+  void commit_removes();
 public:
   Sector(const std::string& filename);
   ~Sector();
@@ -58,18 +68,20 @@ public:
   void draw(SceneContext& gc);
   void update(float delta);
 
+  /**
+   * activates the sector. (Runs init script, changes music)
+   */
+  void activate();
+
   int get_width () const;
   int get_height () const;
 
   void add(GameObject*);
-  void remove(GameObject*);
 
   std::vector<GameObject*>* get_objects() { return &objects; }
   TileMap* get_tilemap() { return interactive_tilemap; }
   
 private:
-  void parse_object(const std::string& name, const lisp::Lisp* lisp);
-  
   Sector (const Sector&);
   Sector& operator= (const Sector&);
 };
