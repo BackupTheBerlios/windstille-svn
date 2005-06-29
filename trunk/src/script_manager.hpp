@@ -21,15 +21,19 @@ public:
   void expose_object(void* object, const std::string& name,
                      const std::string& type);
 
-  HSQUIRRELVM create_coroutine();
+  HSQUIRRELVM get_vm()
+  {
+    return v;
+  }
 
   void set_wakeup_time(HSQUIRRELVM vm, float time);
 
 private:
-  void cleanup_coroutine(HSQUIRRELVM vm);
+  void handle_suspends(HSQUIRRELVM vm, HSQOBJECT vm_obj);
   
   struct WaitingVM {
     HSQUIRRELVM vm;
+    HSQOBJECT vm_obj;
     float wakeup_time;
   };
   typedef std::list<WaitingVM> WaitingVMs;

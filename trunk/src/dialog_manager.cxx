@@ -43,7 +43,7 @@ void
 DialogManager::add_dialog(const std::string& portrait, const std::string& text)
 {
   dialogs.push_back(Dialog(portrait, text));
-  current_dialog = 0;
+  current_dialog = dialogs.size()-1;
 }
 
 void

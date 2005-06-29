@@ -385,12 +385,12 @@ GameSession::execute(const std::string& str_)
   int i = str.length();
   const char* buffer = str.c_str();
 
+  HSQUIRRELVM vm = script_manager->get_vm();
+  int oldtop=sq_gettop(vm); 
   try {
     int retval = 0;
-    HSQUIRRELVM vm = script_manager->create_coroutine();
 
     if(i>0){
-      int oldtop=sq_gettop(vm);
       if(SQ_SUCCEEDED(sq_compilebuffer(vm,buffer,i,_SC("interactive console"),SQTrue))){
         sq_pushroottable(vm);
         if(SQ_SUCCEEDED(sq_call(vm,1, retval))) {
@@ -404,16 +404,12 @@ GameSession::execute(const std::string& str_)
           scprintf(_SC("\n"));
         }
       }
-
-      sq_settop(vm,oldtop);
     }
-
-    // FIXME: leads to crashs...
-    //sq_close(vm);
   } catch(std::exception& e) {
     std::cerr << "Couldn't execute command '" << str_ << "': "
       << e.what() << "\n";
   }
+  sq_settop(vm,oldtop);
 }
 
 /* EOF */

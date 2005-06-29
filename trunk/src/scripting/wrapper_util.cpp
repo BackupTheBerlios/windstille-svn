@@ -89,6 +89,9 @@ void print_squirrel_stack(HSQUIRRELVM v)
             case OT_USERPOINTER:
                 printf("userpointer");
                 break;
+            case OT_THREAD:
+                printf("thread");
+                break;
             case OT_CLASS:
                 printf("class");
                 break;
@@ -112,7 +115,11 @@ SquirrelError::SquirrelError(HSQUIRRELVM v, const std::string& message) throw()
   msg << "SQuirrel error: " << message << " (";
   const char* lasterr;
   sq_getlasterror(v);
-  sq_getstring(v, -1, &lasterr);
+  if(sq_gettype(v, -1) != OT_STRING) {
+    lasterr = "no error info";
+  } else {
+    sq_getstring(v, -1, &lasterr);
+  }
   sq_pop(v, 1);
   msg << lasterr << ")";
   this->message = msg.str();

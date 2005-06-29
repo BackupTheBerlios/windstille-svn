@@ -74,7 +74,7 @@ static SQInteger squirrel_read_char(SQUserPointer file)
 
 void
 ScriptManager::run_script(const std::string& script,
-        const std::string& sourcename)
+    const std::string& sourcename)
 {
   std::istringstream stream(script);
   run_script(stream, sourcename);
@@ -83,20 +83,26 @@ ScriptManager::run_script(const std::string& script,
 void
 ScriptManager::run_script(std::istream& in, const std::string& sourcename)
 {
-  HSQUIRRELVM vm = create_coroutine();
+  HSQUIRRELVM vm = sq_newthread(v, 1024);
+  if(vm == 0)
+    throw SquirrelError(v, "Couldn't create new VM");
+
+  // retrieve reference to thread from stack and increase refcounter
+  HSQOBJECT vm_obj;
+  sq_resetobject(&vm_obj);
+  if(sq_getstackobj(v, -1, &vm_obj) < 0)
+    throw SquirrelError(v, "Couldn't get coroutine vm from stack");
+  sq_addref(v, &vm_obj);
+  sq_pop(v, 1);
   
-  printf("Stackbefore:\n");
-  print_squirrel_stack(vm);
   if(sq_compile(vm, squirrel_read_char, &in, sourcename.c_str(), true) < 0)
     throw SquirrelError(vm, "Couldn't parse script");
- 
-  sq_push(vm, -2);
+
+  sq_pushroottable(vm);
   if(sq_call(vm, 1, false) < 0)
     throw SquirrelError(vm, "Couldn't start script");
-  cleanup_coroutine(vm);
 
-  printf("After:\n");
-  print_squirrel_stack(vm);
+  handle_suspends(vm, vm_obj);
 }
 
 void
@@ -133,25 +139,24 @@ ScriptManager::expose_object(void* object, const std::string& name,
 }
 
 void
-ScriptManager::cleanup_coroutine(HSQUIRRELVM vm)
+ScriptManager::handle_suspends(HSQUIRRELVM vm, HSQOBJECT vm_obj)
 {
-  if(sq_getvmstate(vm) != SQ_VMSTATE_SUSPENDED) {
-    // FIXME
-    // sq_close(vm);
-  } else {
+  if(sq_getvmstate(vm) == SQ_VMSTATE_SUSPENDED) {
     bool found = false;
     for(WaitingVMs::iterator i = waiting_vms.begin();
         i != waiting_vms.end(); ++i) {
       if(i->vm == vm) {
+        i->vm_obj = vm_obj;
         found = true;
         break;
       }
     }
     if(!found) {
       std::cerr << "Warning: Script suspended but not in wakeup list!\n";
-      // FIXME
-      //sq_close(vm);
+      sq_release(vm, &vm_obj);
     }  
+  } else {
+    sq_release(vm, &vm_obj);
   }
 }
 
@@ -166,11 +171,13 @@ ScriptManager::update()
         if(sq_wakeupvm(waiting_vm.vm, false, false) < 0) {
           throw SquirrelError(waiting_vm.vm, "Couldn't resume script");
         }
-
-        cleanup_coroutine(waiting_vm.vm);
       } catch(std::exception& e) {
+        sq_release(waiting_vm.vm, &waiting_vm.vm_obj);
         std::cerr << "Problem executing script: " << e.what() << "\n";
+        i = waiting_vms.erase(i);
+        continue;
       }
+      handle_suspends(waiting_vm.vm, waiting_vm.vm_obj);
 
       // remove (but check that the script hasn't set a new wakeup_time)
       if(game_time >= waiting_vm.wakeup_time)
@@ -201,13 +208,3 @@ ScriptManager::set_wakeup_time(HSQUIRRELVM vm, float time)
   waiting_vms.push_back(waiting_vm);
 }
 
-
-HSQUIRRELVM
-ScriptManager::create_coroutine()
-{
-  HSQUIRRELVM vm = sq_newthread(v, 1024);
-  if(vm == 0)
-    throw SquirrelError(v, "Couldn't create new VM");
-
-  return vm;
-}

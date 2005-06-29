@@ -20,16 +20,13 @@ void play_sound(const std::string& soundfile)
 void create_dialog(const std::string& portrait, const std::string& text)
 {
   DialogManager::current()->add_dialog(portrait, text);
+  GameSession::current()->set_dialog_state();
 }
 
 void clear_dialog()
 {
   DialogManager::current()->clear();
-}
-
-void show_dialog()
-{
-  GameSession::current()->set_dialog_state();
+  GameSession::current()->set_game_state();
 }
 
 void set_wakeup_time(HSQUIRRELVM vm, float time)

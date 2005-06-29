@@ -55,15 +55,6 @@ static int clear_dialog_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int show_dialog_wrapper(HSQUIRRELVM v)
-{
-  (void) v;
-  
-  Scripting::show_dialog();
-  
-  return 0;
-}
-
 static int set_wakeup_time_wrapper(HSQUIRRELVM v)
 {
   HSQUIRRELVM arg0 = v;
@@ -80,7 +71,6 @@ WrappedFunction windstille_global_functions[] = {
   { "play_sound", &play_sound_wrapper },
   { "create_dialog", &create_dialog_wrapper },
   { "clear_dialog", &clear_dialog_wrapper },
-  { "show_dialog", &show_dialog_wrapper },
   { "set_wakeup_time", &set_wakeup_time_wrapper },
   { 0, 0 }
 };
