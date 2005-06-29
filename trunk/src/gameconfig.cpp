@@ -13,7 +13,7 @@ Config::Config()
   // set default values
   screen_width = 800;
   screen_height = 600; 
-  use_fullscreen = true;
+  use_fullscreen = false;
   show_fps = false;
   sound_enabled = true;
   music_enabled = true;
