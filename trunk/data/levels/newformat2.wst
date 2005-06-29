@@ -12,14 +12,11 @@
       (height 200)
       (script "
 print(\"Script was here\");
-set_wakeup_time(2);
-suspend();
+wait(2);
 print(\"1\");
-set_wakeup_time(2);
-suspend();
+wait(2);
 print(\"2\");
-set_wakeup_time(2);
-suspend();
+wait(2);
 print(\"3\");
 play_music(\"music/jingle.ogg\");
 ")

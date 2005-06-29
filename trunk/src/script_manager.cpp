@@ -61,6 +61,10 @@ ScriptManager::ScriptManager()
 ScriptManager::~ScriptManager()
 {
   sq_close(v);
+  for(WaitingVMs::iterator i = waiting_vms.begin();
+      i != waiting_vms.end(); ++i) {
+    sq_release(v, &(i->vm_obj));
+  }
 }
 
 static SQInteger squirrel_read_char(SQUserPointer file)
@@ -153,10 +157,10 @@ ScriptManager::handle_suspends(HSQUIRRELVM vm, HSQOBJECT vm_obj)
     }
     if(!found) {
       std::cerr << "Warning: Script suspended but not in wakeup list!\n";
-      sq_release(vm, &vm_obj);
+      sq_release(v, &vm_obj);
     }  
   } else {
-    sq_release(vm, &vm_obj);
+    sq_release(v, &vm_obj);
   }
 }
 
@@ -172,7 +176,7 @@ ScriptManager::update()
           throw SquirrelError(waiting_vm.vm, "Couldn't resume script");
         }
       } catch(std::exception& e) {
-        sq_release(waiting_vm.vm, &waiting_vm.vm_obj);
+        sq_release(v, &waiting_vm.vm_obj);
         std::cerr << "Problem executing script: " << e.what() << "\n";
         i = waiting_vms.erase(i);
         continue;

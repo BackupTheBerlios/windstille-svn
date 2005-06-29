@@ -29,7 +29,7 @@ void clear_dialog()
   GameSession::current()->set_game_state();
 }
 
-void set_wakeup_time(HSQUIRRELVM vm, float time)
+void wait(HSQUIRRELVM vm, float time)
 {
   script_manager->set_wakeup_time(vm, time);
 }

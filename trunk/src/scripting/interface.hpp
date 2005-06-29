@@ -17,7 +17,10 @@ void create_dialog(const std::string& portrait, const std::string& text);
 
 void clear_dialog();
 
-void set_wakeup_time(HSQUIRRELVM vm, float time);
+/** @SUSPEND@
+ * Waits the specified time in seconds.
+ */
+void wait(HSQUIRRELVM vm, float time);
 
 }
 
