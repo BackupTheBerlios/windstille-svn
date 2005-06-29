@@ -23,14 +23,14 @@
 #include "delta_manager.hxx"
 #include "screen.hxx"
 #include "fonts.hxx"
+#include "gameconfig.hpp"
 #include "sound/sound_manager.hpp"
 
 namespace Windstille {
 
 Screen::Screen()
-  : show_fps(true), frames(0)
+  : frames(0)
 {
-  slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
 }
 
 void 
@@ -42,13 +42,14 @@ Screen::display()
   on_startup();
 
   DeltaManager delta_manager;
-  
+
+  slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
   while (!do_quit)
     {
       draw();
       float delta = delta_manager.getset ();
       float step = 10/1000.0f;
-      if (show_fps)
+      if (config->show_fps)
         draw_fps(delta);
       CL_Display::flip(0);
       
@@ -68,6 +69,7 @@ Screen::display()
       CL_System::keep_alive ();
       //CL_System::sleep (1);
     }
+  CL_Keyboard::sig_key_down().disconnect(slot);
 
   on_shutdown();
 }
@@ -100,18 +102,18 @@ Screen::draw_fps(float delta)
 void
 Screen::key_down(const CL_InputEvent& event)
 {
-  switch (event.id)
-    {
+  switch (event.id) {
     case CL_KEY_F10:
-        show_fps = !show_fps;
+      config->show_fps = ! (config->show_fps);
       break;
     case CL_KEY_F11:
-      if (CL_Display::is_fullscreen())
-        CL_Display::set_windowed();
+      config->use_fullscreen = ! (config->use_fullscreen);
+      
+      if (config->use_fullscreen)
+        CL_Display::set_fullscreen(config->screen_width,
+                                   config->screen_height, 32);
       else
-        CL_Display::set_fullscreen(WindstilleMain::screen_width,
-                                   WindstilleMain::screen_height,
-                                   32);
+        CL_Display::set_windowed();
       break;
     case CL_KEY_F12:
       std::string filename = "screenshot.png";

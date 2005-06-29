@@ -26,11 +26,6 @@
 class WindstilleMain : public CL_ClanApplication
 {
 public:
-  static int screen_width;
-  static int screen_height;
-  bool fullscreen;
-  bool allow_resize;
-
   std::string levelfile;
   std::string game_definition_file;
   std::string controller_file;

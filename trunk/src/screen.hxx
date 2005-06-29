@@ -33,7 +33,6 @@ private:
   
   bool do_quit;
   bool do_pause;
-  bool show_fps;
   CL_Slot slot;
   
 protected:

@@ -34,24 +34,13 @@
 #include "tile_factory.hxx"
 #include "script_manager.hpp"
 #include "tinygettext/gettext.hpp"
+#include "gameconfig.hpp"
 
 WindstilleMain main_app;
 CL_ResourceManager* resources;
 
-//static members
-int WindstilleMain::screen_width;
-int WindstilleMain::screen_height;
-
 WindstilleMain::WindstilleMain()
 {
-  screen_width  = 800;
-  screen_height = 600;
-#ifdef WIN32
-  fullscreen    = true;
-#else
-  fullscreen    = false;
-#endif
-  allow_resize  = false;
   game_definition_file = "windstille.rb";
 }
 
@@ -124,12 +113,14 @@ WindstilleMain::parse_command_line(int argc, char** argv)
           break;
 
         case 'f':
-          fullscreen = true;
+          config->use_fullscreen = true;
           break;
 
         case 'g':
-          if (sscanf(argp.get_argument().c_str(), "%dx%d", &screen_width, &screen_height) == 2)
-            std::cout << "Geometry: " << screen_width << "x" << screen_height << std::endl;
+          if (sscanf(argp.get_argument().c_str(), "%dx%d",
+                     &config->screen_width, &config->screen_height) == 2)
+            std::cout << "Geometry: " << config->screen_width
+                      << "x" << config->screen_height << std::endl;
           else
             throw CL_Error("Geometry option '-g' requires argument of type {WIDTH}x{HEIGHT}");
           break;
@@ -168,9 +159,13 @@ WindstilleMain::main(int argc, char** argv)
 
   try {
     init_physfs(argv[0]);
+    
     dictionaryManager = new TinyGetText::DictionaryManager();
     dictionaryManager->set_charset("iso8859-1");
     dictionaryManager->add_directory("locale");                    
+
+    config = new Config();
+    config->load();
   } catch(std::exception& e) {
     std::cout << "std::exception: " << e.what() << std::endl;
     return 1;
@@ -250,8 +245,13 @@ WindstilleMain::main(int argc, char** argv)
   }
 #endif
 
+  config->save();
+  delete config;
+  config = 0;
+
   delete dictionaryManager;
   dictionaryManager = 0;
+  
   PHYSFS_deinit();
 
   return 0;
@@ -268,7 +268,8 @@ WindstilleMain::init_modules()
   CL_SetupDisplay::init();
 
   window = new CL_DisplayWindow("Windstille",
-                                screen_width, screen_height, fullscreen, allow_resize);
+                                config->screen_width, config->screen_height,
+                                config->use_fullscreen, false);
   CL_Display::clear();
   CL_Display::flip(0);
 
@@ -278,6 +279,8 @@ WindstilleMain::init_modules()
 
   Fonts::init(); 
   sound_manager = new SoundManager();
+  sound_manager->enable_sound(config->sound_enabled);
+  sound_manager->enable_music(config->music_enabled);
 
   script_manager = new ScriptManager();
 }
