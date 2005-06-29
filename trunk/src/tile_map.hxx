@@ -40,7 +40,7 @@ private:
   typedef Field<Tile*>::iterator FieldIter;
   std::string name;
   float z_pos; 
-
+  float total_time;
 public:
   TileMap(const lisp::Lisp* lisp);
   TileMap(const std::string& name, int w, int h);

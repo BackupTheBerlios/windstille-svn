@@ -35,6 +35,7 @@ TileMap::TileMap(const lisp::Lisp* lisp)
   int width = -1;
   int height = -1;
   z_pos = 0;
+  total_time = 0;
   
   lisp::ListIterator iter(lisp);
   while(iter.next()) {
@@ -97,8 +98,9 @@ TileMap::~TileMap()
 }
 
 void 
-TileMap::update (float )
+TileMap::update (float delta)
 {
+  total_time += delta;
   /*for (FieldIter i = field.begin (); i != field.end (); ++i)
     {
       (*i)->update (delta);
@@ -130,6 +132,12 @@ public:
       draw_classic(gc);
   }
 
+  inline void Vertex2f(float x, float y)
+  {
+    clVertex2f(x + sin(tilemap->total_time + y)*60.0f, 
+               y + cos(tilemap->total_time + x)*60.0f);
+  }
+
   void draw_new(CL_GraphicContext* gc)
   {
     Field<Tile*>& field = tilemap->field;
@@ -146,8 +154,8 @@ public:
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
     TileFactory::current()->get_texture(0).bind();
 
-    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MIN_FILTER, CL_NEAREST);
-    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MAG_FILTER, CL_NEAREST);
+    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MIN_FILTER, CL_LINEAR);
+    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MAG_FILTER, CL_LINEAR);
     clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_S, CL_CLAMP_TO_EDGE);
     clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_T, CL_CLAMP_TO_EDGE);
       
@@ -160,23 +168,23 @@ public:
             {
               clTexCoord2f(tile->color_rect.left,
                            tile->color_rect.top);
-              clVertex2f(x * TILE_SIZE, 
-                         y * TILE_SIZE);
+              Vertex2f(x * TILE_SIZE, 
+                       y * TILE_SIZE);
 
               clTexCoord2f(tile->color_rect.right,
                            tile->color_rect.top);
-              clVertex2f(x * TILE_SIZE + TILE_SIZE,
-                         y * TILE_SIZE);
+              Vertex2f(x * TILE_SIZE + TILE_SIZE,
+                       y * TILE_SIZE);
 
               clTexCoord2f(tile->color_rect.right,
                            tile->color_rect.bottom);
-              clVertex2f(x * TILE_SIZE + TILE_SIZE,
-                         y * TILE_SIZE + TILE_SIZE);
+              Vertex2f(x * TILE_SIZE + TILE_SIZE,
+                       y * TILE_SIZE + TILE_SIZE);
 
               clTexCoord2f(tile->color_rect.left,
                            tile->color_rect.bottom);
-              clVertex2f(x * TILE_SIZE,
-                         y * TILE_SIZE + TILE_SIZE);
+              Vertex2f(x * TILE_SIZE,
+                       y * TILE_SIZE + TILE_SIZE);
             }
         }     
     clEnd();
