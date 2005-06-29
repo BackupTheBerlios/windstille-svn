@@ -18,6 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <ClanLib/gl.h>
+#include <ClanLib/display.h>
 #include <sstream>
 #include "lisp/list_iterator.hpp"
 #include "tile_map.hxx"
@@ -110,6 +111,7 @@ private:
   TileMap* tilemap;
   bool highlight;
   CL_Rect rect;
+
 public:
   TileMapDrawingRequest(TileMap* tilemap_, bool highlight_,
                         const CL_Rect& rect_,
@@ -122,86 +124,71 @@ public:
 
   void draw(CL_GraphicContext* gc)
   {
-    gc->push_modelview();
-    gc->add_modelview(modelview);
-
-    draw_classic(gc);
-
-    gc->pop_modelview();
+    if (CL_Keyboard::get_keycode(CL_KEY_Z))
+      draw_new(gc);
+    else
+      draw_classic(gc);
   }
 
   void draw_new(CL_GraphicContext* gc)
   {
     Field<Tile*>& field = tilemap->field;
-    std::vector<float> raw_texcoords;
-    std::vector<float> raw_vertices;
 
-    // FIXME: handle texture somewhere here
+    CL_OpenGLState state(gc);
+    state.set_active();
+    state.setup_2d();
+
+    clPushMatrix();
+    clMultMatrixd(modelview);
+      
+    clEnable(CL_TEXTURE_2D);
+    clEnable(CL_BLEND);
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+    TileFactory::current()->get_texture(0).bind();
+
+    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MIN_FILTER, CL_NEAREST);
+    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MAG_FILTER, CL_NEAREST);
+    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_S, CL_CLAMP_TO_EDGE);
+    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_T, CL_CLAMP_TO_EDGE);
+      
+    clBegin(CL_QUADS);
     for (int y = rect.top;   y < rect.bottom; ++y)
       for (int x = rect.left; x < rect.right; ++x)
         {
           Tile* tile = field(x, y);
           if (tile && !highlight)
             {
-              raw_vertices.push_back(x * TILE_SIZE);
-              raw_vertices.push_back(y * TILE_SIZE);
-              raw_vertices.push_back(0);
+              clTexCoord2f(tile->color_rect.left,
+                           tile->color_rect.top);
+              clVertex2f(x * TILE_SIZE, 
+                         y * TILE_SIZE);
 
-              raw_texcoords.push_back(tile->color_rect.left / 1024.0f);
-              raw_texcoords.push_back(tile->color_rect.top  / 1024.0f);
+              clTexCoord2f(tile->color_rect.right,
+                           tile->color_rect.top);
+              clVertex2f(x * TILE_SIZE + TILE_SIZE,
+                         y * TILE_SIZE);
 
+              clTexCoord2f(tile->color_rect.right,
+                           tile->color_rect.bottom);
+              clVertex2f(x * TILE_SIZE + TILE_SIZE,
+                         y * TILE_SIZE + TILE_SIZE);
 
-              raw_vertices.push_back(x * TILE_SIZE + TILE_SIZE);
-              raw_vertices.push_back(y * TILE_SIZE);
-              raw_vertices.push_back(0);
-
-              raw_texcoords.push_back(tile->color_rect.right / 1024.0f);
-              raw_texcoords.push_back(tile->color_rect.top  / 1024.0f);
-
-
-              raw_vertices.push_back(x * TILE_SIZE + TILE_SIZE);
-              raw_vertices.push_back(y * TILE_SIZE + TILE_SIZE);
-              raw_vertices.push_back(0);
-
-              raw_texcoords.push_back(tile->color_rect.right / 1024.0f);
-              raw_texcoords.push_back(tile->color_rect.bottom  / 1024.0f);
-
-
-              raw_vertices.push_back(x * TILE_SIZE);
-              raw_vertices.push_back(y * TILE_SIZE + TILE_SIZE);
-              raw_vertices.push_back(0);
-
-              raw_texcoords.push_back(tile->color_rect.left / 1024.0f);
-              raw_texcoords.push_back(tile->color_rect.bottom  / 1024.0f);
+              clTexCoord2f(tile->color_rect.left,
+                           tile->color_rect.bottom);
+              clVertex2f(x * TILE_SIZE,
+                         y * TILE_SIZE + TILE_SIZE);
             }
-        }
-
-    std::vector<float> raw_data;
-
-    // FIXME: this can be optimized away
-    std::copy(raw_vertices.begin(),  raw_vertices.end(),  std::back_inserter(raw_data));
-    std::copy(raw_texcoords.begin(),  raw_texcoords.end(),  std::back_inserter(raw_data));
-
-    int texcoord_offset = raw_vertices.size() * sizeof(float);
-
-    float* data = &*raw_data.begin();
-
-    clVertexPointer  (3, CL_FLOAT, 0, data);
-    clTexCoordPointer(2, CL_FLOAT, 0, data + texcoord_offset);
-    
-    clEnableClientState(CL_TEXTURE_COORD_ARRAY);
-    clEnableClientState(CL_VERTEX_ARRAY);
-
-    // Draw arrays
-    clDrawArrays(CL_QUADS, 0, raw_vertices.size()/4);
-
-    // Disable arrays
-    clDisableClientState(CL_TEXTURE_COORD_ARRAY);
-    clDisableClientState(CL_VERTEX_ARRAY);
+        }     
+    clEnd();
+      
+    clPopMatrix();
   }
 
   void draw_classic(CL_GraphicContext* gc)
   {
+    gc->push_modelview();
+    gc->add_modelview(modelview);
+
     Field<Tile*>& field = tilemap->field;
 
     for (int y = rect.top;   y < rect.bottom; ++y)
@@ -220,6 +207,7 @@ public:
                 }
             }
         }
+    gc->pop_modelview();
   }
 };
 

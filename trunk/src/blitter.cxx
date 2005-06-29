@@ -39,8 +39,8 @@ blit_opaque(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos)
   unsigned char* target_buf = static_cast<unsigned char*>(target.get_data());
   unsigned char* brush_buf  = static_cast<unsigned char*>(brush.get_data());
 
-  int target_width = target.get_width();
-  int brush_width  = brush.get_width();
+  int target_pitch = target.get_pitch();
+  int brush_pitch  = brush.get_pitch();
 
   if (brush.get_format().get_type() == pixelformat_rgba)
     {
@@ -49,27 +49,27 @@ blit_opaque(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos)
           for (int y = start_y; y < end_y; ++y)
             for (int x = start_x; x < end_x; ++x)
               {
-                int target_pos = (y + y_pos) * target_width + x + x_pos;
-                int brush_pos  = y * brush_width + x;
+                int target_pos = (y + y_pos) * target_pitch + 4*(x + x_pos);
+                int brush_pos  = y * brush_pitch + x*4;
 
-                target_buf[4*target_pos + 0] = brush_buf[4*brush_pos + 0];
-                target_buf[4*target_pos + 1] =  brush_buf[4*brush_pos + 1];
-                target_buf[4*target_pos + 2] =  brush_buf[4*brush_pos + 2];
-                target_buf[4*target_pos + 3] =  brush_buf[4*brush_pos + 3];
-              }
+                target_buf[target_pos + 0] = brush_buf[brush_pos + 0];
+                target_buf[target_pos + 1] = brush_buf[brush_pos + 1];
+                target_buf[target_pos + 2] = brush_buf[brush_pos + 2];
+                target_buf[target_pos + 3] = brush_buf[brush_pos + 3];
+              } 
         }
       else if (brush.get_format().get_depth() == 24)
         {
           for (int y = start_y; y < end_y; ++y)
             for (int x = start_x; x < end_x; ++x)
               {
-                int target_pos = (y + y_pos) * target_width + x + x_pos;
-                int brush_pos  = y * brush_width + x;
+                int target_pos = (y + y_pos) * target_pitch + 3*(x + x_pos);
+                int brush_pos  = y * brush_pitch + 3*x;
 
-                target_buf[4*target_pos + 0] = 255;
-                target_buf[4*target_pos + 1] = brush_buf[3*brush_pos + 0];
-                target_buf[4*target_pos + 2] = brush_buf[3*brush_pos + 1];
-                target_buf[4*target_pos + 3] = brush_buf[3*brush_pos + 2];
+                target_buf[target_pos + 0] = 255;
+                target_buf[target_pos + 1] = brush_buf[brush_pos + 0];
+                target_buf[target_pos + 2] = brush_buf[brush_pos + 1];
+                target_buf[target_pos + 3] = brush_buf[brush_pos + 2];
               }
         }
       else
@@ -83,13 +83,13 @@ blit_opaque(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos)
       for (int y = start_y; y < end_y; ++y)
         for (int x = start_x; x < end_x; ++x)
           {
-            int target_pos = (y + y_pos) * target_width + x + x_pos;
-            int brush_pos  = y * brush_width + x;
+            int target_pos = (y + y_pos) * target_pitch + 4*(x + x_pos);
+            int brush_pos  = y * brush_pitch + x;
             
-            target_buf[4*target_pos + 0] = 255;
-            target_buf[4*target_pos + 1] = palette.colors[brush_buf[brush_pos]].get_blue();
-            target_buf[4*target_pos + 2] = palette.colors[brush_buf[brush_pos]].get_green();
-            target_buf[4*target_pos + 3] = palette.colors[brush_buf[brush_pos]].get_red();
+            target_buf[target_pos + 0] = 255;
+            target_buf[target_pos + 1] = palette.colors[brush_buf[brush_pos]].get_blue();
+            target_buf[target_pos + 2] = palette.colors[brush_buf[brush_pos]].get_green();
+            target_buf[target_pos + 3] = palette.colors[brush_buf[brush_pos]].get_red();
           }
     }
   else
@@ -118,6 +118,7 @@ blit(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos)
   unsigned char* target_buf = static_cast<unsigned char*>(target.get_data());
   unsigned char* brush_buf  = static_cast<unsigned char*>(brush.get_data());
 
+  // FIXME: This doesn't take pitch into account
   int target_width = target.get_width();
   int brush_width  = brush.get_width();
 

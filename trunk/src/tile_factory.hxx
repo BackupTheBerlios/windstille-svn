@@ -35,7 +35,8 @@ private:
   //typedef std::map<int, Tile*> Tiles;
   typedef std::vector<Tile*> Tiles;
   Tiles tiles;
-  std::vector<TilePacker*> packers;
+  typedef std::vector<TilePacker*> TilePackers;
+  TilePackers packers;
   int highlight_packer;
   int color_packer;
 
@@ -51,6 +52,8 @@ public:
   /** Create a TileFactory from a given tile definition file */
   TileFactory(const std::string& filename);
   ~TileFactory();
+
+  CL_OpenGLSurface get_texture(int id);
 
   /** Check if the tile is already loaded and return it. If it is not
    *  already loaded, load it 
@@ -71,6 +74,7 @@ public:
 
 private:
   void parse_tiles(const lisp::Lisp* data);
+  void pack(int id, int colmap, CL_PixelBuffer color, CL_PixelBuffer highlight);
 };
 
 #endif

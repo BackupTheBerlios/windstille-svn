@@ -37,12 +37,14 @@ public:
 
   /** Pack a tile and return the position where it is placed in the
       pixel buffer */
-  CL_Rect pack(CL_PixelBuffer buffer);
+  CL_Rectf pack(CL_PixelBuffer buffer);
 
   /** Return true if the PixelBuffer is full */
   bool is_full() const;
 
-  CL_Texture create_texture();
+  CL_OpenGLSurface get_texture();
+
+  CL_PixelBuffer get_pixelbuffer() const;
 
 private:
   TilePackerImpl* impl;

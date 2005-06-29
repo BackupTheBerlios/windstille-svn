@@ -16,11 +16,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
 #include <string>
 #include <ClanLib/gl.h>
 #include <ClanLib/Core/System/system.h>
 #include <ClanLib/Display/pixel_buffer.h>
 #include <ClanLib/Display/pixel_format.h>
+#include <ClanLib/Display/Providers/provider_factory.h>
 #include <ClanLib/Display/Providers/provider_factory.h>
 #include <assert.h>
 #include <sstream>
@@ -44,6 +46,11 @@ TileFactory::TileFactory (const std::string& filename)
 {
   std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
 
+  packers.push_back(new TilePacker(1024, 1024));
+  packers.push_back(new TilePacker(1024, 1024));
+  color_packer     = 0;
+  highlight_packer = 1;
+
   const lisp::Lisp* tiles_lisp = root->get_lisp("windstille-tiles");
   if(!tiles_lisp) {
     std::ostringstream msg;
@@ -59,11 +66,13 @@ TileFactory::TileFactory (const std::string& filename)
       std::cout << "Unknown tag in tiles file: " << iter.item() << "\n";
     }
   }
-
-  //GLint glMaxTexDim = -1;
-  //  clGetIntegerv(GL_MAX_TEXTURE_SIZE, &glMaxTexDim);
-  //std::cout << "Error: " << gluErrorString(clGetError()) << std::endl;
-  //std::cout << "Max Texture Size: " << glMaxTexDim << std::endl;
+  
+  for(TilePackers::size_type i = 0; i < packers.size(); ++i)
+    {
+      char str[1024];
+      sprintf(str, "/tmp/packtiles%d.png", i);
+      CL_ProviderFactory::save(packers[i]->get_pixelbuffer(), str);
+    }
 }
 
 TileFactory::~TileFactory()
@@ -118,11 +127,6 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
   if ((id + num_tiles) >= int(tiles.size()))
     tiles.resize(id + num_tiles + 1);
 
-  packers.push_back(new TilePacker(1024, 1024));
-  packers.push_back(new TilePacker(1024, 1024));
-  color_packer     = 0;
-  highlight_packer = 1;
-
   // FIMXE: Tiles should share one OpenGL texture
   for (int y = 0; y < image.get_height(); y += TILE_SIZE)
     {
@@ -155,34 +159,40 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
               hl_chopped_image.unlock();
             }
 
-          tiles[id] = new Tile(chopped_image, hl_chopped_image,
-                               colmap[y/TILE_SIZE * image.get_width()/TILE_SIZE + x/TILE_SIZE]);
-          
-          tiles[id]->id = id;
-
-          tiles[id]->color_rect     = packers[color_packer]->pack(chopped_image);
-          tiles[id]->color_packer   = color_packer;
-
-          if (hl_chopped_image)
-            {
-              tiles[id]->highlight_rect   = packers[highlight_packer]->pack(hl_chopped_image);
-              tiles[id]->highlight_packer = highlight_packer;
-            }
-
-          if (packers[color_packer]->is_full())
-            {
-              packers.push_back(new TilePacker(1024, 1024));
-              color_packer = packers.size() - 1;
-            }
-
-          if (packers[highlight_packer]->is_full())
-            {
-              packers.push_back(new TilePacker(1024, 1024));
-              highlight_packer = packers.size() - 1;
-            }
+          pack(id, colmap[y/TILE_SIZE * image.get_width()/TILE_SIZE + x/TILE_SIZE],
+               chopped_image, hl_chopped_image);
 
           id += 1;
         }
+    }
+}
+
+void
+TileFactory::pack(int id, int colmap, CL_PixelBuffer color, CL_PixelBuffer highlight)
+{
+  tiles[id] = new Tile(color, highlight, colmap);
+          
+  tiles[id]->id = id;
+
+  tiles[id]->color_rect     = packers[color_packer]->pack(color);
+  tiles[id]->color_packer   = color_packer;
+
+  if (highlight)
+    {
+      tiles[id]->highlight_rect   = packers[highlight_packer]->pack(highlight);
+      tiles[id]->highlight_packer = highlight_packer;
+    }
+
+  if (packers[color_packer]->is_full())
+    {
+      packers.push_back(new TilePacker(1024, 1024));
+      color_packer = packers.size() - 1;
+    }
+
+  if (packers[highlight_packer]->is_full())
+    {
+      packers.push_back(new TilePacker(1024, 1024));
+      highlight_packer = packers.size() - 1;
     }
 }
 
@@ -201,6 +211,12 @@ TileFactory::create (int id)
       else
         return 0;
     }
+}
+
+CL_OpenGLSurface
+TileFactory::get_texture(int id)
+{
+  return packers[id]->get_texture();
 }
 
 void

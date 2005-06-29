@@ -35,10 +35,10 @@ private:
   CL_Sprite highlight;
 
 public:
-  CL_Rect          color_rect;
+  CL_Rectf         color_rect;
   int              color_packer;
 
-  CL_Rect          highlight_rect;
+  CL_Rectf         highlight_rect;
   int              highlight_packer;
 
   int id; 
