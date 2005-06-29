@@ -213,9 +213,7 @@ WindstilleMain::main(int argc, char** argv)
   homedir = "config/";
 #endif
 
-#ifndef DEBUG // we wanna have a stacktrace in debug mode
   try {
-#endif
     parse_command_line(argc, argv);
     init_modules();
 
@@ -253,7 +251,6 @@ WindstilleMain::main(int argc, char** argv)
 
     deinit_modules();
 
-#ifndef DEBUG
   } catch (CL_Error& error) {
     std::cout << "CL_Error: " << error.message << std::endl;
   } catch (WindstilleError& err) {
@@ -263,7 +260,6 @@ WindstilleMain::main(int argc, char** argv)
   } catch (...) {
     std::cout << "Error catched something unknown?!" << std::endl;
   }
-#endif
 
   config->save();
   delete config;
