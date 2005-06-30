@@ -35,6 +35,9 @@ SoundManager::SoundManager()
     context = 0;
     std::cerr << "Couldn't initialize audio device:" << e.what() << "\n";
     print_openal_version();
+    // disable sound
+    enable_sound(false);
+    std::cout << "Disabling sound\n";
   }
 }
 
@@ -213,6 +216,9 @@ SoundManager::set_listener_velocity(CL_Vector vel)
 void
 SoundManager::update()
 {
+  if (!sound_enabled)
+    return;
+
   // check for finished sound sources
   for(SoundSources::iterator i = sources.begin(); i != sources.end(); ) {
     SoundSource* source = *i;
