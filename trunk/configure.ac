@@ -43,13 +43,13 @@ AC_SUBST([VARIANT])
 #----------------------------------------------------------------------------
 AC_PROG_CXX
 AC_PROG_INSTALL
-AC_CHECK_PROGS([XGETTEXT], xgettext)
+AC_CHECK_PROGS([XGETTEXT], [xgettext xgettext.exe])
 
 # bison + flex
 AC_PROG_LEX
 LEX_LIBS=$LEXLIB
 AC_SUBST([LEX_LIBS])
-AC_CHECK_PROGS([BISON], bison)
+AC_CHECK_PROGS([BISON], [bison bison.exe])
 AC_SUBST([BISON])
 
 # check if our c++ compiler is gcc3.2 or newer
