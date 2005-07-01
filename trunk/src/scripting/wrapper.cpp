@@ -34,23 +34,36 @@ static int play_sound_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int show_dialog_wrapper(HSQUIRRELVM v)
+static int set_dialog_wrapper(HSQUIRRELVM v)
 {
-  const char* arg0;
-  sq_getstring(v, 2, &arg0);
+  int arg0;
+  sq_getinteger(v, 2, &arg0);
   const char* arg1;
   sq_getstring(v, 3, &arg1);
+  const char* arg2;
+  sq_getstring(v, 4, &arg2);
   
-  Scripting::show_dialog(arg0, arg1);
+  Scripting::set_dialog(arg0, arg1, arg2);
   
   return 0;
 }
 
-static int clear_dialog_wrapper(HSQUIRRELVM v)
+static int show_dialog_wrapper(HSQUIRRELVM v)
 {
-  (void) v;
+  float arg0;
+  sq_getfloat(v, 2, &arg0);
   
-  Scripting::clear_dialog();
+  Scripting::show_dialog(arg0);
+  
+  return 0;
+}
+
+static int hide_dialog_wrapper(HSQUIRRELVM v)
+{
+  float arg0;
+  sq_getfloat(v, 2, &arg0);
+  
+  Scripting::hide_dialog(arg0);
   
   return 0;
 }
@@ -69,13 +82,32 @@ static int wait_wrapper(HSQUIRRELVM v)
 WrappedFunction windstille_global_functions[] = {
   { "play_music", &play_music_wrapper },
   { "play_sound", &play_sound_wrapper },
+  { "set_dialog", &set_dialog_wrapper },
   { "show_dialog", &show_dialog_wrapper },
-  { "clear_dialog", &clear_dialog_wrapper },
+  { "hide_dialog", &hide_dialog_wrapper },
   { "wait", &wait_wrapper },
   { 0, 0 }
 };
 
+WrappedConstant<int> windstille_int_constants[] = {
+  { "VCENTER", 0},
+  { "LEFT", 1},
+  { "RIGHT", 2},
+  { "HCENTER", 0},
+  { "TOP", 16},
+  { "BOTTOM", 32},
+  { 0, 0}
+};
+
+WrappedConstant<float> windstille_float_constants[] = {
+  { 0, 0}
+};
+
+WrappedConstant<const char*> windstille_string_constants[] = {
+  { 0, 0}
+};
+
 WrappedClass windstille_classes[] = {
-  { 0, 0 }
+  { 0, 0, 0, 0, 0 }
 };
 

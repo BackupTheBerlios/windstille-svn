@@ -11,7 +11,7 @@
 #include <sqstdmath.h>
 #include <sqstdstring.h>
 
-#include "console.hxx"
+#include "console.hpp"
 #include "timer.hpp"
 #include "scripting/wrapper.hpp"
 #include "scripting/wrapper_util.hpp"
@@ -54,8 +54,7 @@ ScriptManager::ScriptManager()
   sq_setprintfunc(v, printfunc);
   
   // register windstille API
-  register_functions(v, windstille_global_functions);
-  register_classes(v, windstille_classes);
+  register_windstille_wrapper(v);
 }
 
 ScriptManager::~ScriptManager()

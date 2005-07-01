@@ -1,9 +1,9 @@
 SubDir TOP src display ;
 
-sources = drawing_context.hxx
-          drawing_context.cxx
-          scene_context.hxx
-          scene_context.cxx
+sources = drawing_context.hpp
+          drawing_context.cpp
+          scene_context.hpp
+          scene_context.cpp
 ;
 
 TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;

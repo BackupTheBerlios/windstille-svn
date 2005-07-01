@@ -13,9 +13,20 @@ void play_music(const std::string& musicfile);
 
 void play_sound(const std::string& soundfile);
 
-void show_dialog(const std::string& portrait, const std::string& text);
+// alignment constants
+static const int VCENTER = 0x00;
+static const int LEFT    = 0x01;
+static const int RIGHT   = 0x02;
+static const int HCENTER = 0x00;
+static const int TOP     = 0x10;
+static const int BOTTOM  = 0x20;
 
-void clear_dialog();
+void set_dialog(int alignment, const std::string& portrait,
+                const std::string& text);
+
+void show_dialog(float fadein_time);
+
+void hide_dialog(float fadeout_time);
 
 /** @SUSPEND@
  * Waits the specified time in seconds.

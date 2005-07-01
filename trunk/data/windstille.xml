@@ -175,7 +175,7 @@
     </sprite>
 
     <sprite name="portrait">
-      <translation origin="top_left" x="-50" y="50" />
+      <translation origin="top_left" x="0" y="0" />
       <image file="images/human_portrait.png" /> 
     </sprite>
   </section>

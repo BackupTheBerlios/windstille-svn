@@ -1,7 +1,7 @@
 #include "interface.hpp"
 #include "sound/sound_manager.hpp"
-#include "game_session.hxx"
-#include "dialog_manager.hxx"
+#include "game_session.hpp"
+#include "dialog_manager.hpp"
 #include "script_manager.hpp"
 
 namespace Scripting
@@ -17,15 +17,21 @@ void play_sound(const std::string& soundfile)
   sound_manager->play(soundfile);
 }
 
-void show_dialog(const std::string& portrait, const std::string& text)
+void set_dialog(int alignment, const std::string& portrait,
+        const std::string& text)
 {
-  DialogManager::current()->add_dialog(portrait, text);
+  DialogManager::current()->add_dialog(alignment, portrait, text);
+}
+
+void show_dialog(float fadein_time)
+{
+  (void) fadein_time;
   GameSession::current()->set_dialog_state();
 }
 
-void clear_dialog()
+void hide_dialog(float fadeout_time)
 {
-  DialogManager::current()->clear();
+  (void) fadeout_time;
   GameSession::current()->set_game_state();
 }
 

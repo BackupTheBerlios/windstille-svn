@@ -36,6 +36,8 @@ AC_ARG_ENABLE([debug], [AC_HELP_STRING([--enable-debug],
 AC_ARG_ENABLE([profile], [AC_HELP_STRING([--enable-profile],
     [build with profiling information (default NO)])],
     [test "$enableval" = "yes" && VARIANT=profile])
+AC_MSG_CHECKING([for build variant])
+AC_MSG_RESULT([$VARIANT])
 AC_SUBST([VARIANT])
 
 #----------------------------------------------------------------------------
