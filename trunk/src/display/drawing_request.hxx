@@ -43,9 +43,11 @@ public:
   virtual bool has_alpha() { return true; }
 
   /** Returns the position at which the request should be drawn */
-  virtual float get_z_pos() { return pos.z; }
+  float get_z_pos() const
+  { return pos.z; }
 
-  CL_Matrix4x4 get_modelview() const { return modelview; }
+  CL_Matrix4x4 get_modelview() const
+  { return modelview; }
 private:
   DrawingRequest (const DrawingRequest&);
   DrawingRequest& operator= (const DrawingRequest&);
