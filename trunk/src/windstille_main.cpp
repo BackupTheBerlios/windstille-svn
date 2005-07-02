@@ -200,24 +200,6 @@ WindstilleMain::main(int argc, char** argv)
   if (datadir.empty())
     datadir = bindir + "data/";
 
-#ifndef WIN32
-  char* home_c = getenv("HOME");
-  if (home_c) 
-    {
-      std::string home = home_c; 
-      home += "/.windstille";
-      if (CL_Directory::create(home))
-        std::cout << "Created " << home << std::endl;
-      homedir = home + "/";
-    }
-  else
-    {
-      throw WindstilleError("Couldn't find environment variable HOME");
-    }
-#else
-  homedir = "config/";
-#endif
-
   try {
     parse_command_line(argc, argv);
     init_modules();

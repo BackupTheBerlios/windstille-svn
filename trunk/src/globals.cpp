@@ -21,7 +21,6 @@
 
 std::string datadir;
 std::string bindir;
-std::string homedir;
 
 int TILE_SIZE    = 32;
 int SUBTILE_SIZE = 32;
