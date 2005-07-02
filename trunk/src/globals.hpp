@@ -44,6 +44,9 @@ extern bool sound_disabled;
 
 extern int debug;
 
+enum GameMainState { RUN_GAME, LOAD_MENU, LOAD_GAME_SESSION, LOAD_BONUS, QUIT_GAME };
+extern GameMainState game_main_state;
+
 #endif
 
 /* EOF */

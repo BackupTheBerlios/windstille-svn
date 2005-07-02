@@ -24,9 +24,11 @@
 
 #include "windstille_error.hpp"
 #include "globals.hpp"
+#include "screen.hpp"
 #include "game_session.hpp"
 #include "windstille_main.hpp"
 #include "windstille_menu.hpp"
+#include "windstille_bonus.hpp"
 #include "fonts.hpp"
 #include "sector.hpp"
 #include "input/input_manager.hpp"
@@ -36,10 +38,13 @@
 #include "tinygettext/gettext.hpp"
 #include "gameconfig.hpp"
 
+using namespace Windstille;
+
 WindstilleMain main_app;
 CL_ResourceManager* resources;
 
 WindstilleMain::WindstilleMain()
+  : the_game(0)
 {
   game_definition_file = "windstille.rb";
 }
@@ -234,19 +239,22 @@ WindstilleMain::main(int argc, char** argv)
     
     if (debug) std::cout << "Initialising TileFactory" << std::endl;
     TileFactory::init();
+    
     if (levelfile.empty())
       {
-        if (debug) std::cout << "Starting Menu" << std::endl;
-        WindstilleMenu menu;
-        menu.display();
+        game_main_state = LOAD_MENU;
       }
     else 
       {
         std::string leveldir = dirname(levelfile);
         PHYSFS_addToSearchPath(leveldir.c_str(), true);
-        GameSession game (basename(levelfile));
-        game.display ();
+        GameSession game(basename(levelfile));
+        the_game = new GameSession(basename(levelfile));
+        game_main_state = RUN_GAME;
       }
+      
+    while (game_main());
+    
     TileFactory::deinit();
     InputManager::deinit();
 
@@ -429,6 +437,42 @@ WindstilleMain::init_physfs(const char* argv0)
   //show search Path
   for(char** i = PHYSFS_getSearchPath(); *i != NULL; i++)
     printf("[%s] is in the search path.\n", *i);
+}
+
+bool
+WindstilleMain::game_main()
+{
+  switch (game_main_state)
+    {
+    case RUN_GAME:
+      the_game->display();
+      break;
+    case LOAD_MENU:
+      if (the_game)
+        delete the_game;
+      the_game = new WindstilleMenu();
+      game_main_state = RUN_GAME;
+      break;
+    case LOAD_GAME_SESSION:
+      if (the_game)
+        delete the_game;
+      the_game = new GameSession("levels/newformat2.wst");
+      game_main_state = RUN_GAME;
+      break;
+    case LOAD_BONUS:
+      if (the_game)
+        delete the_game;
+      the_game = new WindstilleBonus();
+      game_main_state = RUN_GAME;
+      break;
+    case QUIT_GAME:
+      if (the_game)
+        delete the_game;
+      return false;
+      break;
+    }
+  
+  return true;
 }
 
 /* EOF */

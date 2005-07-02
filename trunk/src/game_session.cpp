@@ -61,10 +61,83 @@ GameSession::GameSession(const std::string& arg_filename)
 {
   current_ = this;
   set_sector(arg_filename);
+  
+  slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
+  slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
+
+  blink = 0.0f;
+
+  GameObject::set_world (world);
+
+  view   = new View();
+  
+  energiebar = new Energiebar();
+  dialog_manager = new DialogManager();
+
+  logo       = CL_Sprite("logo", resources);
+  logo_black = CL_Sprite("logo_black", resources);
+
+  if (1)
+    {
+      world->add(new Door(24, 6));
+      world->add(new Door(32, 14));
+      world->add(new Door(8, 22));
+
+      CL_Surface surface1("particles/smoke", resources);
+      CL_Surface surface2("particles/smoke2", resources);
+
+      ParticleSystem* psystem2 = new ParticleSystem();
+      psystem2->set_drawer(new SparkDrawer());
+      psystem2->set_pos(0,0);
+      psystem2->set_speed(300, 550);
+      psystem2->set_cone(-25-90, 25-90);
+      psystem2->set_gravity(0, 5);
+      psystem2->set_line_distribution(-50, 0, 50, 0);
+
+      ParticleSystem* psystem3 = new ParticleSystem();
+      psystem3->set_lifetime(8);
+      psystem3->set_count(30);
+      surface2.set_blend_func(blend_src_alpha, blend_one_minus_src_alpha);
+      surface2.set_alignment(origin_center);
+      psystem3->set_drawer(new SurfaceDrawer(surface2));
+      psystem3->set_pos(0,0);
+      psystem3->set_speed(70, 100);
+      psystem3->set_cone(-25-90, 25-90);
+      psystem3->set_gravity(0, -1);
+      psystem3->set_size(1.0f, 3.0f);
+      psystem3->set_line_distribution(-50, 0, 50, 0);
+ 
+      ParticleSystem* psystem = new ParticleSystem();
+      psystem->set_count(100);
+      surface1.set_blend_func(blend_src_alpha, blend_one);
+      surface1.set_alignment(origin_center);
+      psystem->set_drawer(new SurfaceDrawer(surface1));
+      psystem->set_pos(0,0);
+      psystem->set_speed(200, 300);
+      psystem->set_cone(-5-90, 5-90);
+      psystem->set_gravity(0, 0);
+      psystem->set_line_distribution(-50, 0, 50, 0);
+
+      psystem->set_spawn_point (768, 832);
+      psystem2->set_spawn_point(768, 832);
+      psystem3->set_spawn_point(768, 832);
+      
+      world->add(psystem3);
+      world->add(psystem2);
+      world->add(psystem);
+    }
+  
+  world->add(new Sprite3D("3dsprites/3dsprites"));
+
+  world->activate();
+  world->spawn_player("default");
 }
 
 GameSession::~GameSession()
 {
+  delete energiebar;
+  delete view;
+  delete dialog_manager;
   delete world;
 }
 
@@ -178,7 +251,7 @@ GameSession::update(float delta)
       break;
     case FADEOUT:
       if (fadeout_value > 1.0f)
-        Screen::quit();
+        game_main_state = LOAD_MENU;
 
       fadeout_value += delta;
       break;
@@ -218,88 +291,6 @@ GameSession::set_sector (const std::string& arg_filename)
   fadeout_value = 0;
 
   control_state = GAME;
-}
-
-void
-GameSession::on_startup ()
-{ 
-  slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
-  slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
-
-  blink = 0.0f;
-
-  GameObject::set_world (world);
-
-  view   = new View();
-  
-  energiebar = new Energiebar();
-  dialog_manager = new DialogManager();
-
-  logo       = CL_Sprite("logo", resources);
-  logo_black = CL_Sprite("logo_black", resources);
-
-  if (1)
-    {
-      world->add(new Door(24, 6));
-      world->add(new Door(32, 14));
-      world->add(new Door(8, 22));
-
-      CL_Surface surface1("particles/smoke", resources);
-      CL_Surface surface2("particles/smoke2", resources);
-
-      ParticleSystem* psystem2 = new ParticleSystem();
-      psystem2->set_drawer(new SparkDrawer());
-      psystem2->set_pos(0,0);
-      psystem2->set_speed(300, 550);
-      psystem2->set_cone(-25-90, 25-90);
-      psystem2->set_gravity(0, 5);
-      psystem2->set_line_distribution(-50, 0, 50, 0);
-
-      ParticleSystem* psystem3 = new ParticleSystem();
-      psystem3->set_lifetime(8);
-      psystem3->set_count(30);
-      surface2.set_blend_func(blend_src_alpha, blend_one_minus_src_alpha);
-      surface2.set_alignment(origin_center);
-      psystem3->set_drawer(new SurfaceDrawer(surface2));
-      psystem3->set_pos(0,0);
-      psystem3->set_speed(70, 100);
-      psystem3->set_cone(-25-90, 25-90);
-      psystem3->set_gravity(0, -1);
-      psystem3->set_size(1.0f, 3.0f);
-      psystem3->set_line_distribution(-50, 0, 50, 0);
- 
-      ParticleSystem* psystem = new ParticleSystem();
-      psystem->set_count(100);
-      surface1.set_blend_func(blend_src_alpha, blend_one);
-      surface1.set_alignment(origin_center);
-      psystem->set_drawer(new SurfaceDrawer(surface1));
-      psystem->set_pos(0,0);
-      psystem->set_speed(200, 300);
-      psystem->set_cone(-5-90, 5-90);
-      psystem->set_gravity(0, 0);
-      psystem->set_line_distribution(-50, 0, 50, 0);
-
-      psystem->set_spawn_point (768, 832);
-      psystem2->set_spawn_point(768, 832);
-      psystem3->set_spawn_point(768, 832);
-      
-      world->add(psystem3);
-      world->add(psystem2);
-      world->add(psystem);
-    }
-  
-  world->add(new Sprite3D("3dsprites/3dsprites"));
-
-  world->activate();
-  world->spawn_player("default");
-}
-
-void
-GameSession::on_shutdown ()
-{
-  delete energiebar;
-  delete view;
-  delete dialog_manager;
 }
 
 void

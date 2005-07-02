@@ -39,9 +39,6 @@ public:
   void update(float delta);
   void draw();
   
-  void on_startup();
-  void on_shutdown();
-
 private:
   void fadeout();
   WindstilleMenu (const WindstilleMenu&);

@@ -31,5 +31,6 @@ bool bonus_active = true;
 float game_speed = 1.0f;
 int debug = 1;
 bool sound_disabled = false;
+GameMainState game_main_state;
 
 /* EOF */

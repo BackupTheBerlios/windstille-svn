@@ -31,7 +31,6 @@ private:
   void draw_fps(float delta);
   void key_down(const CL_InputEvent& event);
   
-  bool do_quit;
   bool do_pause;
   CL_Slot slot;
   
@@ -40,17 +39,13 @@ protected:
   
 public:
   Screen();
-  virtual ~Screen() {}
+  virtual ~Screen();
 
   virtual void draw() =0;
   virtual void update(float delta) =0;
 
-  virtual void on_startup() {}
-  virtual void on_shutdown() {}
-
   void display();
 
-  virtual void quit() { do_quit = true; }
   void set_pause(bool p) { do_pause = p; }
   bool get_pause() { return do_pause; }
 private:

@@ -33,45 +33,42 @@ Screen::Screen()
 {
 }
 
+Screen::~Screen()
+{
+  CL_Keyboard::sig_key_down().disconnect(slot);
+}
+
 void 
 Screen::display()
 {
   do_pause = false;
-  do_quit  = false;
-
-  on_startup();
 
   DeltaManager delta_manager;
 
   slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
-  while (!do_quit)
+
+  draw();
+  float delta = delta_manager.getset ();
+  float step = 10/1000.0f;
+  if (config->show_fps)
+    draw_fps(delta);
+  CL_Display::flip(0);
+  
+  ++frames;
+  
+  while (delta > step)
     {
-      draw();
-      float delta = delta_manager.getset ();
-      float step = 10/1000.0f;
-      if (config->show_fps)
-        draw_fps(delta);
-      CL_Display::flip(0);
-      
-      ++frames;
-      
-      while (delta > step)
-        {
-          update(step);
-          delta -= step;
-        }
-      // FIXME: non constant delta isn't a good idea
-      update(delta);
-      
-      // update(0.020f);
-
-      sound_manager->update();
-      CL_System::keep_alive ();
-      //CL_System::sleep (1);
+      update(step);
+      delta -= step;
     }
-  CL_Keyboard::sig_key_down().disconnect(slot);
+  // FIXME: non constant delta isn't a good idea
+  update(delta);
+  
+  // update(0.020f);
 
-  on_shutdown();
+  sound_manager->update();
+  CL_System::keep_alive ();
+  //CL_System::sleep (1); 
 }
 
 void 

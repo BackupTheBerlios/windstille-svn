@@ -108,15 +108,12 @@ WindstilleBonus::update(float delta)
 
     case FADEOUT:
       if (fadeout_value > 1.0f)
-        Screen::quit();
+        game_main_state = LOAD_MENU;
 
       fadeout_value += delta;
       break;
 
     case RUNNING:
-      if (CL_Keyboard::get_keycode(CL_KEY_ESCAPE))
-        quit();
-
       passed_time += delta;
 
       if (passed_time > 1.85f)
@@ -151,6 +148,9 @@ WindstilleBonus::update(float delta)
       sprite.set_alpha(std::max(0.0f, std::min(1.0f, 1.0f - passed_time/1.85f)));
       break;
     }
+    
+    if (CL_Keyboard::get_keycode(CL_KEY_ESCAPE))
+      quit();
 }
 
 void
@@ -159,16 +159,6 @@ WindstilleBonus::quit()
   sound_manager->stop_music();
   state = FADEOUT;
   fadeout_value = 0;
-}
-
-void
-WindstilleBonus::on_startup()
-{
-}
-
-void
-WindstilleBonus::on_shutdown()
-{
 }
 
 /* EOF */

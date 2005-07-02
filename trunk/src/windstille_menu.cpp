@@ -37,9 +37,12 @@ WindstilleMenu::WindstilleMenu()
   : background("menu_background", resources),
     windstille("logo_large", resources)
 {
+  if (debug) std::cout << "Starting Menu" << std::endl;
   current_choice = 0;
   windstille.set_alignment(origin_center);
   passed_time = 0;
+  
+  sound_manager->play_music("music/jingle.ogg");
 }
 
 WindstilleMenu::~WindstilleMenu()
@@ -58,7 +61,7 @@ WindstilleMenu::update(float delta)
   windstille.update(delta);
 
   if (CL_Keyboard::get_keycode(CL_KEY_ESCAPE))
-    quit();
+    game_main_state = QUIT_GAME;
 
   InputEventLst events = InputManager::get_controller().get_events();
 
@@ -73,17 +76,15 @@ WindstilleMenu::update(float delta)
                   || (current_choice == 2 && bonus_active))// QUIT
                 {
                   sound_manager->stop_music();
-                  fadeout();
-                  quit();
+                  fadeout();                  
+                  game_main_state = QUIT_GAME;
                   break;
                 }
               else if (current_choice == 1 && bonus_active)
                 {
                   sound_manager->stop_music();
                   fadeout();
-                  WindstilleBonus bonus;
-                  bonus.display();
-                  on_startup();
+                  game_main_state = LOAD_BONUS;
                   break;
                 }
               else if (current_choice == 0) // start game
@@ -91,9 +92,7 @@ WindstilleMenu::update(float delta)
                   InputManager::clear();
                   sound_manager->stop_music();
                   fadeout();
-                  GameSession game("levels/newformat2.wst");
-                  game.display ();
-                  on_startup();
+                  game_main_state = LOAD_GAME_SESSION;
                   break;
                 }
               else if (current_choice == 1) // start editor
@@ -103,7 +102,6 @@ WindstilleMenu::update(float delta)
                   fadeout();
                   Editor editor;
                   editor.run();
-                  on_startup();
                   */
                   break;
                 }
@@ -230,17 +228,6 @@ WindstilleMenu::fadeout()
       CL_System::sleep(50);
       alpha += 15;
     }
-}
-
-void
-WindstilleMenu::on_startup()
-{
-  sound_manager->play_music("music/jingle.ogg");
-}
-
-void
-WindstilleMenu::on_shutdown()
-{
 }
 
 /* EOF */

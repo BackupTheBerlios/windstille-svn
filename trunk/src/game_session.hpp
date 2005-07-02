@@ -76,9 +76,6 @@ public:
   void set_game_state()   { control_state = GAME; }
   void set_sector (const std::string& arg_filename);
 
-  void on_startup();
-  void on_shutdown();
-
   void draw();
   void draw_game();
   void update(float delta);

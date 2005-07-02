@@ -46,9 +46,6 @@ public:
   void update(float delta);
 
   void quit();
-
-  void on_startup();
-  void on_shutdown();
 };
 
 #endif

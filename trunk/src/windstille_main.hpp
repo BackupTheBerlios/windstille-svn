@@ -23,6 +23,8 @@
 #include <ClanLib/gl.h>
 #include <ClanLib/application.h>
 
+#include "screen.hpp"
+
 class WindstilleMain : public CL_ClanApplication
 {
 public:
@@ -46,6 +48,9 @@ private:
   void parse_command_line(int argc, char** argv);
   void init_modules();
   void deinit_modules();
+  bool game_main();
+
+  Windstille::Screen* the_game;
 };
 
 extern WindstilleMain main_app;
