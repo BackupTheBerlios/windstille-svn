@@ -39,7 +39,7 @@ Player::Player () :
   
   walk     ("human/walk",   resources),
   run      ("human/run",   resources),
-  sit      ("hero/sit",   resources),
+  sit      ("human/duck",   resources),
   jump     ("hero/jump",  resources),
   stand    ("human/stand", resources),
   killed   ("hero/kill",  resources),
@@ -186,6 +186,7 @@ Player::update (float delta)
 
       walk.update(delta);
       run.update(delta);
+      sit.update(delta);
   
       if (controller.get_button_state(LEFT_BUTTON))
         direction = WEST;

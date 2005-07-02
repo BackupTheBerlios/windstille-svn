@@ -159,6 +159,14 @@
       </image>
     </sprite>
 
+    <sprite name="duck">
+      <animation speed="24" loop="yes" />
+      <translation origin="bottom_center" pos="0,12" />
+      <image file="images/human_duck.png">
+        <grid array="80,1" size="78,90" />
+      </image>
+    </sprite>
+    
     <sprite name="stand">
       <translation origin="bottom_center" pos="0,12" />
       <image file="images/human_stand.png" />
