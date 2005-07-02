@@ -35,13 +35,12 @@ extern std::string bindir;
 
 extern CL_ResourceManager* resources;
 
-extern bool bonus_active;
 extern float game_speed;
 extern bool sound_disabled;
 
 extern int debug;
 
-enum GameMainState { RUN_GAME, LOAD_MENU, LOAD_GAME_SESSION, LOAD_BONUS, QUIT_GAME };
+enum GameMainState { RUN_GAME, LOAD_MENU, LOAD_GAME_SESSION, QUIT_GAME };
 extern GameMainState game_main_state;
 
 #endif

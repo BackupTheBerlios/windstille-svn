@@ -28,7 +28,6 @@
 #include "game_session.hpp"
 #include "windstille_main.hpp"
 #include "windstille_menu.hpp"
-#include "windstille_bonus.hpp"
 #include "fonts.hpp"
 #include "sector.hpp"
 #include "input/input_manager.hpp"
@@ -439,12 +438,6 @@ WindstilleMain::game_main()
       if (the_game)
         delete the_game;
       the_game = new GameSession("levels/newformat2.wst");
-      game_main_state = RUN_GAME;
-      break;
-    case LOAD_BONUS:
-      if (the_game)
-        delete the_game;
-      the_game = new WindstilleBonus();
       game_main_state = RUN_GAME;
       break;
     case QUIT_GAME:

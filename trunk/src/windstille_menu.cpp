@@ -29,7 +29,6 @@
 #include "windstille_menu.hpp"
 #include "game_session.hpp"
 #include "sound/sound_manager.hpp"
-#include "windstille_bonus.hpp"
 #include "input/input_manager.hpp"
 #include "tinygettext/gettext.hpp"
 
@@ -72,19 +71,11 @@ WindstilleMenu::update(float delta)
         {
           if ((*i).button.name == FIRE_BUTTON && (*i).button.down == true)
             {
-              if ((current_choice == 1 && !bonus_active)
-                  || (current_choice == 2 && bonus_active))// QUIT
+              if (current_choice == 1)// QUIT
                 {
                   sound_manager->stop_music();
                   fadeout();                  
                   game_main_state = QUIT_GAME;
-                  break;
-                }
-              else if (current_choice == 1 && bonus_active)
-                {
-                  sound_manager->stop_music();
-                  fadeout();
-                  game_main_state = LOAD_BONUS;
                   break;
                 }
               else if (current_choice == 0) // start game
@@ -93,16 +84,6 @@ WindstilleMenu::update(float delta)
                   sound_manager->stop_music();
                   fadeout();
                   game_main_state = LOAD_GAME_SESSION;
-                  break;
-                }
-              else if (current_choice == 1) // start editor
-                {
-                  /*
-                  InputManager::clear();
-                  fadeout();
-                  Editor editor;
-                  editor.run();
-                  */
                   break;
                 }
             }
@@ -124,14 +105,9 @@ WindstilleMenu::update(float delta)
 
   if (current_choice < 0)
     {
-      if (bonus_active)
-        current_choice = 2;
-      else
-        current_choice = 1;
+      current_choice = 1;
     }
-  else if (current_choice > 1 && !bonus_active)
-    current_choice = 0;
-  else if (current_choice > 2 && bonus_active)
+  else if (current_choice > 1 )
     current_choice = 0;
 
   InputManager::clear();
@@ -161,41 +137,16 @@ WindstilleMenu::draw()
 
   Fonts::menu_h.set_alpha(cos(passed_time*3.141f)*.4f + .6f);
 
+  Fonts::menu.draw(580, 330, _("[Start Game]"));
   if (current_choice == 0)
     {
-      Fonts::menu.draw(580, 330, _("[Start Game]"));
       Fonts::menu_h.draw(580, 330, _("[Start Game]"));
     }
-  else
-    Fonts::menu.draw(580, 330, _("Start Game"));
 
-  if (bonus_active)
-    {
-      if (current_choice == 1)
-        {
-          Fonts::menu.draw(580, 385, _("[Extras]"));
-          Fonts::menu_h.draw(580, 385, _("[Extras]"));
-        }
-      else
-        Fonts::menu.draw(580, 385, _("Extras"));
-
-      if (current_choice == 2)
-        {
-          Fonts::menu.draw(580, 440, _("[Quit]"));
-          Fonts::menu_h.draw(580, 440, _("[Quit]"));
-        }
-      else
-        Fonts::menu.draw(580, 440, _("Quit"));
-    }
-  else
-    {
-      if (current_choice == 1 || (bonus_active && current_choice == 3))
-        {
-          Fonts::menu.draw(580, 440, _("[Quit]"));
-          Fonts::menu_h.draw(580, 440, _("[Quit]"));
-        }
-      else
-        Fonts::menu.draw(580, 440, "Quit");
+  Fonts::menu.draw(580, 440, _("[Quit]"));
+  if (current_choice == 1)
+    {      
+      Fonts::menu_h.draw(580, 440, _("[Quit]"));
     }
 
   std::string copyright = "Windstille " PACKAGE_VERSION "\n";

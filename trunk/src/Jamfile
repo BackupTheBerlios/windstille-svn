@@ -89,8 +89,6 @@ sources =
         water_map.hpp
         water_splash.cpp
         water_splash.hpp
-        windstille_bonus.cpp
-        windstille_bonus.hpp
         windstille_error.cpp
         windstille_error.hpp
         windstille_main.cpp
