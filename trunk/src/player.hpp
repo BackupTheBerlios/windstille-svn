@@ -124,7 +124,6 @@ private:
 
   void update_ground (float delta);
   void update_air (float delta);
-  void update_shooting (float delta);
 };
 
 #endif

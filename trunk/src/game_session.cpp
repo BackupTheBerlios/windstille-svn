@@ -33,7 +33,6 @@
 #include "player.hpp"
 #include "animation_obj.hpp"
 #include "tile_map.hpp"
-#include "display.hpp"
 #include "view.hpp"
 #include "door.hpp"
 #include "timer.hpp"

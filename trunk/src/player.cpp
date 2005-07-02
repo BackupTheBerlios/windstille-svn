@@ -18,10 +18,8 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "tile_map.hpp"
-#include "display.hpp"
 #include "sector.hpp"
 #include "default_shoot.hpp"
-#include "laser_shoot.hpp"
 #include "input/controller.hpp"
 #include "input/input_manager.hpp"
 #include "controller_def.hpp"
@@ -218,28 +216,6 @@ Player::update (float delta)
               subtile_pos = new_subtile_pos;
             }
         }
-    }
-}
-
-void 
-Player::update_shooting (float delta)
-{
-  switch (gun_state)
-    {
-    case GUN_READY:
-      if (controller.get_button_state(FIRE_BUTTON))
-        {
-          //get_world ()->add (new DefaultShoot (pos, (DefaultShoot::DirectionState) direction));
-          get_world ()->add (new LaserShoot (pos, direction, 5));
-          gun_state = GUN_RELOADING;
-          reload_time = 0;
-        }
-      break;
-    case GUN_RELOADING:
-      if (reload_time > 1)
-        gun_state = GUN_READY;
-      reload_time += 20 * delta;
-      break;
     }
 }
 

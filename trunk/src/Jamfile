@@ -31,8 +31,6 @@ sources =
         delta_manager.hpp
         dialog_manager.cpp
         dialog_manager.hpp
-        display.cpp
-        display.hpp
         door.cpp
         door.hpp
         energiebar.cpp
@@ -56,8 +54,6 @@ sources =
         graphic_context_state.hpp
         igel.cpp
         igel.hpp
-        laser_shoot.cpp
-        laser_shoot.hpp
         math.hpp
         particle_system.cpp
         particle_system.hpp
