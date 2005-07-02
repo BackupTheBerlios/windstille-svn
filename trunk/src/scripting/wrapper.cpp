@@ -100,6 +100,16 @@ static int FlashingSign_disable_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int set_sector_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  Scripting::set_sector(arg0);
+  
+  return 0;
+}
+
 static int play_music_wrapper(HSQUIRRELVM v)
 {
   const char* arg0;
@@ -222,6 +232,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register constant'BOTTOM'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "set_sector", -1);
+  sq_newclosure(v, &set_sector_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'set_sector'";
     throw SquirrelError(v, msg.str());
   }
 

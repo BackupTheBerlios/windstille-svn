@@ -9,6 +9,8 @@
 namespace Scripting
 {
 
+void set_sector(const std::string& filename);
+
 void play_music(const std::string& musicfile);
 
 void play_sound(const std::string& soundfile);
