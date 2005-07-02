@@ -66,13 +66,6 @@ TileFactory::TileFactory (const std::string& filename)
       std::cout << "Unknown tag in tiles file: " << iter.item() << "\n";
     }
   }
-  
-  for(TilePackers::size_type i = 0; i < packers.size(); ++i)
-    {
-      char str[1024];
-      sprintf(str, "/tmp/packtiles%d.png", i);
-      CL_ProviderFactory::save(packers[i]->get_pixelbuffer(), str);
-    }
 }
 
 TileFactory::~TileFactory()
