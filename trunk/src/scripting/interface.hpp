@@ -33,6 +33,11 @@ void hide_dialog(float fadeout_time);
  */
 void wait(HSQUIRRELVM vm, float time);
 
+/** @SUSPEND@
+ * Waits till currently opened dialog has closed.
+ */
+void wait_for_dialog(HSQUIRRELVM vm);
+
 }
 
 #endif

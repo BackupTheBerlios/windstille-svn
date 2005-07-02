@@ -28,13 +28,16 @@
 #include "game_object.hpp"
 #include "player.hpp"
 #include "trigger.hpp"
+#include "flashing_sign.hpp"
 #include "sector.hpp"
+#include "spawnpoint.hpp"
 #include "sound/sound_manager.hpp"
 #include "script_manager.hpp"
 
 Sector* Sector::current_ = 0;
 
 Sector::Sector(const std::string& filename)
+  : player(0)
 {
   current_ = this;
   interactive_tilemap = 0;
@@ -46,6 +49,13 @@ Sector::Sector(const std::string& filename)
 
 Sector::~Sector()
 {
+  for(SpawnPoints::iterator i = spawn_points.begin();
+      i != spawn_points.end(); ++i)
+    delete *i;                                         
+  for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
+    (*i)->unref();
+  for(Objects::iterator i = new_objects.begin(); i != new_objects.end(); ++i)
+    (*i)->unref();
 }
 
 void
@@ -81,6 +91,8 @@ Sector::parse_file(const std::string& filename)
             "ambient-color contains has to contain exactly 3 values");
       ambient_light 
         = CL_Color(ambient_colors[0], ambient_colors[1], ambient_colors[2]);
+    } else if(iter.item() == "spawnpoint") {
+      spawn_points.push_back(new SpawnPoint(iter.lisp()));
     } else if(iter.item() == "objects") {
       lisp::ListIterator oiter(iter.lisp());
       while(oiter.next()) {
@@ -104,6 +116,8 @@ Sector::parse_object(const std::string& name, const lisp::Lisp* lisp)
     // TODO
   } else if(name == "trigger") {
     add(new Trigger(lisp));
+  } else if(name == "flashing-sign") {
+    add(new FlashingSign(lisp));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }
@@ -117,6 +131,37 @@ Sector::activate()
 
   sound_manager->play_music(music);
   script_manager->run_script(init_script, "sector-init");
+}
+
+void
+Sector::spawn_player(const std::string& spawnpoint)
+{
+  const SpawnPoint* result = 0;
+  for(SpawnPoints::iterator i = spawn_points.begin();
+      i != spawn_points.end(); ++i) {
+    const SpawnPoint* sp = *i;
+    if(sp->name == spawnpoint) {
+      result = sp;
+      break;
+    }
+  }
+
+  CL_Pointf spawnpos(320, 200);
+  if(result == 0) {
+    if(spawnpoint != "default") {
+      std::cerr << "SpawnPoint '" << spawnpoint << "' not found.\n";
+      spawn_player("default");
+      return;
+    }
+  } else {
+    spawnpos = result->pos;
+  }
+
+  if(!player) {
+    player = new Player();
+    add(player);
+  }
+  player->set_position(CL_Vector(spawnpos.x, spawnpos.y, 0));
 }
 
 void
@@ -156,7 +201,10 @@ Sector::commit_removes()
   for(Objects::iterator i = objects.begin(); i != objects.end(); ) {
     GameObject* object = *i;
     if(object->is_removable()) {
-      delete object;
+      if(object->get_name() != "") {
+        remove_object_from_squirrel(object);
+      }
+      object->unref();
       i = objects.erase(i);
       continue;
     }
@@ -169,6 +217,30 @@ void
 Sector::add(GameObject* obj)
 {
   new_objects.push_back(obj);
+  obj->ref();
+  if(obj->get_name() != "") {
+    expose_object_to_squirrel(obj);
+  }
+}
+
+void
+Sector::remove_object_from_squirrel(GameObject* object)
+{
+  script_manager->remove_object(object->get_name());
+}
+
+void
+Sector::expose_object_to_squirrel(GameObject* object)
+{
+  FlashingSign* sign = dynamic_cast<FlashingSign*> (object);
+  if(sign) {
+    script_manager->expose_object(new Scripting::FlashingSign(sign),
+                                  object->get_name(), true);
+    return;
+  }
+
+  script_manager->expose_object(new Scripting::GameObject(object),
+                                object->get_name(), true);
 }
 
 int

@@ -6,21 +6,17 @@
 #ifndef __windstille_WRAPPER_H__
 #define __windstille_WRAPPER_H__
 
-#include "wrapper_util.hpp"
+#include <squirrel.h>
+#include "wrapper.interface.hpp"
 
-extern WrappedFunction windstille_global_functions[];
-extern WrappedClass windstille_classes[];
-extern WrappedConstant<int> windstille_int_constants[];
-extern WrappedConstant<float> windstille_float_constants[];
-extern WrappedConstant<const char*> windstille_string_constants[];
-
-static inline void register_windstille_wrapper(HSQUIRRELVM v)
+namespace SquirrelWrapper
 {
-    register_functions(v, windstille_global_functions);
-    register_classes(v, windstille_classes);
-    register_constants(v, windstille_int_constants);
-    register_constants(v, windstille_float_constants);
-    register_constants(v, windstille_string_constants);
+
+void register_windstille_wrapper(HSQUIRRELVM v);
+
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::GameObject* object, bool setup_releasehook = false);
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::FlashingSign* object, bool setup_releasehook = false);
+
 }
 
 #endif

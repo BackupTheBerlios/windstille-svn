@@ -20,28 +20,50 @@
 #ifndef GAME_OBJECT_HXX
 #define GAME_OBJECT_HXX
 
+#include <string>
 #include "display/scene_context.hpp"
+#include "refcounter.hpp"
 
 class Sector;
 
-class GameObject
+class GameObject : public RefCounter
 {
 private:
   static Sector* world;
-  bool remove_;
-protected:
-  void remove () { remove_= true; } 
-public:
-  bool is_removable () { return remove_; } 
-  static void set_world (Sector* w) { world = w; }
   
-  Sector* get_world () { return world; }
+protected:
+  bool removable;
 
-  GameObject() : remove_ (false) {}
+  /**
+   * name of the GameObject. Note: You should not change it anymore once the
+   * object has been added to a Sector
+   */
+  std::string name;
+
+public:
+  GameObject() : removable(false) {}
   virtual ~GameObject() {}
 
-  virtual void draw (SceneContext& sc) =0;
-  virtual void update (float) =0;
+
+  void remove()
+  {
+    removable = true;
+  }
+  bool is_removable() const
+  {
+    return removable;
+  }
+
+  const std::string& get_name() const
+  {
+    return name;
+  }
+
+  virtual void draw (SceneContext& context) = 0;
+  virtual void update (float elapsed_time) = 0;
+    
+  static void set_world (Sector* w) { world = w; }
+  Sector* get_world () { return world; }
 };
 
 #endif

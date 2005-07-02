@@ -54,7 +54,7 @@ ScriptManager::ScriptManager()
   sq_setprintfunc(v, printfunc);
   
   // register windstille API
-  register_windstille_wrapper(v);
+  SquirrelWrapper::register_windstille_wrapper(v);
 }
 
 ScriptManager::~ScriptManager()
@@ -108,40 +108,7 @@ ScriptManager::run_script(std::istream& in, const std::string& sourcename)
   handle_suspends(vm, vm_obj);
 }
 
-void
-ScriptManager::expose_object(void* object, const std::string& name,
-                                 const std::string& type)
-{
-  // part1 of registration of the instance in the root table
-  sq_pushroottable(v);
-  sq_pushstring(v, name.c_str(), -1);
-
-  // resolve class name
-  sq_pushroottable(v);
-  sq_pushstring(v, type.c_str(), -1);
-  if(sq_get(v, -2) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't resolve squirrel type '" << type << "'.";
-    throw std::runtime_error(msg.str());
-  }
-  sq_remove(v, -2); // remove roottable
-  
-  // create an instance and set pointer to c++ object
-  if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object)) {
-    std::ostringstream msg;
-    msg << "Couldn't setup squirrel instance for object '"
-        << name << "' of type '" << type << "'.";
-    throw SquirrelError(v, msg.str());
-  }
-  
-  sq_remove(v, -2); // remove class from stack
-  
-  // part2 of registration of the instance in the root table
-  if(sq_createslot(v, -3) < 0)
-    throw SquirrelError(v, "Couldn't register object in squirrel root table");    sq_pop(v, 1);
-}
-
-void
+bool
 ScriptManager::handle_suspends(HSQUIRRELVM vm, HSQOBJECT vm_obj)
 {
   if(sq_getvmstate(vm) == SQ_VMSTATE_SUSPENDED) {
@@ -157,10 +124,14 @@ ScriptManager::handle_suspends(HSQUIRRELVM vm, HSQOBJECT vm_obj)
     if(!found) {
       std::cerr << "Warning: Script suspended but not in wakeup list!\n";
       sq_release(v, &vm_obj);
-    }  
+      return true;
+    }
   } else {
     sq_release(v, &vm_obj);
+    return true;
   }
+
+  return false;
 }
 
 void
@@ -169,7 +140,8 @@ ScriptManager::update()
   for(WaitingVMs::iterator i = waiting_vms.begin(); i != waiting_vms.end(); ) {
     WaitingVM& waiting_vm = *i;
     
-    if(game_time >= waiting_vm.wakeup_time) {
+    if(waiting_vm.wakeup_time > 0 && game_time >= waiting_vm.wakeup_time) {
+      waiting_vm.waiting_for_events = 0;
       try {
         if(sq_wakeupvm(waiting_vm.vm, false, false) < 0) {
           throw SquirrelError(waiting_vm.vm, "Couldn't resume script");
@@ -180,10 +152,10 @@ ScriptManager::update()
         i = waiting_vms.erase(i);
         continue;
       }
-      handle_suspends(waiting_vm.vm, waiting_vm.vm_obj);
+      bool stopped = handle_suspends(waiting_vm.vm, waiting_vm.vm_obj);
 
       // remove (but check that the script hasn't set a new wakeup_time)
-      if(game_time >= waiting_vm.wakeup_time)
+      if(stopped)
         i = waiting_vms.erase(i);
     } else {
       ++i;
@@ -192,14 +164,19 @@ ScriptManager::update()
 }
 
 void
-ScriptManager::set_wakeup_time(HSQUIRRELVM vm, float time)
+ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float time)
 {
   // search if the VM is already in the wakeup list and update it
   for(WaitingVMs::iterator i = waiting_vms.begin();
       i != waiting_vms.end(); ++i) {
     WaitingVM& waiting_vm = *i;
     if(waiting_vm.vm == vm) {
-      waiting_vm.wakeup_time = game_time + time;
+      if(time < 0) {
+        waiting_vm.wakeup_time = -1;
+      } else {
+        waiting_vm.wakeup_time = game_time + time;
+      }
+      waiting_vm.waiting_for_events |= event;
       return;
     }
   }
@@ -207,7 +184,37 @@ ScriptManager::set_wakeup_time(HSQUIRRELVM vm, float time)
   // create a new entry
   WaitingVM waiting_vm;
   waiting_vm.vm = vm;
-  waiting_vm.wakeup_time = game_time + time;
+  if(time < 0) {
+    waiting_vm.wakeup_time = -1;
+  } else {
+    waiting_vm.wakeup_time = game_time + time;
+  }
+  waiting_vm.waiting_for_events = event;
   waiting_vms.push_back(waiting_vm);
+}
+
+void
+ScriptManager::remove_object(const std::string& name)
+{
+  sq_pushroottable(v);
+  sq_pushstring(v, name.c_str(), -1);
+  if(sq_deleteslot(v, -2, SQFalse) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't remove squirrel object '" << name << "'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_pop(v, 1);
+}
+
+void
+ScriptManager::fire_wakeup_event(WakeupEvent event)
+{
+  for(WaitingVMs::iterator i = waiting_vms.begin();
+      i != waiting_vms.end(); ++i) {
+    WaitingVM& vm = *i;
+    if(vm.waiting_for_events & event) {
+      vm.wakeup_time = game_time;
+    }
+  }
 }
 

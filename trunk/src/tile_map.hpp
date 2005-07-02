@@ -38,7 +38,6 @@ private:
   friend class TileMapDrawingRequest;
   Field<Tile*> field;
   typedef Field<Tile*>::iterator FieldIter;
-  std::string name;
   float z_pos; 
   float total_time;
 public:
@@ -60,8 +59,6 @@ public:
   int get_height () const { return field.get_height (); }
 
   int get_tile_size () const { return TILE_SIZE; }
-
-  std::string get_name() const { return name; }
 };
 
 #endif

@@ -29,6 +29,7 @@ class GameObject;
 class TileMap;
 class Player;
 class SceneContext;
+class SpawnPoint;
 
 /** */
 class Sector
@@ -45,6 +46,9 @@ private:
    */
   Objects new_objects;
 
+  typedef std::vector<SpawnPoint*> SpawnPoints;
+  SpawnPoints spawn_points;
+
   CL_Color ambient_light;
 
   /** The TileMap with which the player interacts */
@@ -59,6 +63,8 @@ private:
 
   void commit_adds();
   void commit_removes();
+  void expose_object_to_squirrel(GameObject* object);
+  void remove_object_from_squirrel(GameObject* object);
 public:
   Sector(const std::string& filename);
   ~Sector();
@@ -72,6 +78,11 @@ public:
    * activates the sector. (Runs init script, changes music)
    */
   void activate();
+  
+  /**
+   * Spawns the player at the specified spawnpoint
+   */
+  void spawn_player(const std::string& spawnpoint);
 
   int get_width () const;
   int get_height () const;

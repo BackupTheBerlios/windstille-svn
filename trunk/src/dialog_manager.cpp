@@ -162,6 +162,7 @@ DialogManager::update(float )
           if ((*i).button.name == FIRE_BUTTON && (*i).button.down == true)
             {
               GameSession::current()->set_game_state();
+              script_manager->fire_wakeup_event(ScriptManager::DIALOG_CLOSED);
               if (dialogs[current_dialog].answers.size() > 0) {
                 script_manager->run_script(
                   dialogs[current_dialog].answers[current_choice].second);

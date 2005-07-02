@@ -40,6 +40,8 @@ sources =
         entity.cpp
         entity.hpp
         field.hpp
+        flashing_sign.hpp
+        flashing_sign.cpp
         fonts.cpp
         fonts.hpp
         gameconfig.hpp
@@ -69,6 +71,8 @@ sources =
         script_manager.cpp
         sector.cpp
         sector.hpp
+        spawnpoint.cpp
+        spawnpoint.hpp
         sprite3d.cpp
         sprite3d.hpp
         tile.cpp

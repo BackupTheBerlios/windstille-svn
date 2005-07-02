@@ -37,7 +37,12 @@ void hide_dialog(float fadeout_time)
 
 void wait(HSQUIRRELVM vm, float time)
 {
-  script_manager->set_wakeup_time(vm, time);
+  script_manager->set_wakeup_event(vm, ScriptManager::TIME, time);
+}
+
+void wait_for_dialog(HSQUIRRELVM vm)
+{
+  script_manager->set_wakeup_event(vm, ScriptManager::DIALOG_CLOSED, -1);
 }
 
 }

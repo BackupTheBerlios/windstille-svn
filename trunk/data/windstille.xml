@@ -16,6 +16,12 @@
     </sprite>
   </section>
 
+  <section name="arrows">
+    <sprite name="red">
+      <image file="images/arrow.png"/>
+    </sprite>
+  </section>
+
   <sprite name="controldialog">
     <image file="images/controldialog.png" />
   </sprite>

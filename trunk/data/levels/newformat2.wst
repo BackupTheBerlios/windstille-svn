@@ -5,6 +5,8 @@
   (music  "music/techdemo.ogg")
   (ambient-color 170 170 170)
   (init-script "
+wait(1.5);
+play_sound(\"sounds/speech/vr_intro.ogg\");
 set_dialog(TOP + RIGHT, \"human/portrait\",
 \"Welcome to the VR training programm. Here you \" +
 \"will learn the basic manovering abilities of your \" +
@@ -12,7 +14,14 @@ set_dialog(TOP + RIGHT, \"human/portrait\",
 \"We will start with climbing. See the block infront \" +
 \"of you? Press [Right] and [Jump] to hang on the ledge.\");
 show_dialog(0);
+wait_for_dialog();
+Block0Sign.enable();
 ")
+  (spawnpoint
+    (name "default")
+    (x 300)
+    (y 650)
+  )
   (objects
     (trigger
       (x 768)
@@ -28,6 +37,14 @@ print(\"2\");
 wait(2);
 print(\"3\");
 ")
+    )
+    (flashing-sign
+      (name "Block0Sign")
+      (x 550)
+      (y 370)
+      (flashspeed 0.7)
+      (sprite "arrows/red")
+      (enabled #f)
     )
   (tilemap (name "background") (width 100) (height 30)
     (data

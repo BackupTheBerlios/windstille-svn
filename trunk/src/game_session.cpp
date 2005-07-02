@@ -96,14 +96,8 @@ GameSession::draw_game()
   // Draw HUD
   energiebar->draw();
 
-  switch (control_state)
-    {
-    case DIALOG:
-      dialog_manager->draw();      
-      break;
-    default:
-      break;
-    }
+  if(control_state == DIALOG)
+    dialog_manager->draw(); 
   
   control_dialog.set_alignment(origin_bottom_right);
   control_dialog.draw(800-16, 600-16);
@@ -237,13 +231,10 @@ GameSession::on_startup ()
 
   GameObject::set_world (world);
 
-  player = new Player();
   view   = new View();
   
   energiebar = new Energiebar();
   dialog_manager = new DialogManager();
-
-  world->add(player);
 
   logo       = CL_Sprite("logo", resources);
   logo_black = CL_Sprite("logo_black", resources);
@@ -301,6 +292,7 @@ GameSession::on_startup ()
   world->add(new Sprite3D("3dsprites/3dsprites"));
 
   world->activate();
+  world->spawn_player("default");
 }
 
 void
