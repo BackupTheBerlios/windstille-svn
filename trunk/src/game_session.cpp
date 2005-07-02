@@ -137,7 +137,7 @@ GameSession::draw()
       break;
     }
 
-  if (player->get_movement_state() == Player::DEAD)
+  if (world->get_player()->get_movement_state() == Player::DEAD)
     {
       CL_Font font = Fonts::dialog;
       font.set_alignment(origin_bottom_center);

@@ -10,7 +10,7 @@ play_sound(\"sounds/speech/vr_intro.ogg\");
 set_dialog(TOP + RIGHT, \"human/portrait\",
 \"Welcome to the VR training programm. Here you \" +
 \"will learn the basic manovering abilities of your \" +
-\"powersuit, jumping, running, climbing and shooting.\" +
+\"powersuit, jumping, running, climbing and shooting. \" +
 \"We will start with climbing. See the block infront \" +
 \"of you? Press [Right] and [Jump] to hang on the ledge.\");
 show_dialog(0);

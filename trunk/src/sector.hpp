@@ -91,6 +91,10 @@ public:
 
   std::vector<GameObject*>* get_objects() { return &objects; }
   TileMap* get_tilemap() { return interactive_tilemap; }
+  Player* get_player() const
+  {
+    return player;
+  }
   
 private:
   Sector (const Sector&);
