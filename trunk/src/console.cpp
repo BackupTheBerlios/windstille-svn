@@ -86,6 +86,10 @@ Console::draw()
       font.set_alpha(1.0f);
       font.draw(x_pos, y_pos, ">" + command_line);
     }
+  
+  //needed because ClanLib font operator= doesn't deal with uniqueness properly, so we need to
+  //reset it again
+  Fonts::copyright.set_alpha(1.0f);
 }
 
 void

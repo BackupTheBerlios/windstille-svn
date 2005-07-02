@@ -231,7 +231,8 @@ WindstilleMain::main(int argc, char** argv)
 
     if (!recorder_file.empty())
       InputManager::setup_recorder(recorder_file);
-
+    
+    if (debug) std::cout << "Initialising TileFactory" << std::endl;
     TileFactory::init();
     if (levelfile.empty())
       {
@@ -276,9 +277,11 @@ WindstilleMain::main(int argc, char** argv)
 void
 WindstilleMain::init_modules()
 {
+  if (debug) std::cout << "Initialising ClanLib" << std::endl;
   // Init ClanLib
   CL_SetupCore::init();
   
+  if (debug) std::cout << "Initialising GL" << std::endl;
   CL_SetupGL::init();
 
   CL_SetupDisplay::init();
@@ -293,11 +296,13 @@ WindstilleMain::init_modules()
   resources->add_resources(CL_ResourceManager(datadir + "windstille.xml", false));
   resources->add_resources(CL_ResourceManager(datadir + "tiles.xml", false));
 
+  if (debug) std::cout << "Initialising Fonts" << std::endl;
   Fonts::init(); 
   sound_manager = new SoundManager();
   sound_manager->enable_sound(config->sound_enabled);
   sound_manager->enable_music(config->music_enabled);
 
+  if (debug) std::cout << "Initialising ScriptManager" << std::endl;
   script_manager = new ScriptManager();
 }
 

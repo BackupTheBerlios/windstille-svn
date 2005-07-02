@@ -94,7 +94,6 @@ Screen::draw_fps(float delta)
   char output[20];
   sprintf(output, "FPS: %d", fps_save);
   
-  Fonts::copyright.set_alpha(1.0f);
   Fonts::copyright.set_alignment(origin_bottom_left);
   Fonts::copyright.draw(CL_Display::get_width() - 100, 30, output);
 }
