@@ -54,7 +54,7 @@ private:
   Energiebar* energiebar;
   DialogManager* dialog_manager;
 
-  enum { FADEIN, RUNNING, FADEOUT } state;
+  enum { FADEIN, RUNNING, CHANGE_SECTOR, FADEOUT } state;
   enum { DIALOG, GAME } control_state;
 
   CL_Font font;
@@ -64,6 +64,7 @@ private:
   std::vector<CL_Slot> slots;
   void on_key_down  (const CL_InputEvent& event);
   void on_mouse_down  (const CL_InputEvent& event);
+  void change_sector ();
 
   static GameSession* current_; 
 public:
@@ -74,7 +75,7 @@ public:
 
   void set_dialog_state() { control_state = DIALOG; }
   void set_game_state()   { control_state = GAME; }
-  void set_sector (const std::string& arg_filename);
+  void set_sector(const std::string& arg_filename);
 
   void draw();
   void draw_game();
