@@ -29,7 +29,6 @@ class WindstilleMain : public CL_ClanApplication
 {
 public:
   std::string levelfile;
-  std::string game_definition_file;
   std::string controller_file;
   std::string recorder_file;
   std::string playback_file;
