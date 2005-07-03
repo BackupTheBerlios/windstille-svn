@@ -112,7 +112,7 @@ GameSession::draw_game()
   // Draw HUD
   energiebar->draw();
 
-  if(control_state == DIALOG)
+  if (control_state == DIALOG)
     dialog_manager->draw(); 
   
   control_dialog.set_alignment(origin_bottom_right);
@@ -136,7 +136,7 @@ GameSession::draw()
   draw_game();
   console.draw();
 
-  switch (state)
+  switch (fade_state)
     {
     case FADEOUT:
       CL_Display::fill_rect(CL_Rect(0, 0, 
@@ -175,10 +175,7 @@ GameSession::draw()
 
 void
 GameSession::update(float delta)
-{
-  if (state == CHANGE_SECTOR)
-    change_sector();
-    
+{  
   console.update(delta);
 
   InputManager::update(delta);
@@ -189,17 +186,21 @@ GameSession::update(float delta)
 
   view->update(delta);
 
-  switch (state)
+  switch (fade_state)
     {
     case FADEIN:
       if (fadeout_value > 1.0f)
-        state = RUNNING;
+        fade_state = RUNNING;
       fadeout_value += delta;
       break;
     case FADEOUT:
       if (fadeout_value > 1.0f)
-        game_main_state = LOAD_MENU;
-
+        {
+          if (target_state == LOAD_GAME_SESSION)
+            change_sector();
+          else
+            game_main_state = target_state;
+        }
       fadeout_value += delta;
       break;
 
@@ -290,26 +291,33 @@ GameSession::change_sector()
   
   GameObject::set_world (world);
   
-  state = FADEIN;
+  fade_state = FADEIN;
   fadeout_value = 0;
   control_state = GAME;
+  target_state = RUN_GAME;
 }
 
 void
 GameSession::set_sector(const std::string& arg_filename)
 {
-  state = CHANGE_SECTOR;
+  target_state = LOAD_GAME_SESSION;
   filename = arg_filename;
+  
+  fadeout_value = 0;
+  sound_manager->stop_music();
+  fade_state = FADEOUT;
 }
 
 void
 GameSession::quit()
 {
-  if (state != FADEOUT)
+  if (fade_state != FADEOUT)
     {
+      target_state = LOAD_MENU;
+      
       fadeout_value = 0;
       sound_manager->stop_music();
-      state = FADEOUT;
+      fade_state = FADEOUT;
     }
 }
 

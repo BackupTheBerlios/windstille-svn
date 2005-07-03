@@ -28,6 +28,7 @@
 #include "console.hpp"
 #include "squirrel/include/squirrel.h"
 #include "screen.hpp"
+#include "globals.hpp"
 
 class CL_InputEvent;
 
@@ -54,8 +55,9 @@ private:
   Energiebar* energiebar;
   DialogManager* dialog_manager;
 
-  enum { FADEIN, RUNNING, CHANGE_SECTOR, FADEOUT } state;
+  enum { FADEIN, RUNNING, FADEOUT } fade_state;
   enum { DIALOG, GAME } control_state;
+  GameMainState target_state;
 
   CL_Font font;
   CL_Sprite logo;
