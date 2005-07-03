@@ -60,19 +60,16 @@ GameSession::GameSession(const std::string& arg_filename)
     world (0)
 {
   current_ = this;
-  filename = arg_filename;
-  change_sector();
   
   slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
   slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
 
-  view = new View();
-  
+  view = new View();  
   energiebar = new Energiebar();
   dialog_manager = new DialogManager();
-
-  logo       = CL_Sprite("logo", resources);
-  logo_black = CL_Sprite("logo_black", resources);
+  
+  filename = arg_filename;
+  change_sector();
 }
 
 GameSession::~GameSession()

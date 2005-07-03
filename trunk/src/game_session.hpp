@@ -59,8 +59,6 @@ private:
   GameMainState target_state;
 
   CL_Font font;
-  CL_Sprite logo;
-  CL_Sprite logo_black;
 
   std::vector<CL_Slot> slots;
   void on_key_down  (const CL_InputEvent& event);
