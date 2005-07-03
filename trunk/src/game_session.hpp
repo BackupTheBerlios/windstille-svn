@@ -44,7 +44,6 @@ private:
   SceneContext sc;
   Console console;
 
-  float blink;
   float fadeout_value;
 
   CL_Sprite control_dialog;

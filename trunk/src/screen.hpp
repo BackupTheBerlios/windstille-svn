@@ -31,12 +31,13 @@ private:
   void draw_fps(float delta);
   void key_down(const CL_InputEvent& event);
   
-  bool do_pause;
   CL_Slot slot;
-  
-protected:
+
+protected:  
   int frames;
-  
+  float time_counter;
+  int fps_counter;
+  int fps_save;
 public:
   Screen();
   virtual ~Screen();
@@ -46,8 +47,6 @@ public:
 
   void display();
 
-  void set_pause(bool p) { do_pause = p; }
-  bool get_pause() { return do_pause; }
 private:
   Screen (const Screen&);
   Screen& operator= (const Screen&);

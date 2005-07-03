@@ -29,7 +29,10 @@
 namespace Windstille {
 
 Screen::Screen()
-  : frames(0)
+  : frames(0),
+    time_counter(0),
+    fps_counter(0),
+    fps_save(0)
 {
 }
 
@@ -41,8 +44,6 @@ Screen::~Screen()
 void 
 Screen::display()
 {
-  do_pause = false;
-
   DeltaManager delta_manager;
 
   slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
@@ -74,10 +75,6 @@ Screen::display()
 void 
 Screen::draw_fps(float delta)
 {
-  static float time_counter = 0;
-  static int fps_counter = 0;
-  static int fps_save = 0;
-
   time_counter += delta;
   ++fps_counter;
 

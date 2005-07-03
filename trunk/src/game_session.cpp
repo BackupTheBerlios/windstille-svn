@@ -66,8 +66,6 @@ GameSession::GameSession(const std::string& arg_filename)
   slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
   slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
 
-  blink = 0.0f;
-
   view = new View();
   
   energiebar = new Energiebar();
@@ -117,15 +115,6 @@ GameSession::draw_game()
   
   control_dialog.set_alignment(origin_bottom_right);
   control_dialog.draw(800-16, 600-16);
-
-  // Draw Logo
-  if (0)
-    {     
-      //logo.set_blend_func(blend_src_alpha, blend_one);
-      logo.set_alpha(cos(blink)*0.5f + 0.5f);
-      logo.draw(800 - 302, 600 - 95);
-      logo_black.draw(800 - 302, 600 - 95);
-    }
 }
 
 void
@@ -221,8 +210,6 @@ GameSession::update(float delta)
     quit();
   
   InputManager::clear();
-
-  blink += delta * 3.141f;
 }
 
 void

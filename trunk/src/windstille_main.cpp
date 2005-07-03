@@ -428,18 +428,21 @@ WindstilleMain::game_main()
     case RUN_GAME:
       the_game->display();
       break;
+
     case LOAD_MENU:
       if (the_game)
         delete the_game;
       the_game = new WindstilleMenu();
       game_main_state = RUN_GAME;
       break;
+
     case LOAD_GAME_SESSION:
       if (the_game)
         delete the_game;
       the_game = new GameSession("levels/newformat2.wst");
       game_main_state = RUN_GAME;
       break;
+
     case QUIT_GAME:
       if (the_game)
         delete the_game;
