@@ -20,7 +20,6 @@
 #include <ClanLib/display.h>
 
 #include "windstille_main.hpp"
-#include "delta_manager.hpp"
 #include "screen.hpp"
 #include "fonts.hpp"
 #include "gameconfig.hpp"
@@ -44,13 +43,15 @@ Screen::~Screen()
 void 
 Screen::display()
 {
-  DeltaManager delta_manager;
+  /// Amount of time the world moves forward each update(), this is
+  /// independed of the number of frames and always constant
+  float step = 10/1000.0f;
 
   slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
 
   draw();
   float delta = delta_manager.getset ();
-  float step = 10/1000.0f;
+  
   if (config->show_fps)
     draw_fps(delta);
   CL_Display::flip(0);

@@ -20,6 +20,8 @@
 #ifndef HEADER_SCREEN_HXX
 #define HEADER_SCREEN_HXX
 
+#include "delta_manager.hpp"
+
 class CL_InputEvent;
 
 namespace Windstille {
@@ -32,6 +34,8 @@ private:
   void key_down(const CL_InputEvent& event);
   
   CL_Slot slot;
+
+  DeltaManager delta_manager;
 
 protected:  
   int frames;
