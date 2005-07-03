@@ -56,35 +56,34 @@ Console::add(const std::string& str)
 void
 Console::draw()
 {
-  CL_Font font = Fonts::copyright;
   int y = y_pos;
 
   if (active)
-    y -= font.get_height() + 2;
+    y -= Fonts::copyright.get_height() + 2;
 
-  font.set_alignment(origin_bottom_left);
+  Fonts::copyright.set_alignment(origin_bottom_left);
   // FIXME: only display stuff that would end up on the screen
   for(Buffer::reverse_iterator i = buffer.rbegin(); i != buffer.rend(); ++i)
     {
       if (i->display_time < 5.0f || is_active())
         {
-          font.set_color(CL_Color(225, 225, 255));
+          Fonts::copyright.set_color(CL_Color(225, 225, 255));
           if (i->display_time > 4.0f && !is_active())
-            font.set_alpha(1.0f - (i->display_time - 4.0f));
+            Fonts::copyright.set_alpha(1.0f - (i->display_time - 4.0f));
           else
-            font.set_alpha(1.0f);
+            Fonts::copyright.set_alpha(1.0f);
 
-          font.draw(x_pos, y, i->message);
+          Fonts::copyright.draw(x_pos, y, i->message);
         }
-      y -= font.get_height() + 2;
+      y -= Fonts::copyright.get_height() + 2;
     }
 
-  font.set_color(CL_Color(255, 255, 255));
+  Fonts::copyright.set_color(CL_Color(255, 255, 255));
   if (active)
     {
-      font.set_alignment(origin_bottom_left);
-      font.set_alpha(1.0f);
-      font.draw(x_pos, y_pos, ">" + command_line);
+      Fonts::copyright.set_alignment(origin_bottom_left);
+      Fonts::copyright.set_alpha(1.0f);
+      Fonts::copyright.draw(x_pos, y_pos, ">" + command_line);
     }
   
   //needed because ClanLib font operator= doesn't deal with uniqueness properly, so we need to

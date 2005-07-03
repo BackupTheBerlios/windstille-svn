@@ -155,9 +155,8 @@ GameSession::draw()
 
   if (world->get_player()->get_movement_state() == Player::DEAD)
     {
-      CL_Font font = Fonts::dialog;
-      font.set_alignment(origin_bottom_center);
-      font.draw(CL_Display::get_width()/2, 200,
+      Fonts::dialog.set_alignment(origin_bottom_center);
+      Fonts::dialog.draw(CL_Display::get_width()/2, 200,
                 "..:: Press Fire to restart ::..");
     }
 
