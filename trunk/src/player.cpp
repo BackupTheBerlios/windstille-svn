@@ -26,6 +26,7 @@
 #include "player.hpp"
 #include "bomb.hpp"
 #include "globals.hpp"
+#include "sprite3d/sprite3d_manager.hpp"
 
 #define MAX_ENERGIE 16
 
@@ -34,32 +35,26 @@ Player* Player::current_ = 0;
 Player::Player () :
   pos (320, 200),
   velocity (0, 0),
-  
-  walk     ("human/walk",   resources),
-  run      ("human/run",   resources),
-  sit      ("human/duck",   resources),
-  jump     ("hero/jump",  resources),
-  stand    ("human/stand", resources),
-  killed   ("hero/kill",  resources),
-  dead     ("hero/dead",  resources),
   light    ("hero/light", resources),
 
   state (WALKING),
   gun_state (GUN_READY),
   ground_state (IN_AIR)
 {
+  sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
   light.set_blend_func(blend_src_alpha, blend_one);
 
   jumping = false;
   energie = MAX_ENERGIE;
   current_ = this;
 
-  walk.set_alignment(origin_bottom_center, 0, 3);
-  jump.set_alignment(origin_bottom_center, 0, 3);
-  stand.set_alignment(origin_bottom_center, 0, 3);
-
   direction = WEST;
   hit_count = 0.0f;
+}
+
+Player::~Player()
+{
+  delete sprite;
 }
 
 void
@@ -67,64 +62,21 @@ Player::draw (SceneContext& gc)
 {
   gc.light().draw(light, pos.x, pos.y, 0);
   
-  CL_Sprite* sprite = 0;
+  sprite->set_vflip(direction == EAST);
 
-  switch (ground_state)
-    {
-    case ON_GROUND:
-      switch (state)
-	{
-	case  WALKING:
-	  sprite = &walk;
-	  break;
+#if 0
+  if (hit_count > 0)
+  {
+    if (rand()%2)
+      sprite->set_alpha(1.0f);
+    else
+      sprite->set_alpha(1.0f - hit_count);
+  }
+  else
+    sprite->set_alpha(1.0f);
+#endif
 
-        case RUNNING:
-          sprite = &run;
-          break;
-
-	case STANDING:
-	  sprite = &stand;
-	  break;
-
-	case SITTING:
-	  sprite = &sit;
-	  break;
-        case KILLED:
-          sprite = &killed;
-          break;
-        case DEAD:
-          sprite = &dead;
-          break;
-          
-        case TURN:
-          sprite = &turn;
-          break;
-	}
-      break;
-    default:
-      sprite = &jump;
-      break;
-    }
-
-  if (sprite)
-    {
-      if (direction == WEST)
-	sprite->set_scale (1.0, 1.0);
-      else
-	sprite->set_scale (-1.0, 1.0);
-
-      if (hit_count > 0)
-        {
-          if (rand()%2)
-            sprite->set_alpha(1.0f);
-          else
-            sprite->set_alpha(1.0f - hit_count);
-        }
-      else
-        sprite->set_alpha(1.0f);
-
-      gc.color().draw(*sprite, pos.x, pos.y, 1.0f);
-    }
+  sprite->draw(gc, pos);
 }
 
 CL_Rect
@@ -142,12 +94,42 @@ Player::get_subtile_pos()
   return SubTilePos(int(pos.x/TILE_SIZE), int(pos.y/TILE_SIZE));
 }
 
+void
+Player::switch_movement_state(MovementState newstate)
+{
+  if(state == newstate)
+    return;
+
+  switch(newstate) {
+    case KILLED:
+    case DEAD:
+      sprite->set_action("Hang"); // TODO
+      break;
+    case STANDING:
+      sprite->set_action("Stand");
+      break;
+    case SITTING:
+      sprite->set_action("Ducking"); // TODO
+      break;
+    case TURN:
+      sprite->set_action("Turn");
+      break;
+    case RUNNING:
+      sprite->set_action("Run");
+      break;
+    case WALKING:
+      sprite->set_action("Walk");
+      break;
+  }
+  state = newstate;
+}
+
 void 
 Player::update (float delta)
 {
   controller = InputManager::get_controller();
 
-  if (state == KILLED)
+  if (state == KILLED) 
     {
       switch (ground_state)
         {
@@ -155,37 +137,31 @@ Player::update (float delta)
           update_air(delta);
           break;
         case ON_GROUND:
-          killed.update(delta);
-          if (killed.is_finished())
-            {
-              state = DEAD;
-            }
+          // TODO wait for kill animation to finish
+          switch_movement_state(DEAD);
           break;
         }
     }
   else if (state == DEAD)
     {
+#if 0
       if (controller.get_button_state(FIRE_BUTTON))
         {
           set_position(CL_Vector(258, 0));
           set_direction(EAST);
-          killed.restart();
-          state = WALKING;
+          switch_movement_state(WALKING);
           gun_state = GUN_READY;
           ground_state = IN_AIR;
           energie = MAX_ENERGIE;
           velocity = CL_Vector();
         }
+#endif
     }
   else
     {
       if (hit_count > 0)
         hit_count -= delta;
 
-      walk.update(delta);
-      run.update(delta);
-      sit.update(delta);
-  
       if (controller.get_button_state(LEFT_BUTTON))
         direction = WEST;
       else if  (controller.get_button_state(RIGHT_BUTTON))
@@ -239,7 +215,7 @@ Player::update_ground (float delta)
 
       if (controller.get_button_state(DOWN_BUTTON))
         {
-          state = SITTING;
+          switch_movement_state(SITTING);
           if (controller.get_button_state(FIRE_BUTTON) && !bomb_placed)
             {
               Sector::current()->add(new Bomb(int(pos.x), int(pos.y)));
@@ -254,12 +230,12 @@ Player::update_ground (float delta)
               if (controller.get_button_state(LEFT_BUTTON))
                 {
                   pos.x -= 256 * delta;
-                  state = RUNNING;
+                  switch_movement_state(RUNNING);
                 }
               else if (controller.get_button_state(RIGHT_BUTTON))
                 {
                   pos.x += 256 * delta;
-                  state = RUNNING;
+                  switch_movement_state(RUNNING);
                 }
             }
           else
@@ -267,16 +243,16 @@ Player::update_ground (float delta)
               if (controller.get_button_state(LEFT_BUTTON))
                 {
                   pos.x -= 128 * delta;
-                  state = WALKING;
+                  switch_movement_state(WALKING);
                 }
               else if (controller.get_button_state(RIGHT_BUTTON))
                 {
                   pos.x += 128 * delta;
-                  state = WALKING;
+                  switch_movement_state(WALKING);
                 }
               else
                 {
-                  state = STANDING;
+                  switch_movement_state(STANDING);
                 }
             }
           
@@ -363,9 +339,8 @@ Player::hit(int points)
 
       if (energie <= 0)
         {
-          state = KILLED;
+          switch_movement_state(KILLED);
           hit_count = 0;
-          killed.set_frame(0);
         }
     }
 }

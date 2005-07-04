@@ -31,7 +31,10 @@ class Sprite3DData;
 struct Action;
 struct ActionFrame;
 
-/** */
+/**
+ * This class is a 3d sprite. It's a set of textured meshed with different
+ * animations (called actions) that are keyframe animated.
+ */
 class Sprite3D
 {
 public:
@@ -44,6 +47,8 @@ public:
 
   void set_speed(float speed);
   float get_speed() const;
+
+  void set_vflip(bool flip_vertically = true);
 
 private:
   friend class Sprite3DDrawingRequest;
@@ -66,6 +71,7 @@ private:
   float time_delta;
   float speed; 
   const Action* next_action;
+  bool vflip;
 };
 
 #endif

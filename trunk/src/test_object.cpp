@@ -54,3 +54,9 @@ TestObject::set_pos(const Vector& pos)
   this->pos = pos;
 }
 
+void
+TestObject::set_vflip(bool vflip)
+{
+  sprite->set_vflip(vflip);
+}
+

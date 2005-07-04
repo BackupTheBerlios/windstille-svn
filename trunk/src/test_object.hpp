@@ -16,6 +16,7 @@ public:
 
   void set_sprite(const std::string& filename);
   void set_action(const std::string& action);
+  void set_vflip(bool vflip);
   void set_pos(const Vector& pos);
 
 private:

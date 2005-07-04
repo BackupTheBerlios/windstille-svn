@@ -34,7 +34,7 @@
 #include "timer.hpp"
 
 Sprite3D::Sprite3D(const Sprite3DData* data)
-  : data(data)
+  : data(data), vflip(false)
 {
   current_action = &data->actions[0];
   time_delta = 0;
@@ -83,6 +83,12 @@ Sprite3D::get_speed() const
   return speed;
 }
 
+void
+Sprite3D::set_vflip(bool vflip)
+{
+  this->vflip = vflip;
+}
+
 class Sprite3DDrawingRequest : public DrawingRequest
 {
 private:
@@ -126,7 +132,7 @@ Sprite3D::blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
                        const Vector& pos, const Matrix& modelview)
 {
   assert_gl("before render_frame");
-  
+ 
   CL_OpenGLState state(gc);
   state.set_active();
   state.setup_2d();
@@ -134,7 +140,9 @@ Sprite3D::blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
   glPushMatrix();
   glMultMatrixd(modelview);
   glTranslatef(pos.x, pos.y, pos.z);
-  
+  if(vflip)
+    glScalef(-1.0, 1.0, 1.0);  
+
   glClear(GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_TEXTURE_2D);

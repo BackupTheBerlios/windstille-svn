@@ -165,6 +165,18 @@ static int TestObject_set_pos_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int TestObject_set_vflip_wrapper(HSQUIRRELVM v)
+{
+  Scripting::TestObject* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  SQBool arg0;
+  sq_getbool(v, 2, &arg0);
+  
+  _this->set_vflip(arg0);
+  
+  return 0;
+}
+
 static int set_sector_wrapper(HSQUIRRELVM v)
 {
   const char* arg0;
@@ -464,6 +476,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_pos'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "set_vflip", -1);
+  sq_newclosure(v, &TestObject_set_vflip_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'set_vflip'";
     throw SquirrelError(v, msg.str());
   }
 

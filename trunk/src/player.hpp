@@ -25,6 +25,7 @@
 #include <ClanLib/display.h>
 
 #include "input/controller.hpp"
+#include "sprite3d/sprite3d.hpp"
 #include "globals.hpp"
 #include "game_object.hpp"
 
@@ -62,7 +63,8 @@ private:
   int y_pos;
   
   CL_Vector velocity;
-  
+ 
+#if 0
   CL_Sprite walk;
   CL_Sprite run;
   CL_Sprite turn;
@@ -71,10 +73,14 @@ private:
   CL_Sprite stand;
   CL_Sprite killed;
   CL_Sprite dead;
+#endif
   CL_Sprite light;
 
+#if 0
   CL_Sprite roll;
   CL_Sprite surround;
+#endif
+  Sprite3D* sprite;
 
   bool jumping;
   bool bomb_placed;
@@ -91,12 +97,14 @@ private:
   GunState gun_state;
   Direction direction;
   GroundState ground_state;
+
+  void switch_movement_state(MovementState state);
   
   double reload_time;
   static Player* current_;
 public:
   Player ();
-  virtual ~Player () {}
+  virtual ~Player ();
 
   static Player* current() { return current_; }
 

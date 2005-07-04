@@ -39,5 +39,11 @@ TestObject::set_pos(float x, float y)
   obj()->set_pos(Vector(x, y, 100));
 }
 
+void
+TestObject::set_vflip(bool vflip)
+{
+  obj()->set_vflip(vflip);
+}
+
 }
 
