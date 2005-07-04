@@ -209,28 +209,36 @@ class Sprite3DDrawingRequest : public DrawingRequest
 {
 private:
   Sprite3D* sprite;
-  const ActionFrame* frame;
+  const ActionFrame* frame1;
+  const ActionFrame* frame2;
+  float time;
 
 public:
-  Sprite3DDrawingRequest(Sprite3D* sprite, const ActionFrame* frame,
+  Sprite3DDrawingRequest(Sprite3D* sprite, const ActionFrame* frame1,
+      const ActionFrame* frame2, float time,
       const CL_Vector& pos, const CL_Matrix4x4& modelview)
-    : DrawingRequest(pos, modelview), sprite(sprite), frame(frame)
+    : DrawingRequest(pos, modelview), sprite(sprite), frame1(frame1),
+    frame2(frame2), time(time)
   {
   }
 
   void draw(CL_GraphicContext* gc)
   {
-    sprite->render_frame(gc, frame, pos, modelview);
+    sprite->blend_frames(gc, frame1, frame2, time, pos, modelview);
   }
 };
 
 void
 Sprite3D::draw(SceneContext& sc)
 {
-  int frame = (int) fmodf(game_time * 24, actions[0].frame_count);
-  sc.color().draw(new Sprite3DDrawingRequest(this, &actions[0].frames[frame],
-                                             CL_Vector(12*32, 26*32, 100),
-                                             sc.color().get_modelview()));
+  float animspeed = 3.0;
+  int frame = (int) fmodf(game_time * animspeed, actions[0].frame_count);
+  int nextframe = (int) fmodf(game_time * animspeed + 1.0,
+                              actions[0].frame_count);
+  float time = fmodf(game_time*animspeed, 1.0);
+  sc.color().draw(new Sprite3DDrawingRequest(this,
+        &actions[0].frames[frame], &actions[0].frames[nextframe], time,
+        CL_Vector(12*32, 26*32, 100), sc.color().get_modelview()));
 }
 
 void
@@ -276,6 +284,64 @@ Sprite3D::render_frame(CL_GraphicContext* gc, const ActionFrame* frame,
 
     glDrawElements(GL_TRIANGLES, mesh.triangle_count * 3, GL_UNSIGNED_SHORT,
         mesh.vertex_indices);
+  }
+
+  assert_gl("rendering 3d sprite");      
+
+  glPopMatrix();
+}
+
+void
+Sprite3D::blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
+    const ActionFrame* frame2, float time,
+    const CL_Vector& pos, const CL_Matrix4x4& modelview)
+{
+  assert_gl("before render_frame");
+  
+  static float angle = 0;
+  angle += 1;
+  
+  CL_OpenGLState state(gc);
+  state.set_active();
+  state.setup_2d();
+
+  glPushMatrix();
+  glMultMatrixd(modelview);
+  glTranslatef(pos.x, pos.y, pos.z);
+  // just a test
+  glRotatef(angle, 0, 1.0, 0);
+  
+  glClear(GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_TEXTURE_2D);
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);  
+
+  assert_gl("gl init before sprite");
+  
+  float t_1 = 1.0 - time;
+  for(uint16_t m = 0; m < mesh_count; ++m) {
+    const Mesh& mesh = meshs[m];
+    const MeshVertices& vertices1 = frame1->meshs[m];
+    const MeshVertices& vertices2 = frame2->meshs[m];
+    
+    float* verts = new float[mesh.vertex_count * 3];
+
+    for(uint16_t v = 0; v < mesh.vertex_count*3; ++v) {
+      verts[v] = vertices1.vertices[v] * t_1 + vertices2.vertices[v] * time;
+    }
+    
+    CL_OpenGLSurface& texture = const_cast<CL_OpenGLSurface&> (mesh.texture);
+    texture.bind();
+
+    glVertexPointer(3, GL_FLOAT, 0, verts);
+    glNormalPointer(GL_FLOAT, 0, mesh.normals);
+    glTexCoordPointer(2, GL_FLOAT, 0, mesh.tex_coords);
+
+    glDrawElements(GL_TRIANGLES, mesh.triangle_count * 3, GL_UNSIGNED_SHORT,
+        mesh.vertex_indices);
+    delete[] verts;
   }
 
   assert_gl("rendering 3d sprite");      

@@ -45,6 +45,11 @@ private:
 
   void render_frame(CL_GraphicContext* gc, const ActionFrame* frame,
       const CL_Vector& pos, const CL_Matrix4x4& modelview);
+  // blends 2 frames
+  // time should be between 0 and 1
+  void blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
+      const ActionFrame* frame2, float time,
+      const CL_Vector& pos, const CL_Matrix4x4& modelview);
 
   uint16_t mesh_count;
   Mesh* meshs;
