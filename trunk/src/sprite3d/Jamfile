@@ -1,0 +1,14 @@
+SubDir TOP src sprite3d ;
+
+sources =
+  sprite3d_data.cpp
+  sprite3d_data.hpp
+  sprite3d.cpp
+  sprite3d.hpp
+  sprite3d_manager.cpp
+  sprite3d_manager.hpp
+;
+
+TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
+sprite3d_objects = [ CompileObjects $(sources) ] ;
+

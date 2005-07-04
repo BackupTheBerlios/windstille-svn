@@ -100,6 +100,71 @@ static int FlashingSign_disable_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int TestObject_release_hook(SQUserPointer ptr, int )
+{
+  Scripting::TestObject* _this = reinterpret_cast<Scripting::TestObject*> (ptr);
+  delete _this;
+  return 0;
+}
+
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::TestObject* object, bool setup_releasehook)
+{
+  sq_pushstring(v, "TestObject", -1);
+  if(sq_get(v, -2) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't resolved squirrel type 'TestObject'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't setup squirrel instance for object of type 'TestObject'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_remove(v, -2);
+
+  if(setup_releasehook) {
+    sq_setreleasehook(v, -1, TestObject_release_hook);
+  }
+}
+static int TestObject_set_sprite_wrapper(HSQUIRRELVM v)
+{
+  Scripting::TestObject* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  _this->set_sprite(arg0);
+  
+  return 0;
+}
+
+static int TestObject_set_action_wrapper(HSQUIRRELVM v)
+{
+  Scripting::TestObject* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  _this->set_action(arg0);
+  
+  return 0;
+}
+
+static int TestObject_set_pos_wrapper(HSQUIRRELVM v)
+{
+  Scripting::TestObject* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  float arg0;
+  sq_getfloat(v, 2, &arg0);
+  float arg1;
+  sq_getfloat(v, 3, &arg1);
+  
+  _this->set_pos(arg0, arg1);
+  
+  return 0;
+}
+
 static int set_sector_wrapper(HSQUIRRELVM v)
 {
   const char* arg0;
@@ -366,6 +431,45 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register class'FlashingSign'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  // Register class TestObject
+  sq_pushstring(v, "TestObject", -1);
+  sq_pushstring(v, "GameObject", -1);
+  sq_get(v, -3);
+  if(sq_newclass(v, SQTrue) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't create new class 'TestObject'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_pushstring(v, "set_sprite", -1);
+  sq_newclosure(v, &TestObject_set_sprite_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'set_sprite'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "set_action", -1);
+  sq_newclosure(v, &TestObject_set_action_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'set_action'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "set_pos", -1);
+  sq_newclosure(v, &TestObject_set_pos_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'set_pos'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register class'TestObject'";
     throw SquirrelError(v, msg.str());
   }
 

@@ -29,6 +29,7 @@
 #include "player.hpp"
 #include "trigger.hpp"
 #include "flashing_sign.hpp"
+#include "test_object.hpp"
 #include "sector.hpp"
 #include "spawnpoint.hpp"
 #include "sound/sound_manager.hpp"
@@ -235,6 +236,13 @@ Sector::expose_object_to_squirrel(GameObject* object)
   FlashingSign* sign = dynamic_cast<FlashingSign*> (object);
   if(sign) {
     script_manager->expose_object(new Scripting::FlashingSign(sign),
+                                  object->get_name(), true);
+    return;
+  }
+
+  TestObject* tobj = dynamic_cast<TestObject*> (object);
+  if(tobj) {
+    script_manager->expose_object(new Scripting::TestObject(tobj),
                                   object->get_name(), true);
     return;
   }

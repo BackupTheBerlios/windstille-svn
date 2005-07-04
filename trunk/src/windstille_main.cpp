@@ -37,6 +37,7 @@
 #include "tinygettext/gettext.hpp"
 #include "gameconfig.hpp"
 #include "util.hpp"
+#include "sprite3d/sprite3d_manager.hpp"
 
 using namespace Windstille;
 
@@ -269,11 +270,16 @@ WindstilleMain::init_modules()
 
   if (debug) std::cout << "Initialising ScriptManager" << std::endl;
   script_manager = new ScriptManager();
+
+  sprite3d_manager = new Sprite3DManager;
 }
 
 void
 WindstilleMain::deinit_modules()
 {
+  delete sprite3d_manager;
+  sprite3d_manager = 0;
+
   delete script_manager;
   script_manager = 0;
   

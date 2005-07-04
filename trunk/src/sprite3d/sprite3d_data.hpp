@@ -16,47 +16,76 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#ifndef HEADER_SPRITE3D_DATA_HPP
+#define HEADER_SPRITE3D_DATA_HPP
 
-#ifndef HEADER_SPRITE3D_HXX
-#define HEADER_SPRITE3D_HXX
-
-#include <string>
 #include <stdint.h>
-#include "game_object.hpp"
+#include <ClanLib/GL/opengl_surface.h>
 
-class SceneContext;
 struct Mesh;
-struct Action;
+struct MeshVertices;
 struct ActionFrame;
+struct Action;
 
-/** */
-class Sprite3D
+/**
+ * This class holds the data of a .wsprite file.
+ */
+class Sprite3DData
 {
 public:
-  Sprite3D(const std::string& filename);
-  virtual ~Sprite3D();
-
-  void draw(SceneContext& sc);
-
-private:
-  friend class Sprite3DDrawingRequest;
-  Sprite3D (const Sprite3D&);
-  Sprite3D& operator= (const Sprite3D&);
-
-  void render_frame(CL_GraphicContext* gc, const ActionFrame* frame,
-      const CL_Vector& pos, const CL_Matrix4x4& modelview);
-  // blends 2 frames
-  // time should be between 0 and 1
-  void blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
-      const ActionFrame* frame2, float time,
-      const CL_Vector& pos, const CL_Matrix4x4& modelview);
+  Sprite3DData(const std::string& filename);
+  ~Sprite3DData();
 
   uint16_t mesh_count;
-  Mesh* meshs;
+  Mesh* meshs;            
   uint16_t action_count;
   Action* actions;
+
+private:
+  void clear();
+  
+  Sprite3DData (const Sprite3DData&);
+  Sprite3DData& operator= (const Sprite3DData&);
+};
+
+struct Mesh
+{
+  Mesh()
+    : vertex_indices(0), tex_coords(0), normals(0)
+  { }
+
+  CL_OpenGLSurface texture;
+  uint16_t triangle_count;
+  uint16_t* vertex_indices;
+  float* tex_coords;
+  float* normals;
+  uint16_t vertex_count;
+};
+
+struct MeshVertices
+{
+  MeshVertices()
+    : vertices(0)
+  { }
+  float* vertices;
+};
+
+struct ActionFrame
+{
+  ActionFrame()
+    : meshs(0)
+  { }
+  MeshVertices* meshs;
+};
+
+struct Action
+{
+  Action()
+    : frames(0)
+  { }
+  std::string name;
+  uint16_t frame_count;
+  ActionFrame* frames;
 };
 
 #endif
-
-/* EOF */

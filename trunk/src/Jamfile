@@ -1,13 +1,14 @@
 SubDir TOP src ;
 
-SubInclude TOP src squirrel ;
 SubInclude TOP src display ;
 SubInclude TOP src input ;
 SubInclude TOP src lisp ;
 SubInclude TOP src physfs ;
+SubInclude TOP src squirrel ;
 SubInclude TOP src sound ;
-SubInclude TOP src tinygettext ;
 SubInclude TOP src scripting ;
+SubInclude TOP src sprite3d ;
+SubInclude TOP src tinygettext ;
 
 sources = 
         animation_obj.cpp
@@ -69,8 +70,8 @@ sources =
         sector.hpp
         spawnpoint.cpp
         spawnpoint.hpp
-        sprite3d.cpp
-        sprite3d.hpp
+#sprite3d.cpp
+#sprite3d.hpp
         test_object.cpp
         test_object.hpp
         tile.cpp
@@ -112,11 +113,13 @@ Application windstille
 
         $(physfs_objects)
 
+        $(scripting_objects)
+
         $(sound_objects)
 
-        $(tinygettext_objects)
+        $(sprite3d_objects)
 
-        $(scripting_objects)
+        $(tinygettext_objects)
 
         $(sources)
 ;
