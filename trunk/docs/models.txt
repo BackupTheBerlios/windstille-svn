@@ -19,4 +19,13 @@ Notes about blender models:
   UVs in windstille are
     u -> right
     v -> down
+- You should specify additional attributes for the actions by creating a blender
+  textobject with name "actionconfig". You can then specify lines like this
+  (this example states that for action MyActionName frames 5 - 40 should be
+   exported every 8th frame should be exported and the animation should be
+   played back with speed 5.7 later. The speed and samplerate part are optional)
 
+  # Sampe actionconfig file
+
+  MyActionName 5 - 40 speed 5.7 smaplerate 8
+- Take a look at the console output to see warnings and errors from the script

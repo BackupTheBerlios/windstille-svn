@@ -38,7 +38,7 @@ Sprite3D::Sprite3D(const Sprite3DData* data)
 {
   current_action = &data->actions[0];
   time_delta = 0;
-  speed = 3.0;
+  speed = 1.0;
 }
 
 Sprite3D::~Sprite3D()
@@ -115,7 +115,7 @@ public:
 void
 Sprite3D::draw(SceneContext& sc, const Vector& pos)
 {
-  float gtime = (game_time - time_delta) * speed;
+  float gtime = (game_time - time_delta) * speed * current_action->speed;
   int frame = static_cast<int>(gtime) % current_action->frame_count;
   int nextframe = (frame+1) % current_action->frame_count;  
   float time = fmodf(gtime, 1.0);

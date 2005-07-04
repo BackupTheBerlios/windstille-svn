@@ -84,6 +84,7 @@ struct Action
     : frames(0)
   { }
   std::string name;
+  float speed;
   uint16_t frame_count;
   ActionFrame* frames;
 };

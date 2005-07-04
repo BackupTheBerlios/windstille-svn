@@ -15,6 +15,7 @@ float texcoord[2] per vertex
 
 Action Header
 char name[64]
+float speed
 uint16_t frame_count
 
 Data per action:

@@ -107,6 +107,7 @@ Sprite3DData::Sprite3DData(const std::string& filename)
       Action& action = actions[i];
 
       action.name = read_string(file, 64);
+      action.speed = read_float(file);
       action.frame_count = read_uint16_t(file);
 
       printf("ReadingAction %s Frames %u.\n", action.name.c_str(), action.frame_count);
