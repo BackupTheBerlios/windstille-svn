@@ -71,6 +71,8 @@ sources =
         spawnpoint.hpp
         sprite3d.cpp
         sprite3d.hpp
+        test_object.cpp
+        test_object.hpp
         tile.cpp
         tile_factory.cpp
         tile_factory.hpp
@@ -83,6 +85,8 @@ sources =
         timer.cpp
         trigger.cpp
         trigger.hpp
+        util.cpp
+        util.hpp
         view.cpp
         view.hpp
         water_map.cpp

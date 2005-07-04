@@ -24,24 +24,31 @@
 #include "game_object.hpp"
 
 class SceneContext;
-class Sprite3DImpl;
+struct Mesh;
+struct Action;
+struct ActionFrame;
 
 /** */
-class Sprite3D : public GameObject
+class Sprite3D
 {
-private:
 public:
   Sprite3D(const std::string& filename);
   virtual ~Sprite3D();
 
-  void update(float delta);
   void draw(SceneContext& sc);
 
 private:
+  friend class Sprite3DDrawingRequest;
   Sprite3D (const Sprite3D&);
   Sprite3D& operator= (const Sprite3D&);
 
-  Sprite3DImpl* impl;
+  void render_frame(CL_GraphicContext* gc, const ActionFrame* frame,
+      const CL_Vector& pos, const CL_Matrix4x4& modelview);
+
+  uint16_t mesh_count;
+  Mesh* meshs;
+  uint16_t action_count;
+  Action* actions;
 };
 
 #endif

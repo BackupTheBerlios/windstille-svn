@@ -13,6 +13,8 @@ void set_sector(const std::string& filename);
 
 void play_music(const std::string& musicfile);
 
+void stop_music(float fadetime);
+
 void play_sound(const std::string& soundfile);
 
 // alignment constants

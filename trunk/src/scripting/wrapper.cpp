@@ -120,6 +120,16 @@ static int play_music_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int stop_music_wrapper(HSQUIRRELVM v)
+{
+  float arg0;
+  sq_getfloat(v, 2, &arg0);
+  
+  Scripting::stop_music(arg0);
+  
+  return 0;
+}
+
 static int play_sound_wrapper(HSQUIRRELVM v)
 {
   const char* arg0;
@@ -248,6 +258,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'play_music'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "stop_music", -1);
+  sq_newclosure(v, &stop_music_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'stop_music'";
     throw SquirrelError(v, msg.str());
   }
 

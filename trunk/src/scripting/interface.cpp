@@ -17,6 +17,11 @@ void play_music(const std::string& musicfile)
   sound_manager->play_music(musicfile);
 }
 
+void stop_music(float fadetime)
+{
+  sound_manager->stop_music(fadetime);
+}
+
 void play_sound(const std::string& soundfile)
 {
   sound_manager->play(soundfile);

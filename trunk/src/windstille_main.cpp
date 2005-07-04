@@ -36,6 +36,7 @@
 #include "script_manager.hpp"
 #include "tinygettext/gettext.hpp"
 #include "gameconfig.hpp"
+#include "util.hpp"
 
 using namespace Windstille;
 
@@ -145,24 +146,6 @@ WindstilleMain::parse_command_line(int argc, char** argv)
           break;
         }
     }
-}
-
-std::string dirname(const std::string& filename)
-{
-  std::string::size_type p = filename.find_last_of('/');
-  if(p == std::string::npos)
-    return "";
-
-  return filename.substr(0, p+1);        
-}
-
-std::string basename(const std::string& filename)
-{
-  std::string::size_type p = filename.find_last_of('/');
-  if(p == std::string::npos)
-    return filename;
-
-  return filename.substr(p, filename.size()-p);
 }
 
 int 

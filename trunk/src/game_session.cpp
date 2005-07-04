@@ -37,7 +37,6 @@
 #include "door.hpp"
 #include "timer.hpp"
 #include "energiebar.hpp"
-#include "sprite3d.hpp"
 #include "dialog_manager.hpp"
 #include "windstille_main.hpp"
 #include "display/scene_context.hpp"
@@ -47,6 +46,7 @@
 #include "particle_system.hpp"
 #include "script_manager.hpp"
 #include "sound/sound_manager.hpp"
+#include "test_object.hpp"
 
 #include "game_session.hpp"
 
@@ -266,9 +266,9 @@ GameSession::change_sector()
       world->add(psystem2);
       world->add(psystem);
     }
-  
-  world->add(new Sprite3D("3dsprites/3dsprites"));
 
+  world->add(new TestObject());
+  
   world->activate();
   world->spawn_player("default");
   

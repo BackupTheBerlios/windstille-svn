@@ -18,316 +18,268 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <vector>
+#include <stdint.h>
 #include <ClanLib/gl.h>
 #include <ClanLib/display.h>
-#include "lisp/lisp.hpp"
-#include "lisp/parser.hpp"
-#include "lisp/list_iterator.hpp"
+#include <physfs.h>
 #include "display/drawing_request.hpp"
 #include "display/scene_context.hpp"
 #include "sprite3d.hpp"
 #include "lisp_util.hpp"
 #include "globals.hpp"
+#include "util.hpp"
+#include "timer.hpp"
 
-struct Vertex
+struct Mesh
 {
-  CL_Vector pos;
-  CL_Vector normal;
+  ~Mesh() {
+    delete[] vertex_indices;
+    delete[] tex_coords;
+  }
+
+  CL_OpenGLSurface texture;
+  uint16_t triangle_count;
+  uint16_t* vertex_indices;
+  float* tex_coords;
+  float* normals;
+  uint16_t vertex_count;
 };
 
-struct Vert
+struct MeshVertices
 {
-  /** Vertex index */
-  unsigned int index;
-  float u;
-  float v;
+  ~MeshVertices() {
+    delete[] vertices;
+  }
+  float* vertices;
 };
 
-struct Face
+struct ActionFrame
 {
-  // Vertices
-  Vert v[3];
+  ~ActionFrame() {
+    delete[] meshs;
+  }
+  MeshVertices* meshs;
 };
 
-static inline void read_vector(const lisp::Lisp* lisp, CL_Vector& vec)
+struct Action
 {
-  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
-    throw std::runtime_error("Invalid data when reading CL_Vector");
-  vec.x = lisp->get_car()->get_float();
-  if(lisp->get_cdr() == 0)
-    throw std::runtime_error("Must specified 3 floats for CL_vector");
-  lisp = lisp->get_cdr();
-  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
-    throw std::runtime_error("Invalid data when reading CL_Vector");
-  vec.y = lisp->get_car()->get_float();
-  if(lisp->get_cdr() == 0)
-    throw std::runtime_error("Must specified 3 floats for CL_vector");
-  lisp = lisp->get_cdr();
-  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
-    throw std::runtime_error("Invalid data when reading CL_Vector");
-  vec.z = lisp->get_car()->get_float();
-}
+  ~Action() {
+    delete[] frames;
+  }
+  
+  std::string name;
+  uint16_t frame_count;
+  ActionFrame* frames;
+};
 
-static void read_vert(const lisp::Lisp* lisp, Vert& vert)
+static inline float read_float(PHYSFS_file* file)
 {
-  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
-    throw std::runtime_error("Invalid data when reading CL_Vector");
-  vert.index = lisp->get_car()->get_int();
-  if(lisp->get_cdr() == 0)
-    throw std::runtime_error("Must specified 3 floats for CL_vector");
-  lisp = lisp->get_cdr();
-  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
-    throw std::runtime_error("Invalid data when reading CL_Vector");
-  vert.u = lisp->get_car()->get_float();
-  if(lisp->get_cdr() == 0)
-    throw std::runtime_error("Must specified 3 floats for CL_vector");
-  lisp = lisp->get_cdr();
-  if(lisp->get_type() != lisp::Lisp::TYPE_CONS || lisp->get_car() == 0)
-    throw std::runtime_error("Invalid data when reading CL_Vector");
-  vert.v = lisp->get_car()->get_float();
-}
-
-static void read_face(const lisp::Lisp* lisp, Face& face)
-{
-  lisp::ListIterator iter(lisp);
-  int i = 0;
-  while(iter.next()) {
-    if(iter.item() == "vert") {
-      if(i >= 3)
-        throw std::runtime_error("Too many vertices for face (should be 3)");
-      read_vert(iter.lisp(), face.v[i]);
-      i++;
-    } else {
-      std::cerr << "Skipping unknown tag '" << iter.item() << "' in face.\n";
-    }
-  }
-  if(i < 2) {
-    throw std::runtime_error("Too few vertices in face (should be 3)");
-  }
-}
-
-class Sprite3DImpl
-{
-public:
-  typedef std::vector<Vertex> Vertices;
-  typedef std::vector<Face>   Faces;
-
-  Vertices vertices;
-  Faces    faces;
-  CL_OpenGLSurface surface;
-
-  GLuint buffer_id;
-  typedef std::vector<float> Floats;
-  Floats raw_data;
-  int    normals_offset;
-  int    texcoord_offset;
-  bool   use_vbo;
-
-  float angle;
-
-  Sprite3DImpl()
-    : buffer_id(0), 
-      use_vbo(false),
-      angle(0)
-  {
-  }
-
-  ~Sprite3DImpl()
-  {
-    if (use_vbo)
-      {
-        clDeleteBuffers(1, &buffer_id);
-      }
-  }
-
-  void create_vertex_arrays()
-  {
-    Floats raw_texcoords;
-    Floats raw_normals;
-    Floats raw_vertices;
-
-    for(Sprite3DImpl::Faces::iterator i = faces.begin(); i != faces.end(); ++i)
-      {
-        const Face& face = *i;
-        for(int v = 0; v < 3; ++v) {
-          const Vert& vert = face.v[v];
-
-          raw_texcoords.push_back(vert.u);
-          raw_texcoords.push_back(vert.v);
-
-          const Vertex& vertex = vertices[vert.index];
-
-          raw_normals.push_back(vertex.normal.x);
-          raw_normals.push_back(vertex.normal.y);
-          raw_normals.push_back(vertex.normal.z);
-
-          raw_vertices.push_back(vertex.pos.x);
-          raw_vertices.push_back(vertex.pos.y);
-          raw_vertices.push_back(vertex.pos.z);
-        }
-      }
-
-    std::copy(raw_vertices.begin(),  raw_vertices.end(),  std::back_inserter(raw_data));
-    std::copy(raw_normals.begin(),   raw_normals.end(),   std::back_inserter(raw_data));
-    std::copy(raw_texcoords.begin(), raw_texcoords.end(), std::back_inserter(raw_data));
-
-    normals_offset  = raw_vertices.size() * sizeof(float);
-    texcoord_offset = normals_offset + raw_normals.size() * sizeof(float);
-
-    if (use_vbo)
-      {
-        clGenBuffers(1, &buffer_id);
-        clBindBuffer(CL_ARRAY_BUFFER, buffer_id);
-        clBufferData(CL_ARRAY_BUFFER, raw_data.size() * sizeof(float), &(*raw_data.begin()), CL_STATIC_DRAW);
-      }
-  }
-
-  void parse_file(const std::string& filename)
-  {
-    std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
-
-    const lisp::Lisp* spritelisp = root->get_lisp("windstille-3dsprite");
-    if(!spritelisp) {
-      std::ostringstream msg;
-      msg << "'" << filename << "' is not a windstille-3dsprite file";
-      throw std::runtime_error(msg.str());
+    uint32_t int_result;
+    if(PHYSFS_readULE32(file, &int_result) == 0) {
+        std::ostringstream msg;
+        msg << "Problem reading float value: " << PHYSFS_getLastError();
+        throw std::runtime_error(msg.str());
     }
 
-    lisp::ListIterator iter(spritelisp);
-    while(iter.next()) {
-      if(iter.item() == "texture") {
-        surface = CL_OpenGLSurface(datadir + iter.value().get_string());
-      } else if(iter.item() == "vertices") {
-        lisp::ListIterator vertices_iter(iter.lisp());
-        while(vertices_iter.next()) {
-          if(vertices_iter.item() == "vertex") {
-            const lisp::Lisp* vlisp = vertices_iter.lisp();
-            Vertex vertex;
-            const lisp::Lisp* poslisp = vlisp->get_lisp("pos");
-            if(poslisp == 0)
-              throw std::runtime_error("Vertex without pos found");
-            read_vector(poslisp, vertex.pos);
-            const lisp::Lisp* normallisp = vlisp->get_lisp("normal");
-            if(normallisp == 0)
-              throw std::runtime_error("Vertex without normal found");
-            read_vector(normallisp, vertex.normal);
-                        
-            vertices.push_back(vertex);
-          } else {
-            std::cerr << "Skipping unknown tag '" 
-                      << vertices_iter.item() << "' in vertices\n";
-          }
-        }
-      } else if(iter.item() == "faces") {
-        lisp::ListIterator faces_iter(iter.lisp());
-        while(faces_iter.next()) {
-          if(faces_iter.item() == "face") {
-            Face face;
-            read_face(faces_iter.lisp(), face);
-            faces.push_back(face);                        
-          } else {
-            std::cerr << "Skipping unknown tag '"
-                      << faces_iter.item() << "' in faces\n";
-          }
-        }
-      } else {
-        std::cerr << "Skipping unknown tag '"
-                  << iter.item() << "' in sprite3d\n";
-      }
-    }
+    // is this platform independent?
+    return * ( reinterpret_cast<float*> (&int_result) );
+}
 
-    create_vertex_arrays();
-  }
-};
+static inline uint16_t read_uint16_t(PHYSFS_file* file)
+{
+    uint16_t result;
+    if(PHYSFS_readULE16(file, &result) == 0) {
+        std::ostringstream msg;
+        msg << "Problem reading uint16 value: " << PHYSFS_getLastError();
+        throw std::runtime_error(msg.str());
+    }
+    return result;
+}
+
+static inline std::string read_string(PHYSFS_file* file, size_t size)
+{
+    char buffer[size+1];
+    if(PHYSFS_read(file, buffer, size, 1) != 1) {
+        std::ostringstream msg;
+        msg << "Problem reading string value: " << PHYSFS_getLastError();
+        throw std::runtime_error(msg.str());
+    }
+    buffer[size] = 0;
+
+    return buffer;
+}
 
 Sprite3D::Sprite3D(const std::string& filename)
-  : impl(new Sprite3DImpl)
 {
-  impl->parse_file(filename);
+  PHYSFS_file* file = PHYSFS_openRead(filename.c_str());
+  if(!file) {
+    std::ostringstream msg;
+    msg << "Couldn't open '" << filename << "': "
+      << PHYSFS_getLastError();
+    throw std::runtime_error(msg.str());
+  }
+
+  try {
+    char magic[4];
+    if(PHYSFS_read(file, magic, sizeof(magic), 1) != 1)
+      throw std::runtime_error("Couldn't read file magic");
+    if(strncmp(magic, "W3DS", 4) != 0)
+      throw std::runtime_error("Not a windstille 3d sprite file");
+
+
+    mesh_count = read_uint16_t(file);
+    action_count = read_uint16_t(file);
+
+    // read meshs
+    meshs = new Mesh[mesh_count];
+    for(uint16_t i = 0; i < mesh_count; ++i) {
+      Mesh& mesh = meshs[i];
+
+      std::string texturename = read_string(file, 64);
+      texturename = dirname(filename) + basename(texturename);
+      
+      mesh.texture = CL_OpenGLSurface(datadir + texturename);
+      mesh.triangle_count = read_uint16_t(file);
+      mesh.vertex_count = read_uint16_t(file);
+
+      printf("Reading Mesh Tex %s Tri %u Vs %u.\n", texturename.c_str(),
+              mesh.triangle_count, mesh.vertex_count);
+
+      // read triangles
+      mesh.vertex_indices = new uint16_t[mesh.triangle_count * 3];
+      for(uint16_t v = 0; v < mesh.triangle_count * 3; ++v) {
+        mesh.vertex_indices[v] = read_uint16_t(file);
+      }
+      
+      mesh.normals = new float[mesh.triangle_count * 3];
+      for(uint16_t n = 0; n < mesh.triangle_count * 3; ++n) {
+        mesh.normals[n] = read_float(file);
+      }
+
+      mesh.tex_coords = new float[mesh.vertex_count * 2];
+      for(uint16_t v = 0; v < mesh.vertex_count * 2; ++v) {
+        mesh.tex_coords[v] = read_float(file);
+      }
+    }
+
+    // read actions
+    actions = new Action[action_count];
+    for(uint16_t i = 0; i < action_count; ++i) {
+      Action& action = actions[i];
+
+      action.name = read_string(file, 64);
+      action.frame_count = read_uint16_t(file);
+
+      printf("ReadingAction %s Frames %u.\n", action.name.c_str(), action.frame_count);
+
+      // read frames
+      action.frames = new ActionFrame[action.frame_count];
+      for(uint16_t f = 0; f < action.frame_count; ++f) {
+        ActionFrame& frame = action.frames[f];
+        frame.meshs = new MeshVertices[mesh_count];
+
+        for(uint16_t m = 0; m < mesh_count; ++m) {
+          MeshVertices& mesh = frame.meshs[m];
+
+          mesh.vertices = new float[meshs[m].vertex_count * 3];
+          for(uint16_t v = 0; v < meshs[m].vertex_count * 3; ++v) {
+            mesh.vertices[v] = read_float(file);
+          }
+        }
+      }
+    }
+
+  } catch(std::exception& e) {
+    PHYSFS_close(file);
+    std::ostringstream msg;
+    msg << "Problem while reading '" << filename << "': "
+      << e.what();
+    throw std::runtime_error(msg.str());
+  }
+  PHYSFS_close(file);
 }
 
 Sprite3D::~Sprite3D()
 {
-  delete impl;
-}
-
-void
-Sprite3D::update(float delta)
-{
-  impl->angle += 30.0f* delta;
+  delete[] meshs;
+  delete[] actions;
 }
 
 class Sprite3DDrawingRequest : public DrawingRequest
 {
 private:
-  Sprite3DImpl* impl;
+  Sprite3D* sprite;
+  const ActionFrame* frame;
 
 public:
-  Sprite3DDrawingRequest(Sprite3DImpl* impl_,
-                         const CL_Vector& pos, const CL_Matrix4x4& modelview = CL_Matrix4x4(true))
-    : DrawingRequest(pos, modelview), 
-      impl(impl_)
+  Sprite3DDrawingRequest(Sprite3D* sprite, const ActionFrame* frame,
+      const CL_Vector& pos, const CL_Matrix4x4& modelview)
+    : DrawingRequest(pos, modelview), sprite(sprite), frame(frame)
   {
   }
 
-  virtual ~Sprite3DDrawingRequest() {}
-
-  void draw(CL_GraphicContext* gc) 
+  void draw(CL_GraphicContext* gc)
   {
-    // FIXME: This must be moved into a DrawingRequest
-    CL_OpenGLState state(gc);
-    state.set_active();
-    state.setup_2d();
-  
-    glPushMatrix();
-
-    glMultMatrixd(modelview);
-
-    glTranslatef(pos.x, pos.y, pos.z); //pos.z);
-    
-    // FIXME: just for testing, remove for production
-    glRotated(impl->angle, 0, 1.0, 0);
-
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
-    impl->surface.bind();
-
-    {
-      GLbyte* data = impl->use_vbo ? 0 : reinterpret_cast<GLbyte*>(&*impl->raw_data.begin());
-
-      if (impl->use_vbo)
-        clBindBuffer(CL_ARRAY_BUFFER, impl->buffer_id);
-
-      clVertexPointer  (3, CL_FLOAT, 0, data);
-      clNormalPointer     (CL_FLOAT, 0, data + impl->normals_offset);
-      clTexCoordPointer(2, CL_FLOAT, 0, data + impl->texcoord_offset);
-    
-      // Enable arrays
-      clEnableClientState(CL_TEXTURE_COORD_ARRAY);
-      clEnableClientState(CL_NORMAL_ARRAY);
-      clEnableClientState(CL_VERTEX_ARRAY);
-    
-      // Draw arrays
-      clDrawArrays(CL_TRIANGLES, 0, impl->faces.size()*3);
-
-      // Disable arrays
-      clDisableClientState(CL_TEXTURE_COORD_ARRAY);
-      clDisableClientState(CL_NORMAL_ARRAY);
-      clDisableClientState(CL_VERTEX_ARRAY);
-
-      if (impl->use_vbo)
-        clBindBuffer(CL_ARRAY_BUFFER, 0);
-    }
-
-    glPopMatrix();   
+    sprite->render_frame(gc, frame, pos, modelview);
   }
 };
 
 void
 Sprite3D::draw(SceneContext& sc)
 {
-  sc.color().draw(new Sprite3DDrawingRequest(impl, CL_Vector(12*32, 26*32, 100), sc.color().get_modelview()));
+  int frame = (int) fmodf(game_time * 24, actions[0].frame_count);
+  sc.color().draw(new Sprite3DDrawingRequest(this, &actions[0].frames[frame],
+                                             CL_Vector(12*32, 26*32, 100),
+                                             sc.color().get_modelview()));
 }
 
-/* EOF */
+void
+Sprite3D::render_frame(CL_GraphicContext* gc, const ActionFrame* frame,
+    const CL_Vector& pos, const CL_Matrix4x4& modelview)
+{
+  //printf("RenderFrame.\n");
+
+  assert_gl("before render_frame");
+  
+  static float angle = 0;
+  angle += 1;
+  
+  CL_OpenGLState state(gc);
+  state.set_active();
+  state.setup_2d();
+
+  glPushMatrix();
+  glMultMatrixd(modelview);
+  glTranslatef(pos.x, pos.y, pos.z);
+  // just a test
+  glRotatef(angle, 0, 1.0, 0);
+  
+  glClear(GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_TEXTURE_2D);
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);  
+
+  assert_gl("gl init before sprite");
+  
+  for(uint16_t m = 0; m < mesh_count; ++m) {
+    const Mesh& mesh = meshs[m];
+    const MeshVertices& vertices = frame->meshs[m];
+ 
+    CL_OpenGLSurface& texture = const_cast<CL_OpenGLSurface&> (mesh.texture);
+    texture.bind();
+
+    glVertexPointer(3, GL_FLOAT, 0, vertices.vertices);
+    glNormalPointer(GL_FLOAT, 0, mesh.normals);
+    glTexCoordPointer(2, GL_FLOAT, 0, mesh.tex_coords);
+
+    glDrawElements(GL_TRIANGLES, mesh.triangle_count * 3, GL_UNSIGNED_SHORT,
+        mesh.vertex_indices);
+  }
+
+  assert_gl("rendering 3d sprite");      
+
+  glPopMatrix();
+}
+

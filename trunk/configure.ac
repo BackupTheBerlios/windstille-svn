@@ -91,6 +91,10 @@ AX_CHECK_GL
 if test "$no_gl" = "yes"; then
     AC_MSG_ERROR([Couldn't find opengl libraries or headers])
 fi
+AX_CHECK_GLU
+if test "$no_glu" = "yes"; then
+    AC_MSG_ERROR([You need to have GLU headers and libraries installed])
+fi
 
 PKG_CHECK_MODULES([CLANLIB], [clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7 clanGUI-0.7 clanSound-0.7])
 
