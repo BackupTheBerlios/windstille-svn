@@ -127,9 +127,6 @@ Sprite3D::blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
 {
   assert_gl("before render_frame");
   
-  static float angle = 0;
-  angle += 1;
-  
   CL_OpenGLState state(gc);
   state.set_active();
   state.setup_2d();
@@ -137,8 +134,6 @@ Sprite3D::blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
   glPushMatrix();
   glMultMatrixd(modelview);
   glTranslatef(pos.x, pos.y, pos.z);
-  // just a test
-  glRotatef(angle, 0, 1.0, 0);
   
   glClear(GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);

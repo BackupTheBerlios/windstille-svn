@@ -1,0 +1,22 @@
+Notes about blender models:
+
+- 1 blender unit corresponds to 32pixels in game
+  (if you use the default 800x600 game resolution)
+- When looking at a character turned left from the side, coordinate axes are:
+    z -> up
+    y -> right
+    x -> back
+  (the exporter will convert these to windstille coordinates which are
+   x->right, y -> down, z -> back)
+- Each blender object should use exactly 1 texture on all it's faces.
+- You should animate your models with armatures. The exporter will grab all
+  defined actions for the armature and export these. You are only allowed to
+  have 1 armature object in the scene at the moment (but this armature can have
+  multiple bones of course)
+- Only for information you don't have to care about this: UVs in blender are
+    u -> right
+    v -> up
+  UVs in windstille are
+    u -> right
+    v -> down
+

@@ -7,7 +7,7 @@ Group: 'Export'
 Tip: 'Export meshes/actions to windstille format'
 """
 
-##  $Id$
+##  $Id: windstille_main.hxx,v 1.4 2003/11/07 13:00:39 grumbel Exp $
 ## 
 ##  Windstille - A Jump'n Shoot Game
 ##  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
@@ -28,7 +28,9 @@ Tip: 'Export meshes/actions to windstille format'
 
 # Simple Python script that shows how to export animations from
 # Blender
-# Put it in your $HOME/.blender/scripts directory
+# Put this script in your $HOME/.blender/scripts directory.
+#
+# See windstille/docs/models.txt for more details
 
 import struct
 import Blender
@@ -121,11 +123,13 @@ def export(filename):
       else:
         facecount += 1
 
+    # normals
     for face in data.faces:
-      bodydata += struct.pack("=fff", face.normal[0], face.normal[1], face.normal[2])
+      bodydata += struct.pack("=fff", face.normal[1], -face.normal[2], face.normal[0])
       if len(face.v) == 4:
-        bodydata += struct.pack("=fff", face.normal[0], face.normal[1], face.normal[2])
+        bodydata += struct.pack("=fff", face.normal[1], -face.normal[2], face.normal[0])
 
+    # uv coords per vertex
     for uv in uvs:
       bodydata += struct.pack("=ff", uv[0], 1.0-uv[1])
 
@@ -161,9 +165,9 @@ def export(filename):
     file.write(struct.pack("=64sH", action.getName(), resultframes))
    
     frs = 0
-    for frame in xrange(1, numframes+1, SAMPLEFRAMES):
+    for frame in range(1, numframes+1, SAMPLEFRAMES):
       frs += 1
-      Blender.Set("curframe", frame.__int__())
+      Blender.Set("curframe", float(frame))
       for obj in Blender.Object.Get():
         data = obj.getData()
         if (type(data) is not Blender.Types.NMeshType) or not data.faces:                 continue
@@ -172,6 +176,7 @@ def export(filename):
         data = Blender.NMesh.GetRawFromObject(obj.getName())
         vertexmap = objvertmaps[obj.getName()]
         m = obj.getMatrix()
+        # action/frame/mesh/vertices
         for nv in vertexmap:
           v = data.verts[nv]
           t = [0, 0, 0]
@@ -181,8 +186,7 @@ def export(filename):
           t[0] *= ZOOM
           t[1] *= ZOOM
           t[2] *= ZOOM
-          file.write(struct.pack("=fff", t[0], t[1], t[2]))
-    print frs
+          file.write(struct.pack("=fff", t[1], -t[2], t[0]))
 
 def fs_callback(filename):
   export(filename)
