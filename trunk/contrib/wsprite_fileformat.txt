@@ -1,0 +1,25 @@
+Header
+char magic[4] (= W3DS)
+uint16_t mesh_count
+uint16_t action_count
+
+Mesh Header
+char texturename[64]
+uint16_t triangle_count
+uint16_t vertex_count
+
+Data after mesh header:
+uint16_t vertexnum, edge per triangle
+float normal[3] per triangle
+float texcoord[2] per vertex
+
+Action Header
+char name[64]
+uint16_t frame_count
+
+Data per action:
+for all frames:
+  for all meshes:
+    for all vertices:
+      float x, y, z
+
