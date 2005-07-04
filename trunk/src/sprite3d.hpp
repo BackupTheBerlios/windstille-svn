@@ -21,6 +21,7 @@
 #define HEADER_SPRITE3D_HXX
 
 #include <string>
+#include <stdint.h>
 #include "game_object.hpp"
 
 class SceneContext;
