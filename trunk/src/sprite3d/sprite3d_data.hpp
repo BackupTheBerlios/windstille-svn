@@ -1,7 +1,6 @@
 //  $Id$
 // 
-//  Pingus - A free Lemmings clone
-//  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
+//  Copyright (C) 2005 Matthias Braun <matze@braunis.de>
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -26,6 +25,7 @@ struct Mesh;
 struct MeshVertices;
 struct ActionFrame;
 struct Action;
+struct Marker;
 
 /**
  * This class holds the data of a .wsprite file.
@@ -35,6 +35,9 @@ class Sprite3DData
 public:
   Sprite3DData(const std::string& filename);
   ~Sprite3DData();
+
+  const Action& get_action(const std::string& name) const;
+  const Marker& get_marker(const Action* action, const std::string& name) const;
 
   uint16_t mesh_count;
   Mesh* meshs;            

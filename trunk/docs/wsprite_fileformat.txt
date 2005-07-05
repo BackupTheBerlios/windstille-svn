@@ -1,5 +1,6 @@
 Header
 char magic[4] (= W3DS)
+uint16_t format_version      (= 1 at the moment)
 uint16_t mesh_count
 uint16_t action_count
 

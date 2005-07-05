@@ -34,11 +34,13 @@
 #include "timer.hpp"
 
 Sprite3D::Sprite3D(const Sprite3DData* data)
-  : data(data), vflip(false)
+  : data(data), rot(false), next_action(0), next_rot(0), actions_switched(false)
 {
   current_action = &data->actions[0];
-  time_delta = 0;
+  last_frame = current_action->frame_count - 1;
+  animation_time = 0;
   speed = 1.0;
+  update(0);
 }
 
 Sprite3D::~Sprite3D()
@@ -48,27 +50,51 @@ Sprite3D::~Sprite3D()
 void
 Sprite3D::set_action(const std::string& actionname)
 {
-  // TODO: make this a little smarter so that the action change is delayed until
-  // the next frame and then the current action blends with the next action
-  Action* action = 0;
-  for(uint16_t a = 0; a < data->action_count; ++a) {
-    if(data->actions[a].name == actionname)
-      action = &data->actions[a];
-  }
-  if(action == 0) {
-    std::ostringstream msg;
-    msg << "No action with name '" << action << "' found";
-    throw std::runtime_error(msg.str());
-  }
-
-  current_action = action;
-  time_delta = game_time;
+  current_action = & data->get_action(actionname);
+  animation_time = 0;
+  last_frame = current_action->frame_count - 1;
 }
 
 const std::string&
 Sprite3D::get_action() const
 {
   return current_action->name;
+}
+
+void
+Sprite3D::set_next_action(const std::string& name, bool next_rot)
+{
+  next_action = & data->get_action(name);
+  this->next_rot = next_rot;
+  actions_switched = false;
+}
+
+void
+Sprite3D::abort_at_marker(const std::string& name)
+{
+  const Marker& marker = data->get_marker(current_action, name);
+  last_frame = marker.frame;
+}
+
+bool
+Sprite3D::after_marker(const std::string& name) const
+{
+  const Marker& marker = data->get_marker(current_action, name);
+  
+  int frame = static_cast<int>(animation_time) % current_action->frame_count;
+  
+  return frame >= marker.frame;
+}
+
+bool
+Sprite3D::switched_actions()
+{
+  if(actions_switched) {
+    actions_switched = false;
+    return true;
+  }
+
+  return false;
 }
 
 void
@@ -84,55 +110,76 @@ Sprite3D::get_speed() const
 }
 
 void
-Sprite3D::set_vflip(bool vflip)
+Sprite3D::set_rot(bool rot)
 {
-  this->vflip = vflip;
+  this->rot = rot;
 }
 
 class Sprite3DDrawingRequest : public DrawingRequest
 {
 private:
   Sprite3D* sprite;
-  const ActionFrame* frame1;
-  const ActionFrame* frame2;
-  float time;
 
 public:
-  Sprite3DDrawingRequest(Sprite3D* sprite, const ActionFrame* frame1,
-                         const ActionFrame* frame2, float time,
-                         const Vector& pos, const Matrix& modelview)
-      : DrawingRequest(pos, modelview), sprite(sprite), frame1(frame1),
-        frame2(frame2), time(time)
+  Sprite3DDrawingRequest(Sprite3D* sprite, const Vector& pos,
+                         const Matrix& modelview)
+      : DrawingRequest(pos, modelview), sprite(sprite)
   {
   }
 
   void draw(CL_GraphicContext* gc)
   {
-    sprite->blend_frames(gc, frame1, frame2, time, pos, modelview);
+    sprite->draw(gc, pos, modelview);
   }
 };
 
 void
+Sprite3D::update(float elapsed_time)
+{
+  float animation_time_delta = elapsed_time * current_action->speed * speed;
+ 
+  int frame = static_cast<int>(animation_time) % current_action->frame_count;
+  blend_time = fmodf(animation_time, 1.0);
+   
+  frame1 = &current_action->frames[frame];
+  
+  // on last frame?
+  if(frame >= last_frame) {
+    if(next_action != 0) {
+      frame2 = &next_action->frames[0];
+
+      // time to switch actions?
+      if(blend_time + animation_time_delta >= 1.0) {
+        current_action = next_action;
+        last_frame = current_action->frame_count-1;
+        animation_time = blend_time + animation_time_delta - 1.0;
+        next_action = 0;
+        actions_switched = true;
+        // this will rotate 1 frame too early...
+        rot = next_rot;
+      }
+    } else {
+      frame2 = &current_action->frames[0];
+    }
+  } else {
+    frame2 = &current_action->frames[frame+1];
+  }
+
+  animation_time += animation_time_delta;
+}
+
+
+void
 Sprite3D::draw(SceneContext& sc, const Vector& pos)
 {
-  float gtime = (game_time - time_delta) * speed * current_action->speed;
-  int frame = static_cast<int>(gtime) % current_action->frame_count;
-  int nextframe = (frame+1) % current_action->frame_count;  
-  float time = fmodf(gtime, 1.0);
-
-  const ActionFrame* frame1 = &current_action->frames[frame];
-  const ActionFrame* frame2 = &current_action->frames[nextframe];
-  sc.color().draw(new Sprite3DDrawingRequest(this, frame1, frame2, time, pos,
-                                             sc.color().get_modelview()));
+  sc.color().draw(
+    new Sprite3DDrawingRequest(this, pos, sc.color().get_modelview()));
 }
 
 void
-Sprite3D::blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
-                       const ActionFrame* frame2, float time,
-                       const Vector& pos, const Matrix& modelview)
+Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos,
+               const Matrix& modelview)
 {
-  assert_gl("before render_frame");
- 
   CL_OpenGLState state(gc);
   state.set_active();
   state.setup_2d();
@@ -140,8 +187,9 @@ Sprite3D::blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
   glPushMatrix();
   glMultMatrixd(modelview);
   glTranslatef(pos.x, pos.y, pos.z);
-  if(vflip)
-    glScalef(-1.0, 1.0, 1.0);  
+  if(rot) {
+    glRotatef(180, 0, 1.0, 0);
+  }                           
 
   glClear(GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
@@ -152,27 +200,29 @@ Sprite3D::blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
 
   assert_gl("gl init before sprite");
   
-  float t_1 = 1.0 - time;
+  float t_1 = 1.0 - blend_time;
   for(uint16_t m = 0; m < data->mesh_count; ++m) {
     const Mesh& mesh = data->meshs[m];
     const MeshVertices& vertices1 = frame1->meshs[m];
     const MeshVertices& vertices2 = frame2->meshs[m];
     
+    // blend between frame1 + frame2
     float* verts = new float[mesh.vertex_count * 3];
-
     for(uint16_t v = 0; v < mesh.vertex_count*3; ++v) {
-      verts[v] = vertices1.vertices[v] * t_1 + vertices2.vertices[v] * time;
+      verts[v] 
+        = vertices1.vertices[v] * t_1 + vertices2.vertices[v] * blend_time;
     }
-    
+   
+    // draw mesh
     CL_OpenGLSurface& texture = const_cast<CL_OpenGLSurface&> (mesh.texture);
     texture.bind();
 
     glVertexPointer(3, GL_FLOAT, 0, verts);
     glNormalPointer(GL_FLOAT, 0, mesh.normals);
     glTexCoordPointer(2, GL_FLOAT, 0, mesh.tex_coords);
-
     glDrawElements(GL_TRIANGLES, mesh.triangle_count * 3, GL_UNSIGNED_SHORT,
         mesh.vertex_indices);
+    
     delete[] verts;
   }
 

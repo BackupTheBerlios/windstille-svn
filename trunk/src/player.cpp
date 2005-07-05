@@ -62,7 +62,7 @@ Player::draw (SceneContext& gc)
 {
   gc.light().draw(light, pos.x, pos.y, 0);
   
-  sprite->set_vflip(direction == EAST);
+  sprite->set_rot(direction == EAST);
 
 #if 0
   if (hit_count > 0)
@@ -193,6 +193,8 @@ Player::update (float delta)
             }
         }
     }
+
+  sprite->update(delta);
 }
 
 void 

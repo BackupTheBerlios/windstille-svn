@@ -39,15 +39,55 @@ class Sprite3D
 public:
   ~Sprite3D();
 
+  /**
+   * You should call this every frame
+   */
+  void update(float elapsed_time);
   void draw(SceneContext& sc, const Vector& pos);
   
-  void set_action(const std::string& name);  
+  /**
+   * Instantly changes the action to the specified one
+   */
+  void set_action(const std::string& name);
+  
+  /**
+   * Return the name of the currently active action
+   */
   const std::string& get_action() const;
 
+  /**
+   * Set the next action and vflip value to be played after the current action
+   * has finished (or reached the point to be defined by abort_at_marker)
+   */
+  void set_next_action(const std::string& name, bool rot);
+
+  /**
+   * Abort current action after a certain marker has been reached.
+   * (This only works if set_next_action has been used before)
+   */
+  void abort_at_marker(const std::string& marker);
+
+  /**
+   * returns true if the current frame of the action is after a certain marker
+   */
+  bool after_marker(const std::string& marker) const;
+
+  /**
+   * returns true exactly once after actions have been switched after a
+   * set_next_action call (another call to set_next_action resets this flag)
+   */
+  bool switched_actions();
+
+  /**
+   * The speed of the action is multiplied with this factor
+   */
   void set_speed(float speed);
   float get_speed() const;
 
-  void set_vflip(bool flip_vertically = true);
+  /**
+   * Rotate (or not rotate) the model 180 degree
+   */
+  void set_rot(bool flip_vertically = true);
 
 private:
   friend class Sprite3DDrawingRequest;
@@ -57,20 +97,22 @@ private:
   Sprite3D (const Sprite3D&);
   Sprite3D& operator= (const Sprite3D&);
 
-  /**
-   * blends 2 frames and renders,
-   * blending formula: time*frame1 + (1.0-time)*frame2
-   */
-  void blend_frames(CL_GraphicContext* gc, const ActionFrame* frame1,
-                    const ActionFrame* frame2, float time,
-                    const Vector& pos, const Matrix& modelview);
+  void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
 
   const Sprite3DData* data;
   const Action* current_action;
-  float time_delta;
+  float animation_time;
   float speed; 
+  bool rot;
+
+  const ActionFrame* frame1;
+  const ActionFrame* frame2;
+  float blend_time;
+  
   const Action* next_action;
-  bool vflip;
+  bool next_rot;
+  int last_frame;
+  bool actions_switched;
 };
 
 #endif

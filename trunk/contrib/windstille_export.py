@@ -41,6 +41,9 @@ from Blender import Window
 DEFAULT_SAMPLERATE = 5
 # ZOOM, is multiplied with all vertex coordinates
 ZOOM = 32.0
+DEFAULT_SPEED = 5.0
+# DO NOT change this
+FORMAT_VERSION = 1
 
 # config entry (first_frame, last_frame, speed, samplerate, markers[])
 #  a marker is (name, frame)
@@ -84,7 +87,7 @@ def parse_config(text):
       speed = expect_float()
     else:
       lex.push_token(token)
-      speed = 1.0
+      speed = DEFAULT_SPEED
 
     token = lex.get_token()
     if token == "samplerate":
@@ -164,7 +167,7 @@ def export(filename):
     actions.append(action[1])
 
   file = open(filename, "wb")
-  file.write(struct.pack("=4sHH", "W3DS", len(meshes), len(actions)))
+  file.write(struct.pack("=4sHHH", "W3DS", FORMAT_VERSION, len(meshes), len(actions)))
   objvertmaps = {}
 
   # Mesh Headers + Data
@@ -249,7 +252,7 @@ def export(filename):
             time = p.getPoints() [0]
             if time > last_frame:
               last_frame = int(time)
-      action_speed = 1.0
+      action_speed = DEFAULT_SPEED
       samplerate = DEFAULT_SAMPLERATE
       markers = []
 

@@ -20,8 +20,9 @@ TestObject::draw(SceneContext& context)
 }
 
 void
-TestObject::update(float )
+TestObject::update(float elapsed_time)
 {
+  sprite->update(elapsed_time);
 }
 
 void
@@ -57,6 +58,6 @@ TestObject::set_pos(const Vector& pos)
 void
 TestObject::set_vflip(bool vflip)
 {
-  sprite->set_vflip(vflip);
+  sprite->set_rot(vflip);
 }
 

@@ -7,6 +7,8 @@
 #include "util.hpp"
 #include "globals.hpp"
 
+static const int FORMAT_VERSION = 1;
+
 static inline float read_float(PHYSFS_file* file)
 {
     uint32_t int_result;
@@ -56,11 +58,14 @@ Sprite3DData::Sprite3DData(const std::string& filename)
   }
 
   try {
-    char magic[4];
-    if(PHYSFS_read(file, magic, sizeof(magic), 1) != 1)
-      throw std::runtime_error("Couldn't read file magic");
-    if(strncmp(magic, "W3DS", 4) != 0)
+    std::string magic = read_string(file, 4);
+    if(magic != "W3DS")
       throw std::runtime_error("Not a windstille 3d sprite file");
+    uint16_t format_version = read_uint16_t(file);
+    if(format_version > FORMAT_VERSION)
+      throw std::runtime_error("sprite file format too new");
+    if(format_version < FORMAT_VERSION)
+      throw std::runtime_error("sprite file format too old");
 
     mesh_count = read_uint16_t(file);
     if(mesh_count == 0)
@@ -189,5 +194,30 @@ Sprite3DData::clear()
   }
   mesh_count = 0;
   action_count = 0;
+}
+
+const Action&
+Sprite3DData::get_action(const std::string& name) const
+{
+  for(uint16_t a = 0; a < action_count; ++a) {
+    if(actions[a].name == name)
+      return actions[a];
+  }
+  std::ostringstream msg;
+  msg << "No action with name '" << name << "' defined";
+  throw std::runtime_error(msg.str());
+}
+
+const Marker&
+Sprite3DData::get_marker(const Action* action, const std::string& name) const
+{
+  for(uint16_t m = 0; m < action->marker_count; ++m) {
+    if(action->markers[m].name == name)
+      return action->markers[m];
+  }
+  std::ostringstream msg;
+  msg << "No marker with name '" << name << "' defined in action '"
+      << action->name << "'";
+  throw std::runtime_error(msg.str());
 }
 
