@@ -108,9 +108,19 @@ Sprite3DData::Sprite3DData(const std::string& filename)
 
       action.name = read_string(file, 64);
       action.speed = read_float(file);
+      action.marker_count = read_uint16_t(file);
       action.frame_count = read_uint16_t(file);
 
       printf("ReadingAction %s Frames %u.\n", action.name.c_str(), action.frame_count);
+
+      // read markers
+      action.markers = new Marker[action.marker_count];
+      for(uint16_t m = 0; m < action.marker_count; ++m) {
+        Marker& marker = action.markers[m];
+        marker.name = read_string(file, 64);
+        marker.frame = read_uint16_t(file);
+        printf("Marker '%s' at %u.\n", marker.name.c_str(), marker.frame);
+      }
 
       // read frames
       action.frames = new ActionFrame[action.frame_count];
@@ -159,6 +169,7 @@ Sprite3DData::clear()
   if(actions != 0) {
     for(uint16_t a = 0; a < action_count; ++a) {
       Action& action = actions[a];
+      delete[] action.markers;      
       if(action.frames == 0)
         continue;
       

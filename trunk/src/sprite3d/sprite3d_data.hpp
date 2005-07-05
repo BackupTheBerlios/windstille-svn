@@ -78,13 +78,21 @@ struct ActionFrame
   MeshVertices* meshs;
 };
 
+struct Marker
+{
+  std::string name;
+  uint16_t frame;
+};
+
 struct Action
 {
   Action()
-    : frames(0)
+    : markers(0), frames(0)
   { }
   std::string name;
   float speed;
+  uint16_t marker_count;
+  Marker* markers;
   uint16_t frame_count;
   ActionFrame* frames;
 };

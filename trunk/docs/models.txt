@@ -19,6 +19,7 @@ Notes about blender models:
   UVs in windstille are
     u -> right
     v -> down
+- Take a look at the console output to see warnings and errors from the script
 - You should specify additional attributes for the actions by creating a blender
   textobject with name "actionconfig". You can then specify lines like this
   (this example states that for action MyActionName frames 5 - 40 should be
@@ -27,5 +28,14 @@ Notes about blender models:
 
   # Sampe actionconfig file
 
-  MyActionName 5 - 40 speed 5.7 smaplerate 8
-- Take a look at the console output to see warnings and errors from the script
+  MyActionName 5 - 40
+  AnotherAction 1 - 30 speed 5.0
+
+  You can append additional options at the line. They are each optional but you
+  have to specify them in this order.
+    speed FLOAT_NUMBER      the default fps speed the animation should be played
+    samplerate INT_NUMBER   only sample every nth frame in blender
+    marker NAME INT_NUMBER  remembers a named marker at a specific frame. These
+                            markers will be used by the program for purposes
+                            like finding out when you can safely change
+                            animations. You can specify multiple markers.

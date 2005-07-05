@@ -42,6 +42,8 @@ DEFAULT_SAMPLERATE = 5
 # ZOOM, is multiplied with all vertex coordinates
 ZOOM = 32.0
 
+# config entry (first_frame, last_frame, speed, samplerate, markers[])
+#  a marker is (name, frame)
 def parse_config(text):
   lex = shlex.shlex(text)
   lex.wordchars += "."
@@ -90,8 +92,18 @@ def parse_config(text):
     else:
       lex.push_token(token)
       samplerate = DEFAULT_SAMPLERATE
+
+    token = lex.get_token()
+    markers = []
+    while token == "marker":
+      marker_name = expect_string()
+      marker_frame = expect_int()
+      markers.append( (marker_name, marker_frame) )
+      token = lex.get_token()
+    lex.push_token(token)
       
-    actionconfig[action_name] = (first_frame, last_frame, speed, samplerate)
+    actionconfig[action_name] = \
+        (first_frame, last_frame, speed, samplerate, markers)
     print "Config: %s - %s" % (action_name, str(actionconfig[action_name]))
     token = lex.get_token()
     if token == lex.eof:
@@ -223,7 +235,7 @@ def export(filename):
  
     # find/autodetect config
     if actionconfig.has_key(action.getName()):
-      (first_frame, last_frame, action_speed, samplerate) = actionconfig[action.getName()]
+      (first_frame, last_frame, action_speed, samplerate, markers) = actionconfig[action.getName()]
     else:
       print "No config for action '%s' defined." % action.getName()
       first_frame = 1 
@@ -239,11 +251,10 @@ def export(filename):
               last_frame = int(time)
       action_speed = 1.0
       samplerate = DEFAULT_SAMPLERATE
+      markers = []
 
     # calculate number of frames and stuff for the header
     numframes = last_frame - first_frame + 1
-    # aehm aehm... I wasn't able to find a mathematical formula that works
-    # correct (shame on me) so this is a simple loop now
     resultframes = 0
     for i in range(first_frame, last_frame+1, samplerate):
       resultframes += 1
@@ -252,7 +263,12 @@ def export(filename):
     Window.DrawProgressBar(progress, "Exporting Action %s (%d frames)" \
             % (action.getName(), resultframes))
     actionnum += 1
-    file.write(struct.pack("=64sfH", action.getName(), action_speed, resultframes))
+    file.write(struct.pack("=64sfHH", action.getName(), action_speed, \
+                len(markers), resultframes))
+
+    # write markers
+    for marker in markers:
+      file.write(struct.pack("=64sH", marker[0], marker[1]))
   
     # output for all frames for all meshs all vertex positions
     frs = 0
