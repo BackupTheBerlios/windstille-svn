@@ -42,6 +42,7 @@ DEFAULT_SAMPLERATE = 5
 # ZOOM, is multiplied with all vertex coordinates
 ZOOM = 32.0
 DEFAULT_SPEED = 1.0
+SPEED_MULTIPLIER = 9.8
 # DO NOT change this
 FORMAT_VERSION = 1
 
@@ -266,8 +267,8 @@ def export(filename):
     Window.DrawProgressBar(progress, "Exporting Action %s (%d frames)" \
             % (action.getName(), resultframes))
     actionnum += 1
-    file.write(struct.pack("=64sfHH", action.getName(), action_speed, \
-                len(markers), resultframes))
+    file.write(struct.pack("=64sfHH", action.getName(), \
+          action_speed * SPEED_MULTIPLIER, len(markers), resultframes))
 
     # write markers
     for marker in markers:
