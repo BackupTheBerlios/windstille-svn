@@ -39,7 +39,7 @@ Sprite3D::Sprite3D(const Sprite3DData* data)
   current_action = &data->actions[0];
   last_frame = current_action->frame_count - 1;
   animation_time = 0;
-  speed = 1.0;
+  speed = 9.8;
   update(0);
 }
 
