@@ -41,7 +41,7 @@ from Blender import Window
 DEFAULT_SAMPLERATE = 5
 # ZOOM, is multiplied with all vertex coordinates
 ZOOM = 32.0
-DEFAULT_SPEED = 5.0
+DEFAULT_SPEED = 1.0
 # DO NOT change this
 FORMAT_VERSION = 1
 
