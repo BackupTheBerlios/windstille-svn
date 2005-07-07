@@ -28,7 +28,9 @@
 #include "globals.hpp"
 #include "sprite3d/sprite3d_manager.hpp"
 
-#define MAX_ENERGIE 16
+static const int MAX_ENERGY = 16;
+static const float WALK_SPEED = 128.0;
+static const float GRAVITY = 1500;
 
 Player* Player::current_ = 0;
 
@@ -36,20 +38,18 @@ Player::Player () :
   pos (320, 200),
   velocity (0, 0),
   light    ("hero/light", resources),
-
-  state (WALKING),
-  gun_state (GUN_READY),
-  ground_state (IN_AIR)
+  state (STAND)
 {
+  name = "Player";
   sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
   light.set_blend_func(blend_src_alpha, blend_one);
 
   jumping = false;
-  energie = MAX_ENERGIE;
+  energy = MAX_ENERGY;
   current_ = this;
 
-  direction = WEST;
   hit_count = 0.0f;
+  sprite->set_action("Stand");
 }
 
 Player::~Player()
@@ -62,20 +62,6 @@ Player::draw (SceneContext& gc)
 {
   gc.light().draw(light, pos.x, pos.y, 0);
   
-  sprite->set_rot(direction == EAST);
-
-#if 0
-  if (hit_count > 0)
-  {
-    if (rand()%2)
-      sprite->set_alpha(1.0f);
-    else
-      sprite->set_alpha(1.0f - hit_count);
-  }
-  else
-    sprite->set_alpha(1.0f);
-#endif
-
   sprite->draw(gc, pos);
 }
 
@@ -88,260 +74,323 @@ Player::get_bounding_rect() const
                  int(pos.y));
 }
 
-SubTilePos
-Player::get_subtile_pos()
+void
+Player::start_listening()
 {
-  return SubTilePos(int(pos.x/TILE_SIZE), int(pos.y/TILE_SIZE));
+  if(state == STAND_TO_LISTEN || state == LISTEN)
+    return;
+
+  set_stand_to_listen(false);
 }
 
 void
-Player::switch_movement_state(MovementState newstate)
+Player::stop_listening()
 {
-  if(state == newstate)
+  if(state != LISTEN && state != STAND_TO_LISTEN)
     return;
-
-  switch(newstate) {
-    case KILLED:
-    case DEAD:
-      sprite->set_action("Hang"); // TODO
-      break;
-    case STANDING:
-      sprite->set_action("Stand");
-      break;
-    case SITTING:
-      sprite->set_action("Ducking"); // TODO
-      break;
-    case TURN:
-      sprite->set_action("Turn");
-      break;
-    case RUNNING:
-      sprite->set_action("Run");
-      break;
-    case WALKING:
-      sprite->set_action("Walk");
-      break;
-  }
-  state = newstate;
+  
+  set_stand_to_listen(true);
 }
 
 void 
-Player::update (float delta)
+Player::update (float elapsed_time)
 {
   controller = InputManager::get_controller();
 
-  if (state == KILLED) 
-    {
-      switch (ground_state)
-        {
-        case IN_AIR:
-          update_air(delta);
-          break;
-        case ON_GROUND:
-          // TODO wait for kill animation to finish
-          switch_movement_state(DEAD);
-          break;
-        }
-    }
-  else if (state == DEAD)
-    {
-#if 0
-      if (controller.get_button_state(FIRE_BUTTON))
-        {
-          set_position(CL_Vector(258, 0));
-          set_direction(EAST);
-          switch_movement_state(WALKING);
-          gun_state = GUN_READY;
-          ground_state = IN_AIR;
-          energie = MAX_ENERGIE;
-          velocity = CL_Vector();
-        }
-#endif
-    }
-  else
-    {
-      if (hit_count > 0)
-        hit_count -= delta;
+  switch(state) {
+    case STAND:
+    case WALK:
+      update_walk_stand();
+      break;
+    case DUCKING:
+      update_ducking();
+      break;
+    case DUCKED:
+      update_ducked();
+      break;
+    case TURNAROUND:
+      update_turnaround();
+      break;
+    case STAND_TO_LISTEN:
+      update_stand_to_listen();
+      break;
+    case LISTEN:
+      update_listen();
+      break;
+    default:
+      assert(false);
+      break;
+  }
 
-      if (controller.get_button_state(LEFT_BUTTON))
-        direction = WEST;
-      else if  (controller.get_button_state(RIGHT_BUTTON))
-        direction = EAST;
-
-      switch(ground_state)
-        {
-        case ON_GROUND:
-          update_ground (delta);
-          if (!on_ground ())
-            ground_state = IN_AIR;
-          break;
-        case IN_AIR:
-          update_air (delta);
-          break;
-        }
-
-      SubTilePos new_subtile_pos = get_subtile_pos();
-      if (!(subtile_pos == new_subtile_pos))
-        {
-          if (get_world()->get_tilemap()->get_pixel(new_subtile_pos.x, new_subtile_pos.y))
-            {
-              pos.x = subtile_pos.x * TILE_SIZE;
-              pos.y = subtile_pos.y * TILE_SIZE;
-            }
-          else
-            {
-              subtile_pos = new_subtile_pos;
-            }
-        }
-    }
-
-  sprite->update(delta);
-}
-
-void 
-Player::update_ground (float delta)
-{
-  velocity = CL_Vector();
-
-  if (controller.get_button_state(JUMP_BUTTON) && !jumping)
-    {
-      jumping = true;
-      velocity.y = -750;
-      ground_state = IN_AIR;
-    } 
-  else
-    {
-      if (!controller.get_button_state(JUMP_BUTTON))
-        jumping = false;
-
-      float tmp_x_pos = pos.x;
-
-      if (controller.get_button_state(DOWN_BUTTON))
-        {
-          switch_movement_state(SITTING);
-          if (controller.get_button_state(FIRE_BUTTON) && !bomb_placed)
-            {
-              Sector::current()->add(new Bomb(int(pos.x), int(pos.y)));
-              bomb_placed = true;
-            }
-        }
-      else
-        {
-          bomb_placed = false;
-          if (controller.get_button_state(RUN_BUTTON))
-            {
-              if (controller.get_button_state(LEFT_BUTTON))
-                {
-                  pos.x -= 256 * delta;
-                  switch_movement_state(RUNNING);
-                }
-              else if (controller.get_button_state(RIGHT_BUTTON))
-                {
-                  pos.x += 256 * delta;
-                  switch_movement_state(RUNNING);
-                }
-            }
-          else
-            {
-              if (controller.get_button_state(LEFT_BUTTON))
-                {
-                  pos.x -= 128 * delta;
-                  switch_movement_state(WALKING);
-                }
-              else if (controller.get_button_state(RIGHT_BUTTON))
-                {
-                  pos.x += 128 * delta;
-                  switch_movement_state(WALKING);
-                }
-              else
-                {
-                  switch_movement_state(STANDING);
-                }
-            }
-          
-          if (stuck ()) 
-            {
-              // FIXME: Calculate nearest position to colliding object here
-              pos.x = tmp_x_pos;
-            }
-        }
-    }
-}
-
-void 
-Player::update_air (float delta)
-{
-  if (!controller.get_button_state(JUMP_BUTTON) && velocity.y < 0) 
-    {
-      velocity.y = velocity.y/2;
-      //ground_state = IN_AIR;
-    }
-
-  float tmp_x_pos = pos.x;
-  if (controller.get_button_state(LEFT_BUTTON))
-    pos.x -= 300 * delta;
-  else if (controller.get_button_state(RIGHT_BUTTON))
-    pos.x += 300 * delta;
-  if (stuck ())
-    pos.x = tmp_x_pos;
-
-  pos += velocity * delta;
-  velocity.y += 1500 * delta;
-
-  if (on_ground () && velocity.y > 0) 
-    {
-      ground_state = ON_GROUND;
-      // Cut the position to the tile size 
+  // fall down
+  if(on_ground()) {
+    if(velocity.y > 0) {
+      velocity.y = 0;
       pos.y = int(pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE - 1;
-    } 
+    }
+  } else {
+    velocity.y += GRAVITY * elapsed_time;
+  }
+
+  pos += velocity * elapsed_time;
+  sprite->update(elapsed_time);
+}
+
+void
+Player::set_stand()
+{
+  try_set_action("Stand");
+  velocity = Vector(0, 0, 0);
+  state = STAND;
+  printf("stand.\n");
+}
+
+void
+Player::update_walk_stand()
+{
+  if(controller.get_button_state(DOWN_BUTTON)) {
+    set_ducking();
+    return;
+  }
+
+  if(state == STAND)
+    update_stand();
+  else
+    update_walk();
 }
   
+
+void
+Player::update_stand()
+{
+  if(controller.get_button_state(LEFT_BUTTON)
+      && !controller.get_button_state(RIGHT_BUTTON)) {
+    if(get_direction() == WEST)
+      set_walk(WEST);
+    else
+      set_turnaround();
+  } else if(controller.get_button_state(RIGHT_BUTTON)
+      && !controller.get_button_state(LEFT_BUTTON)) {
+    if(get_direction() == EAST)
+      set_walk(EAST);
+    else
+      set_turnaround();
+  }
+}
+
+void
+Player::set_walk(Direction direction)
+{
+  try_set_action("Walk");
+  sprite->set_rot(direction == EAST);
+  state = WALK;
+  if(direction == EAST)
+    velocity.x = WALK_SPEED;
+  else
+    velocity.x = -WALK_SPEED;
+  printf("walk.\n");
+}
+
+void
+Player::update_walk()
+{
+  if(controller.get_button_state(LEFT_BUTTON)
+      == controller.get_button_state(RIGHT_BUTTON)) {
+    set_stand();
+    return;
+  }
+
+  if(get_direction() == WEST && controller.get_button_state(RIGHT_BUTTON)
+     || get_direction() == EAST && controller.get_button_state(LEFT_BUTTON)) {
+    set_turnaround();
+    return;
+  }
+  
+  // test
+  if(controller.get_button_state(JUMP_BUTTON)) {
+    sprite->set_speed(-1.0);
+  } else {
+    sprite->set_speed(1.0);
+  }
+}
+
+void
+Player::set_ducking()
+{
+  try_set_action("StandToDuck");
+  sprite->set_next_action("Ducking");
+  state = DUCKING;
+  velocity.x = 0;
+  printf("ducking.\n");
+}
+
+void
+Player::update_ducking()
+{
+  // ducking
+  if(sprite->switched_actions()) {
+    printf("finished.\n");
+    if(sprite->get_action() == "Ducking")
+      set_ducked();
+    else
+      set_stand();
+    return;
+  }
+  
+  if(!controller.get_button_state(DOWN_BUTTON) && sprite->get_speed() > 0) {
+    sprite->set_speed(-1.0);
+    sprite->set_next_action("Stand");
+    sprite->set_next_speed(1.0);
+  } else if(controller.get_button_state(DOWN_BUTTON) 
+      && sprite->get_speed() < 0) {
+    sprite->set_speed(1.0);
+    sprite->set_next_action("Ducking");
+    sprite->set_next_speed(1.0);
+  }
+}
+
+void
+Player::set_ducked()
+{
+  assert(sprite->get_action() == "Ducking");
+  printf("ducked.\n");
+  state = DUCKED;
+}
+
+void
+Player::update_ducked()
+{
+  if(!controller.get_button_state(DOWN_BUTTON)) {
+    printf("ducking.\n");
+    state = DUCKING;
+    sprite->set_action("StandToDuck");
+    sprite->set_next_action("Stand");
+    sprite->set_next_speed(1.0);
+    sprite->set_speed(-1.0);
+  }  
+}
+
+void
+Player::set_turnaround()
+{
+  velocity.x = 0;
+  try_set_action("Turn");
+  sprite->set_next_action("Walk");
+  sprite->set_next_rot(! sprite->get_rot());
+  state = TURNAROUND;
+}
+
+void
+Player::update_turnaround()
+{
+  if(sprite->switched_actions()) {
+    if(sprite->get_rot()) {
+      set_walk(EAST);
+    } else {
+      set_walk(WEST);
+    }
+  } 
+  if(sprite->get_rot() && controller.get_button_state(RIGHT_BUTTON)
+     || !sprite->get_rot() && controller.get_button_state(LEFT_BUTTON)) {
+    sprite->set_speed(-1.0);
+    sprite->set_next_action("Walk");
+  }
+}
+
+void
+Player::set_stand_to_listen(bool backwards)
+{
+  try_set_action("StandtoListen");
+  sprite->set_next_speed(1.0);
+  if(!backwards) {
+    sprite->set_next_action("Listen");
+  } else {
+    sprite->set_next_action("Stand");
+    sprite->set_speed(-1.0);
+  }
+  state = STAND_TO_LISTEN;
+}
+
+void
+Player::update_stand_to_listen()
+{
+  if(sprite->switched_actions()) {
+    if(sprite->get_action() == "Stand")
+      set_stand();
+    else
+      set_listen();
+  }
+}
+
+void
+Player::set_listen()
+{
+  try_set_action("Listen");
+  state = LISTEN;
+}
+
+void
+Player::update_listen()
+{
+  // nothing
+}
+
+Direction
+Player::get_direction() const
+{
+  return sprite->get_rot() ? EAST : WEST;
+}
+
+void
+Player::try_set_action(const std::string& name)
+{
+  if(sprite->get_action() == name)
+    return;
+  
+  sprite->set_action(name);
+}
+
 void 
 Player::set_position (const CL_Vector& arg_pos)
 {
   pos = arg_pos;
 }
 
-void 
-Player::set_direction (Direction dir)
-{
-  direction = dir;
-}
-
-bool
-Player::on_ground ()
-{
-  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y+16);
-}
-
 bool 
-Player::stuck ()
+Player::stuck () const
 {
   return get_world ()->get_tilemap()->is_ground(pos.x, pos.y);
 }
 
-int
-Player::get_energie()
+bool
+Player::on_ground() const
 {
-  return energie;
+  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y+16);
 }
 
 int
-Player::get_max_energie()
+Player::get_energy() const
 {
-  return MAX_ENERGIE;
+  return energy;
+}
+
+int
+Player::get_max_energy() const
+{
+  return MAX_ENERGY;
 }
 
 void
 Player::hit(int points)
 {
-  if (energie > 0 && hit_count <= 0)
+  if (energy > 0 && hit_count <= 0)
     {
-      energie -= points;
+      energy -= points;
       hit_count = 1.0f;
 
-      if (energie <= 0)
+      if (energy <= 0)
         {
-          switch_movement_state(KILLED);
+          //switch_movement_state(KILLED);
           hit_count = 0;
         }
     }

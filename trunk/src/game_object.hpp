@@ -63,7 +63,8 @@ public:
   virtual void update (float elapsed_time) = 0;
     
   static void set_world (Sector* w) { world = w; }
-  Sector* get_world () { return world; }
+  Sector* get_world () const
+  { return world; }
 };
 
 #endif

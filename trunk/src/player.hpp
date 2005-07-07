@@ -26,26 +26,11 @@
 
 #include "input/controller.hpp"
 #include "sprite3d/sprite3d.hpp"
+#include "math/vector.hpp"
 #include "globals.hpp"
 #include "game_object.hpp"
 
 class Controller;
-
-/** A position in units of subtiles */
-struct SubTilePos {
-  SubTilePos() : x(0), y(0) {}
-
-  SubTilePos(int x_, int y_) 
-    : x(x_), y(y_)
-  {}
-
-  bool operator==(const SubTilePos& pos) {
-    return pos.x == x && pos.y == y;
-  }
-
-  int x;
-  int y;
-};
 
 class Player : public GameObject
 {
@@ -53,53 +38,31 @@ private:
   Controller controller;
 
   /** Position as a float */
-  CL_Vector pos;
-  
-  SubTilePos subtile_pos;
-
-  /** X-Position in subtile coordinates */
-  int x_pos;
-  /** Y-Position in subtile coordinates */
-  int y_pos;
-  
-  CL_Vector velocity;
+  Vector pos;
+  Vector velocity;
  
-#if 0
-  CL_Sprite walk;
-  CL_Sprite run;
-  CL_Sprite turn;
-  CL_Sprite sit;
-  CL_Sprite jump;
-  CL_Sprite stand;
-  CL_Sprite killed;
-  CL_Sprite dead;
-#endif
   CL_Sprite light;
-
-#if 0
-  CL_Sprite roll;
-  CL_Sprite surround;
-#endif
   Sprite3D* sprite;
 
   bool jumping;
   bool bomb_placed;
   float hit_count;
-  int energie;
+  int energy;
 public:
-  typedef enum { WALKING, RUNNING, TURN, SITTING, STANDING, KILLED, DEAD } MovementState;
-  typedef enum { GUN_READY, GUN_RELOADING } GunState;
-  typedef enum { ON_GROUND, IN_AIR } GroundState;
+  enum State
+  {
+    STAND,
+    WALK,
+    TURNAROUND,
+    DUCKING,
+    DUCKED,
+    STAND_TO_LISTEN,
+    LISTEN
+  };
 
-  //{ BOUNCE, SPREAD, LASER }
 private:
-  MovementState state;
-  GunState gun_state;
-  Direction direction;
-  GroundState ground_state;
+  State state;
 
-  void switch_movement_state(MovementState state);
-  
   double reload_time;
   static Player* current_;
 public:
@@ -114,24 +77,45 @@ public:
   void update (float delta);
 
   void set_position (const CL_Vector& arg_pos);
-  void set_direction (Direction dir);
+
+  void start_listening();
+  void stop_listening();
 
   CL_Vector get_pos () const { return pos; }
-  SubTilePos get_subtile_pos();
   
-  int get_energie();
-  int get_max_energie();
+  int get_energy() const;
+  int get_max_energy() const;
   void hit(int points);
 
   CL_Rect get_bounding_rect() const; 
 private:
-  // true if the tile under Player is ground
-  bool on_ground ();
-  // true if Player is inside a ground tile
-  bool stuck ();
+  void update_walk_stand();
+  void set_stand();
+  void update_stand();
+  void set_walk(Direction direction);
+  void update_walk();
+  void set_ducking();
+  void update_ducking();
+  void set_ducked();
+  void update_ducked();
+  void set_turnaround();
+  void update_turnaround();
+  void set_stand_to_listen(bool backwards);
+  void update_stand_to_listen();
+  void set_listen();
+  void update_listen();
 
-  void update_ground (float delta);
-  void update_air (float delta);
+  /**
+   * Sets an action for the sprite. In contrast to sprite->set_action this
+   * function will not restart the action if it was already running
+   */
+  void try_set_action(const std::string& name);
+
+  Direction get_direction() const;
+  
+  // true if Player is inside a ground tile
+  bool stuck () const;
+  bool on_ground() const;
 };
 
 #endif

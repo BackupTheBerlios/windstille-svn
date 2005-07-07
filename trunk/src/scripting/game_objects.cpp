@@ -45,5 +45,17 @@ TestObject::set_vflip(bool vflip)
   obj()->set_vflip(vflip);
 }
 
+void
+Player::start_listening()
+{
+  obj()->start_listening();
+}
+
+void
+Player::stop_listening()
+{
+  obj()->stop_listening();
+}
+
 }
 

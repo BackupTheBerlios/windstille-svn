@@ -34,13 +34,16 @@
 #include "timer.hpp"
 
 Sprite3D::Sprite3D(const Sprite3DData* data)
-  : data(data), rot(false), next_action(0), next_rot(0), actions_switched(false)
+  : data(data), rot(false), actions_switched(false), next_action(0), next_rot(0)
 {
   current_action = &data->actions[0];
   last_frame = current_action->frame_count - 1;
   animation_time = 0;
   speed = 1.0;
   update(0);
+  
+  frame1 = &current_action->frames[0];
+  frame2 = &current_action->frames[1];
 }
 
 Sprite3D::~Sprite3D()
@@ -62,11 +65,24 @@ Sprite3D::get_action() const
 }
 
 void
-Sprite3D::set_next_action(const std::string& name, bool next_rot)
+Sprite3D::set_next_action(const std::string& name)
 {
   next_action = & data->get_action(name);
-  this->next_rot = next_rot;
+  next_rot = rot;
+  next_speed = speed;
   actions_switched = false;
+}
+
+void
+Sprite3D::set_next_rot(bool rot)
+{
+  next_rot = rot;
+}
+
+void
+Sprite3D::set_next_speed(float speed)
+{
+  next_speed = speed;
 }
 
 void
@@ -100,6 +116,20 @@ Sprite3D::switched_actions()
 void
 Sprite3D::set_speed(float speed)
 {
+  if(this->speed > 0 && speed < 0) {
+    this->last_frame = 0;
+    if(animation_time >= current_action->frame_count - 1)
+      animation_time = current_action->frame_count - 1.0001;
+  } else if(this->speed < 0 && speed > 0) {
+    this->last_frame = current_action->frame_count - 1;
+    if(animation_time >= current_action->frame_count - 1)
+      animation_time = current_action->frame_count - 1.0001;
+  }
+  if(speed < 0 && animation_time == 0) {
+    // don't produce an action switch right away when starting backwards
+    animation_time = current_action->frame_count - 1.0001;
+  }
+
   this->speed = speed;
 }
 
@@ -137,37 +167,91 @@ void
 Sprite3D::update(float elapsed_time)
 {
   float animation_time_delta = elapsed_time * current_action->speed * speed;
- 
-  int frame = static_cast<int>(animation_time) % current_action->frame_count;
-  blend_time = fmodf(animation_time, 1.0);
-   
-  frame1 = &current_action->frames[frame];
-  
-  // on last frame?
-  if(frame >= last_frame) {
-    if(next_action != 0) {
-      frame2 = &next_action->frames[0];
 
-      // time to switch actions?
-      if(blend_time + animation_time_delta >= 1.0) {
-        current_action = next_action;
-        last_frame = current_action->frame_count-1;
-        animation_time = blend_time + animation_time_delta - 1.0;
-        next_action = 0;
-        actions_switched = true;
-        // this will rotate 1 frame too early...
-        rot = next_rot;
+  if(speed >= 0) {
+    int frame = static_cast<int>(animation_time);
+    frame1 = &current_action->frames[frame];
+    blend_time = fmodf(animation_time, 1.0);
+    assert(frame >= 0);
+    assert(frame < current_action->frame_count);
+
+    // last frame
+    if(frame >= last_frame) {
+      if(next_action != 0) {
+        if(next_speed > 0) {
+          frame2 = &next_action->frames[0];
+        } else {
+          frame2 = &next_action->frames[next_action->frame_count - 1];
+        }
+
+        // time to switch actions?
+        if(blend_time + animation_time_delta >= 1.0) {
+          switch_next_action();
+          animation_time = blend_time + animation_time_delta - 1.0;
+        }
+      } else {
+        frame2 = &current_action->frames[0];
+        if(blend_time + animation_time >= 1.0) {
+          animation_time -= current_action->frame_count;
+        }
       }
     } else {
-      frame2 = &current_action->frames[0];
+      assert(frame + 1 < current_action->frame_count);
+      frame2 = &current_action->frames[frame + 1];
     }
   } else {
-    frame2 = &current_action->frames[frame+1];
+    int frame 
+      = (static_cast<int>(animation_time) + 1) % current_action->frame_count;
+    frame1 = &current_action->frames[frame];
+    blend_time = 1.0 - fmodf(animation_time, 1.0);
+    assert(frame >= 0);
+    assert(frame < current_action->frame_count);
+
+    // last frame
+    if(frame <= last_frame) {
+      if(next_action != 0) {
+        if(next_speed > 0) {
+          frame2 = &next_action->frames[0];
+        } else {
+          frame2 = &next_action->frames[next_action->frame_count - 1];
+        }
+
+        // time to switch actions?
+        if(blend_time - animation_time_delta >= 1.0) {
+          switch_next_action();
+          animation_time = static_cast<float>(current_action->frame_count) 
+            - (blend_time - animation_time_delta - 1.0);
+        }
+      } else {
+        frame2 = &current_action->frames[current_action->frame_count - 1];
+      }
+    } else {
+      int fr2 = (frame + current_action->frame_count - 1) 
+        % current_action->frame_count;
+      frame2 = &current_action->frames[fr2];
+      if(animation_time + animation_time_delta <= 0.0) {
+        animation_time += current_action->frame_count;
+      }                                                     
+    }
   }
 
   animation_time += animation_time_delta;
 }
 
+void
+Sprite3D::switch_next_action()
+{
+  current_action = next_action;
+  speed = next_speed;
+  rot = next_rot;
+  next_action = 0;
+  actions_switched = true;
+
+  if(speed >= 0)
+    last_frame = current_action->frame_count - 1;
+  else
+    last_frame = 0;
+}
 
 void
 Sprite3D::draw(SceneContext& sc, const Vector& pos)

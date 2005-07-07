@@ -70,8 +70,10 @@ View::update (float delta)
     transform.x -= delta * 200 / zoom;
   if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD6))
     transform.x += delta * 200 / zoom;
-  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD5))
+  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD5)) {
     transform = Vector(0, 0, 0);
+    zoom = 1.0;
+  }
 }
 
 CL_Rectf

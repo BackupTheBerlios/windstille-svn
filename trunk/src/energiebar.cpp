@@ -37,8 +37,8 @@ Energiebar::~Energiebar()
 void
 Energiebar::draw()
 {
-  int energie     = Player::current()->get_energie();
-  int max_energie = Player::current()->get_max_energie();
+  int energie     = Player::current()->get_energy();
+  int max_energie = Player::current()->get_max_energy();
 
   for(int i = 0; i < energie; ++i)
     {

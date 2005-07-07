@@ -5,11 +5,13 @@
 #include "game_object.hpp"
 #include "flashing_sign.hpp"
 #include "test_object.hpp"
+#include "player.hpp"
 #include "ref.hpp"
 
 typedef GameObject _GameObject;
 typedef FlashingSign _FlashingSign;
 typedef TestObject _TestObject;
+typedef Player _Player;
 #endif
 
 namespace Scripting
@@ -77,6 +79,27 @@ public:
   void set_vflip(bool vflip);
 };
 
+class Player : public GameObject
+{
+#ifndef SCRIPTING_API
+public:
+  Player(_Player* _player)
+    : GameObject(_player)
+  {}
+  virtual ~Player()
+  {}
+
+  _Player* obj() const
+  {
+    return reinterpret_cast<_Player*> (object.get());
+  }
+#endif
+
+public:
+  void start_listening();
+  void stop_listening();
+};
+ 
 }
 
 #endif

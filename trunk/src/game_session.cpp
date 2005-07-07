@@ -139,12 +139,14 @@ GameSession::draw()
       break;
     }
 
+#if 0
   if (world->get_player()->get_movement_state() == Player::DEAD)
     {
       Fonts::dialog.set_alignment(origin_bottom_center);
       Fonts::dialog.draw(CL_Display::get_width()/2, 200,
                 "..:: Press Fire to restart ::..");
     }
+#endif
 
   if (!main_app.screenshot_dir.empty())
     {
@@ -162,6 +164,13 @@ void
 GameSession::update(float delta)
 {  
   console.update(delta);
+
+  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD1))
+    game_speed *= 1.0 - delta;
+  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD3))
+    game_speed *= 1.0 + delta;
+  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD5))
+    game_speed = 1.0;
 
   InputManager::update(delta);
   delta *= game_speed;
@@ -190,14 +199,14 @@ GameSession::update(float delta)
       break;
 
     case RUNNING:
+      world->update (delta);
+      energiebar->update(delta);
       switch (control_state) 
         {
         case DIALOG:
           dialog_manager->update(delta);
           break;
         case GAME:
-          world->update (delta);
-          energiebar->update(delta);
           break;
         }
       break;
@@ -267,7 +276,7 @@ GameSession::change_sector()
       world->add(psystem);
     }
 
-  world->add(new TestObject());
+  //world->add(new TestObject());
   
   world->activate();
   world->spawn_player("default");

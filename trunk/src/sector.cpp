@@ -247,6 +247,13 @@ Sector::expose_object_to_squirrel(GameObject* object)
     return;
   }
 
+  Player* player = dynamic_cast<Player*> (object);
+  if(player) {
+    script_manager->expose_object(new Scripting::Player(player),
+                                  object->get_name(), true);
+    return;
+  }
+
   script_manager->expose_object(new Scripting::GameObject(object),
                                 object->get_name(), true);
 }

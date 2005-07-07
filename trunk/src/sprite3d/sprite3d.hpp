@@ -59,7 +59,9 @@ public:
    * Set the next action and vflip value to be played after the current action
    * has finished (or reached the point to be defined by abort_at_marker)
    */
-  void set_next_action(const std::string& name, bool rot);
+  void set_next_action(const std::string& name);
+  void set_next_rot(bool rot);
+  void set_next_speed(float speed);
 
   /**
    * Abort current action after a certain marker has been reached.
@@ -87,7 +89,12 @@ public:
   /**
    * Rotate (or not rotate) the model 180 degree
    */
-  void set_rot(bool flip_vertically = true);
+  void set_rot(bool rot = true);
+
+  bool get_rot() const
+  {
+    return rot;
+  }
 
 private:
   friend class Sprite3DDrawingRequest;
@@ -97,6 +104,7 @@ private:
   Sprite3D (const Sprite3D&);
   Sprite3D& operator= (const Sprite3D&);
 
+  void switch_next_action();
   void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
 
   const Sprite3DData* data;
@@ -104,6 +112,8 @@ private:
   float animation_time;
   float speed; 
   bool rot;
+  int last_frame;
+  bool actions_switched;  
 
   const ActionFrame* frame1;
   const ActionFrame* frame2;
@@ -111,8 +121,7 @@ private:
   
   const Action* next_action;
   bool next_rot;
-  int last_frame;
-  bool actions_switched;
+  float next_speed;
 };
 
 #endif

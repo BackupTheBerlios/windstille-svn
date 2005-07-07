@@ -177,6 +177,53 @@ static int TestObject_set_vflip_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int Player_release_hook(SQUserPointer ptr, int )
+{
+  Scripting::Player* _this = reinterpret_cast<Scripting::Player*> (ptr);
+  delete _this;
+  return 0;
+}
+
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::Player* object, bool setup_releasehook)
+{
+  sq_pushstring(v, "Player", -1);
+  if(sq_get(v, -2) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't resolved squirrel type 'Player'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't setup squirrel instance for object of type 'Player'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_remove(v, -2);
+
+  if(setup_releasehook) {
+    sq_setreleasehook(v, -1, Player_release_hook);
+  }
+}
+static int Player_start_listening_wrapper(HSQUIRRELVM v)
+{
+  Scripting::Player* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  
+  _this->start_listening();
+  
+  return 0;
+}
+
+static int Player_stop_listening_wrapper(HSQUIRRELVM v)
+{
+  Scripting::Player* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  
+  _this->stop_listening();
+  
+  return 0;
+}
+
 static int set_sector_wrapper(HSQUIRRELVM v)
 {
   const char* arg0;
@@ -490,6 +537,37 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register class'TestObject'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  // Register class Player
+  sq_pushstring(v, "Player", -1);
+  sq_pushstring(v, "GameObject", -1);
+  sq_get(v, -3);
+  if(sq_newclass(v, SQTrue) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't create new class 'Player'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_pushstring(v, "start_listening", -1);
+  sq_newclosure(v, &Player_start_listening_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'start_listening'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "stop_listening", -1);
+  sq_newclosure(v, &Player_stop_listening_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'stop_listening'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register class'Player'";
     throw SquirrelError(v, msg.str());
   }
 
