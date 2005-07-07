@@ -85,12 +85,12 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
   std::string filename;
   std::string highlight_filename;
   std::vector<int> colmap;
-  int id = -1;
+  std::vector<int> ids;
   
   lisp::ListIterator iter(data);
   while(iter.next()) {
-    if(iter.item() == "id") {
-      id = iter.value().get_int();
+    if(iter.item() == "ids") {
+      iter.lisp()->get_vector(ids);
     } else if(iter.item() == "color-image") {
       filename = iter.value().get_string();
     } else if(iter.item() == "highlight-image") {
@@ -102,8 +102,6 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
     }
   }
 
-  if(id < 0)
-    throw std::runtime_error("Invalid or missing tile id");
   if(filename == "")
     throw std::runtime_error("Missing color-image");
   
@@ -115,11 +113,12 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
 
   int num_tiles = (image.get_width()/TILE_SIZE) * (image.get_height()/TILE_SIZE);
   if (int(colmap.size()) != num_tiles)
-    throw std::runtime_error("Not enough colmap information for tiles");
-  
-  if ((id + num_tiles) >= int(tiles.size()))
-    tiles.resize(id + num_tiles + 1);
+    throw std::runtime_error("Not enough 'colmap' information for tiles");
 
+  if (int(ids.size()) != num_tiles)
+    throw std::runtime_error("Not enough 'ids' information for tiles");
+  
+  int i = 0;
   // FIMXE: Tiles should share one OpenGL texture
   for (int y = 0; y < image.get_height(); y += TILE_SIZE)
     {
@@ -152,10 +151,10 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
               hl_chopped_image.unlock();
             }
 
-          pack(id, colmap[y/TILE_SIZE * image.get_width()/TILE_SIZE + x/TILE_SIZE],
+          pack(ids[i], colmap[y/TILE_SIZE * image.get_width()/TILE_SIZE + x/TILE_SIZE],
                chopped_image, hl_chopped_image);
 
-          id += 1;
+          i += 1;
         }
     }
 }
@@ -163,6 +162,9 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
 void
 TileFactory::pack(int id, int colmap, CL_PixelBuffer color, CL_PixelBuffer highlight)
 {
+  if (id >= int(tiles.size()))
+    tiles.resize(id + 1);
+
   tiles[id] = new Tile(color, highlight, colmap);
           
   tiles[id]->id = id;
