@@ -38,7 +38,8 @@ extern CL_ResourceManager* resources;
 extern float game_speed;
 extern bool sound_disabled;
 
-extern int debug;
+extern bool debug;
+extern bool collision_debug;
 
 enum GameMainState { RUN_GAME, LOAD_MENU, LOAD_GAME_SESSION, QUIT_GAME };
 extern GameMainState game_main_state;

@@ -104,19 +104,26 @@ private:
   Sprite3D (const Sprite3D&);
   Sprite3D& operator= (const Sprite3D&);
 
-  void switch_next_action();
+  struct Frame {
+    const ActionFrame* frame;
+    float speed;
+    bool rot;
+  };
+
+  void set_next_frame();
   void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
 
   const Sprite3DData* data;
   const Action* current_action;
-  float animation_time;
-  float speed; 
+  int current_frame;
+  float speed;
+  bool reverse;
   bool rot;
   int last_frame;
-  bool actions_switched;  
+  bool actions_switched;
 
-  const ActionFrame* frame1;
-  const ActionFrame* frame2;
+  Frame frame1;
+  Frame frame2;
   float blend_time;
   
   const Action* next_action;

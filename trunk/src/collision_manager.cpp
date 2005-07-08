@@ -25,7 +25,7 @@ CollisionManager::CollisionManager()
 }
 
 void
-CollisionManager::update(float delta)
+CollisionManager::update(float )
 {
 }
 

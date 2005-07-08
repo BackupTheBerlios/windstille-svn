@@ -22,6 +22,8 @@
 #include "windstille_main.hpp"
 #include "screen.hpp"
 #include "fonts.hpp"
+#include "globals.hpp"
+#include "console.hpp"
 #include "gameconfig.hpp"
 #include "sound/sound_manager.hpp"
 
@@ -97,6 +99,13 @@ void
 Screen::key_down(const CL_InputEvent& event)
 {
   switch (event.id) {
+    case CL_KEY_C:
+      if(debug) {
+        collision_debug = !collision_debug;
+        Console::current()->add(std::string("Collision Debugging ")
+            + (collision_debug ? "enabled" : "disabled"));
+      }
+      break;
     case CL_KEY_F10:
       config->show_fps = ! (config->show_fps);
       break;

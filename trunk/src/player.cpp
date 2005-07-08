@@ -238,11 +238,13 @@ Player::update_ducking()
   }
   
   if(!controller.get_button_state(DOWN_BUTTON) && sprite->get_speed() > 0) {
+    printf("Changespeed1.\n");
     sprite->set_speed(-1.0);
     sprite->set_next_action("Stand");
     sprite->set_next_speed(1.0);
   } else if(controller.get_button_state(DOWN_BUTTON) 
       && sprite->get_speed() < 0) {
+    printf("Changespeed2.\n");
     sprite->set_speed(1.0);
     sprite->set_next_action("Ducking");
     sprite->set_next_speed(1.0);

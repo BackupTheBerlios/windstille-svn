@@ -45,7 +45,7 @@ WindstilleMain main_app;
 CL_ResourceManager* resources;
 
 WindstilleMain::WindstilleMain()
-  : the_game(0)
+  : screen(0)
 {
   game_main_state = LOAD_MENU;
 }
@@ -207,7 +207,8 @@ WindstilleMain::main(int argc, char** argv)
       {
         std::string leveldir = dirname(levelfile);
         PHYSFS_addToSearchPath(leveldir.c_str(), true);
-        the_game = new GameSession(basename(levelfile));
+        delete screen;
+        screen = new GameSession(basename(levelfile));
         game_main_state = RUN_GAME;
       }
       
@@ -408,28 +409,25 @@ WindstilleMain::game_main()
   switch (game_main_state)
     {
     case RUN_GAME:
-      the_game->display();
+      screen->display();
       break;
 
     case LOAD_MENU:
-      if (the_game)
-        delete the_game;
-      the_game = new WindstilleMenu();
+      delete screen;
+      screen = new WindstilleMenu();
       game_main_state = RUN_GAME;
       break;
 
     case LOAD_GAME_SESSION:
-      if (the_game)
-        delete the_game;
-      the_game = new GameSession("levels/newformat2.wst");
+      delete screen;
+      screen = new GameSession("levels/newformat2.wst");
       game_main_state = RUN_GAME;
       break;
 
     case QUIT_GAME:
-      if (the_game)
-        delete the_game;
+      delete screen;
+      screen = 0;
       return false;
-      break;
     }
   
   return true;

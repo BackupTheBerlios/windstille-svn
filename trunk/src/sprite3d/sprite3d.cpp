@@ -34,16 +34,14 @@
 #include "timer.hpp"
 
 Sprite3D::Sprite3D(const Sprite3DData* data)
-  : data(data), rot(false), actions_switched(false), next_action(0), next_rot(0)
+  : data(data), rot(false), actions_switched(false),
+    next_action(0), next_rot(0), next_speed(1.0)
 {
   current_action = &data->actions[0];
   last_frame = current_action->frame_count - 1;
-  animation_time = 0;
+  reverse = false;
   speed = 1.0;
-  update(0);
-  
-  frame1 = &current_action->frames[0];
-  frame2 = &current_action->frames[1];
+  update(0);  
 }
 
 Sprite3D::~Sprite3D()
@@ -54,8 +52,8 @@ void
 Sprite3D::set_action(const std::string& actionname)
 {
   current_action = & data->get_action(actionname);
-  animation_time = 0;
   last_frame = current_action->frame_count - 1;
+  next_action = 0;
 }
 
 const std::string&
@@ -95,11 +93,8 @@ Sprite3D::abort_at_marker(const std::string& name)
 bool
 Sprite3D::after_marker(const std::string& name) const
 {
-  const Marker& marker = data->get_marker(current_action, name);
-  
-  int frame = static_cast<int>(animation_time) % current_action->frame_count;
-  
-  return frame >= marker.frame;
+  const Marker& marker = data->get_marker(current_action, name);  
+  return current_frame >= marker.frame;
 }
 
 bool
@@ -116,27 +111,35 @@ Sprite3D::switched_actions()
 void
 Sprite3D::set_speed(float speed)
 {
-  if(this->speed > 0 && speed < 0) {
-    this->last_frame = 0;
-    if(animation_time >= current_action->frame_count - 1)
-      animation_time = current_action->frame_count - 1.0001;
-  } else if(this->speed < 0 && speed > 0) {
-    this->last_frame = current_action->frame_count - 1;
-    if(animation_time >= current_action->frame_count - 1)
-      animation_time = current_action->frame_count - 1.0001;
+  if(this->speed > 0 && speed < 0
+      || this->speed < 0 && speed > 0) {
+    if(speed >= 0) {
+      current_frame = (current_frame + 1) & current_action->frame_count;
+      this->last_frame = 0;
+    } else {
+      current_frame = (current_frame + current_action->frame_count - 1)
+        % current_action->frame_count;
+      this->last_frame = current_action->frame_count - 1;
+    }
+    blend_time = 1.0 - blend_time;
+    std::swap(frame1, frame2);
   }
-  if(speed < 0 && animation_time == 0) {
-    // don't produce an action switch right away when starting backwards
-    animation_time = current_action->frame_count - 1.0001;
+  if(speed >= 0) {
+    reverse = false;
+  } else {
+    speed = -speed;
+    reverse = true;
   }
-
   this->speed = speed;
 }
 
 float
 Sprite3D::get_speed() const
 {
-  return speed;
+  if(reverse)
+    return -speed;
+  else
+    return speed;
 }
 
 void
@@ -164,93 +167,58 @@ public:
 };
 
 void
-Sprite3D::update(float elapsed_time)
+Sprite3D::set_next_frame()
 {
-  float animation_time_delta = elapsed_time * current_action->speed * speed;
-
-  if(speed >= 0) {
-    int frame = static_cast<int>(animation_time);
-    frame1 = &current_action->frames[frame];
-    blend_time = fmodf(animation_time, 1.0);
-    assert(frame >= 0);
-    assert(frame < current_action->frame_count);
-
-    // last frame
-    if(frame >= last_frame) {
-      if(next_action != 0) {
-        if(next_speed > 0) {
-          frame2 = &next_action->frames[0];
-        } else {
-          frame2 = &next_action->frames[next_action->frame_count - 1];
-        }
-
-        // time to switch actions?
-        if(blend_time + animation_time_delta >= 1.0) {
-          switch_next_action();
-          animation_time = blend_time + animation_time_delta - 1.0;
-        }
-      } else {
-        frame2 = &current_action->frames[0];
-        if(blend_time + animation_time >= 1.0) {
-          animation_time -= current_action->frame_count;
-        }
-      }
+  if(current_frame == last_frame && next_action != 0) {
+    current_action = next_action;
+    speed = next_speed;
+    if(speed < 0) {
+      speed = -speed;
+      reverse = true;
     } else {
-      assert(frame + 1 < current_action->frame_count);
-      frame2 = &current_action->frames[frame + 1];
+      reverse = false;
+    }
+    rot = next_rot;
+    next_action = 0;
+    actions_switched = true;
+
+    if(reverse) {
+      current_frame = current_action->frame_count - 1;
+      last_frame = 0;                                      
+    } else {
+      current_frame = 0;
+      last_frame = current_action->frame_count - 1;      
     }
   } else {
-    int frame 
-      = (static_cast<int>(animation_time) + 1) % current_action->frame_count;
-    frame1 = &current_action->frames[frame];
-    blend_time = 1.0 - fmodf(animation_time, 1.0);
-    assert(frame >= 0);
-    assert(frame < current_action->frame_count);
-
-    // last frame
-    if(frame <= last_frame) {
-      if(next_action != 0) {
-        if(next_speed > 0) {
-          frame2 = &next_action->frames[0];
-        } else {
-          frame2 = &next_action->frames[next_action->frame_count - 1];
-        }
-
-        // time to switch actions?
-        if(blend_time - animation_time_delta >= 1.0) {
-          switch_next_action();
-          animation_time = static_cast<float>(current_action->frame_count) 
-            - (blend_time - animation_time_delta - 1.0);
-        }
-      } else {
-        frame2 = &current_action->frames[current_action->frame_count - 1];
-      }
+    if(reverse) {
+      current_frame = (current_frame + current_action->frame_count - 1) 
+        % current_action->frame_count;                                         
     } else {
-      int fr2 = (frame + current_action->frame_count - 1) 
-        % current_action->frame_count;
-      frame2 = &current_action->frames[fr2];
-      if(animation_time + animation_time_delta <= 0.0) {
-        animation_time += current_action->frame_count;
-      }                                                     
+      current_frame = (current_frame + 1) % current_action->frame_count;
     }
   }
 
-  animation_time += animation_time_delta;
+  assert(current_frame >= 0);
+  assert(current_frame < current_action->frame_count);
+  frame2.frame = &current_action->frames[current_frame];
+  frame2.speed = speed;
+  frame2.rot = rot;
 }
 
 void
-Sprite3D::switch_next_action()
+Sprite3D::update(float elapsed_time)
 {
-  current_action = next_action;
-  speed = next_speed;
-  rot = next_rot;
-  next_action = 0;
-  actions_switched = true;
+  float time_delta = elapsed_time * current_action->speed * speed;
 
-  if(speed >= 0)
-    last_frame = current_action->frame_count - 1;
-  else
-    last_frame = 0;
+  while(blend_time + time_delta >= 1.0) {
+    frame1 = frame2;
+    elapsed_time -= (1.0 - blend_time) / (current_action->speed * speed);
+    set_next_frame();
+
+    time_delta = elapsed_time * current_action->speed * speed;
+    blend_time = 0.0;
+  }
+  blend_time += time_delta;
 }
 
 void
@@ -271,7 +239,7 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos,
   glPushMatrix();
   glMultMatrixd(modelview);
   glTranslatef(pos.x, pos.y, pos.z);
-  if(rot) {
+  if(frame1.rot) {
     glRotatef(180, 0, 1.0, 0);
   }                           
 
@@ -287,14 +255,30 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos,
   float t_1 = 1.0 - blend_time;
   for(uint16_t m = 0; m < data->mesh_count; ++m) {
     const Mesh& mesh = data->meshs[m];
-    const MeshVertices& vertices1 = frame1->meshs[m];
-    const MeshVertices& vertices2 = frame2->meshs[m];
+    const MeshVertices& vertices1 = frame1.frame->meshs[m];
+    const MeshVertices& vertices2 = frame2.frame->meshs[m];
     
     // blend between frame1 + frame2
     float* verts = new float[mesh.vertex_count * 3];
-    for(uint16_t v = 0; v < mesh.vertex_count*3; ++v) {
-      verts[v] 
-        = vertices1.vertices[v] * t_1 + vertices2.vertices[v] * blend_time;
+    if(frame1.rot == frame2.rot) {
+      for(uint16_t v = 0; v < mesh.vertex_count*3; ++v) {
+        verts[v] 
+          = vertices1.vertices[v] * t_1 + vertices2.vertices[v] * blend_time;
+      }
+    } else {
+      // need to manually rotate 180 degree here because frames have different
+      // rot values (=> x=-x, y=y, z=-z)
+      for(uint16_t v = 0; v < mesh.vertex_count; ++v) {
+        verts[v*3] 
+          = vertices1.vertices[v*3] * t_1 
+              - vertices2.vertices[v*3] * blend_time;
+        verts[v*3+1]
+          = vertices1.vertices[v*3+1] * t_1 
+              + vertices2.vertices[v*3+1] * blend_time;
+        verts[v*3+2]
+          = vertices1.vertices[v*3+2] * t_1
+              - vertices2.vertices[v*3+2] * blend_time;
+      }
     }
    
     // draw mesh

@@ -53,7 +53,7 @@ InputManagerImpl::add_button_event(int name, bool down)
 }
 
 void
-InputManagerImpl::add_keyboard_event(int name, KeyboardEvent::KeyType key_type, int code)
+InputManagerImpl::add_keyboard_event(int , KeyboardEvent::KeyType key_type, int code)
 {
   InputEvent event;
   event.type = KEYBOARD_EVENT;

@@ -27,7 +27,12 @@ int SUBTILE_SIZE = 32;
 int SUBTILE_NUM  = (TILE_SIZE/SUBTILE_SIZE);
 
 float game_speed = 1.0f;
-int debug = 1;
+#ifdef DEBUG
+bool debug = true;
+#else
+bool debug = false;
+#endif
+bool collision_debug = false;
 bool sound_disabled = false;
 GameMainState game_main_state;
 

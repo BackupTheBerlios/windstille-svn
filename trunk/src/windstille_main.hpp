@@ -49,7 +49,7 @@ private:
   void deinit_modules();
   bool game_main();
 
-  Windstille::Screen* the_game;
+  Windstille::Screen* screen;
 };
 
 extern WindstilleMain main_app;
