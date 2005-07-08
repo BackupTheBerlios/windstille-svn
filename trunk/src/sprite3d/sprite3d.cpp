@@ -38,6 +38,7 @@ Sprite3D::Sprite3D(const Sprite3DData* data)
     next_action(0), next_rot(0), next_speed(1.0)
 {
   current_action = &data->actions[0];
+  current_frame = 0;
   last_frame = current_action->frame_count - 1;
   reverse = false;
   speed = 1.0;
