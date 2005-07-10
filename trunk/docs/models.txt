@@ -1,5 +1,10 @@
 Notes about blender models:
 
+- You can install the exporter by placing it in your $HOME/.blender/scripts
+  directory. Best would be to create a symlink:
+  
+     ln -s contrib/windstille_exporter.py $HOME/.blender/scripts
+     
 - 1 blender unit corresponds to 32pixels in game
   (if you use the default 800x600 game resolution)
 - When looking at a character turned left from the side, coordinate axes are:
@@ -39,3 +44,11 @@ Notes about blender models:
                             markers will be used by the program for purposes
                             like finding out when you can safely change
                             animations. You can specify multiple markers.
+
+- Windstille has some keys that make debugging animations alot easier:
+    Numpad 2,4,6,8 can be used to move the camera around
+    Numpad +,- zoom in and out.
+    Numpad 1,3 slow down and accelerate the game
+
+    So you can easily zoom in and watch your animation in slow motion with
+    these keys.
