@@ -1,3 +1,4 @@
+#include "wrapper.interface.hpp"
 #include "game_objects.hpp"
 
 namespace Scripting

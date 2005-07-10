@@ -18,6 +18,10 @@ Player.start_listening();
 wait_for_dialog();
 Player.stop_listening();
 Block0Sign.enable();
+function test() {
+  wait(1);
+}
+test();
 ")
   (spawnpoint
     (name "default")

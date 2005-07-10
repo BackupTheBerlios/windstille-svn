@@ -298,6 +298,15 @@ static int hide_dialog_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int testo_wrapper(HSQUIRRELVM v)
+{
+  
+  int return_value = Scripting::testo();
+  
+  sq_pushinteger(v, return_value);
+  return 1;
+}
+
 static int wait_wrapper(HSQUIRRELVM v)
 {
   HSQUIRRELVM arg0 = v;
@@ -422,6 +431,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'hide_dialog'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "testo", -1);
+  sq_newclosure(v, &testo_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'testo'";
     throw SquirrelError(v, msg.str());
   }
 

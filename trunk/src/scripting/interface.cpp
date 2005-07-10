@@ -1,3 +1,4 @@
+#include "wrapper.interface.hpp"
 #include "interface.hpp"
 #include "sound/sound_manager.hpp"
 #include "game_session.hpp"
@@ -53,6 +54,11 @@ void wait(HSQUIRRELVM vm, float time)
 void wait_for_dialog(HSQUIRRELVM vm)
 {
   script_manager->set_wakeup_event(vm, ScriptManager::DIALOG_CLOSED, -1);
+}
+
+int testo()
+{
+  return 42;
 }
 
 }

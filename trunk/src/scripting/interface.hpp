@@ -32,15 +32,17 @@ void show_dialog(float fadein_time);
 
 void hide_dialog(float fadeout_time);
 
-/** @SUSPEND@
+int testo();
+
+/**
  * Waits the specified time in seconds.
  */
-void wait(HSQUIRRELVM vm, float time);
+void wait(HSQUIRRELVM vm, float time) __suspend;
 
-/** @SUSPEND@
+/**
  * Waits till currently opened dialog has closed.
  */
-void wait_for_dialog(HSQUIRRELVM vm);
+void wait_for_dialog(HSQUIRRELVM vm) __suspend;
 
 }
 
