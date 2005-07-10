@@ -30,6 +30,7 @@
 
 static const int MAX_ENERGY = 16;
 static const float WALK_SPEED = 128.0;
+static const float RUN_SPEED = 256.0;
 static const float GRAVITY = 1500;
 
 Player* Player::current_ = 0;
@@ -102,6 +103,9 @@ Player::update (float elapsed_time)
     case WALK:
       update_walk_stand();
       break;
+    case RUN:
+      update_run();
+      break;
     case DUCKING:
       update_ducking();
       break;
@@ -116,6 +120,15 @@ Player::update (float elapsed_time)
       break;
     case LISTEN:
       update_listen();
+      break;
+    case JUMP_BEGIN:
+      update_jump_begin();
+      break;
+    case JUMP_AIR:
+      update_jump_air();
+      break;
+    case JUMP_LAND:
+      update_jump_land();
       break;
     default:
       assert(false);
@@ -203,6 +216,11 @@ Player::update_walk()
   if(get_direction() == WEST && controller.get_button_state(RIGHT_BUTTON)
      || get_direction() == EAST && controller.get_button_state(LEFT_BUTTON)) {
     set_turnaround();
+    return;
+  }
+
+  if(controller.get_button_state(RUN_BUTTON)) {
+    set_run();
     return;
   }
 }
@@ -323,6 +341,100 @@ void
 Player::update_listen()
 {
   // nothing
+}
+
+void
+Player::set_run()
+{
+  try_set_action("Run");
+  if(get_direction() == EAST)
+    velocity.x = RUN_SPEED;
+  else
+    velocity.x = -RUN_SPEED;  
+  state = RUN;
+}
+
+void
+Player::update_run()
+{
+  if(!controller.get_button_state(RUN_BUTTON)) {
+    set_walk(get_direction());
+    return;
+  }
+  if(controller.get_button_state(JUMP_BUTTON)) {
+    set_jump_begin();
+    return;
+  }
+}
+
+void
+Player::set_jump_begin()
+{
+  if(sprite->before_marker("RightFoot")) {
+    sprite->set_next_action("JumpRightFoot");
+    sprite->abort_at_marker("RightFoot");
+    printf("jumpright.\n");
+    jump_foot = LEFT_FOOT;
+  } else if(sprite->before_marker("LeftFoot")) {
+    sprite->set_next_action("JumpLeftFoot");
+    sprite->abort_at_marker("LeftFoot");
+    printf("jumpleft.\n");
+    jump_foot = RIGHT_FOOT;
+  } else {
+    sprite->set_next_action("JumpRightFoot");
+    sprite->abort_at_marker("RightFoot");
+    printf("jumpright.\n");
+    jump_foot = LEFT_FOOT;
+  }
+  state = JUMP_BEGIN;
+}
+
+void
+Player::update_jump_begin()
+{
+  if(sprite->switched_actions()) {
+    if(sprite->get_action() == "JumpLeftFoot") {
+      sprite->set_next_action("JumpLeftFootAir");
+    } else if(sprite->get_action() == "JumpRightFoot") {
+      sprite->set_next_action("JumpRightFootAir");
+    } else {
+      set_jump_air();
+      return;
+    }
+  }
+}
+
+void
+Player::set_jump_air()
+{
+  velocity.y = -400;
+  sprite->set_next_action("JumpLandSofttoRun");
+  state = JUMP_AIR;
+}
+
+void
+Player::update_jump_air()
+{
+  if(sprite->switched_actions()) {
+    set_jump_land();
+    return;
+  }
+}
+
+void
+Player::set_jump_land()
+{
+  sprite->set_next_action("Run");
+  state = JUMP_LAND;
+}
+
+void
+Player::update_jump_land()
+{
+  if(sprite->switched_actions()) {
+    set_run();
+    return;
+  }
 }
 
 Direction

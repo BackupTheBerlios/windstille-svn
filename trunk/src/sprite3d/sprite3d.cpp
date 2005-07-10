@@ -111,10 +111,10 @@ Sprite3D::abort_at_marker(const std::string& name)
 }
 
 bool
-Sprite3D::after_marker(const std::string& name) const
+Sprite3D::before_marker(const std::string& name) const
 {
   const Marker& marker = data->get_marker(frame1.action, name);  
-  return frame1.frame >= marker.frame;
+  return frame1.frame < marker.frame;
 }
 
 bool

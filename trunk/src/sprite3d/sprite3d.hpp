@@ -69,9 +69,9 @@ public:
   void abort_at_marker(const std::string& marker);
 
   /**
-   * returns true if the current frame of the action is after a certain marker
+   * returns true if the current frame of the action is before a certain marker
    */
-  bool after_marker(const std::string& marker) const;
+  bool before_marker(const std::string& marker) const;
 
   /**
    * returns true exactly once after actions have been switched after a

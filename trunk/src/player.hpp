@@ -56,13 +56,25 @@ public:
     TURNAROUND,
     DUCKING,
     DUCKED,
+    ACCELERATE,
+    RUN,
+    SLOWDOWN,
     STAND_TO_LISTEN,
-    LISTEN
+    LISTEN,
+    JUMP_BEGIN,
+    JUMP_AIR,
+    JUMP_LAND
   };
 
 private:
   State state;
 
+  // jump state info
+  enum Foot {
+    LEFT_FOOT, RIGHT_FOOT
+  };
+  Foot jump_foot;
+  
   double reload_time;
   static Player* current_;
 public:
@@ -104,6 +116,14 @@ private:
   void update_stand_to_listen();
   void set_listen();
   void update_listen();
+  void set_run();
+  void update_run();
+  void set_jump_begin();
+  void update_jump_begin();
+  void set_jump_air();
+  void update_jump_air();
+  void set_jump_land();
+  void update_jump_land();
 
   /**
    * Sets an action for the sprite. In contrast to sprite->set_action this
