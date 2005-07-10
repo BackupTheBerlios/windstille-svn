@@ -1,8 +1,3 @@
 Windstille Bugs
 ===============
 
-- changing the direction of animation 2 times at the same frame often causes the
-  animation to finish too early (press down 2 times fastly to see this)
-- when standing up from ducking there's a small delay as we blend animations
-  like this: ducking -> stand -> walk. We should rather blend ducking -> walk to
-  avoid 1 unnecessary frame.

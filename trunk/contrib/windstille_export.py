@@ -270,9 +270,13 @@ def export(filename):
     file.write(struct.pack("=64sfHH", action.getName(), \
           action_speed * SPEED_MULTIPLIER, len(markers), resultframes))
 
+    def blenderframe_to_wspriteframe(frame):
+      return (frame - first_frame) / samplerate
+
     # write markers
     for marker in markers:
-      file.write(struct.pack("=64sH", marker[0], marker[1]))
+      file.write(struct.pack("=64sH", marker[0], \
+            blenderframe_to_wspriteframe(marker[1])))
   
     # output for all frames for all meshs all vertex positions
     frs = 0

@@ -1,7 +1,6 @@
 //  $Id$
 //
-//  Pingus - A free Lemmings clone
-//  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
+//  Copyright (C) 2005 Matthias Braun <matze@braunis.de>
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -34,15 +33,13 @@
 #include "timer.hpp"
 
 Sprite3D::Sprite3D(const Sprite3DData* data)
-  : data(data), rot(false), actions_switched(false),
-    next_action(0), next_rot(0), next_speed(1.0)
+  : data(data), actions_switched(false)
 {
-  current_action = &data->actions[0];
-  current_frame = 0;
-  last_frame = current_action->frame_count - 1;
-  reverse = false;
-  speed = 1.0;
-  update(0);  
+  frame1.action = &data->actions[0];
+  frame1.frame = 0;
+  frame1.rot = false;
+  frame1.speed = 1.0;
+  frame2 = frame1;
 }
 
 Sprite3D::~Sprite3D()
@@ -50,52 +47,74 @@ Sprite3D::~Sprite3D()
 }
 
 void
-Sprite3D::set_action(const std::string& actionname)
+Sprite3D::set_action(const std::string& actionname, float speed)
 {
-  current_action = & data->get_action(actionname);
-  last_frame = current_action->frame_count - 1;
-  next_action = 0;
+  next_frame.action = & data->get_action(actionname);
+  // set to last action so that next set_next_frame call will result in frame 0
+  if(speed >= 0) {
+    next_frame.frame = 0;
+  } else {
+    next_frame.frame = next_frame.action->frame_count - 1;
+  }
+  next_frame.speed = speed;
+  next_frame.rot = frame2.rot;
+
+  next_action.action = 0;
+  actions_switched = false;
 }
 
 const std::string&
 Sprite3D::get_action() const
 {
-  return current_action->name;
+  if(next_frame.action != 0)
+    return next_frame.action->name;
+  
+  return frame2.action->name;
 }
 
 void
-Sprite3D::set_next_action(const std::string& name)
+Sprite3D::set_next_action(const std::string& name, float speed)
 {
-  next_action = & data->get_action(name);
-  next_rot = rot;
-  next_speed = speed;
+  next_action.action = & data->get_action(name);
+  if(speed >= 0) {
+    next_action.frame = 0;
+  } else {
+    next_action.frame = next_action.action->frame_count - 1;
+  }
+  next_action.speed = speed;
+  next_action.rot = frame2.rot;
   actions_switched = false;
+
+  const Frame* frame = next_frame.action != 0 ? &next_frame : &frame2;
+  abort_at_frame.action = frame->action;
+  abort_at_frame.speed = frame->speed;
+  abort_at_frame.rot = frame->rot;
+  if(frame->speed >= 0) {
+      abort_at_frame.frame = frame->action->frame_count - 1;
+  } else {
+      abort_at_frame.frame = 0;
+  }
 }
 
 void
 Sprite3D::set_next_rot(bool rot)
 {
-  next_rot = rot;
-}
-
-void
-Sprite3D::set_next_speed(float speed)
-{
-  next_speed = speed;
+  next_action.rot = rot;
 }
 
 void
 Sprite3D::abort_at_marker(const std::string& name)
 {
-  const Marker& marker = data->get_marker(current_action, name);
-  last_frame = marker.frame;
+  const Marker& marker = data->get_marker(frame1.action, name);
+  abort_at_frame = frame1;
+  abort_at_frame.frame = marker.frame;
 }
 
 bool
 Sprite3D::after_marker(const std::string& name) const
 {
-  const Marker& marker = data->get_marker(current_action, name);  
-  return current_frame >= marker.frame;
+  const Marker& marker = data->get_marker(frame1.action, name);  
+  return frame1.frame >= marker.frame;
 }
 
 bool
@@ -112,41 +131,34 @@ Sprite3D::switched_actions()
 void
 Sprite3D::set_speed(float speed)
 {
-  if(this->speed > 0 && speed < 0
-      || this->speed < 0 && speed > 0) {
-    if(speed >= 0) {
-      current_frame = (current_frame + 1) & current_action->frame_count;
-      this->last_frame = 0;
-    } else {
-      current_frame = (current_frame + current_action->frame_count - 1)
-        % current_action->frame_count;
-      this->last_frame = current_action->frame_count - 1;
-    }
+  if(speed < 0 && frame1.speed >= 0
+      || speed >= 0 && frame1.speed < 0) {
     blend_time = 1.0 - blend_time;
     std::swap(frame1, frame2);
   }
-  if(speed >= 0) {
-    reverse = false;
-  } else {
-    speed = -speed;
-    reverse = true;
-  }
-  this->speed = speed;
+  frame1.speed = speed;
+  frame2.speed = speed;
 }
 
 float
 Sprite3D::get_speed() const
 {
-  if(reverse)
-    return -speed;
-  else
-    return speed;
+  return frame1.speed;
 }
 
 void
 Sprite3D::set_rot(bool rot)
 {
-  this->rot = rot;
+  next_frame.rot = rot;
+}
+
+bool
+Sprite3D::get_rot() const
+{
+  if(next_frame.action != 0)
+    return next_frame.rot;
+  
+  return frame1.rot;
 }
 
 class Sprite3DDrawingRequest : public DrawingRequest
@@ -170,53 +182,46 @@ public:
 void
 Sprite3D::set_next_frame()
 {
-  if(current_frame == last_frame && next_action != 0) {
-    current_action = next_action;
-    speed = next_speed;
-    if(speed < 0) {
-      speed = -speed;
-      reverse = true;
-    } else {
-      reverse = false;
-    }
-    rot = next_rot;
-    next_action = 0;
+  if(frame2.action != frame1.action && abort_at_frame.action == 0) {
     actions_switched = true;
-
-    if(reverse) {
-      current_frame = current_action->frame_count - 1;
-      last_frame = 0;                                      
-    } else {
-      current_frame = 0;
-      last_frame = current_action->frame_count - 1;      
-    }
-  } else {
-    if(reverse) {
-      current_frame = (current_frame + current_action->frame_count - 1) 
-        % current_action->frame_count;                                         
-    } else {
-      current_frame = (current_frame + 1) % current_action->frame_count;
-    }
+  }
+  
+  frame1 = frame2;
+  if(next_frame.action != 0) {
+    frame2 = next_frame;
+    next_frame.action = 0;
+    return;
+  }
+  if(frame2 == abort_at_frame && next_action.action != 0) {
+    frame2 = next_action;
+    abort_at_frame.action = 0;
+    next_action.action = 0;
+    return;
   }
 
-  assert(current_frame >= 0);
-  assert(current_frame < current_action->frame_count);
-  frame2.frame = &current_action->frames[current_frame];
-  frame2.speed = speed;
-  frame2.rot = rot;
+  frame2.action = frame1.action;
+  if(frame1.speed < 0) {
+    frame2.frame = (frame1.frame + frame1.action->frame_count - 1)
+      % frame2.action->frame_count;
+  } else {
+    frame2.frame = (frame1.frame + 1) % frame1.action->frame_count;
+  }
+  frame2.speed = frame1.speed;
+  frame2.rot = frame1.rot;
 }
 
 void
 Sprite3D::update(float elapsed_time)
 {
-  float time_delta = elapsed_time * current_action->speed * speed;
+  float time_delta = elapsed_time * frame1.action->speed * frame1.speed;
+  if(frame1.speed < 0)
+    time_delta = -time_delta;
 
   while(blend_time + time_delta >= 1.0) {
-    frame1 = frame2;
-    elapsed_time -= (1.0 - blend_time) / (current_action->speed * speed);
+    elapsed_time -= (1.0 - blend_time) / (frame1.action->speed * frame1.speed);
     set_next_frame();
 
-    time_delta = elapsed_time * current_action->speed * speed;
+    time_delta = elapsed_time * frame1.action->speed * frame1.speed;
     blend_time = 0.0;
   }
   blend_time += time_delta;
@@ -252,12 +257,15 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos,
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);  
 
   assert_gl("gl init before sprite");
+
+  const ActionFrame& aframe1 = frame1.action->frames[frame1.frame];
+  const ActionFrame& aframe2 = frame2.action->frames[frame2.frame];
   
   float t_1 = 1.0 - blend_time;
   for(uint16_t m = 0; m < data->mesh_count; ++m) {
     const Mesh& mesh = data->meshs[m];
-    const MeshVertices& vertices1 = frame1.frame->meshs[m];
-    const MeshVertices& vertices2 = frame2.frame->meshs[m];
+    const MeshVertices& vertices1 = aframe1.meshs[m];
+    const MeshVertices& vertices2 = aframe2.meshs[m];
     
     // blend between frame1 + frame2
     float* verts = new float[mesh.vertex_count * 3];

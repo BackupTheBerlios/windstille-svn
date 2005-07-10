@@ -241,8 +241,11 @@ Sector::add(GameObject* obj)
 void 
 Sector::add_entity(Entity* ent)
 {
+  (void) ent;
+#if 0
   collision_engine->add_object(ent);
   add(ent);
+#endif
 }
 
 

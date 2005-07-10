@@ -43,9 +43,8 @@ public:
   // so this is called for both objects first and then collision() for both.
   //
   // this isn't really fast, because everything's done twice, maybe someone has a better idea?
-  virtual void prepare_collision(const CollisionData &data, CollisionObject &other)
-  {
-  }
+  virtual void prepare_collision(const CollisionData &, CollisionObject &)
+  { }
   virtual void collision(const CollisionData& data, CollisionObject& other) = 0; 
 
   virtual void move(float delta);

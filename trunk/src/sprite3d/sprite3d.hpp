@@ -46,9 +46,9 @@ public:
   void draw(SceneContext& sc, const Vector& pos);
   
   /**
-   * Instantly changes the action to the specified one
+   * Changes action (after the currently shown animation frame)
    */
-  void set_action(const std::string& name);
+  void set_action(const std::string& name, float speed = 1.0);
   
   /**
    * Return the name of the currently active action
@@ -59,9 +59,8 @@ public:
    * Set the next action and vflip value to be played after the current action
    * has finished (or reached the point to be defined by abort_at_marker)
    */
-  void set_next_action(const std::string& name);
+  void set_next_action(const std::string& name, float speed = 1.0);
   void set_next_rot(bool rot);
-  void set_next_speed(float speed);
 
   /**
    * Abort current action after a certain marker has been reached.
@@ -90,11 +89,7 @@ public:
    * Rotate (or not rotate) the model 180 degree
    */
   void set_rot(bool rot = true);
-
-  bool get_rot() const
-  {
-    return rot;
-  }
+  bool get_rot() const;
 
 private:
   friend class Sprite3DDrawingRequest;
@@ -105,30 +100,31 @@ private:
   Sprite3D& operator= (const Sprite3D&);
 
   struct Frame {
-    const ActionFrame* frame;
+    const Action* action;
+    int frame;
     float speed;
     bool rot;
+
+    bool operator==(const Frame& o) const
+    {
+      return action == o.action && frame == o.frame && speed == o.speed
+        && rot == o.rot;
+    }
   };
 
   void set_next_frame();
   void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
 
   const Sprite3DData* data;
-  const Action* current_action;
-  int current_frame;
-  float speed;
-  bool reverse;
-  bool rot;
-  int last_frame;
   bool actions_switched;
 
   Frame frame1;
   Frame frame2;
   float blend_time;
-  
-  const Action* next_action;
-  bool next_rot;
-  float next_speed;
+ 
+  Frame next_frame;
+  Frame next_action;
+  Frame abort_at_frame;
 };
 
 #endif

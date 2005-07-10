@@ -109,7 +109,7 @@ private:
    * Sets an action for the sprite. In contrast to sprite->set_action this
    * function will not restart the action if it was already running
    */
-  void try_set_action(const std::string& name);
+  void try_set_action(const std::string& name, float speed = 1.0);
 
   Direction get_direction() const;
   

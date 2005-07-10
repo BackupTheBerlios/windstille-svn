@@ -205,13 +205,6 @@ Player::update_walk()
     set_turnaround();
     return;
   }
-  
-  // test
-  if(controller.get_button_state(JUMP_BUTTON)) {
-    sprite->set_speed(-1.0);
-  } else {
-    sprite->set_speed(1.0);
-  }
 }
 
 void
@@ -241,13 +234,11 @@ Player::update_ducking()
     printf("Changespeed1.\n");
     sprite->set_speed(-1.0);
     sprite->set_next_action("Stand");
-    sprite->set_next_speed(1.0);
   } else if(controller.get_button_state(DOWN_BUTTON) 
       && sprite->get_speed() < 0) {
     printf("Changespeed2.\n");
     sprite->set_speed(1.0);
     sprite->set_next_action("Ducking");
-    sprite->set_next_speed(1.0);
   }
 }
 
@@ -265,10 +256,8 @@ Player::update_ducked()
   if(!controller.get_button_state(DOWN_BUTTON)) {
     printf("ducking.\n");
     state = DUCKING;
-    sprite->set_action("StandToDuck");
+    sprite->set_action("StandToDuck", -1.0);
     sprite->set_next_action("Stand");
-    sprite->set_next_speed(1.0);
-    sprite->set_speed(-1.0);
   }  
 }
 
@@ -280,6 +269,7 @@ Player::set_turnaround()
   sprite->set_next_action("Walk");
   sprite->set_next_rot(! sprite->get_rot());
   state = TURNAROUND;
+  printf("turn.\n");
 }
 
 void
@@ -302,13 +292,11 @@ Player::update_turnaround()
 void
 Player::set_stand_to_listen(bool backwards)
 {
-  try_set_action("StandtoListen");
-  sprite->set_next_speed(1.0);
+  try_set_action("StandtoListen", backwards ? -1.0 : 1.0);
   if(!backwards) {
     sprite->set_next_action("Listen");
   } else {
     sprite->set_next_action("Stand");
-    sprite->set_speed(-1.0);
   }
   state = STAND_TO_LISTEN;
 }
@@ -344,12 +332,12 @@ Player::get_direction() const
 }
 
 void
-Player::try_set_action(const std::string& name)
+Player::try_set_action(const std::string& name, float speed)
 {
   if(sprite->get_action() == name)
     return;
   
-  sprite->set_action(name);
+  sprite->set_action(name, speed);
 }
 
 void 
