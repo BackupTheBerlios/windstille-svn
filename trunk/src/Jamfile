@@ -9,6 +9,7 @@ SubInclude TOP src sound ;
 SubInclude TOP src scripting ;
 SubInclude TOP src sprite3d ;
 SubInclude TOP src tinygettext ;
+SubInclude TOP src collision ;
 
 sources = 
         animation_obj.cpp
@@ -120,6 +121,8 @@ Application windstille
         $(sprite3d_objects)
 
         $(tinygettext_objects)
+
+	$(collision_objects)
 
         $(sources)
 ;

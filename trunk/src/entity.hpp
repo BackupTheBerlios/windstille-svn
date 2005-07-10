@@ -23,10 +23,11 @@
 #include <ClanLib/Core/Math/cl_vector.h>
 #include <ClanLib/Display/sprite.h>
 #include "game_object.hpp"
+#include "collision/collision_object.hpp"
 
 /** A GameObject which has a position and some other properties which
     are shared among all/most things in the world */
-class Entity : public GameObject
+class Entity : public GameObject, public CollisionObject
 {
 private:
   CL_Vector pos;

@@ -34,6 +34,7 @@
 #include "spawnpoint.hpp"
 #include "sound/sound_manager.hpp"
 #include "script_manager.hpp"
+#include "collision/collision_engine.hpp"
 
 Sector* Sector::current_ = 0;
 
@@ -46,6 +47,8 @@ Sector::Sector(const std::string& filename)
   parse_file(filename);
   if (!interactive_tilemap)
     std::cout << "Error: Sector: No interactive-tilemap available" << std::endl;
+
+  collision_engine=new CollisionEngine;
 }
 
 Sector::~Sector()
@@ -57,6 +60,8 @@ Sector::~Sector()
     (*i)->unref();
   for(Objects::iterator i = new_objects.begin(); i != new_objects.end(); ++i)
     (*i)->unref();
+
+  delete collision_engine;
 }
 
 void
@@ -198,6 +203,8 @@ void Sector::update(float delta)
 void
 Sector::commit_removes()
 {
+  CollisionObject *coll_object=0;
+
   // remove objects
   for(Objects::iterator i = objects.begin(); i != objects.end(); ) {
     GameObject* object = *i;
@@ -206,6 +213,13 @@ Sector::commit_removes()
         remove_object_from_squirrel(object);
       }
       object->unref();
+
+      coll_object=dynamic_cast<CollisionObject*>(*i);
+      if(coll_object)
+	{
+	  collision_engine->remove_object(coll_object);
+	}
+
       i = objects.erase(i);
       continue;
     }
@@ -223,6 +237,14 @@ Sector::add(GameObject* obj)
     expose_object_to_squirrel(obj);
   }
 }
+
+void 
+Sector::add_entity(Entity* ent)
+{
+  collision_engine->add_object(ent);
+  add(ent);
+}
+
 
 void
 Sector::remove_object_from_squirrel(GameObject* object)

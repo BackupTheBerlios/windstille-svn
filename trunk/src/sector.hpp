@@ -30,6 +30,8 @@ class TileMap;
 class Player;
 class SceneContext;
 class SpawnPoint;
+class CollisionEngine;
+class Entity;
 
 /** */
 class Sector
@@ -53,6 +55,8 @@ private:
 
   /** The TileMap with which the player interacts */
   TileMap* interactive_tilemap;
+
+  CollisionEngine* collision_engine;
 
   Player* player;
 
@@ -88,6 +92,8 @@ public:
   int get_height () const;
 
   void add(GameObject*);
+  void add_entity(Entity *);
+
 
   std::vector<GameObject*>* get_objects() { return &objects; }
   TileMap* get_tilemap() { return interactive_tilemap; }
