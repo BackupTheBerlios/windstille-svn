@@ -40,6 +40,9 @@ Sprite3D::Sprite3D(const Sprite3DData* data)
   frame1.rot = false;
   frame1.speed = 1.0;
   frame2 = frame1;
+  abort_at_frame.action = 0;
+  next_frame.action = 0;
+  next_action.action = 0;
 }
 
 Sprite3D::~Sprite3D()
