@@ -30,7 +30,6 @@
 class Entity : public GameObject, public CollisionObject
 {
 private:
-  CL_Vector pos;
   bool mover_active;
   CL_Vector target_pos;
   
@@ -42,7 +41,7 @@ private:
   CL_Signal_v0 done;
 
 public:
-  Entity(const CL_Vector& pos_);
+  Entity(const int x, const int y);
   virtual ~Entity();
   
   /** Bind the entity to a parent, causing all movement to be affected
@@ -62,12 +61,16 @@ public:
   void move_to(float x, float y);
 
   void draw(SceneContext& gc);
-  void update(float delta);
+  virtual void update(float delta) = 0;
 
   CL_Signal_v0& sig_done() { return done; }
 private:
   Entity (const Entity&);
   Entity& operator= (const Entity&);
+
+protected:
+    void move(float delta);
+    CL_Vector pos;
 };
 
 #endif

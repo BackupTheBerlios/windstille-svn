@@ -77,7 +77,7 @@ void print_squirrel_stack(HSQUIRRELVM v)
 SquirrelError::SquirrelError(HSQUIRRELVM v, const std::string& message) throw()
 {
   std::ostringstream msg;
-  msg << "SQuirrel error: " << message << " (";
+  msg << "Squirrel error: " << message << " (";
   const char* lasterr;
   sq_getlasterror(v);
   if(sq_gettype(v, -1) != OT_STRING) {

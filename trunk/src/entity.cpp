@@ -22,10 +22,10 @@
 #include "globals.hpp"
 #include "entity.hpp"
 
-Entity::Entity(const CL_Vector& pos_)
-  : pos(pos_),
-    parent(0),
-    sprite("igel", resources)
+Entity::Entity(const int x, const int y)
+  : parent(0),
+    sprite("igel", resources),
+    pos(x, y)
 {
   mover_active = false;
 }
@@ -72,7 +72,7 @@ Entity::draw(SceneContext& )
 }
 
 void
-Entity::update(float delta)
+Entity::move(float delta)
 {
   sprite.update(delta);
   

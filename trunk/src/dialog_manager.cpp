@@ -29,9 +29,8 @@
 
 DialogManager* DialogManager::current_ = 0;
 
-Dialog::Dialog(int alignment, const std::string& portrait,
-               const std::string& text)
-  : portrait(portrait, resources), text(text), alignment(alignment)
+Dialog::Dialog(int alignment, const std::string& portrait)
+  : portrait(portrait, resources), text(""), alignment(alignment)
 {
 }
 
@@ -43,18 +42,37 @@ DialogManager::DialogManager()
 }
 
 void
-DialogManager::add_dialog(int alignment, const std::string& portrait,
-                          const std::string& text)
+DialogManager::add_dialog(int alignment, const std::string& portrait)
 {
-  dialogs.push_back(Dialog(alignment, portrait, text));
+  dialogs.push_back(Dialog(alignment, portrait));
   current_dialog = dialogs.size()-1;
 }
 
 void
-DialogManager::add_answer(const std::string& text, const std::string& script)
+DialogManager::add_question(const std::string& text)
 {
   Dialog& dialog = dialogs[current_dialog];
-  dialog.answers.push_back(std::make_pair(text, script));
+  //FIXME!!!!!
+  dialog.text = text + " CLANLIBFONTSHAVEISSUESOHYESTHEYDOTHEYREALLYDO";
+}
+
+void
+DialogManager::add_answer(const std::string& answer)
+{
+  Dialog& dialog = dialogs[current_dialog];
+  dialog.answers.push_back(answer);
+}
+
+int
+DialogManager::dialog_answer()
+{
+  return current_choice;
+}
+
+void
+DialogManager::remove_dialog()
+{
+  dialogs.pop_back();
 }
 
 void
@@ -82,7 +100,7 @@ DialogManager::draw()
       } else {
         pos.x = (config->screen_width - dialog_width) / 2;
       }
-
+      
       int text_width
         = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
       CL_Rect text_rect = Fonts::dialog.bounding_rect(
@@ -137,12 +155,12 @@ DialogManager::draw()
                 Fonts::dialog_h.draw(pos.x + i*w + w/2,
                                      pos.y + text_rect.get_height() 
                                         + text_border_y*2 + 20,
-                                     "[" + dialog.answers[i].first + "]");
+                                     "[" + dialog.answers[i] + "]");
               else
                 Fonts::dialog.draw(pos.x + i*w + w/2,
                                    pos.y + text_rect.get_height() 
                                         + text_border_y*2 + 20,
-                                   dialog.answers[i].first);
+                                   dialog.answers[i]);
             }
         }
     }
@@ -163,10 +181,6 @@ DialogManager::update(float )
             {
               GameSession::current()->set_game_state();
               script_manager->fire_wakeup_event(ScriptManager::DIALOG_CLOSED);
-              if (dialogs[current_dialog].answers.size() > 0) {
-                script_manager->run_script(
-                  dialogs[current_dialog].answers[current_choice].second);
-              }
             }
           else if ((*i).button.name == LEFT_BUTTON && (*i).button.down == true)
             {

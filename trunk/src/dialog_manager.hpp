@@ -29,8 +29,7 @@ class Dialog {
 public:
   CL_Sprite portrait;
   std::string text;
-  /// pair<answer, script>
-  std::vector<std::pair<std::string, std::string> > answers;
+  std::vector<std::string> answers;
 
   enum Alignment {
     VCENTER = 0x00,
@@ -42,7 +41,7 @@ public:
   };
   int alignment;
 
-  Dialog(int alignment, const std::string& portrait, const std::string& text);
+  Dialog(int alignment, const std::string& portrait);
 };
 
 /** */
@@ -63,9 +62,12 @@ public:
   void draw();
   void update(float delta);
 
-  void add_dialog(int alignment, const std::string& portrait,
-                  const std::string& text);
-  void add_answer(const std::string& text, const std::string& script);
+  void add_dialog(int alignment, const std::string& portrait);
+  void add_question(const std::string& text);
+  void add_answer(const std::string& answer);
+  int dialog_answer() const {return current_choice;}
+  int dialog_answer();
+  void remove_dialog();
   void clear();
 private:
   DialogManager (const DialogManager&);

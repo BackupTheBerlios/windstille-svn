@@ -313,6 +313,7 @@ Player::set_stand_to_listen(bool backwards)
   try_set_action("StandtoListen", backwards ? -1.0 : 1.0);
   if(!backwards) {
     sprite->set_next_action("Listen");
+    velocity = Vector(0, 0, 0);
   } else {
     sprite->set_next_action("Stand");
   }

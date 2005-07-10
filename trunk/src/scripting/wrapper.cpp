@@ -264,28 +264,65 @@ static int play_sound_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int set_dialog_wrapper(HSQUIRRELVM v)
+static int add_dialog_wrapper(HSQUIRRELVM v)
 {
   int arg0;
   sq_getinteger(v, 2, &arg0);
   const char* arg1;
   sq_getstring(v, 3, &arg1);
-  const char* arg2;
-  sq_getstring(v, 4, &arg2);
   
-  Scripting::set_dialog(arg0, arg1, arg2);
+  Scripting::add_dialog(arg0, arg1);
+  
+  return 0;
+}
+
+static int add_question_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  Scripting::add_question(arg0);
+  
+  return 0;
+}
+
+static int add_answer_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  Scripting::add_answer(arg0);
+  
+  return 0;
+}
+
+static int dialog_answer_wrapper(HSQUIRRELVM v)
+{
+  
+  int return_value = Scripting::dialog_answer();
+  
+  sq_pushinteger(v, return_value);
+  return 1;
+}
+
+static int end_dialog_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::end_dialog();
   
   return 0;
 }
 
 static int show_dialog_wrapper(HSQUIRRELVM v)
 {
-  float arg0;
-  sq_getfloat(v, 2, &arg0);
+  HSQUIRRELVM arg0 = v;
+  float arg1;
+  sq_getfloat(v, 2, &arg1);
   
-  Scripting::show_dialog(arg0);
+  Scripting::show_dialog(arg0, arg1);
   
-  return 0;
+  return sq_suspendvm(v);
 }
 
 static int hide_dialog_wrapper(HSQUIRRELVM v)
@@ -298,15 +335,6 @@ static int hide_dialog_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int testo_wrapper(HSQUIRRELVM v)
-{
-  
-  int return_value = Scripting::testo();
-  
-  sq_pushinteger(v, return_value);
-  return 1;
-}
-
 static int wait_wrapper(HSQUIRRELVM v)
 {
   HSQUIRRELVM arg0 = v;
@@ -314,15 +342,6 @@ static int wait_wrapper(HSQUIRRELVM v)
   sq_getfloat(v, 2, &arg1);
   
   Scripting::wait(arg0, arg1);
-  
-  return sq_suspendvm(v);
-}
-
-static int wait_for_dialog_wrapper(HSQUIRRELVM v)
-{
-  HSQUIRRELVM arg0 = v;
-  
-  Scripting::wait_for_dialog(arg0);
   
   return sq_suspendvm(v);
 }
@@ -410,11 +429,43 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
-  sq_pushstring(v, "set_dialog", -1);
-  sq_newclosure(v, &set_dialog_wrapper, 0);
+  sq_pushstring(v, "add_dialog", -1);
+  sq_newclosure(v, &add_dialog_wrapper, 0);
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
-    msg << "Couldn't register function'set_dialog'";
+    msg << "Couldn't register function'add_dialog'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "add_question", -1);
+  sq_newclosure(v, &add_question_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'add_question'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "add_answer", -1);
+  sq_newclosure(v, &add_answer_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'add_answer'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "dialog_answer", -1);
+  sq_newclosure(v, &dialog_answer_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'dialog_answer'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "end_dialog", -1);
+  sq_newclosure(v, &end_dialog_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'end_dialog'";
     throw SquirrelError(v, msg.str());
   }
 
@@ -434,27 +485,11 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
-  sq_pushstring(v, "testo", -1);
-  sq_newclosure(v, &testo_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't register function'testo'";
-    throw SquirrelError(v, msg.str());
-  }
-
   sq_pushstring(v, "wait", -1);
   sq_newclosure(v, &wait_wrapper, 0);
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'wait'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  sq_pushstring(v, "wait_for_dialog", -1);
-  sq_newclosure(v, &wait_for_dialog_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't register function'wait_for_dialog'";
     throw SquirrelError(v, msg.str());
   }
 

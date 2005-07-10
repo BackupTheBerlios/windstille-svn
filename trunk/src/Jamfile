@@ -22,6 +22,8 @@ sources =
         blitter.hpp
         camera.cpp
         camera.hpp
+        character.cpp
+        character.hpp
         collision_manager.cpp
         collision_manager.hpp
         console.cpp

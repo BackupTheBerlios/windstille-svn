@@ -25,25 +25,17 @@ static const int HCENTER = 0x00;
 static const int TOP     = 0x10;
 static const int BOTTOM  = 0x20;
 
-void set_dialog(int alignment, const std::string& portrait,
-                const std::string& text);
+void add_dialog(int alignment, const std::string& portrait);
+void add_question(const std::string& text);
+void add_answer(const std::string& answer);
+int dialog_answer();
+void end_dialog();
 
-void show_dialog(float fadein_time);
-
+void show_dialog(HSQUIRRELVM vm, float fadein_time) __suspend;
 void hide_dialog(float fadeout_time);
 
-int testo();
-
-/**
- * Waits the specified time in seconds.
- */
+//Waits the specified time in seconds.
 void wait(HSQUIRRELVM vm, float time) __suspend;
-
-/**
- * Waits till currently opened dialog has closed.
- */
-void wait_for_dialog(HSQUIRRELVM vm) __suspend;
-
 }
 
 #endif

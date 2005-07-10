@@ -47,6 +47,7 @@
 #include "script_manager.hpp"
 #include "sound/sound_manager.hpp"
 #include "test_object.hpp"
+#include "character.hpp"
 
 #include "game_session.hpp"
 
@@ -274,6 +275,8 @@ GameSession::change_sector()
       world->add(psystem3);
       world->add(psystem2);
       world->add(psystem);
+      
+      world->add(new Character(100, 800, "bob"));
     }
 
   //world->add(new TestObject());

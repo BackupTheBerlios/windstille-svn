@@ -75,6 +75,7 @@ public:
   void set_dialog_state() { control_state = DIALOG; }
   void set_game_state()   { control_state = GAME; }
   void set_sector(const std::string& arg_filename);
+  const std::string& get_filename () const { return filename; }
 
   void draw();
   void draw_game();
