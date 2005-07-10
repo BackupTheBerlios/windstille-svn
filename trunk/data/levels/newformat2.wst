@@ -7,21 +7,16 @@
   (init-script "
 wait(1.5);
 play_sound(\"sounds/speech/vr_intro.ogg\");
-set_dialog(TOP + RIGHT, \"human/portrait\",
-\"Welcome to the VR training programm. Here you \" +
-\"will learn the basic manovering abilities of your \" +
+add_dialog(TOP + RIGHT, \"human/portrait\");
+add_question(
+\"Welcome to the VR training program. Here you \" +
+\"will learn the basic manoeuvering abilities of your \" +
 \"powersuit, jumping, running, climbing and shooting. \" +
-\"We will start with climbing. See the block infront \" +
+\"We will start with climbing. See the block in front \" +
 \"of you? Press [Right] and [Jump] to hang on the ledge.\");
 show_dialog(0);
-Player.start_listening();
-wait_for_dialog();
-Player.stop_listening();
+end_dialog();
 Block0Sign.enable();
-function test() {
-  wait(1);
-}
-test();
 ")
   (spawnpoint
     (name "default")
