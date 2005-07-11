@@ -30,7 +30,7 @@ CollisionEngine::CollisionEngine()
   friction       = 0.01f;
   
   x_acceleration = 0.0f;
-  y_acceleration = 5.0f;
+  y_acceleration = 100.0f;
 
   unstuck_velocity = 50.0f;
   minimum_velocity = .1f;
@@ -79,30 +79,30 @@ CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
   add=50;
   //  grace=0;
 
-  CL_Vector2 dir;
+  CL_Vector dir;
 
   if (left < right && left < top && left < bottom)
     {
-      dir = CL_Vector2(std::min(left/2 + grace,add),0);
+      dir = CL_Vector(std::min(left/2 + grace,add),0,0);
     }
   else if (right < left && right < top && right < bottom)
     {
-      dir = CL_Vector2(-std::min(right/2 + grace,add),0);
+      dir = CL_Vector(-std::min(right/2 + grace,add),0,0);
     }
   else if (top < left && top < right && top < bottom)
     {
-      dir = CL_Vector2( 0, std::min(top/2 + grace,add));
+      dir = CL_Vector( 0, std::min(top/2 + grace,add),0);
     }
   else // (bottom < left && bottom < right && bottom < top)
     {
-      dir = CL_Vector2( 0, -std::min(bottom/2 + grace,add));
+      dir = CL_Vector( 0, -std::min(bottom/2 + grace,add),0);
     }
 
   if (a.unstuck_movable())
-    a.position -= dir;
+    a.pos -= dir;
       
   if (b.unstuck_movable())
-    b.position += dir;
+    b.pos += dir;
 }
 
 void
@@ -204,8 +204,8 @@ float CollisionEngine::get_friction() const
 {
   return friction;
 }
-CL_Vector2 CollisionEngine::get_graphity() const
+CL_Vector CollisionEngine::get_graphity() const
 {
-  return CL_Vector2(x_acceleration, y_acceleration);
+  return CL_Vector(x_acceleration, y_acceleration,0);
 }
 

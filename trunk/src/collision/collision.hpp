@@ -22,11 +22,12 @@
 #ifndef HEADER_COLLISION_HXX
 #define HEADER_COLLISION_HXX
 
+#include <ClanLib/Core/Math/cl_vector.h>
+
 #include <iostream>
 #include <list>
 #include <vector>
 
-#include <ClanLib/Core/Math/vector2.h>
 #include <ClanLib/Core/Math/rect.h>
 
 using namespace std;
@@ -50,7 +51,7 @@ public:
 
   float x_velocity() const;
   float y_velocity() const;
-  CL_Vector2 get_velocity() const;
+  CL_Vector get_velocity() const;
 
   virtual void drawCollision() const=0;
 
@@ -72,10 +73,10 @@ public:
   float width() const;
   float height() const;
 
-  CL_Vector2 get_vector0() const;
-  CL_Vector2 get_vector1() const;
-  CL_Vector2 get_vector2() const;
-  CL_Vector2 get_vector3() const;
+  CL_Vector get_vector0() const;
+  CL_Vector get_vector1() const;
+  CL_Vector get_vector2() const;
+  CL_Vector get_vector3() const;
 
   virtual void drawCollision() const;
 };
@@ -84,14 +85,14 @@ inline std::ostream& operator<<(std::ostream& out, const CollRect &b);
 
 class CollTri:public CollPrimitive
 {
-  CL_Vector2 base;
+  CL_Vector base;
 
   float dx;
   float dy;
 
 public:
   CollTri(CollisionObject *object_);
-  CollTri(const CL_Vector2 &base_, float w_, float h_,CollisionObject *object_);
+  CollTri(const CL_Vector &base_, float w_, float h_,CollisionObject *object_);
   virtual CollPrimitive *clone(CollisionObject *o) const;
 
   float x_pos() const;
@@ -100,11 +101,11 @@ public:
   float height() const;
 
   // normal - normalized!
-  CL_Vector2 normal() const;
+  CL_Vector normal() const;
 
-  CL_Vector2 get_vector0() const;
-  CL_Vector2 get_vector1() const;
-  CL_Vector2 get_vector2() const;
+  CL_Vector get_vector0() const;
+  CL_Vector get_vector1() const;
+  CL_Vector get_vector2() const;
 
   virtual void drawCollision() const;
 };
@@ -113,7 +114,7 @@ struct CollisionData
 {
   enum State {NONE,STUCK,COLLISION};
   // points into direction from where the other object came
-  CL_Vector2 direction;
+  CL_Vector direction;
   
   State state;
 

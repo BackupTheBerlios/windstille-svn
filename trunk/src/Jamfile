@@ -16,6 +16,8 @@ sources =
         animation_obj.hpp
         bomb.cpp
         bomb.hpp
+	box.cpp
+	box.hpp
         brush.cpp
         brush.hpp
         blitter.cpp

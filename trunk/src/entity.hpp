@@ -36,9 +36,10 @@ private:
   /** Reference to the parent object, must not be deleted */
   Entity* parent;
 
-  CL_Sprite sprite;
-
   CL_Signal_v0 done;
+
+protected:
+  CL_Sprite sprite;
 
 public:
   Entity(const int x, const int y);
@@ -70,7 +71,7 @@ private:
 
 protected:
     void move(float delta);
-    CL_Vector pos;
+  //    CL_Vector pos;
 };
 
 #endif

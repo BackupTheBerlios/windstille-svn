@@ -22,6 +22,8 @@
 #include "collision_object.hpp"
 #include "collision_engine.hpp"
 
+#include <assert.h>
+
 /***********************************************************************
  * CollisionObject
  ***********************************************************************/
@@ -29,6 +31,7 @@
 CollisionObject::CollisionObject()
 {
   parent=0;
+  coll_engine=0;
 }
 
 CollisionObject::~CollisionObject()
@@ -54,37 +57,37 @@ void CollisionObject::drawCollision()
 
 void CollisionObject::move(float delta)
 {
-  //  position += get_movement() * delta;
-  position += movement * delta;
+  assert(coll_engine);
+
+  pos += movement * delta;
   movement -= movement * coll_engine->get_friction() * delta;
   
   movement += coll_engine->get_graphity() * delta;
-  
 
-  if (fabsf(movement.x) < coll_engine->get_min_velocity())
+  if (fabsf(movement.x) < coll_engine->get_min_velocity()*delta)
     movement.x = 0.0f;
 
-  if (fabsf(movement.y) < coll_engine->get_min_velocity())
+  if (fabsf(movement.y) < coll_engine->get_min_velocity()*delta)
     movement.y = 0.0f;
 
 }
 
 void 
-CollisionObject::set_movement(const CL_Vector2 &m)
+CollisionObject::set_movement(const CL_Vector &m)
 {
   movement=m;
 }
 
 
-CL_Vector2 CollisionObject::get_pos() const
+CL_Vector CollisionObject::get_pos() const
 {
   if(parent != 0)
-    return parent->get_pos() + position;
+    return parent->get_pos() + pos;
   
-  return position;
+  return pos;
 }
 
-CL_Vector2 CollisionObject::get_movement() const
+CL_Vector CollisionObject::get_movement() const
 {
   if(parent != 0)
     return parent->get_movement() + movement;

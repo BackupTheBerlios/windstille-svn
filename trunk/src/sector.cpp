@@ -35,20 +35,21 @@
 #include "sound/sound_manager.hpp"
 #include "script_manager.hpp"
 #include "collision/collision_engine.hpp"
+#include "box.hpp"
 
 Sector* Sector::current_ = 0;
 
 Sector::Sector(const std::string& filename)
   : player(0)
 {
+  collision_engine=new CollisionEngine;
+
   current_ = this;
   interactive_tilemap = 0;
   ambient_light = CL_Color(0, 0, 0);
   parse_file(filename);
   if (!interactive_tilemap)
     std::cout << "Error: Sector: No interactive-tilemap available" << std::endl;
-
-  collision_engine=new CollisionEngine;
 }
 
 Sector::~Sector()
@@ -122,6 +123,8 @@ Sector::parse_object(const std::string& name, const lisp::Lisp* lisp)
     // TODO
   } else if(name == "trigger") {
     add(new Trigger(lisp));
+  } else if(name == "box") {
+    add_entity(new Box(lisp));
   } else if(name == "flashing-sign") {
     add(new FlashingSign(lisp));
   } else {
@@ -193,6 +196,9 @@ void Sector::commit_adds()
 void Sector::update(float delta)
 {
   commit_adds();
+
+  collision_engine->update(delta);
+
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i) {
     GameObject* object = *i;
     object->update(delta);
@@ -241,11 +247,8 @@ Sector::add(GameObject* obj)
 void 
 Sector::add_entity(Entity* ent)
 {
-  (void) ent;
-#if 0
   collision_engine->add_object(ent);
   add(ent);
-#endif
 }
 
 

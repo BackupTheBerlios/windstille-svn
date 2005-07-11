@@ -22,6 +22,7 @@
 #ifndef HEADER_COLLISION_OBJECT_HPP
 #define HEADER_COLLISION_OBJECT_HPP
 
+#include <ClanLib/Core/Math/cl_vector.h>
 #include "collision.hpp"
 
 class CollisionEngine;
@@ -33,10 +34,10 @@ public:
   CollisionObject();
   virtual ~CollisionObject();
 
-  CL_Vector2 get_pos() const;
-  CL_Vector2 get_movement() const;
+  CL_Vector get_pos() const;
+  CL_Vector get_movement() const;
 
-  void set_movement(const CL_Vector2 &m);
+  void set_movement(const CL_Vector &m);
 
   // this function is for preparing impulse collisions
   // you have to calculate the resulting impulse for both object before changing,
@@ -65,9 +66,9 @@ protected:
   CL_Rectf bbox;
  
   /// position of the object
-  CL_Vector2 position;
+  CL_Vector pos;
   /// movement till next frame
-  CL_Vector2 movement;
+  CL_Vector movement;
 
   CollisionObject* parent;
   std::vector<CollisionObject*> children;

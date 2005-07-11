@@ -67,7 +67,7 @@ inline float CollPrimitive::y_velocity() const
   return object->get_movement ().y;
 }
 
-CL_Vector2 CollPrimitive::get_velocity() const
+CL_Vector CollPrimitive::get_velocity() const
 {
   return object->get_movement();
 }
@@ -112,28 +112,28 @@ inline std::ostream& operator<<(std::ostream& out, const CollRect &b)
   return out;
 }
 
-CL_Vector2 CollRect::get_vector0() const
+CL_Vector CollRect::get_vector0() const
 {
-  return CL_Vector2 (x_pos (),y_pos ());
+  return CL_Vector (x_pos (),y_pos (),0);
 }
-CL_Vector2 CollRect::get_vector1() const
+CL_Vector CollRect::get_vector1() const
 {
-  return CL_Vector2 (x_pos ()+width (),y_pos ());
+  return CL_Vector (x_pos ()+width (),y_pos (),0);
 }
-CL_Vector2 CollRect::get_vector2() const
+CL_Vector CollRect::get_vector2() const
 {
-  return CL_Vector2 (x_pos (),y_pos ()+height ());
+  return CL_Vector (x_pos (),y_pos ()+height (),0);
 }
-CL_Vector2 CollRect::get_vector3() const
+CL_Vector CollRect::get_vector3() const
 {
-  return CL_Vector2 (x_pos ()+width (),y_pos ()+height ());
+  return CL_Vector (x_pos ()+width (),y_pos ()+height (),0);
 }
 
 void CollRect::drawCollision() const
 {
   CL_Gradient g (CL_Color (255, 255, 255),CL_Color (255, 255, 255),CL_Color (255, 255, 255),CL_Color (255, 255, 255));
 
-  CL_Vector2 v=object->get_pos ();
+  CL_Vector v=object->get_pos ();
   CL_Rectf r=rect;
   r+=CL_Pointf (v.x,v.y);
 
@@ -159,7 +159,7 @@ CollTri::CollTri(CollisionObject *object_):
 {
 }
 
-CollTri::CollTri(const CL_Vector2 &base_, float dx_, float dy_,CollisionObject *object_):
+CollTri::CollTri(const CL_Vector &base_, float dx_, float dy_,CollisionObject *object_):
   CollPrimitive (object_),
   base(base_),
   dx(dx_),
@@ -190,29 +190,29 @@ float CollTri::y_pos() const
   return std::min(base.y, base.y + dy) + object->get_pos ().y;
 }
 
-CL_Vector2 CollTri::normal() const
+CL_Vector CollTri::normal() const
 {
-  CL_Vector2 v(dy,dx);
-  v/=v.length ();
+  CL_Vector v(dy,dx,0);
+  v.normalize();
   return v;
 }
 
-CL_Vector2 CollTri::get_vector0() const
+CL_Vector CollTri::get_vector0() const
 {
-  return CL_Vector2 (x_pos (),y_pos ());
+  return CL_Vector (x_pos (),y_pos (), 0);
 }
-CL_Vector2 CollTri::get_vector1() const
+CL_Vector CollTri::get_vector1() const
 {
-  return CL_Vector2 (x_pos ()+dx,y_pos ());
+  return CL_Vector (x_pos ()+dx,y_pos (),0);
 }
-CL_Vector2 CollTri::get_vector2() const
+CL_Vector CollTri::get_vector2() const
 {
-  return CL_Vector2 (x_pos (),y_pos ()+dy);
+  return CL_Vector (x_pos (),y_pos ()+dy,0);
 }
 
 void CollTri::drawCollision() const
 {
-  CL_Vector2 act_pos = object->get_pos ()+base;
+  CL_Vector act_pos = object->get_pos ()+base;
   CL_Gradient g(CL_Color(255, 255, 255),CL_Color(255, 255, 255),CL_Color(255, 255, 255),CL_Color(255, 255, 255));
 
   CL_Display::fill_triangle(act_pos.x   , act_pos.y,
@@ -261,12 +261,12 @@ CollisionData collideBB(CollRect &b1,CollRect &b2,float delta)
 	      if(b1.x_pos()<b2.x_pos())
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector2(-1,0);
+		  result.direction=CL_Vector(-1,0);
 		}
 	      else
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector2(1,0);
+		  result.direction=CL_Vector(1,0);
 		}
 	      result.col_time=result0.t0;
 	    }
@@ -276,12 +276,12 @@ CollisionData collideBB(CollRect &b1,CollRect &b2,float delta)
 	      if(b1.y_pos()<b2.y_pos())
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector2(0,-1);
+		  result.direction=CL_Vector(0,-1);
 		}
 	      else
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector2(0,1);
+		  result.direction=CL_Vector(0,1);
 		}
 	      result.col_time=result1.t0;
 	    }
@@ -293,7 +293,7 @@ CollisionData collideBB(CollRect &b1,CollRect &b2,float delta)
 CollisionData collideBT(CollRect &b1,CollTri &b2,float delta)
 {
   // get normal of the triangle's diagonal
-  CL_Vector2 normal=b2.normal();
+  CL_Vector normal=b2.normal();
 
   // get triangle's coordinates along this normal
   float b2a=b2.get_vector0().dot(normal);
@@ -339,12 +339,12 @@ CollisionData collideBT(CollRect &b1,CollTri &b2,float delta)
 	      if(b1.x_pos()<b2.x_pos())
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector2(-1,0);
+		  result.direction=CL_Vector(-1,0);
 		}
 	      else
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector2(1,0);
+		  result.direction=CL_Vector(1,0);
 		}
 	      result.col_time=result0.t0;
 	    }
@@ -354,13 +354,13 @@ CollisionData collideBT(CollRect &b1,CollTri &b2,float delta)
 	      if(b1.y_pos()<b2.y_pos())
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector2(0,1);
+		  result.direction=CL_Vector(0,1);
 		}
 	      
 	      else
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector2(0,-1);
+		  result.direction=CL_Vector(0,-1);
 		}
 	      result.col_time=result1.t0;
 	    }

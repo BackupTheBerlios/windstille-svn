@@ -24,9 +24,9 @@
 
 Entity::Entity(const int x, const int y)
   : parent(0),
-    sprite("igel", resources),
-    pos(x, y)
+    sprite("igel", resources)
 {
+  pos=CL_Vector(x,y,0);
   mover_active = false;
 }
 
@@ -62,9 +62,10 @@ Entity::unbind(bool recalc_pos)
 }
 
 void
-Entity::draw(SceneContext& )
+Entity::draw(SceneContext& sc)
 {
-  sprite.draw(int(get_pos().x), int(get_pos().y));
+  sc.color().draw(sprite, pos.x, pos.y, 10);
+
   if (parent)
     CL_Display::draw_line(int(get_pos().x), int(get_pos().y),
                           int(parent->get_pos().x), int(parent->get_pos().y),
