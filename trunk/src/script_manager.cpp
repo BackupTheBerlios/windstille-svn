@@ -116,6 +116,8 @@ ScriptManager::handle_suspends(HSQUIRRELVM vm, HSQOBJECT vm_obj)
     for(WaitingVMs::iterator i = waiting_vms.begin();
         i != waiting_vms.end(); ++i) {
       if(i->vm == vm) {
+        // make sure vm_obj is assigned (it will not be assigned directly after
+        // the sq_call call in run_script)
         i->vm_obj = vm_obj;
         found = true;
         break;
