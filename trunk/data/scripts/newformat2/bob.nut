@@ -1,19 +1,12 @@
-function get_answer()
-{
-	show_dialog(0);
-	return dialog_answer();
-}
-
-function add_answers(...)
-{
-	for(local i = 0; i < vargc; i++)
-		add_answer(vargv[i]);
-}
-
-add_question("Hello. Agree?");
+add_question("Do you like Frank?");
 add_answers("Yes.", "No.");
-get_answer();
+switch (get_answer())
+{
+case 0:
+	like_frank = true;
+	break;
+case 1:
+	like_frank = false;
+	break;
+}
 end_dialog();
-
-
-
