@@ -1,3 +1,6 @@
 Windstille Bugs
 ===============
 
+- if you keep alternately holding down left and right, and sometimes hold both at once, you can sometimes get the player stuck
+- there is a thin line just under half way up the bottom row of tiles in the VR room which for some reason is in front of the player rather than behind
+- Jane's hat is white
