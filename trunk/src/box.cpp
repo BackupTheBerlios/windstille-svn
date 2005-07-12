@@ -60,6 +60,8 @@ Box::Box(const lisp::Lisp* lisp):
 void 
 Box::collision(const CollisionData& data, CollisionObject& other)
 {
+  (void) data;
+  (void) other;
   movement.y=0;
 }
 
@@ -80,6 +82,7 @@ Box::unstuck_movable() const
 void 
 Box::update(float delta)
 {
+  (void) delta;
 }
 
 void 
