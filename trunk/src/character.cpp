@@ -27,6 +27,7 @@
 #include "physfs/physfs_stream.hpp"
 #include "console.hpp"
 #include "sprite3d/sprite3d_manager.hpp"
+#include "util.hpp"
 
 #include <exception>
 
@@ -55,25 +56,33 @@ Character::update(float delta)
   if (player->get_pos().x > pos.x - 20 && player->get_pos().x < pos.x + 20)
     collided = true;
   
-  int state = Sector::current()->get_player()->get_movement_state();
-  if (collided && state != Player::STAND_TO_LISTEN && state != Player::LISTEN && !already_talked)
+  if (collided && !already_talked)
     {
       already_talked = true;
       Scripting::add_dialog(Dialog::TOP | Dialog::RIGHT, "human/portrait");
-      std::string level_name = GameSession::current()->get_filename();
-      level_name = level_name.substr(level_name.rfind('/') + 1);
-      level_name.erase(level_name.find('.'));
-      std::string dialog_script = "scripts/" + level_name + "/" + name + ".nut";
-      IFileStream f_stream(dialog_script.c_str());
+	  
+      //first add standard dialog functions
+      std::string filename = ::datadir + "scripts/" + "dialog.nut";
+      std::string script;
+      file_to_string(filename, script);
+      
+      //then add this character's dialog script
+      filename = basename(GameSession::current()->get_filename());
+      filename.erase(filename.find('.'));
+      filename = ::datadir + "scripts/" + filename + "/" + name + ".nut";
+      file_to_string(filename, script);
+    
       try 
         {
-          script_manager->run_script(f_stream, name);
+          script_manager->run_script(script, name);
         } catch (std::exception e) {
           Console::current()->add(e.what());
         }
     }
   if (!collided)
     already_talked = false;
+    
+  sprite->update(delta);
 }
 
 void
