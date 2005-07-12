@@ -47,7 +47,6 @@
 #include "script_manager.hpp"
 #include "sound/sound_manager.hpp"
 #include "test_object.hpp"
-#include "character.hpp"
 
 #include "game_session.hpp"
 
@@ -276,8 +275,6 @@ GameSession::change_sector()
       world->add(psystem2);
       world->add(psystem);
       
-      world->add(new Character(100, 850, "bob"));
-      world->add(new Character(400, 850, "frank"));
       script_manager->run_script("scripts/init_script_vars.nut", "init_script_vars", true);
     }
 
