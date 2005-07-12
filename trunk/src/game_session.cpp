@@ -276,7 +276,9 @@ GameSession::change_sector()
       world->add(psystem2);
       world->add(psystem);
       
-      world->add(new Character(100, 800, "bob"));
+      world->add(new Character(100, 850, "bob"));
+      world->add(new Character(400, 850, "frank"));
+      script_manager->run_script("scripts/init_script_vars.nut", "init_script_vars", true);
     }
 
   //world->add(new TestObject());
