@@ -76,4 +76,9 @@ void end_dialog()
   Sector::current()->get_player()->stop_listening();
 }
 
+bool run_before(HSQUIRRELVM vm)
+{
+  return script_manager->run_before(vm);
+}
+
 }

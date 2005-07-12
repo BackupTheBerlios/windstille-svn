@@ -30,9 +30,10 @@ void add_question(const std::string& text);
 void add_answer(const std::string& answer);
 int dialog_answer();
 void end_dialog();
-
 void show_dialog(HSQUIRRELVM vm, float fadein_time) __suspend;
 void hide_dialog(float fadeout_time);
+
+bool run_before(HSQUIRRELVM vm);
 
 //Waits the specified time in seconds.
 void wait(HSQUIRRELVM vm, float time) __suspend;
