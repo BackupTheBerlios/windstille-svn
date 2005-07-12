@@ -31,7 +31,7 @@
 
 #include <exception>
 
-Character::Character(const int x, const int y, const std::string& arg_name)
+Character::Character(const std::string& arg_name, const int x, const int y)
   : Entity(x, y), already_talked(false)
 {
   name = arg_name;

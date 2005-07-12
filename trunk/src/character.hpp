@@ -30,7 +30,7 @@ private:
   bool already_talked;
     
 public:
-  Character(const int x, const int y, const std::string& arg_name);
+  Character(const std::string& arg_name, const int x, const int y);
   ~Character();
   
   void update(float delta);
