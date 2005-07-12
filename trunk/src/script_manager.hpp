@@ -17,10 +17,9 @@ public:
 
   void update();
 
-  int run_script(const std::string& script, const std::string& sourcename);
-  int run_script(const std::string& filename, const std::string& sourcename,
-                  bool is_file_name);
-  int run_script(std::istream& in, const std::string& sourcename = "");
+  int run_script(const std::string& the_string, const std::string& sourcename,
+                  bool is_file_name = false);
+  int run_script(std::istream& in, const std::string& sourcename);
 
   template<typename T>
   void expose_object(T* object, const std::string& name, bool free)
