@@ -25,7 +25,6 @@
 #define BOX_HEIGHT 16
 
 Box::Box(const lisp::Lisp* lisp):
-  Entity(0,0),
   light_sprite("bomblight", resources)
 {
   std::string spritename;
@@ -57,13 +56,6 @@ Box::Box(const lisp::Lisp* lisp):
   light_sprite.set_blend_func(blend_src_alpha, blend_one);
 
 }
-
-
-Box::Box(const int x,const int y):
-  Entity(x,y)
-{
-}
-
 
 void 
 Box::collision(const CollisionData& data, CollisionObject& other)

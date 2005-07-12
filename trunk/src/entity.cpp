@@ -22,11 +22,10 @@
 #include "globals.hpp"
 #include "entity.hpp"
 
-Entity::Entity(const int x, const int y)
+Entity::Entity()
   : parent(0),
     sprite("igel", resources)
 {
-  pos=CL_Vector(x,y,0);
   mover_active = false;
 }
 

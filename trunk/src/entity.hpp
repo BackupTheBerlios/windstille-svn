@@ -42,7 +42,7 @@ protected:
   CL_Sprite sprite;
 
 public:
-  Entity(const int x, const int y);
+  Entity();
   virtual ~Entity();
   
   /** Bind the entity to a parent, causing all movement to be affected

@@ -28,7 +28,6 @@ class Box:public Entity
 {
 public:
   Box(const lisp::Lisp* lisp);
-  Box(const int x,const int y);
 
   virtual void collision(const CollisionData& data, CollisionObject& other); 
 

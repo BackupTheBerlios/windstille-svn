@@ -33,7 +33,7 @@
 #include <exception>
 
 Character::Character(const lisp::Lisp* lisp)
-  : Entity(0, 0), already_talked(false)
+  : already_talked(false)
 {
   lisp::ListIterator iter(lisp);
   while(iter.next()) {
