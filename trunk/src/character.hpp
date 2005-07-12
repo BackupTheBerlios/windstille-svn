@@ -22,6 +22,7 @@
 
 #include "entity.hpp"
 #include "sprite3d/sprite3d.hpp"
+#include "lisp/lisp.hpp"
 
 class Character : public Entity
 {
@@ -30,7 +31,7 @@ private:
   bool already_talked;
     
 public:
-  Character(const std::string& arg_name, const int x, const int y);
+  Character(const lisp::Lisp* lisp);
   ~Character();
   
   void update(float delta);

@@ -28,13 +28,26 @@
 #include "console.hpp"
 #include "sprite3d/sprite3d_manager.hpp"
 #include "util.hpp"
+#include "lisp/list_iterator.hpp"
 
 #include <exception>
 
-Character::Character(const std::string& arg_name, const int x, const int y)
-  : Entity(x, y), already_talked(false)
+Character::Character(const lisp::Lisp* lisp)
+  : Entity(0, 0), already_talked(false)
 {
-  name = arg_name;
+  lisp::ListIterator iter(lisp);
+  while(iter.next()) {
+    if(iter.item() == "name") {
+      name = iter.value().get_string();
+    } else if(iter.item() == "x") {
+      pos.x = iter.value().get_float();
+    } else if(iter.item() == "y") {
+      pos.y = iter.value().get_float();
+      std::cerr << "Skipping unknown attribute '" 
+                << iter.item() << "' in Character\n";
+    }
+  }
+  
   sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
   sprite->set_action("Stand");
 }
