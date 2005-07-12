@@ -128,15 +128,8 @@ Sector::parse_object(const std::string& name, const lisp::Lisp* lisp)
     add_entity(new Box(lisp));
   } else if(name == "flashing-sign") {
     add(new FlashingSign(lisp));
-  } else if(name == "character") {
-    lisp::ListIterator iter(lisp);
-    iter.next();
-    std::string name = iter.value().get_string();
-    iter.next();
-    int x = iter.value().get_int();
-    iter.next();
-    int y = iter.value().get_int();
-    add(new Character(name, x, y));
+  } else if(name == "character") {    
+    add(new Character(lisp));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }
