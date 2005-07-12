@@ -15,6 +15,7 @@
 #include "timer.hpp"
 #include "scripting/wrapper.hpp"
 #include "scripting/wrapper_util.hpp"
+#include "physfs/physfs_stream.hpp"
 
 ScriptManager* script_manager = 0;
 
@@ -30,6 +31,7 @@ static void printfunc(HSQUIRRELVM, const char* str, ...)
 }
 
 ScriptManager::ScriptManager()
+  : new_vm_id(0)
 {
   v = sq_open(1024);
   if(v == 0)
@@ -59,10 +61,9 @@ ScriptManager::ScriptManager()
 
 ScriptManager::~ScriptManager()
 {
-  for(WaitingVMs::iterator i = waiting_vms.begin();
-      i != waiting_vms.end(); ++i) {
+  for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i)
     sq_release(v, &(i->vm_obj));
-  }
+
   sq_close(v);
 }
 
@@ -75,15 +76,23 @@ static SQInteger squirrel_read_char(SQUserPointer file)
   return c;
 }
 
-void
+int
 ScriptManager::run_script(const std::string& script,
     const std::string& sourcename)
 {
   std::istringstream stream(script);
-  run_script(stream, sourcename);
+  return run_script(stream, sourcename);
 }
 
-void
+int
+ScriptManager::run_script(const std::string& filename,
+    const std::string& sourcename, bool is_filename)
+{
+  IFileStream in(filename);
+  return run_script(in, sourcename);
+}
+
+int
 ScriptManager::run_script(std::istream& in, const std::string& sourcename)
 {
   HSQUIRRELVM vm = sq_newthread(v, 1024);
@@ -100,99 +109,64 @@ ScriptManager::run_script(std::istream& in, const std::string& sourcename)
   
   if(sq_compile(vm, squirrel_read_char, &in, sourcename.c_str(), true) < 0)
     throw SquirrelError(vm, "Couldn't parse script");
+	
+  squirrel_vms.push_back(SquirrelVM(sourcename, vm, vm_obj));
+  already_run_scripts[sourcename] = true;
 
   sq_pushroottable(vm);
   if(sq_call(vm, 1, false) < 0)
     throw SquirrelError(vm, "Couldn't start script");
-
-  handle_suspends(vm, vm_obj);
-}
-
-bool
-ScriptManager::handle_suspends(HSQUIRRELVM vm, HSQOBJECT vm_obj)
-{
-  if(sq_getvmstate(vm) == SQ_VMSTATE_SUSPENDED) {
-    bool found = false;
-    for(WaitingVMs::iterator i = waiting_vms.begin();
-        i != waiting_vms.end(); ++i) {
-      if(i->vm == vm) {
-        // make sure vm_obj is assigned (it will not be assigned directly after
-        // the sq_call call in run_script)
-        i->vm_obj = vm_obj;
-        found = true;
-        break;
-      }
-    }
-    if(!found) {
-      std::cerr << "Warning: Script suspended but not in wakeup list!\n";
-      sq_release(v, &vm_obj);
-      return true;
-    }
-  } else {
-    sq_release(v, &vm_obj);
-    return true;
-  }
-
-  return false;
+	
+  return new_vm_id - 1;
 }
 
 void
 ScriptManager::update()
 {
-  for(WaitingVMs::iterator i = waiting_vms.begin(); i != waiting_vms.end(); ) {
-    WaitingVM& waiting_vm = *i;
+  for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ) {
+    SquirrelVM& squirrel_vm = *i;
+    int vm_state = sq_getvmstate(squirrel_vm.vm);
     
-    if(waiting_vm.wakeup_time > 0 && game_time >= waiting_vm.wakeup_time) {
-      waiting_vm.waiting_for_events = 0;
+    if(vm_state == SQ_VMSTATE_SUSPENDED && squirrel_vm.wakeup_time > 0 && game_time >= squirrel_vm.wakeup_time) {
+      squirrel_vm.waiting_for_events = 0;
       try {
-        if(sq_wakeupvm(waiting_vm.vm, false, false) < 0) {
-          throw SquirrelError(waiting_vm.vm, "Couldn't resume script");
+        if(sq_wakeupvm(squirrel_vm.vm, false, false) < 0) {
+          throw SquirrelError(squirrel_vm.vm, "Couldn't resume script");
         }
       } catch(std::exception& e) {
-        sq_release(v, &waiting_vm.vm_obj);
         std::cerr << "Problem executing script: " << e.what() << "\n";
-        i = waiting_vms.erase(i);
+		sq_release(v, &squirrel_vm.vm_obj);
+        i = squirrel_vms.erase(i);
         continue;
       }
-      bool stopped = handle_suspends(waiting_vm.vm, waiting_vm.vm_obj);
-
-      // remove (but check that the script hasn't set a new wakeup_time)
-      if(stopped)
-        i = waiting_vms.erase(i);
-    } else {
-      ++i;
-    }
+	}
+	
+	if (vm_state != SQ_VMSTATE_SUSPENDED)
+	  {
+	    sq_release(v, &(squirrel_vm.vm_obj));
+	    i = squirrel_vms.erase(i);
+	  }
+  else
+    ++i;
   }
 }
 
 void
 ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float time)
 {
-  // search if the VM is already in the wakeup list and update it
-  for(WaitingVMs::iterator i = waiting_vms.begin();
-      i != waiting_vms.end(); ++i) {
-    WaitingVM& waiting_vm = *i;
-    if(waiting_vm.vm == vm) {
+  // find the VM in the list and update it
+  for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i) {
+    SquirrelVM& squirrel_vm = *i;
+    if(squirrel_vm.vm == vm) {
       if(time < 0) {
-        waiting_vm.wakeup_time = -1;
+        squirrel_vm.wakeup_time = -1;
       } else {
-        waiting_vm.wakeup_time = game_time + time;
+        squirrel_vm.wakeup_time = game_time + time;
       }
-      waiting_vm.waiting_for_events |= event;
+      squirrel_vm.waiting_for_events |= event;
       return;
     }
   }
-
-  // create a new entry
-  WaitingVM waiting_vm;
-  waiting_vm.vm = vm;
-  if(time < 0) {
-    waiting_vm.wakeup_time = -1;
-  } else {
-    waiting_vm.wakeup_time = game_time + time;
-  }
-  waiting_vm.waiting_for_events = event;
-  waiting_vms.push_back(waiting_vm);
 }
 
 void
@@ -211,12 +185,32 @@ ScriptManager::remove_object(const std::string& name)
 void
 ScriptManager::fire_wakeup_event(WakeupEvent event)
 {
-  for(WaitingVMs::iterator i = waiting_vms.begin();
-      i != waiting_vms.end(); ++i) {
-    WaitingVM& vm = *i;
+  for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i) {
+    SquirrelVM& vm = *i;
     if(vm.waiting_for_events & event) {
       vm.wakeup_time = game_time;
     }
   }
+}
+
+bool ScriptManager::run_before(HSQUIRRELVM vm)
+{
+  std::string name;
+  for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i) {
+    if (i->vm == vm)
+      name = i->name;
+  }
+  
+  if (already_run_scripts.find(name) == already_run_scripts.end())
+    return false;
+  return true;
+}
+
+ScriptManager::SquirrelVM::SquirrelVM(const std::string& arg_name, HSQUIRRELVM arg_vm, HSQOBJECT arg_obj)
+  : name(arg_name), vm(arg_vm), vm_obj(arg_obj)
+{
+  id = (script_manager->new_vm_id)++;
+  waiting_for_events = 0;
+  wakeup_time = 0;
 }
 

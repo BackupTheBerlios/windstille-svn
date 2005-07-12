@@ -17,8 +17,10 @@ public:
 
   void update();
 
-  void run_script(const std::string& script, const std::string& sourcename = "");
-  void run_script(std::istream& in, const std::string& sourcename = "");
+  int run_script(const std::string& script, const std::string& sourcename);
+  int run_script(const std::string& filename, const std::string& sourcename,
+                  bool is_file_name);
+  int run_script(std::istream& in, const std::string& sourcename = "");
 
   template<typename T>
   void expose_object(T* object, const std::string& name, bool free)
@@ -40,7 +42,7 @@ public:
 
     sq_pop(v, 1);
   }
-  void remove_object(const std::string& name); 
+  void remove_object(const std::string& name);
 
   HSQUIRRELVM get_vm()
   {
@@ -54,21 +56,28 @@ public:
 
   void set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float timeout = -1);
   void fire_wakeup_event(WakeupEvent event);
+  
+  bool run_before(HSQUIRRELVM vm);
 
 private:
-  /// retuns true if the vm has stopped
-  bool handle_suspends(HSQUIRRELVM vm, HSQOBJECT vm_obj);
-  
-  struct WaitingVM {
+  class SquirrelVM
+  {
+  public:
+    SquirrelVM(const std::string& arg_name, HSQUIRRELVM arg_vm, HSQOBJECT arg_obj);
+    unsigned id;
+    std::string name;
     HSQUIRRELVM vm;
     HSQOBJECT vm_obj;
     float wakeup_time;
     int waiting_for_events;
   };
-  typedef std::list<WaitingVM> WaitingVMs;
-  WaitingVMs waiting_vms;
+  
+  typedef std::list<SquirrelVM> SquirrelVMs;
+  SquirrelVMs squirrel_vms;
+  std::map<std::string, bool> already_run_scripts;
 
   HSQUIRRELVM v;
+  unsigned new_vm_id;
 };
 
 extern ScriptManager* script_manager;
