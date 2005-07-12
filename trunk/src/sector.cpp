@@ -37,6 +37,7 @@
 #include "collision/collision_engine.hpp"
 #include "character.hpp"
 #include "box.hpp"
+#include "door.hpp"
 
 Sector* Sector::current_ = 0;
 
@@ -130,6 +131,8 @@ Sector::parse_object(const std::string& name, const lisp::Lisp* lisp)
     add(new FlashingSign(lisp));
   } else if(name == "character") {    
     add(new Character(lisp));
+  } else if(name == "door") {    
+    add(new Door(lisp));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }

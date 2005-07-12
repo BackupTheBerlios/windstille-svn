@@ -30,48 +30,24 @@
 class Entity : public GameObject, public CollisionObject
 {
 private:
-  bool mover_active;
-  CL_Vector target_pos;
-  
-  /** Reference to the parent object, must not be deleted */
-  Entity* parent;
-
-  CL_Signal_v0 done;
-
-protected:
-  CL_Sprite sprite;
+  CL_Signal_v0 done; 
 
 public:
   Entity();
   virtual ~Entity();
-  
-  /** Bind the entity to a parent, causing all movement to be affected
-      by the parent entity
-  
-      @param recalc_pos recalculates the current entities position
-      into the local space of parent_
-  */
-  void bind(Entity* parent_, bool recalc_pos = true);
-
-  /** Unbinds an entity */
-  void unbind(bool recalc_pos = true);
-  
+   
   CL_Vector get_pos() const;
 
   void set_pos(float x, float y);
-  void move_to(float x, float y);
 
-  void draw(SceneContext& gc);
+  virtual void draw(SceneContext& gc) = 0;
+  void debug_draw();
   virtual void update(float delta) = 0;
 
   CL_Signal_v0& sig_done() { return done; }
 private:
   Entity (const Entity&);
   Entity& operator= (const Entity&);
-
-protected:
-    void move(float delta);
-  //    CL_Vector pos;
 };
 
 #endif

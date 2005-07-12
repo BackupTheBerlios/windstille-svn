@@ -34,7 +34,6 @@
 #include "animation_obj.hpp"
 #include "tile_map.hpp"
 #include "view.hpp"
-#include "door.hpp"
 #include "timer.hpp"
 #include "energiebar.hpp"
 #include "dialog_manager.hpp"
@@ -228,10 +227,6 @@ GameSession::change_sector()
   
   if (1)
     {
-      world->add(new Door(24, 6));
-      world->add(new Door(32, 14));
-      world->add(new Door(8, 22));
-
       CL_Surface surface1("particles/smoke", resources);
       CL_Surface surface2("particles/smoke2", resources);
 

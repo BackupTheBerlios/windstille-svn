@@ -42,6 +42,7 @@ public:
   bool on_ground() const;
   bool stuck() const;
 private:
+  CL_Sprite sprite;
   CL_Sprite light_sprite;
 };
 

@@ -20,25 +20,25 @@
 #ifndef HEADER_DOOR_HXX
 #define HEADER_DOOR_HXX
 
-#include <ClanLib/Display/sprite.h>
+#include "entity.hpp"
 #include "game_object.hpp"
+#include "lisp/lisp.hpp"
 
-/** */
-class Door : public GameObject
+class Door : public Entity
 {
 private:
   CL_Sprite highlight;
   CL_Sprite color;
-  CL_Vector pos;
 public:
-  Door(int x, int y);
+  Door(const lisp::Lisp* lisp);
   virtual ~Door() {}
 
   void draw (SceneContext& sc);
   void update (float);
-private:
-  Door (const Door&);
-  Door& operator= (const Door&);
+  
+  void collision(const CollisionData& data, CollisionObject& other);
+  bool unstuck() const {return true;}
+  bool unstuck_movable() const {return true;}
 };
 
 #endif

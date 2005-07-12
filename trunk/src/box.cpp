@@ -52,9 +52,7 @@ Box::Box(const lisp::Lisp* lisp):
   bbox=CL_Rectf(0,0,22,16);
   insertCollPrimitive(new CollRect(bbox,this));
 
-
   light_sprite.set_blend_func(blend_src_alpha, blend_one);
-
 }
 
 void 
@@ -82,13 +80,12 @@ Box::unstuck_movable() const
 void 
 Box::update(float delta)
 {
-  (void) delta;
+  sprite.update(delta);
 }
 
 void 
 Box::move(float delta)
-{
-  Entity::move(delta);
+{  
   CollisionObject::move(delta);
 
   if(stuck())
@@ -107,8 +104,7 @@ void
 Box::draw(SceneContext& sc)
 {
   sc.light().draw(light_sprite, pos.x, pos.y, 0);
-  //sc.color().draw(sprite, pos.x, pos.y, 10);
-  Entity::draw(sc);
+  sc.color().draw(sprite, pos.x, pos.y, 10);
 }
 
 bool

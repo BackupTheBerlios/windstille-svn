@@ -23,10 +23,7 @@
 #include "entity.hpp"
 
 Entity::Entity()
-  : parent(0),
-    sprite("igel", resources)
 {
-  mover_active = false;
 }
 
 Entity::~Entity()
@@ -36,35 +33,12 @@ Entity::~Entity()
 CL_Vector
 Entity::get_pos() const
 {
-  if (parent)
-    return parent->get_pos() + pos;
-  else
     return pos;
 }
 
 void
-Entity::bind(Entity* parent_, bool recalc_pos)
+Entity::debug_draw()
 {
-  assert(parent_);
-
-  parent = parent_;
-  if (recalc_pos)
-    pos -= parent->get_pos();
-}
-
-void
-Entity::unbind(bool recalc_pos)
-{
-  parent = 0;
-  if (recalc_pos)
-    pos += parent->get_pos();
-}
-
-void
-Entity::draw(SceneContext& sc)
-{
-  sc.color().draw(sprite, pos.x, pos.y, 10);
-
   if (parent)
     CL_Display::draw_line(int(get_pos().x), int(get_pos().y),
                           int(parent->get_pos().x), int(parent->get_pos().y),
@@ -72,42 +46,10 @@ Entity::draw(SceneContext& sc)
 }
 
 void
-Entity::move(float delta)
-{
-  sprite.update(delta);
-  
-  if (mover_active) 
-    {
-      float dir_x = (target_pos.x - pos.x) > 0? 100.0f : -100.0f;
-    
-      //std::cout << this << " " << target_pos.x << " " << pos.x << std::endl;
-
-      pos.x += dir_x * delta;
-
-      float dir_x2 = (target_pos.x - pos.x) > 0 ? 100.0f : -100.0f;
-    
-      if (dir_x != dir_x2)
-        {
-          //std::cout << "Done!!!" << std::endl;
-          mover_active = false;
-          done();
-        }
-    }
-}
-
-void
 Entity::set_pos(float x, float y)
 {
   pos.x = x;
   pos.y = y;
-}
-
-void
-Entity::move_to(float x, float y)
-{
-  mover_active = true;
-  target_pos.x = pos.x + x;
-  target_pos.y = pos.y + y;
 }
 
 /* EOF */

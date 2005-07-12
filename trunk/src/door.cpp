@@ -19,25 +19,43 @@
 
 #include "globals.hpp"
 #include "door.hpp"
+#include "lisp/list_iterator.hpp"
 
-Door::Door(int x, int y)
+Door::Door(const lisp::Lisp* lisp)
   : highlight("vrdoor/highlight", resources),
-    color("vrdoor/color", resources),
-    pos(32*x, 32*y)
+    color("vrdoor/color", resources)
 {
+  lisp::ListIterator iter(lisp);
+  while(iter.next()) {
+    if(iter.item() == "x") {
+      pos.x = iter.value().get_float();
+    } else if(iter.item() == "y") {
+      pos.y = iter.value().get_float();
+    } else {
+      std::cerr << "Skipping unknown attribute '" 
+                << iter.item() << "' in Door\n";
+    }
+  }
 }
 
 void
 Door::draw (SceneContext& sc)
 {
-  sc.color().draw(color, pos.x, pos.y);
-  sc.color().draw(highlight, pos.x, pos.y);
-  sc.light().draw(highlight, pos.x, pos.y);
+  sc.color().draw(color, pos.x, pos.y, 1);
+  sc.color().draw(highlight, pos.x, pos.y, 1);
+  sc.light().draw(highlight, pos.x, pos.y, 2);
 }
 
 void
 Door::update (float)
 {
+}
+
+void
+Door::collision(const CollisionData& data, CollisionObject& other)
+{
+  (void) data;
+  (void) other;
 }
 
 /* EOF */
