@@ -20,7 +20,6 @@
 #include "globals.hpp"
 
 std::string datadir;
-std::string bindir;
 
 int TILE_SIZE    = 32;
 int SUBTILE_SIZE = 32;

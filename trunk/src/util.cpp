@@ -1,4 +1,5 @@
 #include "util.hpp"
+#include <fstream>
 
 std::string dirname(const std::string& filename)
 {
@@ -15,5 +16,17 @@ std::string basename(const std::string& filename)
   if(p == std::string::npos)
     return filename;
 
-  return filename.substr(p, filename.size()-p);
+  return filename.substr(p+1, filename.size()-p);
+}
+
+void file_to_string(const std::string& filename, std::string& str)
+{
+  std::ifstream in(filename.c_str());
+  while (true)
+    {
+      char c = in.get();
+      if (!in.good())
+        break;
+      str += c;
+    }
 }

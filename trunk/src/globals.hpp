@@ -30,9 +30,6 @@ extern int TILE_SIZE;
 /** datadir => /usr/local/share/games/windstille/ */
 extern std::string datadir;
 
-/** bindir => /usr/local/games/ */
-extern std::string bindir;
-
 extern CL_ResourceManager* resources;
 
 extern float game_speed;

@@ -171,12 +171,6 @@ WindstilleMain::main(int argc, char** argv)
     return 1;
   }
 
-  // Init the path
-  bindir  = CL_System::get_exe_path();
-
-  if (datadir.empty())
-    datadir = bindir + "data/";
-
   try {
     parse_command_line(argc, argv);
     init_modules();
@@ -207,7 +201,6 @@ WindstilleMain::main(int argc, char** argv)
       {
         std::string leveldir = dirname(levelfile);
         PHYSFS_addToSearchPath(leveldir.c_str(), true);
-        delete screen;
         screen = new GameSession(basename(levelfile));
         game_main_state = RUN_GAME;
       }
@@ -362,16 +355,16 @@ WindstilleMain::init_physfs(const char* argv0)
   PHYSFS_freeList(rc);
 
   // when started from source dir...
-  std::string dir = PHYSFS_getBaseDir();
-  dir += "data";
-  std::string testfname = dir;
-  testfname += "/tiles.scm";
+  ::datadir = PHYSFS_getBaseDir();
+  ::datadir += "data/";
+  std::string testfname = ::datadir;
+  testfname += "tiles.scm";
   bool sourcedir = false;
   FILE* f = fopen(testfname.c_str(), "r");
   if(f) {
     fclose(f);
-    if(!PHYSFS_addToSearchPath(dir.c_str(), 1)) {
-      std::cout << "Warning: Couldn't add '" << dir
+    if(!PHYSFS_addToSearchPath(::datadir.c_str(), 1)) {
+      std::cout << "Warning: Couldn't add '" << ::datadir
                 << "' to physfs searchpath: " << PHYSFS_getLastError() << "\n";
     } else {
       sourcedir = true;
@@ -380,16 +373,15 @@ WindstilleMain::init_physfs(const char* argv0)
 
   if(!sourcedir) {
 #if defined(APPDATADIR) || defined(ENABLE_BINRELOC)
-    std::string datadir;
 #ifdef ENABLE_BINRELOC
     char* brdatadir = br_strcat(DATADIR, "/" PACKAGE_NAME);
-    datadir = brdatadir;
+    ::datadir = brdatadir;
     free(brdatadir);
 #else
-    datadir = APPDATADIR;
+    ::datadir = APPDATADIR;
 #endif
-    if(!PHYSFS_addToSearchPath(datadir.c_str(), 1)) {
-      std::cout << "Couldn't add '" << datadir
+    if(!PHYSFS_addToSearchPath(::datadir.c_str(), 1)) {
+      std::cout << "Couldn't add '" << ::datadir
         << "' to physfs searchpath: " << PHYSFS_getLastError() << "\n";
     }
 #endif
