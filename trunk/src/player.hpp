@@ -28,17 +28,15 @@
 #include "sprite3d/sprite3d.hpp"
 #include "math/vector.hpp"
 #include "globals.hpp"
-#include "game_object.hpp"
+#include "entity.hpp"
 
 class Controller;
 
-class Player : public GameObject
+class Player : public Entity
 {
 private:
   Controller controller;
 
-  /** Position as a float */
-  Vector pos;
   Vector velocity;
  
   CL_Sprite light;
@@ -89,18 +87,17 @@ public:
   void draw (SceneContext& gc);
   void update (float delta);
 
-  void set_position (const CL_Vector& arg_pos);
-
   void start_listening();
   void stop_listening();
-
-  CL_Vector get_pos () const { return pos; }
   
   int get_energy() const;
   int get_max_energy() const;
   void hit(int points);
+  
+  void collision(const CollisionData& data, CollisionObject& other);
+  bool unstuck() const {return true;}
+  bool unstuck_movable() const {return true;}
 
-  CL_Rect get_bounding_rect() const; 
 private:
   void update_walk_stand();
   void set_stand();

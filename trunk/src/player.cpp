@@ -36,11 +36,13 @@ static const float GRAVITY = 1500;
 Player* Player::current_ = 0;
 
 Player::Player () :
-  pos (320, 200, 100),
   velocity (0, 0),
   light    ("hero/light", resources),
   state (STAND)
 {
+  pos.x = 320;
+  pos.y = 200;
+  pos.z = 100;
   name = "Player";
   sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
   //grenade = sprite3d_manager->create("3dsprites/grenade.wsprite");
@@ -66,15 +68,6 @@ Player::draw (SceneContext& gc)
 {
   gc.light().draw(light, pos.x, pos.y, 100);
   sprite->draw(gc, pos);
-}
-
-CL_Rect
-Player::get_bounding_rect() const
-{
-  return CL_Rect(int(pos.x - 20), 
-                 int(pos.y - 112),
-                 int(pos.x + 20), 
-                 int(pos.y));
 }
 
 void
@@ -455,12 +448,6 @@ Player::try_set_action(const std::string& name, float speed)
   sprite->set_action(name, speed);
 }
 
-void 
-Player::set_position (const CL_Vector& arg_pos)
-{
-  pos = arg_pos;
-}
-
 bool 
 Player::stuck () const
 {
@@ -499,6 +486,13 @@ Player::hit(int points)
           hit_count = 0;
         }
     }
+}
+
+void
+Player::collision(const CollisionData& data, CollisionObject& other)
+{
+  (void) data;
+  (void) other;
 }
 
 /* EOF */

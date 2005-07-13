@@ -179,7 +179,7 @@ Sector::spawn_player(const std::string& spawnpoint)
     player = new Player();
     add(player);
   }
-  player->set_position(CL_Vector(spawnpos.x, spawnpos.y, 0));
+  player->set_pos(spawnpos.x, spawnpos.y);
 }
 
 void
