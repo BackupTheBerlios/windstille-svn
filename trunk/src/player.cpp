@@ -43,7 +43,7 @@ Player::Player () :
   pos.x = 320;
   pos.y = 200;
   pos.z = 100;
-  name = "Player";
+  name = "player";
   sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
   //grenade = sprite3d_manager->create("3dsprites/grenade.wsprite");
   grenade = 0;
