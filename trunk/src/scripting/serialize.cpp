@@ -1,6 +1,7 @@
 #include "serialize.hpp"
 
 #include <memory>
+#include <assert.h>
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
 #include "lisp/list_iterator.hpp"
