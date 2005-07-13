@@ -57,17 +57,20 @@ print(\"3\");
       (x 200)
       (y 850)
     )
-    (door
+    (useable-item
       (x 768)
       (y 192)
+      (script "")
     )
-    (door
+    (useable-item
       (x 1024)
       (y 448)
+      (script "")
     )
-    (door
+    (useable-item
       (x 256)
       (y 704)
+      (script "set_sector(\"levels/newformat2.wst\")")
     )
   (tilemap (name "background") (width 100) (height 30)
     (data
