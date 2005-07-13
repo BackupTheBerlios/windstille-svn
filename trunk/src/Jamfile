@@ -37,8 +37,6 @@ sources =
         delta_manager.hpp
         dialog_manager.cpp
         dialog_manager.hpp
-        door.cpp
-        door.hpp
         energiebar.cpp
         energiebar.hpp
         entity.cpp
@@ -91,6 +89,8 @@ sources =
         timer.cpp
         trigger.cpp
         trigger.hpp
+        useable_item.cpp
+        useable_item.hpp
         util.cpp
         util.hpp
         view.cpp

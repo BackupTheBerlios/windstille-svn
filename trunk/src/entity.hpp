@@ -43,6 +43,7 @@ public:
   virtual void draw(SceneContext& gc) = 0;
   void debug_draw();
   virtual void update(float delta) = 0;
+  virtual void use() {}
 
   CL_Signal_v0& sig_done() { return done; }
 private:

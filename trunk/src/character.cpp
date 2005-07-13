@@ -20,7 +20,6 @@
 #include "character.hpp"
 #include "sector.hpp"
 #include "game_session.hpp"
-#include "player.hpp"
 #include "scripting/wrapper.interface.hpp"
 #include "dialog_manager.hpp"
 #include "script_manager.hpp"
@@ -33,7 +32,6 @@
 #include <exception>
 
 Character::Character(const lisp::Lisp* lisp)
-  : already_talked(false)
 {
   pos.z = 100;
   lisp::ListIterator iter(lisp);
@@ -60,42 +58,7 @@ Character::~Character()
 
 void
 Character::update(float delta)
-{     
-  (void) delta;
-  
-  Player* player = Sector::current()->get_player();
-  
-  bool collided = false;
-  // FIXME: Should be handled by the collision system
-  if (player->get_pos().x > pos.x - 20 && player->get_pos().x < pos.x + 20)
-    collided = true;
-  
-  if (collided && !already_talked)
-    {
-      already_talked = true;
-      Scripting::add_dialog(Dialog::TOP | Dialog::RIGHT, "human/portrait");
-	  
-      //first add standard dialog functions
-      std::string filename = ::datadir + "scripts/" + "dialog.nut";
-      std::string script;
-      file_to_string(filename, script);
-      
-      //then add this character's dialog script
-      filename = basename(GameSession::current()->get_filename());
-      filename.erase(filename.find('.'));
-      filename = ::datadir + "scripts/" + filename + "/" + name + ".nut";
-      file_to_string(filename, script);
-    
-      try 
-        {
-          script_manager->run_script(script, name);
-        } catch (std::exception e) {
-          Console::current()->add(e.what());
-        }
-    }
-  if (!collided)
-    already_talked = false;
-    
+{   
   sprite->update(delta);
 }
 
@@ -103,6 +66,30 @@ void
 Character::draw (SceneContext& gc)
 {
   sprite->draw(gc, pos);
+}
+
+void
+Character::use()
+{
+  Scripting::add_dialog(Dialog::TOP | Dialog::RIGHT, "human/portrait");
+
+  //first add standard dialog functions
+  std::string filename = ::datadir + "scripts/" + "dialog.nut";
+  std::string script;
+  file_to_string(filename, script);
+  
+  //then add this character's dialog script
+  filename = basename(GameSession::current()->get_filename());
+  filename.erase(filename.find('.'));
+  filename = ::datadir + "scripts/" + filename + "/" + name + ".nut";
+  file_to_string(filename, script);
+
+  try 
+    {
+      script_manager->run_script(script, name);
+    } catch (std::exception e) {
+      Console::current()->add(e.what());
+    }
 }
 
 void

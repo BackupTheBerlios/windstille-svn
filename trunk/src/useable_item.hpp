@@ -17,24 +17,28 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef HEADER_DOOR_HXX
-#define HEADER_DOOR_HXX
+#ifndef HEADER_USEABLEITEM_HXX
+#define HEADER_USEABLEITEM_HXX
 
+#include <string>
 #include "entity.hpp"
 #include "game_object.hpp"
 #include "lisp/lisp.hpp"
+#include "script_manager.hpp"
 
-class Door : public Entity
+class UseableItem : public Entity
 {
 private:
   CL_Sprite highlight;
   CL_Sprite color;
+  std::string use_script;
 public:
-  Door(const lisp::Lisp* lisp);
-  virtual ~Door() {}
+  UseableItem(const lisp::Lisp* lisp);
+  virtual ~UseableItem() {}
 
   void draw (SceneContext& sc);
   void update (float);
+  void use() {script_manager->run_script(use_script, "UseableItem");}
   
   void collision(const CollisionData& data, CollisionObject& other);
   bool unstuck() const {return true;}

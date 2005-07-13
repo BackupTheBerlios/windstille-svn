@@ -38,7 +38,7 @@
 #include "test_object.hpp"
 #include "character.hpp"
 #include "box.hpp"
-#include "door.hpp"
+#include "useable_item.hpp"
 
 Sector* Sector::current_ = 0;
 
@@ -134,8 +134,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new Character(lisp));
   } else if(name == "test-object") {
     add(new TestObject(lisp));
-  } else if(name == "door") {    
-    add(new Door(lisp));
+  } else if(name == "useable-item") {    
+    add(new UseableItem(lisp));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }

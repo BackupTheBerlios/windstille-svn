@@ -28,7 +28,6 @@ class Character : public Entity
 {
 private:
   Sprite3D* sprite;
-  bool already_talked;
     
 public:
   Character(const lisp::Lisp* lisp);
@@ -36,6 +35,7 @@ public:
   
   void update(float delta);
   void draw (SceneContext& gc);
+  void use();
   
   void collision(const CollisionData& data, CollisionObject& other);
   bool unstuck() const {return true;}

@@ -213,7 +213,21 @@ Player::update_walk()
     set_turnaround();
     return;
   }
-
+  
+  if(controller.get_button_state(USE_BUTTON)) {
+    std::vector<GameObject*>* objects = Sector::current()->get_objects();
+    for (std::vector<GameObject*>::iterator i = objects->begin(); i != objects->end(); ++i)
+      {
+        if (Entity* object = dynamic_cast<Entity*>(*i))
+        {
+          //FIXME use proper collision detection
+          if (object->get_pos().x > pos.x - 20 && object->get_pos().x < pos.x + 20) 
+            object->use();
+        }
+      }
+    return;
+  }
+  
   if(controller.get_button_state(RUN_BUTTON)) {
     set_run();
     return;

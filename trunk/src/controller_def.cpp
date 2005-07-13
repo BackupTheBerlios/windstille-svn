@@ -22,7 +22,7 @@
 int
 ControllerDef::get_button_count()
 {
-  return 7;
+  return 8;
 }
 
 int
@@ -52,6 +52,8 @@ ControllerDef::button_id2name(int id)
       return "right";
     case FIRE_BUTTON:
       return "fire";
+    case USE_BUTTON:
+      return "use";
     case JUMP_BUTTON:
       return "jump";
     case RUN_BUTTON:
@@ -74,6 +76,8 @@ ControllerDef::button_name2id(const std::string& name)
     return (RIGHT_BUTTON);
   else if (name == "fire")
     return FIRE_BUTTON;
+  else if (name == "use")
+    return USE_BUTTON;
   else if (name == "jump")
     return JUMP_BUTTON;
   else if (name == "run")

@@ -18,10 +18,10 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "globals.hpp"
-#include "door.hpp"
+#include "useable_item.hpp"
 #include "lisp/list_iterator.hpp"
 
-Door::Door(const lisp::Lisp* lisp)
+UseableItem::UseableItem(const lisp::Lisp* lisp)
   : highlight("vrdoor/highlight", resources),
     color("vrdoor/color", resources)
 {
@@ -32,15 +32,17 @@ Door::Door(const lisp::Lisp* lisp)
       pos.x = iter.value().get_float();
     } else if(iter.item() == "y") {
       pos.y = iter.value().get_float();
+    } else if(iter.item() == "script") {
+      use_script = iter.value().get_string();
     } else {
       std::cerr << "Skipping unknown attribute '" 
-                << iter.item() << "' in Door\n";
+                << iter.item() << "' in UseableItem\n";
     }
   }
 }
 
 void
-Door::draw (SceneContext& sc)
+UseableItem::draw (SceneContext& sc)
 {
   sc.color().draw(color, pos.x, pos.y, 1);
   sc.color().draw(highlight, pos.x, pos.y, 2);
@@ -48,12 +50,12 @@ Door::draw (SceneContext& sc)
 }
 
 void
-Door::update (float)
+UseableItem::update (float)
 {
 }
 
 void
-Door::collision(const CollisionData& data, CollisionObject& other)
+UseableItem::collision(const CollisionData& data, CollisionObject& other)
 {
   (void) data;
   (void) other;
