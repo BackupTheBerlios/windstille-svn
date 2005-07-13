@@ -50,11 +50,18 @@ lisp::Lisp* table_to_lisp(HSQUIRRELVM v, int table_idx)
         val = new Lisp(Lisp::TYPE_REAL);
         sq_getfloat(v, -1, &val->v.real);
         break;
-      case OT_STRING:
+      case OT_STRING: {
         const char* str;
         sq_getstring(v, -1, &str);
         val = new Lisp(Lisp::TYPE_STRING, str);
         break;
+      }
+      case OT_BOOL: {
+        SQBool boolean;
+        sq_getbool(v, -1, &boolean);
+        val = new Lisp(Lisp::TYPE_BOOLEAN);
+        val->v.boolean = boolean;
+      }
       case OT_TABLE:
         val = table_to_lisp(v, -1);
         break;

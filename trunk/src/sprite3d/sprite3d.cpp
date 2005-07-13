@@ -323,7 +323,7 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos,
 
   glPushMatrix();
   glMultMatrixd(modelview);
-  glTranslatef(pos.x, pos.y, pos.z);
+  glTranslatef(pos.x, pos.y, 0);
   if(frame1.rot) {
     glRotatef(180, 0, 1.0, 0);
   }                           

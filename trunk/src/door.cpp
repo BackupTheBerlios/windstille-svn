@@ -25,6 +25,7 @@ Door::Door(const lisp::Lisp* lisp)
   : highlight("vrdoor/highlight", resources),
     color("vrdoor/color", resources)
 {
+  pos.z = 0;
   lisp::ListIterator iter(lisp);
   while(iter.next()) {
     if(iter.item() == "x") {
@@ -42,8 +43,8 @@ void
 Door::draw (SceneContext& sc)
 {
   sc.color().draw(color, pos.x, pos.y, 1);
-  sc.color().draw(highlight, pos.x, pos.y, 1);
-  sc.light().draw(highlight, pos.x, pos.y, 2);
+  sc.color().draw(highlight, pos.x, pos.y, 2);
+  sc.light().draw(highlight, pos.x, pos.y, 1);
 }
 
 void

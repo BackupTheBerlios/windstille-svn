@@ -35,6 +35,7 @@
 Character::Character(const lisp::Lisp* lisp)
   : already_talked(false)
 {
+  pos.z = 100;
   lisp::ListIterator iter(lisp);
   while(iter.next()) {
     if(iter.item() == "name") {

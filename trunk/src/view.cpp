@@ -34,16 +34,6 @@ void
 View::draw (SceneContext& sc)
 {
   state.set_pos(camera.get_pos());
-
-#if 0
-  static float zoom = 1.0f;
-
-  if (CL_Keyboard::get_keycode(CL_KEY_A))
-    zoom *= 1.01f/1.0f;
-  if (CL_Keyboard::get_keycode(CL_KEY_O))
-    zoom *= 1.0f/1.01f;
-#endif
-  
   state.set_zoom(zoom);
   state.set_pos(state.get_pos() + CL_Pointf(transform.x, transform.y));
 

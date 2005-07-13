@@ -35,6 +35,10 @@ void hide_dialog(float fadeout_time);
 
 bool run_before(HSQUIRRELVM vm);
 
+// for testing
+void save_state(HSQUIRRELVM v, const std::string& filename);
+void load_state(HSQUIRRELVM v, const std::string& filename);
+
 //Waits the specified time in seconds.
 void wait(HSQUIRRELVM vm, float time) __suspend;
 }

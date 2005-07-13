@@ -36,7 +36,7 @@ static const float GRAVITY = 1500;
 Player* Player::current_ = 0;
 
 Player::Player () :
-  pos (320, 200),
+  pos (320, 200, 100),
   velocity (0, 0),
   light    ("hero/light", resources),
   state (STAND)
@@ -64,8 +64,7 @@ Player::~Player()
 void
 Player::draw (SceneContext& gc)
 {
-  gc.light().draw(light, pos.x, pos.y, 0);
-  
+  gc.light().draw(light, pos.x, pos.y, 100);
   sprite->draw(gc, pos);
 }
 

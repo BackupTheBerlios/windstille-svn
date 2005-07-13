@@ -5,6 +5,7 @@
 #include "dialog_manager.hpp"
 #include "script_manager.hpp"
 #include "sector.hpp"
+#include "serialize.hpp"
 
 namespace Scripting
 {
@@ -79,6 +80,20 @@ void end_dialog()
 bool run_before(HSQUIRRELVM vm)
 {
   return script_manager->run_before(vm);
+}
+
+void load_state(HSQUIRRELVM v, const std::string& filename)
+{
+  sq_pushroottable(v);
+  load_squirrel_table(v, -1, filename);
+  sq_pop(v, 1);
+}
+
+void save_state(HSQUIRRELVM v, const std::string& filename)
+{
+  sq_pushroottable(v);
+  save_squirrel_table(v, -1, filename);
+  sq_pop(v, 1);
 }
 
 }
