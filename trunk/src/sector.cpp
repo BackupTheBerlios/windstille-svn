@@ -22,7 +22,6 @@
 #include <stdexcept>
 #include "lisp/list_iterator.hpp"
 #include "lisp/parser.hpp"
-#include "physfs/physfs_stream.hpp"
 #include "globals.hpp"
 #include "display/scene_context.hpp"
 #include "tile_map.hpp"
@@ -149,8 +148,7 @@ Sector::activate()
   commit_removes();
 
   sound_manager->play_music(music);
-  IFileStream in(init_script);
-  script_manager->run_script(in, init_script);
+  script_manager->run_script_file(init_script);
 }
 
 void
