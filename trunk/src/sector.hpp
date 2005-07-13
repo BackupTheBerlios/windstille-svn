@@ -94,9 +94,11 @@ public:
   void add(GameObject*);
   void add_entity(Entity *);
 
+  GameObject* get_object(const std::string& name) const;
 
   std::vector<GameObject*>* get_objects() { return &objects; }
-  TileMap* get_tilemap() { return interactive_tilemap; }
+  TileMap* get_tilemap() const { return interactive_tilemap; }
+  void     set_tilemap(TileMap* t);
   Player* get_player() const
   {
     return player;

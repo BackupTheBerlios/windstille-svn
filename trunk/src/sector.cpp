@@ -22,6 +22,7 @@
 #include <stdexcept>
 #include "lisp/list_iterator.hpp"
 #include "lisp/parser.hpp"
+#include "physfs/physfs_stream.hpp"
 #include "globals.hpp"
 #include "display/scene_context.hpp"
 #include "tile_map.hpp"
@@ -145,7 +146,8 @@ Sector::activate()
   commit_removes();
 
   sound_manager->play_music(music);
-  script_manager->run_script(init_script, "sector-init");
+  IFileStream in(init_script);
+  script_manager->run_script(in, init_script);
 }
 
 void
@@ -292,6 +294,19 @@ Sector::expose_object_to_squirrel(GameObject* object)
                                 object->get_name(), true);
 }
 
+GameObject*
+Sector::get_object(const std::string& name) const
+{
+  for(Objects::const_iterator i = objects.begin(); i != objects.end(); ++i) 
+    {
+      if ((*i)->get_name() == name)
+        {
+          return *i;
+        }
+    }
+  return 0;
+}
+
 int
 Sector::get_width () const
 {
@@ -302,6 +317,12 @@ int
 Sector::get_height () const
 {
   return interactive_tilemap->get_height() * TILE_SIZE;
+}
+
+void
+Sector::set_tilemap(TileMap* t)
+{
+  interactive_tilemap = t;
 }
 
 /* EOF */
