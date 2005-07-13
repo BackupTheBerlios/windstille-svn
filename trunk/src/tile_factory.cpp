@@ -124,36 +124,48 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
     {
       for (int x = 0; x < image.get_width(); x += TILE_SIZE)
         {
-          CL_PixelBuffer chopped_image(TILE_SIZE, TILE_SIZE,
-                                       image.get_format().get_depth()*TILE_SIZE,
-                                       image.get_format(), NULL);
-          chopped_image.lock();
-          image.convert(chopped_image.get_data(), 
-                        chopped_image.get_format(), 
-                        image.get_format().get_depth()*TILE_SIZE, 
-                        CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
-                        CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
-          chopped_image.unlock();
-
-          CL_PixelBuffer hl_chopped_image;
-
-          if (hl_image)
+          if (ids[i] == -1)
             {
-              hl_chopped_image = CL_PixelBuffer(TILE_SIZE, TILE_SIZE,
-                                                hl_image.get_format().get_depth()*TILE_SIZE,
-                                                hl_image.get_format(), NULL);
-              hl_chopped_image.lock();
-              hl_image.convert(hl_chopped_image.get_data(), 
-                               hl_chopped_image.get_format(), 
-                               hl_image.get_format().get_depth()*TILE_SIZE, 
-                               CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
-                               CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
-              hl_chopped_image.unlock();
+              // ignore the given section of the image 
             }
+          else if (ids[i] < tiles.size() && tiles[ids[i]] != NULL)
+            {
+              std::ostringstream os;
+              os << ids[i];
+              throw std::runtime_error("Duplicate tile id: " + os.str());
+            }
+          else
+            {
+              CL_PixelBuffer chopped_image(TILE_SIZE, TILE_SIZE,
+                                           image.get_format().get_depth()*TILE_SIZE,
+                                           image.get_format(), NULL);
+              chopped_image.lock();
+              image.convert(chopped_image.get_data(), 
+                            chopped_image.get_format(), 
+                            image.get_format().get_depth()*TILE_SIZE, 
+                            CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
+                            CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
+              chopped_image.unlock();
 
-          pack(ids[i], colmap[y/TILE_SIZE * image.get_width()/TILE_SIZE + x/TILE_SIZE],
-               chopped_image, hl_chopped_image);
+              CL_PixelBuffer hl_chopped_image;
 
+              if (hl_image)
+                {
+                  hl_chopped_image = CL_PixelBuffer(TILE_SIZE, TILE_SIZE,
+                                                    hl_image.get_format().get_depth()*TILE_SIZE,
+                                                    hl_image.get_format(), NULL);
+                  hl_chopped_image.lock();
+                  hl_image.convert(hl_chopped_image.get_data(), 
+                                   hl_chopped_image.get_format(), 
+                                   hl_image.get_format().get_depth()*TILE_SIZE, 
+                                   CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
+                                   CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
+                  hl_chopped_image.unlock();
+                }
+
+              pack(ids[i], colmap[y/TILE_SIZE * image.get_width()/TILE_SIZE + x/TILE_SIZE],
+                   chopped_image, hl_chopped_image);
+            }
           i += 1;
         }
     }
