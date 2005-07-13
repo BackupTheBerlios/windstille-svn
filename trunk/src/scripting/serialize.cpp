@@ -38,7 +38,6 @@ void load_squirrel_table(HSQUIRRELVM v, int table_idx, const lisp::Lisp* lisp)
         assert(false);
         break;
     }
-    printf("Set: %s.\n", iter.item().c_str());
     if(table_idx < 0) {
       sq_createslot(v, table_idx - 2);
     } else {
