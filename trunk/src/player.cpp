@@ -222,7 +222,10 @@ Player::update_walk()
         {
           //FIXME use proper collision detection
           if (object->get_pos().x > pos.x - 20 && object->get_pos().x < pos.x + 20) 
-            object->use();
+            {
+              object->use();
+              return;
+            }
         }
       }
     return;
