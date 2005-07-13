@@ -43,6 +43,8 @@ Player::Player () :
 {
   name = "Player";
   sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
+  //grenade = sprite3d_manager->create("3dsprites/grenade.wsprite");
+  grenade = 0;
   light.set_blend_func(blend_src_alpha, blend_one);
 
   jumping = false;
@@ -56,6 +58,7 @@ Player::Player () :
 Player::~Player()
 {
   delete sprite;
+  delete grenade;
 }
 
 void

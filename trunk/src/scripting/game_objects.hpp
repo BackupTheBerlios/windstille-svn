@@ -33,6 +33,7 @@ public:
   
 public:
   const std::string& get_name() const;
+  void remove();
 };
 
 class FlashingSign : public GameObject

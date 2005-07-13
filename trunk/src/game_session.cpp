@@ -270,7 +270,7 @@ GameSession::change_sector()
       world->add(psystem2);
       world->add(psystem);
       
-      script_manager->run_script("scripts/init_script_vars.nut", "init_script_vars", true);
+      script_manager->run_script_file("scripts/init_script_vars.nut");
     }
 
   //world->add(new TestObject());

@@ -1,11 +1,33 @@
 #include "test_object.hpp"
 #include "sprite3d/sprite3d_manager.hpp"
+#include "lisp/list_iterator.hpp"
 
-TestObject::TestObject()
+TestObject::TestObject(const lisp::Lisp* lisp)
 {
-  sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
-  pos = Vector(12*32, 26*32, 100);
-  name = "TEST";
+  pos = Vector(0, 0, 100);
+  std::string spritename;
+
+  lisp::ListIterator iter(lisp);
+  while(iter.next()) {
+    if(iter.item() == "sprite") {
+      spritename = iter.value().get_string();
+    } else if(iter.item() == "x") {
+      pos.x = iter.value().get_float();
+    } else if(iter.item() == "y") {
+      pos.y = iter.value().get_float();
+    } else if(iter.item() == "z") {
+      pos.z = iter.value().get_float();
+    } else if(iter.item() == "name") {
+      name = iter.value().get_string();
+    } else {
+      std::cerr << "Skipping unknown attribute '" 
+                << iter.item() << "' in Box\n";
+    }
+  }
+
+  if(spritename == "")
+    throw std::runtime_error("No sprite name specified in Box");
+  sprite = sprite3d_manager->create(spritename);
 }
 
 TestObject::~TestObject()

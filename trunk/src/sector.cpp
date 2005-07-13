@@ -36,6 +36,7 @@
 #include "sound/sound_manager.hpp"
 #include "script_manager.hpp"
 #include "collision/collision_engine.hpp"
+#include "test_object.hpp"
 #include "character.hpp"
 #include "box.hpp"
 #include "door.hpp"
@@ -106,7 +107,7 @@ Sector::parse_file(const std::string& filename)
     } else if(iter.item() == "objects") {
       lisp::ListIterator oiter(iter.lisp());
       while(oiter.next()) {
-        parse_object(oiter.item(), oiter.lisp());
+        add_object(oiter.item(), oiter.lisp());
       }
     } else {
       std::cerr << "Skipping unknown tag '" << iter.item() << "' in sector\n";
@@ -115,7 +116,7 @@ Sector::parse_file(const std::string& filename)
 }
 
 void
-Sector::parse_object(const std::string& name, const lisp::Lisp* lisp)
+Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
 {
   if(name == "tilemap") {
     TileMap* tilemap = new TileMap(lisp);
@@ -132,6 +133,8 @@ Sector::parse_object(const std::string& name, const lisp::Lisp* lisp)
     add(new FlashingSign(lisp));
   } else if(name == "character") {    
     add(new Character(lisp));
+  } else if(name == "test-object") {
+    add(new TestObject(lisp));
   } else if(name == "door") {    
     add(new Door(lisp));
   } else {

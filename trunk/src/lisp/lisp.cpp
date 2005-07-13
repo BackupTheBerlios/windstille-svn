@@ -29,6 +29,14 @@ Lisp::Lisp(LispType newtype)
 {
 }
 
+Lisp::Lisp(LispType newtype, const std::string& str)
+  : type(newtype)
+{
+  assert(newtype == TYPE_SYMBOL || type == TYPE_STRING);
+  v.string = new char[str.size()+1];
+  memcpy(v.string, str.c_str(), str.size()+1);
+}
+
 Lisp::~Lisp()
 {
   if(type == TYPE_SYMBOL || type == TYPE_STRING)

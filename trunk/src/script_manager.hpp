@@ -17,8 +17,8 @@ public:
 
   void update();
 
-  int run_script(const std::string& the_string, const std::string& sourcename,
-                  bool is_file_name = false);
+  int run_script_file(const std::string& filename);
+  int run_script(const std::string& string, const std::string& sourcename);
   int run_script(std::istream& in, const std::string& sourcename);
 
   template<typename T>

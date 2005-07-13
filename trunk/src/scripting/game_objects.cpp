@@ -11,6 +11,12 @@ GameObject::get_name() const
 }
 
 void
+GameObject::remove()
+{
+  object->remove();
+}
+
+void
 FlashingSign::enable()
 {
   obj()->enable();

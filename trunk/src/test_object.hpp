@@ -4,11 +4,12 @@
 #include "game_object.hpp"
 #include "sprite3d/sprite3d.hpp"
 #include "math/vector.hpp"
+#include "lisp/lisp.hpp"
 
 class TestObject : public GameObject
 {
 public:
-  TestObject();
+  TestObject(const lisp::Lisp* lisp);
   virtual ~TestObject();
 
   void draw(SceneContext& context);

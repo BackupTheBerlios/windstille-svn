@@ -33,6 +33,7 @@ Tip: 'Export meshes/actions to windstille format'
 # See windstille/docs/models.txt for more details
 
 import struct, shlex
+import os.path
 import Blender
 from Blender import NMesh
 from Blender import Window
@@ -44,11 +45,11 @@ ZOOM = 32.0
 DEFAULT_SPEED = 1.0
 SPEED_MULTIPLIER = 9.8
 # DO NOT change this
-FORMAT_VERSION = 1
+FORMAT_VERSION = 2
 
 # config entry (first_frame, last_frame, speed, samplerate, markers[])
 #  a marker is (name, frame)
-def parse_config(text):
+def parse_actionconfig(text):
   lex = shlex.shlex(text)
   lex.wordchars += "."
   def expect_string():
@@ -116,29 +117,83 @@ def parse_config(text):
 
   return actionconfig
 
+def parse_config(text):
+  lex = shlex.shlex(text)
+  lex.wordchars += "."
+  def expect_string():
+    res = lex.get_token()
+    if res == lex.eof:
+      raise Exception, "Expected string, got EOF"
+    return res
+
+  def expect_int():
+    res = lex.get_token()
+    if res == lex.eof:
+      raise Exception, "Expected in, got EOF"
+    return int(res)
+                                                    
+  def expect_float():
+    res = lex.get_token()
+    if res == lex.eof:
+      raise Exception, "Expected float, got EOF"
+    return float(res)
+
+  bones = []
+  while True:
+    token = lex.get_token()
+    if token == lex.eof:
+      break
+    elif token == "ExportBone":
+      bones.append(expect_string())
+    elif token == "DefaultSpeed":
+      global DEFAULT_SPEED
+      DEFAULT_SPEED = expect_float()
+    elif token == "SpeedMultiplier":
+      global SPEED_MULTIPLIER
+      SPEED_MULTIPLIER = expect_float()
+    elif token == "Zoom":
+      global ZOOM
+      ZOOM = expect_float()
+    elif token == "DefaultSamplerate":
+      global DEFAULT_SAMPLERATE
+      DEFAULT_SAMPLERATE = expect_int()
+    else:
+      raise Exception, "Unexpected token '%s'" % token
+  return bones
+
+# return contents of a text in the blender scene
+def get_text(textname):
+  try:
+    textobj = Blender.Text.Get(textname)
+  except:                                                         
+    print "WARNING: Text '%s' not found" % textname
+    return ""
+
+  lines = textobj.asLines()
+  text = ""
+  for line in lines:
+    text += line + "\n"
+  return text
+
 def export(filename):
   scene = Blender.Scene.getCurrent()
   layers = scene.Layers
 
-  # Search for config text
+  # parse exportconfig
+  bone_names = []
+  try:
+    bone_names = parse_config(get_text("exportconfig"))
+  except Exception, message:
+    raise Exception, "Parse Error in exportconfig:" + str(message)
+
+  # parse actionconfig
   actionconfig = {}
   try:
-    textobj = Blender.Text.Get("actionconfig")
-  except:  
-    print "WARNING: No actionconfig text found!"
-    textobj = 0
-
-  try:
-    if textobj != 0:
-      lines = textobj.asLines()
-      text = ""
-      for line in lines:
-        text += line + "\n"
-      actionconfig = parse_config(text)
-  except Exception, message:  
-    print "WARNING: Parse Error in actionconfig:" + str(message)
-  
-  # file header
+    actionconfig = parse_actionconfig(get_text("actionconfig"))
+  except Exception, message:
+    raise Exception, "Parse Error in actionconfig:" + str(message)
+ 
+  # compose list of meshs to export
   meshes = []
   for obj in Blender.Object.Get():
     data = obj.getData()
@@ -149,6 +204,7 @@ def export(filename):
       continue
     meshes.append(obj)
 
+  # search for armature object
   armatures = Blender.Armature.Get()
   if len(armatures) != 1:
     raise Exception, "Need to have exactly 1 armature in the scene"
@@ -159,16 +215,32 @@ def export(filename):
     if obj.getType() == "Armature":
       print "found"
       armatureobj = obj
+      armature = obj.getData()
       break
   if armatureobj == 0:
     raise Exception, "Couldn't find armature object..."
 
+  # compose list of bones to export
+  bones = []
+  for name in bone_names:
+    found = False
+    for bone in armature.getBones():
+      if bone.getName() == name:
+        bones.append(bone)
+        found = True
+        break
+    if not found:
+      raise Exception, "No bone '%s' defined in armature" % name
+
+  # compose list of actions to export
   actions = []
   for action in Blender.Armature.NLA.GetActions().iteritems():
     actions.append(action[1])
 
+  # write file header
   file = open(filename, "wb")
-  file.write(struct.pack("=4sHHH", "W3DS", FORMAT_VERSION, len(meshes), len(actions)))
+  file.write(struct.pack("=4sHHHH", "W3DS", FORMAT_VERSION, \
+        len(meshes), len(bones), len(actions)))
   objvertmaps = {}
 
   # Mesh Headers + Data
@@ -183,6 +255,7 @@ def export(filename):
       continue
       
     texture_filename = texture.filename
+    texture_filename = os.path.basename(texture_filename)
     vertexmap = []
     uvs = []
     def mapvertex(index, u, v):
@@ -232,6 +305,11 @@ def export(filename):
 
     objvertmaps[obj.getName()] = vertexmap
 
+  # Bone Headers
+  for bone in bones:
+    file.write(struct.pack("=64s", bone.getName()))
+
+  # Action Headers + actions
   actionnum = 0
   for action in actions:
     # enable action
@@ -263,7 +341,9 @@ def export(filename):
     for i in range(first_frame, last_frame+1, samplerate):
       resultframes += 1
     progress = 1.0/float(len(actions)) * actionnum
-    
+
+    print "Exporting Action %s (%d frames)" \
+            % (action.getName(), resultframes)
     Window.DrawProgressBar(progress, "Exporting Action %s (%d frames)" \
             % (action.getName(), resultframes))
     actionnum += 1
@@ -282,12 +362,13 @@ def export(filename):
     frs = 0
     for frame in range(first_frame, last_frame+1, samplerate):
       frs += 1
-      Blender.Set("curframe", float(frame))
-      for obj in Blender.Object.Get():
-        data = obj.getData()
-        if (type(data) is not Blender.Types.NMeshType) or not data.faces:                 continue
-        if (obj.Layers & layers) == 0:
-          continue
+      Blender.Set("curframe", int(frame))
+      #for obj in Blender.Object.Get():
+      #  data = obj.getData()
+      #  if (type(data) is not Blender.Types.NMeshType) or not data.faces:                 continue
+      #  if (obj.Layers & layers) == 0:
+      #    continue
+      for obj in meshes:
         data = Blender.NMesh.GetRawFromObject(obj.getName())
         vertexmap = objvertmaps[obj.getName()]
         m = obj.getMatrix()
@@ -302,11 +383,14 @@ def export(filename):
           t[1] *= ZOOM
           t[2] *= ZOOM
           file.write(struct.pack("=fff", t[1], -t[2], t[0]))
-    # debug check...
-    if frs != resultframes:
-      raise Exception, "resultframe calculation went wrong f: %d L: %d R: %d, calced %d got %d" \
-              % (first_frame, last_frame, samplerate, resultframes, frs)
 
+      # bone positions
+      for bone in bones:
+        loc = bone.getLoc()
+        file.write(struct.pack("=fff", loc[0], loc[1], loc[2]))
+        quat = bone.getQuat()
+        file.write(struct.pack("=ffff", quat.w, quat.x, quat.y, quat.z))
+      
 def fs_callback(filename):
   export(filename)
 
@@ -315,4 +399,3 @@ if defaultname.endswith(".blend"):
     defaultname = defaultname[0:len(defaultname) - len(".blend")] + ".wsprite"
 Window.FileSelector(fs_callback, "Windstille Export", defaultname)
 
-# EOF #

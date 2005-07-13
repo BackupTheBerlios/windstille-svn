@@ -43,10 +43,13 @@ Sprite3D::Sprite3D(const Sprite3DData* data)
   abort_at_frame.action = 0;
   next_frame.action = 0;
   next_action.action = 0;
+
+  bone_positions = new BonePosition[data->bone_count];
 }
 
 Sprite3D::~Sprite3D()
 {
+  delete[] bone_positions;
 }
 
 void
@@ -162,6 +165,79 @@ Sprite3D::get_rot() const
     return next_frame.rot;
   
   return frame1.rot;
+}
+
+BoneID
+Sprite3D::get_bone_id(const std::string& name) const
+{
+  return data->get_bone_id(name); 
+}
+
+static inline void set_matrix_from_quat(Matrix& m, float w,
+    float x, float y, float z)
+{
+  //row1
+  m.matrix[0] = 1.0f - 2*y*y - 2*z*z;
+  m.matrix[4] = 2*x*y - 2*w*z;
+  m.matrix[8] = 2*x*z + 2*w*y;
+  m.matrix[12] = 0.0f;
+
+  //row2
+  m.matrix[1] = 2*x*y + 2*w*z;
+  m.matrix[5] = 1.0f - 2*x*x - 2*z*z;
+  m.matrix[9] = 2*y*z - 2*w*x;
+  m.matrix[13] = 0.0f;
+
+  //row3
+  m.matrix[2] = 2*x*z - 2*w*y;
+  m.matrix[6] = 2*y*z + 2*w*x;
+  m.matrix[10] = 1.0f - 2*x*x - 2*y*y;
+  m.matrix[14] = 0.0f;
+
+  //row4
+  m.matrix[3] = 0.0f;
+  m.matrix[7] = 0.0f;
+  m.matrix[11] = 0.0f;
+  m.matrix[15] = 1.0f;
+}
+
+Matrix
+Sprite3D::get_bone_matrix(BoneID id) const
+{
+  float t_1 = 1.0 - blend_time;
+  const BonePosition& bone1 = frame1.action->frames[frame1.frame].bones[id];
+  const BonePosition& bone2 = frame2.action->frames[frame2.frame].bones[id];
+
+  float pos[3];
+  float quat[4];
+  if(frame1.rot) {
+    pos[0] = -bone1.pos[0] * t_1;
+    pos[1] = bone1.pos[1] * t_1;
+    pos[2] = -bone1.pos[2] * t_1;   
+  } else {
+    for(int i = 0; i < 3; ++i)
+      pos[i] = bone1.pos[i] * t_1;
+    for(int i = 0; i < 4; ++i)
+      quat[i] = bone1.quat[i] * t_1;
+  }
+  if(frame2.rot) {
+    pos[0] += -bone2.pos[0] * blend_time;
+    pos[1] += bone2.pos[1] * blend_time;
+    pos[2] += -bone2.pos[2] * blend_time;
+  } else {
+    for(int i = 0; i < 3; ++i)
+      pos[i] += bone2.pos[i] * blend_time;
+    for(int i = 0; i < 4; ++i)
+      quat[i] += bone2.quat[i] * blend_time;
+  }
+
+  Matrix m;
+  set_matrix_from_quat(m, quat[0], quat[1], quat[2], quat[3]);
+  m.matrix[3] += pos[0];
+  m.matrix[7] += pos[1];
+  m.matrix[11] += pos[2];
+
+  return m;
 }
 
 class Sprite3DDrawingRequest : public DrawingRequest

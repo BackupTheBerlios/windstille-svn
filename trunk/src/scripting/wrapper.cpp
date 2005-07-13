@@ -42,6 +42,7 @@ void create_squirrel_instance(HSQUIRRELVM v, Scripting::GameObject* object, bool
     sq_setreleasehook(v, -1, GameObject_release_hook);
   }
 }
+
 static int GameObject_get_name_wrapper(HSQUIRRELVM v)
 {
   Scripting::GameObject* _this;
@@ -51,6 +52,16 @@ static int GameObject_get_name_wrapper(HSQUIRRELVM v)
   
   sq_pushstring(v, return_value.c_str(), return_value.size());
   return 1;
+}
+
+static int GameObject_remove_wrapper(HSQUIRRELVM v)
+{
+  Scripting::GameObject* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  
+  _this->remove();
+  
+  return 0;
 }
 
 static int FlashingSign_release_hook(SQUserPointer ptr, int )
@@ -80,6 +91,7 @@ void create_squirrel_instance(HSQUIRRELVM v, Scripting::FlashingSign* object, bo
     sq_setreleasehook(v, -1, FlashingSign_release_hook);
   }
 }
+
 static int FlashingSign_enable_wrapper(HSQUIRRELVM v)
 {
   Scripting::FlashingSign* _this;
@@ -127,6 +139,7 @@ void create_squirrel_instance(HSQUIRRELVM v, Scripting::TestObject* object, bool
     sq_setreleasehook(v, -1, TestObject_release_hook);
   }
 }
+
 static int TestObject_set_sprite_wrapper(HSQUIRRELVM v)
 {
   Scripting::TestObject* _this;
@@ -204,6 +217,7 @@ void create_squirrel_instance(HSQUIRRELVM v, Scripting::Player* object, bool set
     sq_setreleasehook(v, -1, Player_release_hook);
   }
 }
+
 static int Player_start_listening_wrapper(HSQUIRRELVM v)
 {
   Scripting::Player* _this;
@@ -354,6 +368,11 @@ static int wait_wrapper(HSQUIRRELVM v)
   Scripting::wait(arg0, arg1);
   
   return sq_suspendvm(v);
+}
+
+static int spawn_object_wrapper(HSQUIRRELVM v)
+{
+  return Scripting::spawn_object(v);
 }
 
 void register_windstille_wrapper(HSQUIRRELVM v)
@@ -511,6 +530,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
+  sq_pushstring(v, "spawn_object", -1);
+  sq_newclosure(v, &spawn_object_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'spawn_object'";
+    throw SquirrelError(v, msg.str());
+  }
+
   // Register class GameObject
   sq_pushstring(v, "GameObject", -1);
   if(sq_newclass(v, SQFalse) < 0) {
@@ -523,6 +550,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'get_name'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "remove", -1);
+  sq_newclosure(v, &GameObject_remove_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'remove'";
     throw SquirrelError(v, msg.str());
   }
 

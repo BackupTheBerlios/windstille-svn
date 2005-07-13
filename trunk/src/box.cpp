@@ -41,7 +41,7 @@ Box::Box(const lisp::Lisp* lisp):
       name = iter.value().get_string();
     } else {
       std::cerr << "Skipping unknown attribute '" 
-                << iter.item() << "' in FlashingSign\n";
+                << iter.item() << "' in Box\n";
     }
   }
 

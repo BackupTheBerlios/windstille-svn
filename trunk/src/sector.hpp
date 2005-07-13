@@ -61,7 +61,6 @@ private:
   Player* player;
 
   void parse_file(const std::string& filename);
-  void parse_object(const std::string& name, const lisp::Lisp* lisp);
 
   static Sector* current_;
 
@@ -93,6 +92,7 @@ public:
 
   void add(GameObject*);
   void add_entity(Entity *);
+  void add_object(const std::string& name, const lisp::Lisp* lisp);
 
   GameObject* get_object(const std::string& name) const;
 

@@ -7,7 +7,7 @@
 #include "util.hpp"
 #include "globals.hpp"
 
-static const int FORMAT_VERSION = 1;
+static const int FORMAT_VERSION = 2;
 
 static inline float read_float(PHYSFS_file* file)
 {
@@ -47,7 +47,8 @@ static inline std::string read_string(PHYSFS_file* file, size_t size)
 }
 
 Sprite3DData::Sprite3DData(const std::string& filename)
-  : mesh_count(0), meshs(0), action_count(0), actions(0)
+  : mesh_count(0), meshs(0), bone_count(0), bones(0),
+  action_count(0), actions(0)
 {
   PHYSFS_file* file = PHYSFS_openRead(filename.c_str());
   if(!file) {
@@ -70,6 +71,7 @@ Sprite3DData::Sprite3DData(const std::string& filename)
     mesh_count = read_uint16_t(file);
     if(mesh_count == 0)
       throw std::runtime_error("Sprite contains no meshs");
+    bone_count = read_uint16_t(file);
     action_count = read_uint16_t(file);
     if(action_count == 0)
       throw std::runtime_error("Sprite contains no actions");
@@ -81,13 +83,13 @@ Sprite3DData::Sprite3DData(const std::string& filename)
 
       std::string texturename = read_string(file, 64);
       texturename = dirname(filename) + basename(texturename);
-      
-      mesh.texture = CL_OpenGLSurface(datadir + texturename);
       mesh.triangle_count = read_uint16_t(file);
       mesh.vertex_count = read_uint16_t(file);
 
       printf("Reading Mesh Tex %s Tri %u Vs %u.\n", texturename.c_str(),
               mesh.triangle_count, mesh.vertex_count);
+
+      mesh.texture = CL_OpenGLSurface(datadir + texturename);
 
       // read triangles
       mesh.vertex_indices = new uint16_t[mesh.triangle_count * 3];
@@ -104,6 +106,13 @@ Sprite3DData::Sprite3DData(const std::string& filename)
       for(uint16_t v = 0; v < mesh.vertex_count * 2; ++v) {
         mesh.tex_coords[v] = read_float(file);
       }
+    }
+
+    // read bones
+    bones = new Bone[bone_count];
+    for(uint16_t b = 0; b < bone_count; ++b) {
+      Bone& bone = bones[b];
+      bone.name = read_string(file, 64);
     }
 
     // read actions
@@ -131,8 +140,8 @@ Sprite3DData::Sprite3DData(const std::string& filename)
       action.frames = new ActionFrame[action.frame_count];
       for(uint16_t f = 0; f < action.frame_count; ++f) {
         ActionFrame& frame = action.frames[f];
+        
         frame.meshs = new MeshVertices[mesh_count];
-
         for(uint16_t m = 0; m < mesh_count; ++m) {
           MeshVertices& mesh = frame.meshs[m];
 
@@ -140,6 +149,15 @@ Sprite3DData::Sprite3DData(const std::string& filename)
           for(uint16_t v = 0; v < meshs[m].vertex_count * 3; ++v) {
             mesh.vertices[v] = read_float(file);
           }
+        }
+
+        frame.bones = new BonePosition[bone_count];
+        for(uint16_t b = 0; b < bone_count; ++b) {
+          BonePosition& bone = frame.bones[b];
+          for(int i = 0; i < 3; ++i)
+            bone.pos[i] = read_float(file);
+          for(int i = 0; i < 4; ++i)
+            bone.quat[i] = read_float(file);
         }
       }
     }
@@ -171,6 +189,10 @@ Sprite3DData::clear()
     delete[] meshs;
     meshs = 0;
   }
+  
+  delete[] bones;
+  bones = 0;
+
   if(actions != 0) {
     for(uint16_t a = 0; a < action_count; ++a) {
       Action& action = actions[a];
@@ -187,6 +209,7 @@ Sprite3DData::clear()
           delete[] vertices.vertices;
         }
         delete[] frame.meshs;
+        delete[] frame.bones;
       }
       delete[] action.frames;
     }
@@ -218,6 +241,19 @@ Sprite3DData::get_marker(const Action* action, const std::string& name) const
   std::ostringstream msg;
   msg << "No marker with name '" << name << "' defined in action '"
       << action->name << "'";
+  throw std::runtime_error(msg.str());
+}
+
+uint16_t
+Sprite3DData::get_bone_id(const std::string& name) const
+{
+  for(uint16_t b = 0; b < bone_count; ++b) {
+    if(bones[b].name == name)
+      return b;
+  }
+
+  std::ostringstream msg;
+  msg << "No bone with name '" << name << "' defined";
   throw std::runtime_error(msg.str());
 }
 

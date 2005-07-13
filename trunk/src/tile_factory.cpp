@@ -128,7 +128,7 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
             {
               // ignore the given section of the image 
             }
-          else if (ids[i] < tiles.size() && tiles[ids[i]] != NULL)
+          else if (ids[i] < (int) tiles.size() && tiles[ids[i]] != NULL)
             {
               std::ostringstream os;
               os << ids[i];

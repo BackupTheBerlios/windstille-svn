@@ -17,7 +17,7 @@ void stop_music(float fadetime);
 
 void play_sound(const std::string& soundfile);
 
-// alignment constants
+// dialog alignment constants
 static const int VCENTER = 0x00;
 static const int LEFT    = 0x01;
 static const int RIGHT   = 0x02;

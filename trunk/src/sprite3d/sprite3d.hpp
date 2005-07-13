@@ -29,9 +29,12 @@ class SceneContext;
 class Sprite3DData;
 struct Action;
 struct ActionFrame;
+struct BonePosition;
+
+typedef uint16_t BoneID;
 
 /**
- * This class is a 3d sprite. It's a set of textured meshed with different
+ * This class is a 3d sprite. It's a set of textured meshs with different
  * animations (called actions) that are keyframe animated.
  */
 class Sprite3D
@@ -91,6 +94,9 @@ public:
   void set_rot(bool rot = true);
   bool get_rot() const;
 
+  BoneID get_bone_id(const std::string& name) const;
+  Matrix get_bone_matrix(BoneID id) const;
+
 private:
   friend class Sprite3DDrawingRequest;
   friend class Sprite3DManager;
@@ -117,6 +123,8 @@ private:
 
   const Sprite3DData* data;
   bool actions_switched;
+
+  BonePosition* bone_positions;
 
   Frame frame1;
   Frame frame2;

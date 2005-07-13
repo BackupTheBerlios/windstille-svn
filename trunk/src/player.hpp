@@ -43,6 +43,7 @@ private:
  
   CL_Sprite light;
   Sprite3D* sprite;
+  Sprite3D* grenade;
 
   bool jumping;
   bool bomb_placed;

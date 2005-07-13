@@ -77,19 +77,18 @@ static SQInteger squirrel_read_char(SQUserPointer file)
 }
 
 int
-ScriptManager::run_script(const std::string& the_string,
-    const std::string& sourcename, bool is_filename)
+ScriptManager::run_script_file(const std::string& filename)
 {
-  if (is_filename)
-    {
-      IFileStream in(the_string);
-      return run_script(in, sourcename);
-    }
-  else
-    {
-      std::istringstream stream(the_string);
-      return run_script(stream, sourcename);
-    }
+  IFileStream in(filename);
+  return run_script(in, filename);
+}
+
+int
+ScriptManager::run_script(const std::string& the_string,
+    const std::string& sourcename)
+{
+  std::istringstream stream(the_string);
+  return run_script(stream, sourcename);
 }
 
 int

@@ -32,8 +32,6 @@ namespace lisp
 class Lisp
 {
 public:
-  ~Lisp();
-    
   enum LispType {
     TYPE_CONS,
     TYPE_SYMBOL,
@@ -42,6 +40,10 @@ public:
     TYPE_REAL,
     TYPE_BOOLEAN
   };
+
+  Lisp(LispType newtype);
+  Lisp(LispType newtype, const std::string& value);  
+  ~Lisp();                                             
 
   LispType get_type() const
   { return type; } 
@@ -168,6 +170,20 @@ public:
   // for debugging/error messages
   void print(std::ostream& out, int indent = 0) const;
 
+  union
+  {
+    struct
+    {
+      Lisp* car;
+      Lisp* cdr;
+    } cons;
+
+    char* string;
+    int integer;
+    bool boolean;
+    float real;
+  } v;
+
 private:
   bool get(std::string& val) const
   { 
@@ -214,23 +230,7 @@ private:
     return true;
   }
  
-  friend class Parser;
-  Lisp(LispType newtype);
-
   LispType type;
-  union
-  {
-    struct
-    {
-      Lisp* car;
-      Lisp* cdr;
-    } cons;
-
-    char* string;
-    int integer;
-    bool boolean;
-    float real;
-  } v;
 };
 
 } // end of namespace lisp
