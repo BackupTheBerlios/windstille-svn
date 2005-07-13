@@ -30,12 +30,6 @@ Entity::~Entity()
 {
 }
 
-CL_Vector
-Entity::get_pos() const
-{
-    return pos;
-}
-
 void
 Entity::debug_draw()
 {

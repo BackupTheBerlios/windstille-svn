@@ -36,7 +36,7 @@ public:
   Entity();
   virtual ~Entity();
    
-  CL_Vector get_pos() const;
+  CL_Vector get_pos() const { return pos; }
 
   void set_pos(float x, float y);
 
