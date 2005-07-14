@@ -204,7 +204,8 @@ WindstilleMain::main(int argc, char** argv)
         screen = new GameSession(basename(levelfile));
         game_main_state = RUN_GAME;
       }
-      
+    
+    console << "Press F1 to open the console" << std::endl;
     while (game_main());
     
     TileFactory::deinit();

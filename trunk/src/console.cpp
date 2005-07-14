@@ -76,6 +76,9 @@ Console::Console()
 
   active = false;
   history_position = 1; 
+
+  scroll_offset = 0;
+  cursor_pos  = 0;
 }
 
 void
@@ -113,17 +116,17 @@ Console::draw()
     CL_Display::fill_rect(CL_Rect(0,0, 800, 600),
                           CL_Color(0, 0, 0, 60));
 
-  for(Buffer::reverse_iterator i = buffer.rbegin(); i != buffer.rend() && num_lines > 0; ++i, --num_lines)
+  for(int i = buffer.size()-1 - scroll_offset; i >= 0 && i > int(buffer.size()) - num_lines - scroll_offset; --i)
     {
-      if (i->display_time < 5.0f || is_active())
+      if (buffer[i].display_time < 5.0f || is_active())
         {
           Fonts::copyright.set_color(CL_Color(225, 225, 255));
-          if (i->display_time > 4.0f && !is_active())
-            Fonts::copyright.set_alpha(1.0f - (i->display_time - 4.0f));
+          if (buffer[i].display_time > 4.0f && !is_active())
+            Fonts::copyright.set_alpha(1.0f - (buffer[i].display_time - 4.0f));
           else
             Fonts::copyright.set_alpha(1.0f);
 
-          Fonts::copyright.draw(x_pos, y, i->message);
+          Fonts::copyright.draw(x_pos, y, buffer[i].message);
         }
       y -= Fonts::copyright.get_height() + 2;
     }
@@ -131,9 +134,18 @@ Console::draw()
   Fonts::copyright.set_color(CL_Color(255, 255, 255));
   if (active)
     {
+      std::string str = command_line;
+      if (int(game_time*1000) % 400 > 200)
+        {
+          if (cursor_pos < int(str.size()))
+            str[cursor_pos] = '_';
+          else
+            str += "_";
+        }
+
       Fonts::copyright.set_alignment(origin_bottom_left);
       Fonts::copyright.set_alpha(1.0f);
-      Fonts::copyright.draw(x_pos, y_pos, ">" + command_line);
+      Fonts::copyright.draw(x_pos, y_pos, ">" + str);
     }
   
   //needed because ClanLib font operator= doesn't deal with uniqueness properly, so we need to
@@ -160,15 +172,34 @@ Console::update(float delta)
               if ((*i).keyboard.key_type == KeyboardEvent::LETTER)
                 {
                   //std::cout << "Key: '" << (char)((*i).keyboard.code) << "' " << (*i).keyboard.code << std::endl;
-                  command_line += (char)(*i).keyboard.code;
+                  if (cursor_pos == int(command_line.size()))
+                    {
+                      command_line += (char)(*i).keyboard.code;
+                      cursor_pos += 1;
+                    }
+                  else
+                    {
+                      command_line.insert(cursor_pos, std::string(1, (char)(*i).keyboard.code));
+                      cursor_pos += 1;
+                    }
                 }
               else if ((*i).keyboard.key_type == KeyboardEvent::SPECIAL)
                 {
                   switch (i->keyboard.code)
                     {
                     case CL_KEY_BACKSPACE:
+                      if (!command_line.empty() && cursor_pos > 0)
+                        {
+                          command_line.erase(cursor_pos - 1, 1);
+                          cursor_pos -= 1;
+                        }
+                      break;
+
+                    case CL_KEY_DELETE:
                       if (!command_line.empty())
-                        command_line = command_line.substr(0, command_line.size() - 1);
+                        {
+                          command_line.erase(cursor_pos, 1);
+                        }
                       break;
 
                     case CL_KEY_DOWN:
@@ -178,7 +209,20 @@ Console::update(float delta)
                           if (history_position > int(history.size())-1)
                             history_position = int(history.size())-1;
                           command_line = history[history_position];
+                          cursor_pos = command_line.size();
                         }
+                      break;
+
+                    case CL_KEY_HOME:
+                      scroll(10);
+                      break;
+
+                    case CL_KEY_END:
+                      scroll(-10);
+                      break;
+
+                    case CL_KEY_TAB:
+                      tab_complete();
                       break;
 
                     case CL_KEY_UP:
@@ -189,7 +233,20 @@ Console::update(float delta)
                             history_position = 0;
 
                           command_line = history[history_position];
+                          cursor_pos = command_line.size();
                         }
+                      break;
+
+                    case CL_KEY_LEFT:
+                      cursor_pos -= 1;
+                      if (cursor_pos < 0)
+                        cursor_pos = 0;
+                      break;
+
+                    case CL_KEY_RIGHT:
+                      cursor_pos += 1;
+                      if (cursor_pos > int(command_line.size()))
+                        cursor_pos = command_line.size();
                       break;
 
                     case CL_KEY_ENTER:
@@ -261,6 +318,7 @@ Console::update(float delta)
                           maybe_newline();
                         }
                       command_line = "";
+                      cursor_pos = 0;
                       break;
 
                     case CL_KEY_F1:
@@ -301,6 +359,22 @@ Console::maybe_newline()
     {
       (*this) << std::endl;
     }
+}
+
+void
+Console::scroll(int lines)
+{
+  scroll_offset += lines;
+
+  if (scroll_offset < 0)
+    scroll_offset = 0;
+  else if (scroll_offset >= int(buffer.size()))
+    scroll_offset = buffer.size()-1;
+}
+
+void Console::tab_complete()
+{
+  
 }
 
 /* EOF */

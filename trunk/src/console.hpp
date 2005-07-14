@@ -58,6 +58,10 @@ private:
   bool active;
   std::vector<std::string> history;
   int history_position;
+
+  int cursor_pos;
+
+  int scroll_offset;
   ConsoleEntry current_entry;
 
 public:
@@ -72,9 +76,13 @@ public:
   void deactive();
   bool is_active() const;
 
+  void scroll(int lines);
+
   /** adds a newline if the current line contains content */
   void maybe_newline();
 private:
+  void tab_complete();
+
   Console (const Console&);
   Console& operator= (const Console&);
 };

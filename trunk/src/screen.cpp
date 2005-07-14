@@ -34,7 +34,8 @@ Screen::Screen()
   : frames(0),
     time_counter(0),
     fps_counter(0),
-    fps_save(0)
+    fps_save(0),
+    overlap_delta(0)
 {
 }
 
@@ -53,7 +54,7 @@ Screen::display()
   slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
 
   draw();
-  float delta = delta_manager.getset ();
+  float delta = delta_manager.getset () + overlap_delta;
   
   if (config->show_fps)
     draw_fps(delta);
@@ -72,10 +73,8 @@ Screen::display()
   
       delta -= step;
     }
-  // FIXME: non constant delta isn't a good idea
-  update(delta);
-  console.update(delta);
-  InputManager::clear(); 
+
+  overlap_delta = delta;
 
   // update(0.020f);
 
