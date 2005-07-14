@@ -134,8 +134,15 @@ public:
 
   inline void Vertex2f(float x, float y)
   {
-    clVertex2f(x + sin(tilemap->total_time + y)*60.0f, 
-               y + cos(tilemap->total_time + x)*60.0f);
+    if (0) // wave effect
+      {
+        clVertex2f(x + sin(tilemap->total_time + y)*60.0f, 
+                   y + cos(tilemap->total_time + x)*60.0f);
+      }
+    else
+      {
+        clVertex2f(x, y);
+      }
   }
 
   void draw_new(CL_GraphicContext* gc)
