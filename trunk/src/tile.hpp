@@ -35,14 +35,16 @@ private:
   CL_Sprite highlight;
 
 public:
+  /** The id of the Tile by which the tilemap refers to it */
+  int id; 
+
   CL_Rectf         color_rect;
   int              color_packer;
 
   CL_Rectf         highlight_rect;
   int              highlight_packer;
 
-  int id; 
-  /** Bitmaps that holds the collision attributes for this tile */
+  /** bitmap that holds the collision attributes for this tile */
   unsigned int colmap;
 
   /** @param filename Surface to use 

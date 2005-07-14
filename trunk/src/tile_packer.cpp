@@ -59,7 +59,7 @@ TilePacker::~TilePacker()
 CL_Rectf
 TilePacker::pack(CL_PixelBuffer tile)
 {
-  assert(tile.get_width() == TILE_SIZE && tile.get_height() == TILE_SIZE);
+  assert(tile.get_width() == TILE_RESOLUTION && tile.get_height() == TILE_RESOLUTION);
   assert(!is_full());
 
   blit_opaque(impl->buffer, tile, impl->x_pos+1, impl->y_pos+1);
@@ -71,17 +71,17 @@ TilePacker::pack(CL_PixelBuffer tile)
   float factor = 0;
   CL_Rectf rect(CL_Pointf((impl->x_pos)/1024.0f, 
                           (impl->y_pos)/1024.0f), 
-                CL_Sizef((TILE_SIZE+factor)/1024.0f, 
-                         (TILE_SIZE+factor)/1024.0f));
+                CL_Sizef((TILE_RESOLUTION+factor)/1024.0f, 
+                         (TILE_RESOLUTION+factor)/1024.0f));
 
-  // we move by TILE_SIZE+1 to avoid tiles bleeding into each other
+  // we move by TILE_RESOLUTION+1 to avoid tiles bleeding into each other
   // when blending
-  impl->x_pos += TILE_SIZE + 2; 
+  impl->x_pos += TILE_RESOLUTION + 2; 
 
-  if (impl->x_pos + TILE_SIZE > impl->buffer.get_width())
+  if (impl->x_pos + TILE_RESOLUTION > impl->buffer.get_width())
     {
       impl->x_pos = 0;
-      impl->y_pos += TILE_SIZE + 2;
+      impl->y_pos += TILE_RESOLUTION + 2;
     }
 
   return rect;
@@ -91,7 +91,7 @@ TilePacker::pack(CL_PixelBuffer tile)
 bool
 TilePacker::is_full() const
 {
-  return (impl->y_pos + TILE_SIZE > impl->buffer.get_height());
+  return (impl->y_pos + TILE_RESOLUTION > impl->buffer.get_height());
 }
 
 CL_OpenGLSurface

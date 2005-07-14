@@ -22,6 +22,7 @@
 std::string datadir;
 
 int TILE_SIZE    = 32;
+int TILE_RESOLUTION = 64;
 int SUBTILE_SIZE = 32;
 int SUBTILE_NUM  = (TILE_SIZE/SUBTILE_SIZE);
 

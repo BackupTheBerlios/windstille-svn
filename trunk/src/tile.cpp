@@ -42,11 +42,13 @@ Tile::Tile(const CL_PixelBuffer& buffer,
   desc.add_frame(buffer);
   color = CL_Sprite(desc);
 
+  color.set_scale(0.5f, 0.5f);
   if (hl_buffer)
     {
       CL_SpriteDescription hl_desc;
       hl_desc.add_frame(hl_buffer);
       highlight = CL_Sprite(hl_desc);
+      highlight.set_scale(0.5f, 0.5f);
     }
 }
 

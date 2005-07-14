@@ -18,6 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
+#include <sstream>
 #include <ClanLib/gl.h>
 #include <ClanLib/Core/System/system.h>
 #include <ClanLib/Display/pixel_buffer.h>
@@ -111,18 +112,28 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
   if(highlight_filename != "")
     hl_image = CL_ProviderFactory::load(datadir + highlight_filename);
 
-  int num_tiles = (image.get_width()/TILE_SIZE) * (image.get_height()/TILE_SIZE);
+  int num_tiles = (image.get_width()/TILE_RESOLUTION) * (image.get_height()/TILE_RESOLUTION);
   if (int(colmap.size()) != num_tiles)
-    throw std::runtime_error("Not enough 'colmap' information for tiles");
+    {
+      std::ostringstream str;
+      str << "'colmap' information and num_tiles mismatch (" 
+          << colmap.size() << " != " << num_tiles << ") for image '" << filename << "'";
+      throw std::runtime_error(str.str());
+    }
 
   if (int(ids.size()) != num_tiles)
-    throw std::runtime_error("Not enough 'ids' information for tiles");
+    {
+      std::ostringstream str;
+      str << "'ids' information and num_tiles mismatch (" 
+          << ids.size() << " != " << num_tiles << ") for image '" << filename << "'";
+      throw std::runtime_error(str.str());
+    }
   
   int i = 0;
   // FIMXE: Tiles should share one OpenGL texture
-  for (int y = 0; y < image.get_height(); y += TILE_SIZE)
+  for (int y = 0; y < image.get_height(); y += TILE_RESOLUTION)
     {
-      for (int x = 0; x < image.get_width(); x += TILE_SIZE)
+      for (int x = 0; x < image.get_width(); x += TILE_RESOLUTION)
         {
           if (ids[i] == -1)
             {
@@ -136,34 +147,34 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
             }
           else
             {
-              CL_PixelBuffer chopped_image(TILE_SIZE, TILE_SIZE,
-                                           image.get_format().get_depth()*TILE_SIZE,
+              CL_PixelBuffer chopped_image(TILE_RESOLUTION, TILE_RESOLUTION,
+                                           image.get_format().get_depth()*TILE_RESOLUTION,
                                            image.get_format(), NULL);
               chopped_image.lock();
               image.convert(chopped_image.get_data(), 
                             chopped_image.get_format(), 
-                            image.get_format().get_depth()*TILE_SIZE, 
-                            CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
-                            CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
+                            image.get_format().get_depth()*TILE_RESOLUTION, 
+                            CL_Rect(CL_Point(0, 0), CL_Size(TILE_RESOLUTION, TILE_RESOLUTION)),
+                            CL_Rect(CL_Point(x, y), CL_Size(TILE_RESOLUTION, TILE_RESOLUTION)));
               chopped_image.unlock();
 
               CL_PixelBuffer hl_chopped_image;
 
               if (hl_image)
                 {
-                  hl_chopped_image = CL_PixelBuffer(TILE_SIZE, TILE_SIZE,
-                                                    hl_image.get_format().get_depth()*TILE_SIZE,
+                  hl_chopped_image = CL_PixelBuffer(TILE_RESOLUTION, TILE_RESOLUTION,
+                                                    hl_image.get_format().get_depth()*TILE_RESOLUTION,
                                                     hl_image.get_format(), NULL);
                   hl_chopped_image.lock();
                   hl_image.convert(hl_chopped_image.get_data(), 
                                    hl_chopped_image.get_format(), 
-                                   hl_image.get_format().get_depth()*TILE_SIZE, 
-                                   CL_Rect(CL_Point(0, 0), CL_Size(TILE_SIZE, TILE_SIZE)),
-                                   CL_Rect(CL_Point(x, y), CL_Size(TILE_SIZE, TILE_SIZE)));
+                                   hl_image.get_format().get_depth()*TILE_RESOLUTION, 
+                                   CL_Rect(CL_Point(0, 0), CL_Size(TILE_RESOLUTION, TILE_RESOLUTION)),
+                                   CL_Rect(CL_Point(x, y), CL_Size(TILE_RESOLUTION, TILE_RESOLUTION)));
                   hl_chopped_image.unlock();
                 }
 
-              pack(ids[i], colmap[y/TILE_SIZE * image.get_width()/TILE_SIZE + x/TILE_SIZE],
+              pack(ids[i], colmap[y/TILE_RESOLUTION * image.get_width()/TILE_RESOLUTION + x/TILE_RESOLUTION],
                    chopped_image, hl_chopped_image);
             }
           i += 1;
