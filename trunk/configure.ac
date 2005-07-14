@@ -102,7 +102,7 @@ XIPH_PATH_OGG(, [AC_MSG_ERROR([Please install libogg])])
 XIPH_PATH_VORBIS(, [AC_MSG_ERROR([Please install libvorbis])])
 
 NP_FINDLIB([OPENAL], [OpenAL], [OpenAL],
-         NP_LANG_PROGRAM([#include <AL/al.h>],
+         NP_LANG_PROGRAM([#include <AL/alc.h>],
            [alcOpenDevice(0);]),
          [], [-lopenal],
          [openal_found="yes"],
@@ -110,7 +110,7 @@ NP_FINDLIB([OPENAL], [OpenAL], [OpenAL],
          [], [])
 if test "$openal_found" = "no"; then
     NP_FINDLIB([OPENAL], [OpenAL], [OpenAL],
-            NP_LANG_PROGRAM([#include <AL/al.h],
+            NP_LANG_PROGRAM([#include <AL/alc.h],
                 [alcOpenDevice(0);]),
             [], [-lopenal32],
             [openal_found="yes"],
