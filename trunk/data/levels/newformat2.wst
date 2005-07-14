@@ -57,17 +57,17 @@ print(\"3\");
       (x 200)
       (y 850)
     )
-    (useable-item
+    (useable-object
       (x 768)
       (y 192)
       (script "")
     )
-    (useable-item
+    (useable-object
       (x 1024)
       (y 448)
       (script "")
     )
-    (useable-item
+    (useable-object
       (x 256)
       (y 704)
       (script "set_sector(\"levels/newformat2.wst\")")
