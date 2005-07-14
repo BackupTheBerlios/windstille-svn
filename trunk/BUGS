@@ -14,5 +14,8 @@ Windstille Bugs
 - when a Windstille is in window mode a window infront of it will
   cause graphical errors, this is caused by the non-pbuffer based
   lightmap rendering, implementing proper pbuffer would fix itx 
+  
+- you have to hold down the use keyboard use button for a short time, 
+  just pressing it quickly doesn't do anything
 
 # EOF #
