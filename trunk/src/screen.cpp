@@ -102,8 +102,7 @@ Screen::key_down(const CL_InputEvent& event)
     case CL_KEY_C:
       if(debug) {
         collision_debug = !collision_debug;
-        Console::current()->add(std::string("Collision Debugging ")
-            + (collision_debug ? "enabled" : "disabled"));
+        Console::current() << "Collision Debugging " << (collision_debug ? "enabled" : "disabled") << std::endl;
       }
       break;
     case CL_KEY_F10:

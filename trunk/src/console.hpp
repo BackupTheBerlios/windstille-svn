@@ -28,8 +28,25 @@ struct ConsoleEntry {
   float display_time;
 };
 
+class Console;
+
+class ConsoleStreambuf : public std::streambuf
+{
+public:
+  ConsoleStreambuf(Console* console);
+  ~ConsoleStreambuf();
+
+protected:
+  virtual int overflow(int c);
+  virtual int sync();
+
+private:
+  Console* console;
+  char buf[1024];
+};
+
 /** */
-class Console
+class Console : public std::ostream
 {
 private:
   int x_pos;
@@ -41,25 +58,13 @@ private:
   bool active;
   std::vector<std::string> history;
   int history_position;
+  ConsoleEntry current_entry;
 public:
-  static Console* current();
+  static Console& current();
 
   Console(int x, int y);
-  
-  void add(const std::string&);
-  template<class A, class B>
-  void add(const A& a, const B& b) {
-    std::ostringstream s;
-    s << a << b;
-    add(s.str());
-  }
 
-  template<class A, class B, class C>
-  void add(const A& a, const B& b, const C& c) {
-    std::ostringstream s;
-    s << a << b << c;
-    add(s.str());
-  }
+  void add(char* buf, int len);
 
   void draw();
   void update(float delta);

@@ -29,7 +29,47 @@
 
 Console* Console::current_ = 0;
 
+ConsoleStreambuf::ConsoleStreambuf(Console* console_)
+  : console(console_)
+{
+  setp(buf, buf+sizeof(buf));
+}
+
+ConsoleStreambuf::~ConsoleStreambuf()
+{
+  sync();
+}
+
+int
+ConsoleStreambuf::overflow(int c)
+{
+  if(pbase() == pptr())
+    return 0;
+
+  size_t size = pptr() - pbase();
+  console->add(pbase(), size);
+      
+  if(c != traits_type::eof()) {
+    char str[1];
+    str[0] = c;
+    console->add(str, 1);
+  }
+
+  setp(buf, buf + size);
+
+  return 0;
+}
+
+int
+ConsoleStreambuf::sync()
+{
+    return overflow(traits_type::eof());
+}
+
+//-------------------------------------------------------------------------------
+
 Console::Console(int arg_x, int arg_y)
+  : std::ostream(new ConsoleStreambuf(this))
 {
   current_ = this;
   x_pos = arg_x;
@@ -38,20 +78,30 @@ Console::Console(int arg_x, int arg_y)
   history_position = 1;
 }
 
-Console* 
+Console&
 Console::current()
 {
   assert(current_);
-  return current_;
+  return *current_;
 }
 
 void
-Console::add(const std::string& str)
+Console::add(char* buf, int len)
 {
-  ConsoleEntry entry;
-  entry.display_time = 0;
-  entry.message = str;
-  buffer.push_back(entry);
+  current_entry.display_time = 0;
+
+  for (int i = 0; i < len; ++i)
+    {
+      if (buf[i] == '\n')
+        {
+          buffer.push_back(current_entry);
+          current_entry = ConsoleEntry();
+        }
+      else
+        {
+          current_entry.message += buf[i];
+        }
+    }
 }
 
 void
@@ -149,15 +199,15 @@ Console::update(float delta)
                           history.push_back(command_line);
                           history_position = history.size();
                         }
-                      add(">" + command_line);
+                      (*this) << ">" << command_line << std::endl;
                       if (command_line == "quit" || command_line == "exit")
                         {
                           deactive();
                         }
                       else if (command_line == "help")
                         {
-                          add("This is a script console, can enter stuff in here that will then be evaluated.");
-                          add("Type 'quit' to exit the console.");
+                          (*this) << "This is a script console, can enter stuff in here that will then be evaluated.\n"
+                                  << "Type 'quit' to exit the console." << std::endl;
                         }
                       else if (command_line == "reset")
                         {
@@ -171,9 +221,7 @@ Console::update(float delta)
                             {
                               int size = sq_getsize(v, -1);
                           
-                              std::ostringstream str;
-                              str << size << " elements on the root table:";
-                              add(str.str());
+                              (*this) << size << " elements on the root table" << std::endl;
                             }
 
                           sq_pushroottable(v);
@@ -186,7 +234,7 @@ Console::update(float delta)
                               const SQChar *s;
                               if (SQ_SUCCEEDED(sq_getstring(v,-2, &s)))
                                 {
-                                  add(s + std::string(" ->"));
+                                  (*this) << s << " -> ";
                                   
                                   sq_pushroottable(v);
                                   sq_pushstring(v,"print",-1);
@@ -197,12 +245,12 @@ Console::update(float delta)
                                   sq_call(v,2,SQFalse);
                                   
                                   sq_pop(v,2); //pops the roottable and the function
+
+                                  (*this) << std::endl;;
                                 }
                               else
                                 {
-                                  std::ostringstream str;
-                                  str << "Unknown key type for element";
-                                  add(str.str());
+                                  (*this) << "Unknown key type for element" << std::endl;
                                 }
                               
                               sq_pop(v,2); //pops key and val before the nex iteration

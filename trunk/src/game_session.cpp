@@ -316,7 +316,7 @@ GameSession::on_mouse_down(const CL_InputEvent& event)
   switch(event.id)
     {
     case CL_MOUSE_LEFT:
-      console.add("Click at: ", CL_Point(view->screen2world(event.mouse_pos)));
+      console << "Click at: " << CL_Point(view->screen2world(event.mouse_pos)) << std::endl;
       break;
     default:
       break;
