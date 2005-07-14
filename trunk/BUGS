@@ -1,6 +1,18 @@
 Windstille Bugs
 ===============
 
-- if you keep alternately holding down left and right, and sometimes hold both at once, you can sometimes get the player stuck
-- there is a thin line just under half way up the bottom row of tiles in the VR room which for some reason is in front of the player rather than behind
-- Jane's hat is white
+- if you keep alternately holding down left and right, and sometimes
+  hold both at once, you can sometimes get the player stuck
+
+- there is a thin line just under half way up the bottom row of tiles
+  in the VR room which for some reason is in front of the player rather
+  than behind
+
+- Jane's hat is white, caused by one mesh using two textures, could be
+  fixed in either the exporter or in the model itself
+
+- when a Windstille is in window mode a window infront of it will
+  cause graphical errors, this is caused by the non-pbuffer based
+  lightmap rendering, implementing proper pbuffer would fix itx 
+
+# EOF #
