@@ -68,7 +68,6 @@ public:
   int dialog_answer() const {return current_choice;}
   int dialog_answer();
   void remove_dialog();
-  void clear_answers();
   void clear();
 private:
   DialogManager (const DialogManager&);

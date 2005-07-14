@@ -54,6 +54,8 @@ DialogManager::add_question(const std::string& text)
   Dialog& dialog = dialogs[current_dialog];
   //FIXME!!!!!
   dialog.text = text + " CLANLIBFONTSHAVEISSUESOHYESTHEYDOTHEYREALLYDO";
+  dialog.answers.clear();
+  current_choice = 0;
 }
 
 void
@@ -203,14 +205,6 @@ DialogManager::update(float )
       std::cout << "DialogManager: No dialog available" << std::endl;
       GameSession::current()->set_game_state();
     }
-}
-
-void
-DialogManager::clear_answers()
-{
-  Dialog& dialog = dialogs[current_dialog];
-  dialog.answers.clear();
-  current_choice = 0;
 }
 
 void
