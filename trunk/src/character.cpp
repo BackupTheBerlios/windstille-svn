@@ -99,3 +99,4 @@ Character::collision(const CollisionData& data, CollisionObject& other)
   (void) other;
 }
 
+/* EOF */

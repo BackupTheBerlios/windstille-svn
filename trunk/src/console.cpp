@@ -113,8 +113,10 @@ Console::draw()
     y -= Fonts::copyright.get_height() + 2;
 
   Fonts::copyright.set_alignment(origin_bottom_left);
-  // FIXME: only display stuff that would end up on the screen
-  for(Buffer::reverse_iterator i = buffer.rbegin(); i != buffer.rend(); ++i)
+
+  int num_lines = 600 / (Fonts::copyright.get_height() + 2);
+
+  for(Buffer::reverse_iterator i = buffer.rbegin(); i != buffer.rend() && num_lines > 0; ++i, --num_lines)
     {
       if (i->display_time < 5.0f || is_active())
         {
