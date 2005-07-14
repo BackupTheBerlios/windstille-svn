@@ -199,7 +199,9 @@ Console::update(float delta)
                           history.push_back(command_line);
                           history_position = history.size();
                         }
+                      
                       (*this) << ">" << command_line << std::endl;
+
                       if (command_line == "quit" || command_line == "exit")
                         {
                           deactive();
@@ -217,12 +219,8 @@ Console::update(float delta)
                         {
                           HSQUIRRELVM v = script_manager->get_vm();
 
-                          if (0)
-                            {
-                              int size = sq_getsize(v, -1);
-                          
-                              (*this) << size << " elements on the root table" << std::endl;
-                            }
+                          int size = sq_getsize(v, -1);
+                          (*this) << size << " elements on the root table" << std::endl;
 
                           sq_pushroottable(v);
 
@@ -261,6 +259,7 @@ Console::update(float delta)
                       else
                         {
                           GameSession::current()->execute(command_line);
+                          maybe_newline();
                         }
                       command_line = "";
                       break;
@@ -293,6 +292,16 @@ bool
 Console::is_active() const
 {
   return active;
+}
+
+void
+Console::maybe_newline()
+{
+  (*this) << std::flush;
+  if (!current_entry.message.empty())
+    {
+      (*this) << std::endl;
+    }
 }
 
 /* EOF */

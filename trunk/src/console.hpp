@@ -72,6 +72,9 @@ public:
   void activate();
   void deactive();
   bool is_active() const;
+
+  /** adds a newline if the current line contains content */
+  void maybe_newline();
 private:
   Console (const Console&);
   Console& operator= (const Console&);
