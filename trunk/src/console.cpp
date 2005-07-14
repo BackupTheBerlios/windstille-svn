@@ -24,6 +24,7 @@
 #include "fonts.hpp"
 #include "game_session.hpp"
 #include "input/input_manager.hpp"
+#include "script_manager.hpp"
 #include "console.hpp"
 
 Console* Console::current_ = 0;
@@ -161,6 +162,53 @@ Console::update(float delta)
                       else if (command_line == "reset")
                         {
                           GameSession::current()->set_sector("levels/newformat2.wst");
+                        }
+                      else if (command_line == "show")
+                        {
+                          HSQUIRRELVM v = script_manager->get_vm();
+
+                          if (0)
+                            {
+                              int size = sq_getsize(v, -1);
+                          
+                              std::ostringstream str;
+                              str << size << " elements on the root table:";
+                              add(str.str());
+                            }
+
+                          sq_pushroottable(v);
+
+                          //push your table/array here
+                          sq_pushnull(v);  //null iterator
+                          while(SQ_SUCCEEDED(sq_next(v,-2)))
+                            {
+                              //here -1 is the value and -2 is the key
+                              const SQChar *s;
+                              if (SQ_SUCCEEDED(sq_getstring(v,-2, &s)))
+                                {
+                                  add(s + std::string(" ->"));
+                                  
+                                  sq_pushroottable(v);
+                                  sq_pushstring(v,"print",-1);
+                                  sq_get(v,-2); //get the function from the root table
+                                  
+                                  sq_pushroottable(v); //'this' (function environment object)
+                                  sq_push(v,-4);
+                                  sq_call(v,2,SQFalse);
+                                  
+                                  sq_pop(v,2); //pops the roottable and the function
+                                }
+                              else
+                                {
+                                  std::ostringstream str;
+                                  str << "Unknown key type for element";
+                                  add(str.str());
+                                }
+                              
+                              sq_pop(v,2); //pops key and val before the nex iteration
+                            }
+                          
+                          sq_pop(v, 1);
                         }
                       else
                         {
