@@ -74,6 +74,7 @@ Trigger::draw (SceneContext& )
 void
 Trigger::update (float )
 {
+  //FIXME use proper collision detection
   Player* player = Player::current();
   if(!area.is_inside(CL_Pointf(player->get_pos().x,
                                   player->get_pos().y))) {
