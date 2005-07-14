@@ -4,7 +4,7 @@
   (name   "")
   (music  "music/techdemo.ogg")
   (ambient-color 170 170 170)
-  (init-script "levels/newformat2.sq")
+  (init-script "levels/newformat2.nut")
   (spawnpoint
     (name "default")
     (x 300)
@@ -50,12 +50,12 @@ print(\"3\");
     (character
       (name "bob")
       (x 50)
-      (y 850)
+      (y 831)
     )
     (character
       (name "frank")
       (x 200)
-      (y 850)
+      (y 831)
     )
     (useable-object
       (x 768)
