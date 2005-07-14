@@ -17,8 +17,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef HEADER_USEABLEITEM_HXX
-#define HEADER_USEABLEITEM_HXX
+#ifndef HEADER_USEABLEOBJECT_HXX
+#define HEADER_USEABLEOBJECT_HXX
 
 #include <string>
 #include "entity.hpp"
@@ -26,15 +26,15 @@
 #include "lisp/lisp.hpp"
 #include "script_manager.hpp"
 
-class UseableItem : public Entity
+class UseableObject : public Entity
 {
 private:
   CL_Sprite highlight;
   CL_Sprite color;
   std::string use_script;
 public:
-  UseableItem(const lisp::Lisp* lisp);
-  virtual ~UseableItem() {}
+  UseableObject(const lisp::Lisp* lisp);
+  virtual ~UseableObject() {}
 
   void draw (SceneContext& sc);
   void update (float);

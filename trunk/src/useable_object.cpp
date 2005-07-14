@@ -18,10 +18,10 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "globals.hpp"
-#include "useable_item.hpp"
+#include "useable_object.hpp"
 #include "lisp/list_iterator.hpp"
 
-UseableItem::UseableItem(const lisp::Lisp* lisp)
+UseableObject::UseableObject(const lisp::Lisp* lisp)
   : highlight("vrdoor/highlight", resources),
     color("vrdoor/color", resources)
 {
@@ -36,13 +36,13 @@ UseableItem::UseableItem(const lisp::Lisp* lisp)
       use_script = iter.value().get_string();
     } else {
       std::cerr << "Skipping unknown attribute '" 
-                << iter.item() << "' in UseableItem\n";
+                << iter.item() << "' in UseableObject\n";
     }
   }
 }
 
 void
-UseableItem::draw (SceneContext& sc)
+UseableObject::draw (SceneContext& sc)
 {
   sc.color().draw(color, pos.x, pos.y, 1);
   sc.color().draw(highlight, pos.x, pos.y, 2);
@@ -50,12 +50,12 @@ UseableItem::draw (SceneContext& sc)
 }
 
 void
-UseableItem::update (float)
+UseableObject::update (float)
 {
 }
 
 void
-UseableItem::collision(const CollisionData& data, CollisionObject& other)
+UseableObject::collision(const CollisionData& data, CollisionObject& other)
 {
   (void) data;
   (void) other;

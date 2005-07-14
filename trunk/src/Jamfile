@@ -73,8 +73,6 @@ sources =
         sector.hpp
         spawnpoint.cpp
         spawnpoint.hpp
-#sprite3d.cpp
-#sprite3d.hpp
         test_object.cpp
         test_object.hpp
         tile.cpp
@@ -89,8 +87,8 @@ sources =
         timer.cpp
         trigger.cpp
         trigger.hpp
-        useable_item.cpp
-        useable_item.hpp
+        useable_object.cpp
+        useable_object.hpp
         util.cpp
         util.hpp
         view.cpp
