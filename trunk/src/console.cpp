@@ -27,7 +27,7 @@
 #include "script_manager.hpp"
 #include "console.hpp"
 
-Console* Console::current_ = 0;
+Console console;
 
 ConsoleStreambuf::ConsoleStreambuf(Console* console_)
   : console(console_)
@@ -68,21 +68,14 @@ ConsoleStreambuf::sync()
 
 //-------------------------------------------------------------------------------
 
-Console::Console(int arg_x, int arg_y)
+Console::Console()
   : std::ostream(new ConsoleStreambuf(this))
 {
-  current_ = this;
-  x_pos = arg_x;
-  y_pos = arg_y;
-  active = false;
-  history_position = 1;
-}
+  x_pos = 16;
+  y_pos = 600-16;
 
-Console&
-Console::current()
-{
-  assert(current_);
-  return *current_;
+  active = false;
+  history_position = 1; 
 }
 
 void
@@ -115,6 +108,10 @@ Console::draw()
   Fonts::copyright.set_alignment(origin_bottom_left);
 
   int num_lines = 600 / (Fonts::copyright.get_height() + 2);
+
+  if (is_active())
+    CL_Display::fill_rect(CL_Rect(0,0, 800, 600),
+                          CL_Color(0, 0, 0, 60));
 
   for(Buffer::reverse_iterator i = buffer.rbegin(); i != buffer.rend() && num_lines > 0; ++i, --num_lines)
     {

@@ -88,7 +88,7 @@ Character::use()
     {
       script_manager->run_script(script, name);
     } catch (std::exception e) {
-      Console::current() << e.what() << std::endl;
+      console << e.what() << std::endl;
     }
 }
 

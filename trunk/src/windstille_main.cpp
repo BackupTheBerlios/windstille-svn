@@ -264,7 +264,6 @@ WindstilleMain::init_modules()
 
   if (debug) std::cout << "Initialising ScriptManager" << std::endl;
   script_manager = new ScriptManager();
-
   sprite3d_manager = new Sprite3DManager;
 }
 

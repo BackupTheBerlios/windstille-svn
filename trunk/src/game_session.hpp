@@ -42,7 +42,6 @@ class GameSession : public Windstille::Screen
 {
 private:
   SceneContext sc;
-  Console console;
 
   float fadeout_value;
 

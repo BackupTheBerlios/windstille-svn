@@ -54,8 +54,7 @@ using namespace Windstille;
 GameSession* GameSession::current_ = 0; 
 
 GameSession::GameSession(const std::string& arg_filename)
-  : console(16, CL_Display::get_height()-16),
-    control_dialog("controldialog", resources),
+  : control_dialog("controldialog", resources),
     world (0)
 {
   current_ = this;
@@ -119,7 +118,6 @@ GameSession::draw()
   //std::cout << gluErrorString(glGetError()) << std::endl;
 
   draw_game();
-  console.draw();
 
   switch (fade_state)
     {
@@ -162,8 +160,6 @@ GameSession::draw()
 void
 GameSession::update(float delta)
 {  
-  console.update(delta);
-
   if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD1))
     game_speed *= 1.0 - delta;
   if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD3))
@@ -213,8 +209,6 @@ GameSession::update(float delta)
   
   if (CL_Keyboard::get_keycode(CL_KEY_ESCAPE))
     quit();
-  
-  InputManager::clear();
 }
 
 void
@@ -330,24 +324,20 @@ GameSession::on_key_down(const CL_InputEvent& event)
     {
       switch(event.id)
         {
-        case CL_KEY_F1:
-          console.activate();
-          break;
-
         case CL_KEY_1:
           sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
-          console.add("Toggled COLORMAP: ", (sc.get_render_mask() & SceneContext::COLORMAP) > 0);
+          console << "Toggled COLORMAP: " << ((sc.get_render_mask() & SceneContext::COLORMAP) > 0) << std::endl;
           break;
 
         case CL_KEY_2:
           sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
-          console.add("Toggled LIGHTMAP: ", (sc.get_render_mask() & SceneContext::LIGHTMAP) > 0);
+          console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAP) > 0) << std::endl;
           break;
-
+          
         case CL_KEY_3:
           sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
-          console.add("Toggled HIGHLIGHTMAP: ", (sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0);
-          break;      
+          console << "Toggled HIGHLIGHTMAP: " << ((sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0) << std::endl;
+      break;      
 
         default:
           // ignore key

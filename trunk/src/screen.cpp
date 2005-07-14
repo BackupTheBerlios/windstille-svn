@@ -25,6 +25,7 @@
 #include "globals.hpp"
 #include "console.hpp"
 #include "gameconfig.hpp"
+#include "input/input_manager.hpp"
 #include "sound/sound_manager.hpp"
 
 namespace Windstille {
@@ -56,18 +57,26 @@ Screen::display()
   
   if (config->show_fps)
     draw_fps(delta);
+
+  console.draw();
+
   CL_Display::flip(0);
   
   ++frames;
   
   while (delta > step)
     {
+      console.update(step);
       update(step);
+      InputManager::clear();
+  
       delta -= step;
     }
   // FIXME: non constant delta isn't a good idea
   update(delta);
-  
+  console.update(delta);
+  InputManager::clear(); 
+
   // update(0.020f);
 
   sound_manager->update();
@@ -98,11 +107,17 @@ Screen::draw_fps(float delta)
 void
 Screen::key_down(const CL_InputEvent& event)
 {
-  switch (event.id) {
+  switch (event.id) 
+    {
+    case CL_KEY_F1:
+      if (!console.is_active())
+        console.activate();
+      break;
+
     case CL_KEY_C:
       if(debug) {
         collision_debug = !collision_debug;
-        Console::current() << "Collision Debugging " << (collision_debug ? "enabled" : "disabled") << std::endl;
+        console << "Collision Debugging " << (collision_debug ? "enabled" : "disabled") << std::endl;
       }
       break;
     case CL_KEY_F10:
@@ -122,7 +137,7 @@ Screen::key_down(const CL_InputEvent& event)
       std::cout << "Saving screenshot to: " << filename << std::endl;
       CL_ProviderFactory::save(CL_Display::get_front_buffer(),
                                filename);
-    break;
+      break;
     }
 }
 

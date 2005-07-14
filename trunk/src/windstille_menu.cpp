@@ -109,8 +109,6 @@ WindstilleMenu::update(float delta)
     }
   else if (current_choice > 1 )
     current_choice = 0;
-
-  InputManager::clear();
 }
 
 void

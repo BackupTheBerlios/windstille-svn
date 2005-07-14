@@ -59,10 +59,9 @@ private:
   std::vector<std::string> history;
   int history_position;
   ConsoleEntry current_entry;
-public:
-  static Console& current();
 
-  Console(int x, int y);
+public:
+  Console();
 
   void add(char* buf, int len);
 
@@ -79,6 +78,8 @@ private:
   Console (const Console&);
   Console& operator= (const Console&);
 };
+
+extern Console console;
 
 #endif
 
