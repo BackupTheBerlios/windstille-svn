@@ -310,6 +310,15 @@ static int add_answer_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int clear_answers_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::clear_answers();
+  
+  return 0;
+}
+
 static int dialog_answer_wrapper(HSQUIRRELVM v)
 {
   
@@ -501,6 +510,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'add_answer'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "clear_answers", -1);
+  sq_newclosure(v, &clear_answers_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'clear_answers'";
     throw SquirrelError(v, msg.str());
   }
 

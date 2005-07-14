@@ -28,6 +28,7 @@ static const int BOTTOM  = 0x20;
 void add_dialog(int alignment, const std::string& portrait);
 void add_question(const std::string& text);
 void add_answer(const std::string& answer);
+void clear_answers();
 int dialog_answer();
 void end_dialog();
 void show_dialog(HSQUIRRELVM vm, float fadein_time) __suspend;

@@ -65,6 +65,11 @@ void add_answer(const std::string& answer)
     DialogManager::current()->add_answer(answer);
 }
 
+void clear_answers()
+{
+  DialogManager::current()->clear_answers();
+}
+
 int dialog_answer()
 {
     return DialogManager::current()->dialog_answer();

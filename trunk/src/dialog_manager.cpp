@@ -206,6 +206,14 @@ DialogManager::update(float )
 }
 
 void
+DialogManager::clear_answers()
+{
+  Dialog& dialog = dialogs[current_dialog];
+  dialog.answers.clear();
+  current_choice = 0;
+}
+
+void
 DialogManager::clear()
 {
   current_dialog = 0;

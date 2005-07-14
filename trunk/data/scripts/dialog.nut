@@ -1,7 +1,9 @@
 function get_answer()
 {
 	show_dialog(0);
-	return dialog_answer();
+	local a = dialog_answer();
+	clear_answers();
+	return a;
 }
 
 function add_answers(...)
