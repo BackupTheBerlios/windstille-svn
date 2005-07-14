@@ -23,51 +23,13 @@
 #include <vector>
 #include <sstream>
 
-struct ConsoleEntry {
-  std::string message;
-  float display_time;
-};
+class ConsoleImpl;
 
-class Console;
-
-class ConsoleStreambuf : public std::streambuf
-{
-public:
-  ConsoleStreambuf(Console* console);
-  ~ConsoleStreambuf();
-
-protected:
-  virtual int overflow(int c);
-  virtual int sync();
-
-private:
-  Console* console;
-  char buf[1024];
-};
-
-/** */
 class Console : public std::ostream
 {
-private:
-  int x_pos;
-  int y_pos;
-  typedef std::vector<ConsoleEntry> Buffer;
-  Buffer buffer;
-  static Console* current_;
-  std::string command_line;
-  bool active;
-  std::vector<std::string> history;
-  int history_position;
-
-  int cursor_pos;
-
-  int scroll_offset;
-  ConsoleEntry current_entry;
-
 public:
+  friend class ConsoleStreambuf;
   Console();
-
-  void add(char* buf, int len);
 
   void draw();
   void update(float delta);
@@ -78,13 +40,13 @@ public:
 
   void scroll(int lines);
 
-  /** adds a newline if the current line contains content */
-  void maybe_newline();
-private:
-  void tab_complete();
+  void add(char* buf, int len);
 
+private:
   Console (const Console&);
   Console& operator= (const Console&);
+
+  ConsoleImpl* impl;
 };
 
 extern Console console;
