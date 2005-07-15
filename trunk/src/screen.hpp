@@ -20,8 +20,6 @@
 #ifndef HEADER_SCREEN_HXX
 #define HEADER_SCREEN_HXX
 
-#include "delta_manager.hpp"
-
 class CL_InputEvent;
 
 namespace Windstille {
