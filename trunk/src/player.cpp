@@ -45,8 +45,7 @@ Player::Player () :
   pos.z = 100;
   name = "player";
   sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
-  //grenade = sprite3d_manager->create("3dsprites/grenade.wsprite");
-  grenade = 0;
+  grenade = sprite3d_manager->create("3dsprites/grenade.wsprite");
   light.set_blend_func(blend_src_alpha, blend_one);
 
   jumping = false;
@@ -68,6 +67,8 @@ Player::draw (SceneContext& gc)
 {
   gc.light().draw(light, pos.x, pos.y, 100);
   sprite->draw(gc, pos);
+  //BoneID id = sprite->get_bone_id("Hand.R");
+  //grenade->draw(gc, sprite->get_bone_matrix(id));
 }
 
 void
@@ -142,6 +143,7 @@ Player::update (float elapsed_time)
 
   pos += velocity * elapsed_time;
   sprite->update(elapsed_time);
+  grenade->update(elapsed_time);
 }
 
 void

@@ -227,13 +227,13 @@ Sector::commit_removes()
       if(object->get_name() != "") {
         remove_object_from_squirrel(object);
       }
-      object->unref();
-
       coll_object=dynamic_cast<CollisionObject*>(*i);
       if(coll_object)
 	{
 	  collision_engine->remove_object(coll_object);
 	}
+
+      object->unref();
 
       i = objects.erase(i);
       continue;

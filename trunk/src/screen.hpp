@@ -34,8 +34,7 @@ private:
   void key_down(const CL_InputEvent& event);
   
   CL_Slot slot;
-
-  DeltaManager delta_manager;
+  unsigned int ticks;
 
 protected:  
   int frames;

@@ -231,11 +231,11 @@ Sprite3D::get_bone_matrix(BoneID id) const
       quat[i] += bone2.quat[i] * blend_time;
   }
 
-  Matrix m;
-  set_matrix_from_quat(m, quat[0], quat[1], quat[2], quat[3]);
+  Matrix m(true);
   m.matrix[3] += pos[0];
   m.matrix[7] += pos[1];
   m.matrix[11] += pos[2];
+  printf("Pos: %f %f %f\n", pos[0], pos[1], pos[2]);
 
   return m;
 }
@@ -311,6 +311,15 @@ Sprite3D::draw(SceneContext& sc, const Vector& pos)
 {
   sc.color().draw(
     new Sprite3DDrawingRequest(this, pos, sc.color().get_modelview()));
+}
+
+void
+Sprite3D::draw(SceneContext& sc, const Matrix& matrix)
+{
+  Matrix mmatrix 
+    = matrix.multiply(sc.color().get_modelview());
+  sc.color().draw(
+    new Sprite3DDrawingRequest(this, Vector(0, 0, 0), mmatrix));
 }
 
 void

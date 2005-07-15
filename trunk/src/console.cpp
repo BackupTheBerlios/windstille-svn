@@ -430,12 +430,14 @@ Console::is_active() const
 void
 Console::draw()
 {
+  return;
   impl->draw();
 }
 
 void
 Console::update(float delta)
 {
+  return;
   impl->update(delta);
 }
 

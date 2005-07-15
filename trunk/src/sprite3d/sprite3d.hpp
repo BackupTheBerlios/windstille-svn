@@ -47,6 +47,7 @@ public:
    */
   void update(float elapsed_time);
   void draw(SceneContext& sc, const Vector& pos);
+  void draw(SceneContext& sc, const Matrix& matrix);
   
   /**
    * Changes action (after the currently shown animation frame)

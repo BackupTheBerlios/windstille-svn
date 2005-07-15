@@ -19,6 +19,7 @@
 
 #include <ClanLib/display.h>
 
+#include <math.h>
 #include "windstille_main.hpp"
 #include "screen.hpp"
 #include "fonts.hpp"
@@ -37,6 +38,7 @@ Screen::Screen()
     fps_save(0),
     overlap_delta(0)
 {
+  ticks = CL_System::get_time();
 }
 
 Screen::~Screen()
@@ -49,38 +51,40 @@ Screen::display()
 {
   /// Amount of time the world moves forward each update(), this is
   /// independed of the number of frames and always constant
-  float step = 10/1000.0f;
+  static const float step = 10/1000.0f;
 
   slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
 
-  draw();
-  float delta = delta_manager.getset () + overlap_delta;
-  
-  if (config->show_fps)
-    draw_fps(delta);
+  unsigned int now = CL_System::get_time();
+  float delta = static_cast<float>(now - ticks) / 1000.0f;
+  ticks = now;
 
-  console.draw();
-
-  CL_Display::flip(0);
-  
   ++frames;
-  
-  while (delta > step)
+ 
+  float time_delta = delta + overlap_delta;
+  while (time_delta > step)
     {
       console.update(step);
       update(step);
       InputManager::clear();
   
-      delta -= step;
+      time_delta -= step;
     }
 
-  overlap_delta = delta;
-
-  // update(0.020f);
+  overlap_delta = time_delta;
 
   sound_manager->update();
+
+  draw();
+    
+  if (config->show_fps)
+    draw_fps(delta);
+  
+  console.draw();
+  CL_Display::flip(0);
+  ++frames;
+  
   CL_System::keep_alive ();
-  //CL_System::sleep (1); 
 }
 
 void 
@@ -89,15 +93,14 @@ Screen::draw_fps(float delta)
   time_counter += delta;
   ++fps_counter;
 
-  if (time_counter > 1)
-  {
+  if(time_counter > 1) {
     fps_save = fps_counter;
-    time_counter = 0;
+    time_counter = fmodf(time_counter, 1.0);
     fps_counter = 0;
   }
   
   char output[20];
-  sprintf(output, "FPS: %d", fps_save);
+  snprintf(output, sizeof(output), "FPS: %d", fps_save);
   
   Fonts::copyright.set_alignment(origin_bottom_left);
   Fonts::copyright.draw(CL_Display::get_width() - 100, 30, output);
