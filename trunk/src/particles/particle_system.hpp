@@ -22,38 +22,13 @@
 
 #include <ClanLib/display.h>
 #include <vector>
+#include "drawer.hpp"
 #include "game_object.hpp"
 
 class SceneContext;
 class Randomizer;
 class Particle;
 class ParticleSystem;
-
-class Drawer
-{
-public:
-  virtual ~Drawer() {}
-  virtual void draw(SceneContext& sc, ParticleSystem& psys) =0;
-};
-
-class SparkDrawer : public Drawer
-{
-public:
-  void draw(SceneContext& sc, ParticleSystem& psys);
-};
-
-class SurfaceDrawer : public Drawer
-{
-private:
-  CL_Surface surface;
-  
-public:
-  SurfaceDrawer(const CL_Surface& sur);
-  virtual ~SurfaceDrawer();
-  
-  void set_surface(const CL_Surface& sur);
-  void draw(SceneContext& sc, ParticleSystem& psys);
-};
 
 struct Particle {
   /** Position of the particle */

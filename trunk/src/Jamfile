@@ -10,6 +10,7 @@ SubInclude TOP src scripting ;
 SubInclude TOP src sprite3d ;
 SubInclude TOP src tinygettext ;
 SubInclude TOP src collision ;
+SubInclude TOP src particles ;
 
 sources = 
         animation_obj.cpp
@@ -58,8 +59,6 @@ sources =
         igel.cpp
         igel.hpp
         math.hpp
-        particle_system.cpp
-        particle_system.hpp
         player.cpp
         player.hpp
         random.cpp
@@ -124,6 +123,8 @@ Application windstille
         $(tinygettext_objects)
 
 	$(collision_objects)
+
+        $(particles_objects)
 
         $(sources)
 ;

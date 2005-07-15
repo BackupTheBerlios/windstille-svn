@@ -21,6 +21,7 @@
 #define HEADER_DRAWING_REQUEST_HXX
 
 #include <ClanLib/Core/Math/cl_vector.h>
+#include <ClanLib/Core/Math/matrix4x4.h>
 
 class CL_GraphicContext;
 
