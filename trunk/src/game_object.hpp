@@ -40,8 +40,10 @@ protected:
    */
   std::string name;
 
+  /** If a object is 'active = false' it will neither be drawn or updated */
+  bool active;
 public:
-  GameObject() : removable(false) {}
+  GameObject() : removable(false), active(true) {}
   virtual ~GameObject() {}
 
 
@@ -58,6 +60,9 @@ public:
   {
     return name;
   }
+
+  void set_active(bool a) { active = a; }
+  bool is_active() const { return active; }
 
   virtual void draw (SceneContext& context) = 0;
   virtual void update (float elapsed_time) = 0;

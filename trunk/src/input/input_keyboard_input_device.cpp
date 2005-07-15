@@ -37,7 +37,7 @@ InputKeyboardInputDevice::on_key_up(const CL_InputEvent& )
 void
 InputKeyboardInputDevice::on_key_down(const CL_InputEvent& event)
 {
-  if (!event.str.empty() && (isgraph(event.str[0]) || event.str[0] == ' ' ||  event.str[0] == '\t'))
+  if (!event.str.empty() && (isgraph(event.str[0]) || event.str[0] == ' '))
     key(KeyboardEvent::LETTER, event.str[0]);
   else
     key(KeyboardEvent::SPECIAL, event.id);

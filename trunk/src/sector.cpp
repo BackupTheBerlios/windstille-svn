@@ -189,7 +189,8 @@ Sector::draw(SceneContext& sc)
 
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
     {
-      (*i)->draw(sc);
+      if ((*i)->is_active())
+        (*i)->draw(sc);
     }
 }
 
@@ -209,8 +210,8 @@ void Sector::update(float delta)
   collision_engine->update(delta);
 
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i) {
-    GameObject* object = *i;
-    object->update(delta);
+    if ((*i)->is_active())
+      (*i)->update(delta);
   }
   commit_removes();
 }

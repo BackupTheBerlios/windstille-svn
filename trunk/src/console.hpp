@@ -28,7 +28,6 @@ class ConsoleImpl;
 class Console : public std::ostream
 {
 public:
-  friend class ConsoleStreambuf;
   Console();
 
   void draw();

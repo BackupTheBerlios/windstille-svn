@@ -1,3 +1,4 @@
+#include <vector>
 #include "wrapper.interface.hpp"
 #include "interface.hpp"
 #include "sound/sound_manager.hpp"
@@ -94,6 +95,28 @@ void save_state(HSQUIRRELVM v, const std::string& filename)
   sq_pushroottable(v);
   save_squirrel_table(v, -1, filename);
   sq_pop(v, 1);
+}
+
+void activate_object(const std::string& name, bool active)
+{
+  ::GameObject* obj = Sector::current()->get_object(name);
+  if (obj)
+    obj->set_active(active);
+  else
+    console << "No such object: '" << name << "'" << std::endl;
+}
+
+void list_objects()
+{
+  // std::vector<::GameObject*> didn't work me, the typedef is the workaround
+  typedef ::GameObject GameObject;
+  std::vector<GameObject*>* objects = Sector::current()->get_objects();
+  
+  for(std::vector<GameObject *>::iterator i = objects->begin(); i != objects->end(); ++i)
+    {
+      if (!(*i)->get_name().empty())
+        console << (*i)->get_name() << std::endl;
+    }
 }
 
 }

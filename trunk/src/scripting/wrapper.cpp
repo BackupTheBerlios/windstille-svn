@@ -381,6 +381,27 @@ static int load_state_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int activate_object_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  SQBool arg1;
+  sq_getbool(v, 3, &arg1);
+  
+  Scripting::activate_object(arg0, arg1);
+  
+  return 0;
+}
+
+static int list_objects_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::list_objects();
+  
+  return 0;
+}
+
 static int wait_wrapper(HSQUIRRELVM v)
 {
   HSQUIRRELVM arg0 = v;
@@ -557,6 +578,22 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'load_state'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "activate_object", -1);
+  sq_newclosure(v, &activate_object_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'activate_object'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "list_objects", -1);
+  sq_newclosure(v, &list_objects_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'list_objects'";
     throw SquirrelError(v, msg.str());
   }
 

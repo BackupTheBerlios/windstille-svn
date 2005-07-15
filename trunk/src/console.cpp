@@ -116,10 +116,12 @@ public:
   void draw();
   void update(float delta);
   void eval_command_line();
-  void tab_complete() {}
+  void tab_complete();
 
   /** adds a newline if the current line contains content */
   void maybe_newline();
+
+  std::vector<std::string> get_roottable();
 
   void add(char* buf, int len)
   {
@@ -127,7 +129,7 @@ public:
 
     for (int i = 0; i < len; ++i)
       {
-        if (buf[i] == '\n')
+        if (buf[i] == '\n' || (current_entry.message.size() > 80 && buf[i] == ' ')) // primitive linebreak
           {
             buffer.push_back(current_entry);
             current_entry = ConsoleEntry();
@@ -315,21 +317,85 @@ ConsoleImpl::maybe_newline()
     }
 }
 
-void
-Console::scroll(int lines)
+std::vector<std::string>
+ConsoleImpl::get_roottable()
 {
-  impl->scroll_offset += lines;
+  std::vector<std::string> roottable;
+  HSQUIRRELVM v = script_manager->get_vm();
+
+  sq_pushroottable(v);
+
+  //push your table/array here
+  sq_pushnull(v);  //null iterator
+  while(SQ_SUCCEEDED(sq_next(v,-2)))
+    {
+      //here -1 is the value and -2 is the key
+      const SQChar *s;
+      if (SQ_SUCCEEDED(sq_getstring(v,-2, &s)))
+        {
+          roottable.push_back((char*)s);
+        }
+      else
+        {
+          console << "Unknown key type for element" << std::endl;
+        }
+                              
+      sq_pop(v,2); //pops key and val before the nex iteration
+    }
+                          
+  sq_pop(v, 1);
   
-  if (impl->scroll_offset < 0)
-    impl->scroll_offset = 0;
-  else if (impl->scroll_offset >= int(impl->buffer.size()))
-    impl->scroll_offset = impl->buffer.size()-1;
+  return roottable;
+}
+
+static bool has_prefix(const std::string& lhs, const std::string rhs)
+{
+  if (lhs.length() < rhs.length())
+    return false;
+  else
+    return lhs.compare(0, rhs.length(), rhs) == 0;
+}
+
+void
+ConsoleImpl::tab_complete()
+{
+  const std::vector<std::string>& roottable = get_roottable();
+  std::vector<std::string> completions;
+
+  for(std::vector<std::string>::const_iterator i = roottable.begin();
+      i != roottable.end();
+      ++i)
+    {
+      if (has_prefix(*i, command_line))
+        {
+          completions.push_back(*i);
+        }
+    }
+
+  if (completions.empty())
+    {
+      // console << "No completions" << std::endl;
+    }
+  else if (completions.size() == 1)
+    {
+      command_line = completions.front();
+      cursor_pos = command_line.size();
+    }
+  else 
+    {
+      console << ">" << command_line << std::endl;
+      for(std::vector<std::string>::iterator i = completions.begin(); i != completions.end(); ++i)
+        {
+          console << *i << " ";
+        }
+      console << std::endl;
+    }
 }
 
 void
 ConsoleImpl::eval_command_line()
 {
-  if (history.empty() || history.back() != command_line)
+  if (!command_line.empty() && (history.empty() || history.back() != command_line))
     {
       history.push_back(command_line);
       history_position = history.size();
@@ -443,6 +509,17 @@ void
 Console::add(char* buf, int len)
 {
   impl->add(buf, len);
+}
+
+void
+Console::scroll(int lines)
+{
+  impl->scroll_offset += lines;
+  
+  if (impl->scroll_offset < 0)
+    impl->scroll_offset = 0;
+  else if (impl->scroll_offset >= int(impl->buffer.size()))
+    impl->scroll_offset = impl->buffer.size()-1;
 }
 
 /* EOF */
