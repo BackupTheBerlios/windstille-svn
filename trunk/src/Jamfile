@@ -34,7 +34,6 @@ sources =
         controller_def.hpp
         default_shoot.cpp
         default_shoot.hpp
-        delta_manager.hpp
         dialog_manager.cpp
         dialog_manager.hpp
         energiebar.cpp

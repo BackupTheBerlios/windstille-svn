@@ -143,7 +143,7 @@ Player::update (float elapsed_time)
 
   pos += velocity * elapsed_time;
   sprite->update(elapsed_time);
-  grenade->update(elapsed_time);
+  //grenade->update(elapsed_time);
 }
 
 void
