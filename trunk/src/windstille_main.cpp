@@ -264,8 +264,10 @@ WindstilleMain::init_modules()
   sound_manager->enable_music(config->music_enabled);
 
   if (debug) std::cout << "Initialising ScriptManager" << std::endl;
-  script_manager = new ScriptManager();
+  script_manager   = new ScriptManager();
   sprite3d_manager = new Sprite3DManager;
+
+  script_manager->run_script_file("scripts/windstille.nut");
 }
 
 void
