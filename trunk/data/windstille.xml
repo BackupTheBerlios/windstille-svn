@@ -313,6 +313,11 @@
     <image file="images/bomb1.png" name="image2" />
   </sprite>
 
+  <sprite name="spider_mine">
+    <image file="images/spider_mine.png" />
+    <translation origin="center" x="62" y="-16"/>
+  </sprite>
+
   <sprite name="explolight">
     <image file="images/explolight.png" />
     <translation origin="center"/>

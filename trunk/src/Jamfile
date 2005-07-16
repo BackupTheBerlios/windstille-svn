@@ -73,6 +73,8 @@ sources =
         sector.hpp
         spawnpoint.cpp
         spawnpoint.hpp
+	spider_mine.hpp
+	spider_mine.cpp
         test_object.cpp
         test_object.hpp
         tile.cpp

@@ -42,6 +42,7 @@ Character::Character(const lisp::Lisp* lisp)
       pos.x = iter.value().get_float();
     } else if(iter.item() == "y") {
       pos.y = iter.value().get_float();
+    } else {
       std::cerr << "Skipping unknown attribute '" 
                 << iter.item() << "' in Character\n";
     }

@@ -497,7 +497,7 @@ Player::hit(int points)
   if (energy > 0 && hit_count <= 0)
     {
       energy -= points;
-      hit_count = 1.0f;
+      //hit_count = 1.0f;
 
       if (energy <= 0)
         {

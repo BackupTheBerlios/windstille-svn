@@ -38,6 +38,7 @@
 #include "test_object.hpp"
 #include "nightvision.hpp"
 #include "character.hpp"
+#include "spider_mine.hpp"
 #include "box.hpp"
 #include "useable_object.hpp"
 
@@ -133,6 +134,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new FlashingSign(lisp));
   } else if(name == "character") {    
     add(new Character(lisp));
+  } else if(name == "spider_mine") {
+    add(new SpiderMine(lisp));
   } else if(name == "test-object") {
     add(new TestObject(lisp));
   } else if (name == "nightvision") {

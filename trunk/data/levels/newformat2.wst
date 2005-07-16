@@ -57,6 +57,21 @@ print(\"3\");
       (x 200)
       (y 831)
     )
+    (spider_mine
+      (name "spider2")
+      (x 550)
+      (y 550)
+    )
+    (spider_mine
+      (name "spider1")
+      (x 500)
+      (y 831)
+    )
+    (spider_mine
+      (name "spider3")
+      (x 1100)
+      (y 550)
+    )
     (useable-object
       (x 768)
       (y 192)
