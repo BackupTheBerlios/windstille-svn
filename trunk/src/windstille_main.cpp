@@ -153,8 +153,8 @@ int
 WindstilleMain::main(int argc, char** argv)
 {
 #ifdef WIN32
-  CL_ConsoleWindow console("Console Output");
-  console.redirect_stdio("windstille.log");
+  CL_ConsoleWindow cl_console("Console Output");
+  cl_console.redirect_stdio("windstille.log");
 #endif
 
   try {
