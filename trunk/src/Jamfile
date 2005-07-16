@@ -59,6 +59,8 @@ sources =
         igel.cpp
         igel.hpp
         math.hpp
+        nightvision.cpp
+        nightvision.hpp
         player.cpp
         player.hpp
         random.cpp

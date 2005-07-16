@@ -293,6 +293,12 @@ DrawingContext::pop_modelview()
 }
 
 void
+DrawingContext::set_modelview(const CL_Matrix4x4& matrix)
+{
+  modelview_stack.back() = matrix;
+}
+
+void
 DrawingContext::reset_modelview()
 {
   modelview_stack.clear();

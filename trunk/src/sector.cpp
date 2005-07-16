@@ -36,6 +36,7 @@
 #include "script_manager.hpp"
 #include "collision/collision_engine.hpp"
 #include "test_object.hpp"
+#include "nightvision.hpp"
 #include "character.hpp"
 #include "box.hpp"
 #include "useable_object.hpp"
@@ -134,6 +135,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new Character(lisp));
   } else if(name == "test-object") {
     add(new TestObject(lisp));
+  } else if (name == "nightvision") {
+    add(new Nightvision(lisp));
   } else if(name == "useable-object") {    
     add(new UseableObject(lisp));
   } else {

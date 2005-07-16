@@ -405,4 +405,7 @@
 
   <sprite name="bonus_end"><image file="images/bonus/bonus_end.jpg" /></sprite>
 
+  <surface name="nightvision"  file="images/nightvision.png" />
+  <surface name="noise"  file="images/noise.png" />
+
 </resources>
