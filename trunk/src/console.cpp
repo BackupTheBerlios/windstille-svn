@@ -229,6 +229,8 @@ ConsoleImpl::update(float delta)
                 }
               else if ((*i).keyboard.key_type == KeyboardEvent::SPECIAL)
                 {
+                  //console << "special: " << i->keyboard.code << std::endl;
+
                   switch (i->keyboard.code)
                     {
                     case CL_KEY_BACKSPACE:
@@ -258,10 +260,18 @@ ConsoleImpl::update(float delta)
                       break;
 
                     case CL_KEY_HOME:
+                      cursor_pos = 0;
+                      break;
+                      
+                    case CL_KEY_END:
+                      cursor_pos = command_line.size();
+                      break;
+                        
+                    case CL_KEY_PRIOR:
                       console.scroll(10);
                       break;
 
-                    case CL_KEY_END:
+                    case CL_KEY_NEXT:
                       console.scroll(-10);
                       break;
 
