@@ -25,7 +25,7 @@
 #include <ClanLib/display.h>
 
 #include "input/controller.hpp"
-#include "sprite3d/sprite3d.hpp"
+#include "sprite3d/sprite.hpp"
 #include "math/vector.hpp"
 #include "globals.hpp"
 #include "entity.hpp"
@@ -40,8 +40,8 @@ private:
   Vector velocity;
  
   CL_Sprite light;
-  Sprite3D* sprite;
-  Sprite3D* grenade;
+  sprite3d::Sprite* sprite;
+  sprite3d::Sprite* grenade;
 
   bool jumping;
   bool bomb_placed;

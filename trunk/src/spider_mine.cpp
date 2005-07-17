@@ -23,7 +23,7 @@
 #include "script_manager.hpp"
 #include "physfs/physfs_stream.hpp"
 #include "console.hpp"
-#include "sprite3d/sprite3d_manager.hpp"
+#include "sprite3d/manager.hpp"
 #include "util.hpp"
 #include "lisp/list_iterator.hpp"
 #include "player.hpp"

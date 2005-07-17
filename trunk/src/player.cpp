@@ -26,7 +26,7 @@
 #include "player.hpp"
 #include "bomb.hpp"
 #include "globals.hpp"
-#include "sprite3d/sprite3d_manager.hpp"
+#include "sprite3d/manager.hpp"
 
 static const int MAX_ENERGY = 16;
 static const float WALK_SPEED = 128.0;

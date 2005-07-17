@@ -101,6 +101,15 @@ PKG_CHECK_MODULES([CLANLIB], [clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDispla
 XIPH_PATH_OGG(, [AC_MSG_ERROR([Please install libogg])])
 XIPH_PATH_VORBIS(, [AC_MSG_ERROR([Please install libvorbis])])
 
+AM_PATH_SDL([1.2.5], , AC_MSG_ERROR([Please install libsdl >= 1.2.5]))
+
+NP_FINDLIB([SDLIMAGE], [SDL_image], [SDL_image >= 1.2],
+        NP_LANG_PROGRAM([#include <SDL_image.h>], [IMG_Load("");]),
+        [], [-lSDL_image],
+        [],
+        [AC_MSG_ERROR([Please install SDLImage >= 1.2.1])],
+        [$SDL_CFLAGS], [$SDL_LIBS])
+
 NP_FINDLIB([OPENAL], [OpenAL], [OpenAL],
          NP_LANG_PROGRAM([#include <AL/alc.h>],
            [alcOpenDevice(0);]),

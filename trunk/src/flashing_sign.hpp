@@ -1,16 +1,16 @@
 #ifndef __FLASHING_SIGN_HPP__
 #define __FLASHING_SIGN_HPP__
 
-#include <ClanLib/Display/sprite.h>
-#include <ClanLib/Core/Math/point.h>
 #include "game_object.hpp"
 #include "lisp/lisp.hpp"
+#include "math/vector.hpp"
+#include "sprite2d/sprite.hpp"
 
 class FlashingSign : public GameObject
 {
 private:
-  CL_Sprite sprite;
-  CL_Pointf pos;
+  sprite2d::Sprite* sprite;
+  Vector pos;
 
   bool enabled;
   float flashspeed;

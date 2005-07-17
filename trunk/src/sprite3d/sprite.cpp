@@ -15,7 +15,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#include "sprite3d.hpp"
+#include <config.h>
+
+#include "sprite3d/sprite.hpp"
 
 #include <vector>
 #include <stdint.h>
@@ -26,13 +28,16 @@
 #include <physfs.h>
 #include "display/drawing_request.hpp"
 #include "display/scene_context.hpp"
-#include "sprite3d_data.hpp"
 #include "lisp_util.hpp"
 #include "globals.hpp"
 #include "util.hpp"
 #include "timer.hpp"
+#include "sprite3d/data.hpp"
 
-Sprite3D::Sprite3D(const Sprite3DData* data)
+namespace sprite3d
+{
+
+Sprite::Sprite(const Data* data)
   : data(data), actions_switched(false)
 {
   frame1.action = &data->actions[0];
@@ -47,13 +52,13 @@ Sprite3D::Sprite3D(const Sprite3DData* data)
   bone_positions = new BonePosition[data->bone_count];
 }
 
-Sprite3D::~Sprite3D()
+Sprite::~Sprite()
 {
   delete[] bone_positions;
 }
 
 void
-Sprite3D::set_action(const std::string& actionname, float speed)
+Sprite::set_action(const std::string& actionname, float speed)
 {
   next_frame.action = & data->get_action(actionname);
   // set to last action so that next set_next_frame call will result in frame 0
@@ -70,7 +75,7 @@ Sprite3D::set_action(const std::string& actionname, float speed)
 }
 
 const std::string&
-Sprite3D::get_action() const
+Sprite::get_action() const
 {
   if(next_frame.action != 0)
     return next_frame.action->name;
@@ -79,7 +84,7 @@ Sprite3D::get_action() const
 }
 
 void
-Sprite3D::set_next_action(const std::string& name, float speed)
+Sprite::set_next_action(const std::string& name, float speed)
 {
   next_action.action = & data->get_action(name);
   if(speed >= 0) {
@@ -103,13 +108,13 @@ Sprite3D::set_next_action(const std::string& name, float speed)
 }
 
 void
-Sprite3D::set_next_rot(bool rot)
+Sprite::set_next_rot(bool rot)
 {
   next_action.rot = rot;
 }
 
 void
-Sprite3D::abort_at_marker(const std::string& name)
+Sprite::abort_at_marker(const std::string& name)
 {
   const Marker& marker = data->get_marker(frame1.action, name);
   abort_at_frame = frame1;
@@ -117,14 +122,14 @@ Sprite3D::abort_at_marker(const std::string& name)
 }
 
 bool
-Sprite3D::before_marker(const std::string& name) const
+Sprite::before_marker(const std::string& name) const
 {
   const Marker& marker = data->get_marker(frame1.action, name);  
   return frame1.frame < marker.frame;
 }
 
 bool
-Sprite3D::switched_actions()
+Sprite::switched_actions()
 {
   if(actions_switched) {
     actions_switched = false;
@@ -135,7 +140,7 @@ Sprite3D::switched_actions()
 }
 
 void
-Sprite3D::set_speed(float speed)
+Sprite::set_speed(float speed)
 {
   if(speed < 0 && frame1.speed >= 0
       || speed >= 0 && frame1.speed < 0) {
@@ -147,19 +152,19 @@ Sprite3D::set_speed(float speed)
 }
 
 float
-Sprite3D::get_speed() const
+Sprite::get_speed() const
 {
   return frame1.speed;
 }
 
 void
-Sprite3D::set_rot(bool rot)
+Sprite::set_rot(bool rot)
 {
   next_frame.rot = rot;
 }
 
 bool
-Sprite3D::get_rot() const
+Sprite::get_rot() const
 {
   if(next_frame.action != 0)
     return next_frame.rot;
@@ -168,7 +173,7 @@ Sprite3D::get_rot() const
 }
 
 BoneID
-Sprite3D::get_bone_id(const std::string& name) const
+Sprite::get_bone_id(const std::string& name) const
 {
   return data->get_bone_id(name); 
 }
@@ -202,7 +207,7 @@ static inline void set_matrix_from_quat(Matrix& m, float w,
 }
 
 Matrix
-Sprite3D::get_bone_matrix(BoneID id) const
+Sprite::get_bone_matrix(BoneID id) const
 {
   float t_1 = 1.0 - blend_time;
   const BonePosition& bone1 = frame1.action->frames[frame1.frame].bones[id];
@@ -240,13 +245,13 @@ Sprite3D::get_bone_matrix(BoneID id) const
   return m;
 }
 
-class Sprite3DDrawingRequest : public DrawingRequest
+class SpriteDrawingRequest : public DrawingRequest
 {
 private:
-  Sprite3D* sprite;
+  Sprite* sprite;
 
 public:
-  Sprite3DDrawingRequest(Sprite3D* sprite, const Vector& pos,
+  SpriteDrawingRequest(Sprite* sprite, const Vector& pos,
                          const Matrix& modelview)
       : DrawingRequest(pos, modelview), sprite(sprite)
   {
@@ -259,7 +264,7 @@ public:
 };
 
 void
-Sprite3D::set_next_frame()
+Sprite::set_next_frame()
 {
   if(frame2.action != frame1.action && abort_at_frame.action == 0) {
     actions_switched = true;
@@ -290,7 +295,7 @@ Sprite3D::set_next_frame()
 }
 
 void
-Sprite3D::update(float elapsed_time)
+Sprite::update(float elapsed_time)
 {
   float time_delta = elapsed_time * frame1.action->speed * frame1.speed;
   if(frame1.speed < 0)
@@ -307,23 +312,23 @@ Sprite3D::update(float elapsed_time)
 }
 
 void
-Sprite3D::draw(SceneContext& sc, const Vector& pos)
+Sprite::draw(SceneContext& sc, const Vector& pos)
 {
   sc.color().draw(
-    new Sprite3DDrawingRequest(this, pos, sc.color().get_modelview()));
+    new SpriteDrawingRequest(this, pos, sc.color().get_modelview()));
 }
 
 void
-Sprite3D::draw(SceneContext& sc, const Matrix& matrix)
+Sprite::draw(SceneContext& sc, const Matrix& matrix)
 {
   Matrix mmatrix 
     = matrix.multiply(sc.color().get_modelview());
   sc.color().draw(
-    new Sprite3DDrawingRequest(this, Vector(0, 0, 0), mmatrix));
+    new SpriteDrawingRequest(this, Vector(0, 0, 0), mmatrix));
 }
 
 void
-Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos,
+Sprite::draw(CL_GraphicContext* gc, const Vector& pos,
                const Matrix& modelview)
 {
   CL_OpenGLState state(gc);
@@ -354,6 +359,9 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos,
     const Mesh& mesh = data->meshs[m];
     const MeshVertices& vertices1 = aframe1.meshs[m];
     const MeshVertices& vertices2 = aframe2.meshs[m];
+
+    // set texture
+    glBindTexture(GL_TEXTURE_2D, mesh.texture);
     
     // blend between frame1 + frame2
     float* verts = new float[mesh.vertex_count * 3];
@@ -379,20 +387,18 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos,
     }
    
     // draw mesh
-    CL_OpenGLSurface& texture = const_cast<CL_OpenGLSurface&> (mesh.texture);
-    texture.bind();
-
     glVertexPointer(3, GL_FLOAT, 0, verts);
     glNormalPointer(GL_FLOAT, 0, mesh.normals);
     glTexCoordPointer(2, GL_FLOAT, 0, mesh.tex_coords);
     glDrawElements(GL_TRIANGLES, mesh.triangle_count * 3, GL_UNSIGNED_SHORT,
         mesh.vertex_indices);
-    
     delete[] verts;
   }
 
   assert_gl("rendering 3d sprite");      
 
   glPopMatrix();
+}
+
 }
 

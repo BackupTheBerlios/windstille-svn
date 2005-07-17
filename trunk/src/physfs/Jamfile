@@ -3,6 +3,8 @@ SubDir TOP src physfs ;
 sources = 
     physfs_stream.cpp
     physfs_stream.hpp
+    physfs_sdl.cpp
+    physfs_sdl.hpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;

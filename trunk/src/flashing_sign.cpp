@@ -4,9 +4,10 @@
 #include "lisp/list_iterator.hpp"
 #include "timer.hpp"
 #include "globals.hpp"
+#include "sprite2d/manager.hpp"
 
 FlashingSign::FlashingSign(const lisp::Lisp* lisp)
-  : sprite("arrows/red", resources), pos(0, 0), enabled(false)
+  : pos(0, 0, 10.0), enabled(false)
 {
   std::string spritename;
   flashspeed = 5;
@@ -19,6 +20,8 @@ FlashingSign::FlashingSign(const lisp::Lisp* lisp)
       pos.x = iter.value().get_float();
     } else if(iter.item() == "y") {
       pos.y = iter.value().get_float();
+    } else if(iter.item() == "z") {
+      pos.z = iter.value().get_float();
     } else if(iter.item() == "flashspeed") {
       flashspeed = iter.value().get_float();
     } else if(iter.item() == "name") {
@@ -33,12 +36,14 @@ FlashingSign::FlashingSign(const lisp::Lisp* lisp)
 
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in FlashingSign");
-  sprite = CL_Sprite(spritename, resources);
+  
+  sprite = sprite2d_manager->create(spritename);
   flashdelta = game_time;
 }
 
 FlashingSign::~FlashingSign()
 {
+  delete sprite;
 }
 
 void
@@ -52,18 +57,19 @@ FlashingSign::draw(SceneContext& sc)
   if(static_cast<int>(time/flashspeed) % 2 == 0) {
     float alpha = fmodf(time, flashspeed) / flashspeed;
     // fade on
-    sprite.set_alpha(alpha);
+    sprite->set_alpha(alpha);
   } else {
     float alpha = 1.0 - (fmodf(time, flashspeed) / flashspeed);
     // fade off
-    sprite.set_alpha(alpha);
+    sprite->set_alpha(alpha);
   }
-  sc.color().draw(sprite, pos.x, pos.y, 10);
+  sprite->draw(sc, pos);
 }
 
 void
-FlashingSign::update(float )
+FlashingSign::update(float elapsed_time)
 {
+  sprite->update(elapsed_time);
 }
 
 void

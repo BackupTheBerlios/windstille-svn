@@ -37,7 +37,9 @@
 #include "tinygettext/gettext.hpp"
 #include "gameconfig.hpp"
 #include "util.hpp"
-#include "sprite3d/sprite3d_manager.hpp"
+#include "glutil/texture_manager.hpp"
+#include "sprite3d/manager.hpp"
+#include "sprite2d/manager.hpp"
 
 using namespace Windstille;
 
@@ -159,6 +161,7 @@ WindstilleMain::main(int argc, char** argv)
 
   try {
     init_physfs(argv[0]);
+    init_sdl();
     
     dictionaryManager = new TinyGetText::DictionaryManager();
     dictionaryManager->set_charset("iso8859-1");
@@ -204,7 +207,7 @@ WindstilleMain::main(int argc, char** argv)
         screen = new GameSession(basename(levelfile));
         game_main_state = RUN_GAME;
       }
-    
+   
     console << "Press F1 to open the console" << std::endl;
     while (game_main());
     
@@ -264,8 +267,10 @@ WindstilleMain::init_modules()
   sound_manager->enable_music(config->music_enabled);
 
   if (debug) std::cout << "Initialising ScriptManager" << std::endl;
+  texture_manager = new TextureManager();
   script_manager   = new ScriptManager();
-  sprite3d_manager = new Sprite3DManager;
+  sprite2d_manager = new sprite2d::Manager();
+  sprite3d_manager = new sprite3d::Manager();
 
   script_manager->run_script_file("scripts/windstille.nut");
 }
@@ -276,8 +281,14 @@ WindstilleMain::deinit_modules()
   delete sprite3d_manager;
   sprite3d_manager = 0;
 
+  delete sprite2d_manager;
+  sprite2d_manager = 0;
+
   delete script_manager;
   script_manager = 0;
+
+  delete texture_manager;
+  texture_manager = 0;
   
   delete sound_manager;
   sound_manager = 0;
@@ -290,6 +301,16 @@ WindstilleMain::deinit_modules()
   CL_SetupGL::init();
 
   CL_SetupCore::init(); 
+}
+
+void
+WindstilleMain::init_sdl()
+{
+  if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+    std::stringstream msg;
+    msg << "Couldn't initialize SDL: " << SDL_GetError();
+    throw std::runtime_error(msg.str());
+  }
 }
 
 void

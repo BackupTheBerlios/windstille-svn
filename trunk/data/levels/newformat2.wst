@@ -31,7 +31,7 @@ print(\"3\");
       (x 550)
       (y 370)
       (flashspeed 0.7)
-      (sprite "arrows/red")
+      (sprite "images/arrow.sprite")
       (enabled #f)
     )
     (box

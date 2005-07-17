@@ -21,13 +21,13 @@
 #define HEADER_CHARACTER_HPP
 
 #include "entity.hpp"
-#include "sprite3d/sprite3d.hpp"
+#include "sprite3d/sprite.hpp"
 #include "lisp/lisp.hpp"
 
 class Character : public Entity
 {
 private:
-  Sprite3D* sprite;
+  sprite3d::Sprite* sprite;
     
 public:
   Character(const lisp::Lisp* lisp);

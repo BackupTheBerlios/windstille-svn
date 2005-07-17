@@ -43,6 +43,7 @@ public:
   virtual int main(int argc, char** argv);
 
 private:
+  void init_sdl();
   void init_physfs(const char* argv0);
   void parse_command_line(int argc, char** argv);
   void init_modules();

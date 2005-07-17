@@ -1,4 +1,6 @@
-#include "sprite3d_data.hpp"
+#include <config.h>
+
+#include "sprite3d/data.hpp"
 
 #include <physfs.h>
 #include <string.h>
@@ -6,6 +8,11 @@
 #include <stdexcept>
 #include "util.hpp"
 #include "globals.hpp"
+#include "glutil/texture_manager.hpp"
+#include "glutil/texture.hpp"
+
+namespace sprite3d
+{
 
 static const int FORMAT_VERSION = 2;
 
@@ -46,7 +53,7 @@ static inline std::string read_string(PHYSFS_file* file, size_t size)
     return buffer;
 }
 
-Sprite3DData::Sprite3DData(const std::string& filename)
+Data::Data(const std::string& filename)
   : mesh_count(0), meshs(0), bone_count(0), bones(0),
   action_count(0), actions(0)
 {
@@ -89,7 +96,8 @@ Sprite3DData::Sprite3DData(const std::string& filename)
       printf("Reading Mesh Tex %s Tri %u Vs %u.\n", texturename.c_str(),
               mesh.triangle_count, mesh.vertex_count);
 
-      mesh.texture = CL_OpenGLSurface(datadir + texturename);
+      const Texture* texture = texture_manager->get(texturename);
+      mesh.texture = texture->handle;
 
       // read triangles
       mesh.vertex_indices = new uint16_t[mesh.triangle_count * 3];
@@ -171,13 +179,13 @@ Sprite3DData::Sprite3DData(const std::string& filename)
   PHYSFS_close(file);
 }
 
-Sprite3DData::~Sprite3DData()
+Data::~Data()
 {
   clear();
 }
 
 void
-Sprite3DData::clear()
+Data::clear()
 {
   if(meshs != 0) {
     for(uint16_t m = 0; m < mesh_count; ++m) {
@@ -220,7 +228,7 @@ Sprite3DData::clear()
 }
 
 const Action&
-Sprite3DData::get_action(const std::string& name) const
+Data::get_action(const std::string& name) const
 {
   for(uint16_t a = 0; a < action_count; ++a) {
     if(actions[a].name == name)
@@ -232,7 +240,7 @@ Sprite3DData::get_action(const std::string& name) const
 }
 
 const Marker&
-Sprite3DData::get_marker(const Action* action, const std::string& name) const
+Data::get_marker(const Action* action, const std::string& name) const
 {
   for(uint16_t m = 0; m < action->marker_count; ++m) {
     if(action->markers[m].name == name)
@@ -245,7 +253,7 @@ Sprite3DData::get_marker(const Action* action, const std::string& name) const
 }
 
 uint16_t
-Sprite3DData::get_bone_id(const std::string& name) const
+Data::get_bone_id(const std::string& name) const
 {
   for(uint16_t b = 0; b < bone_count; ++b) {
     if(bones[b].name == name)
@@ -255,5 +263,7 @@ Sprite3DData::get_bone_id(const std::string& name) const
   std::ostringstream msg;
   msg << "No bone with name '" << name << "' defined";
   throw std::runtime_error(msg.str());
+}
+
 }
 

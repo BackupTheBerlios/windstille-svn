@@ -1,0 +1,12 @@
+SubDir TOP src glutil ;
+
+sources =
+    texture.cpp
+    texture.hpp
+    texture_manager.cpp
+    texture_manager.hpp
+;
+
+TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
+glutil_objects = [ CompileObjects $(sources) ] ;
+

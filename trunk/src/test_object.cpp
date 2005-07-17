@@ -1,5 +1,5 @@
 #include "test_object.hpp"
-#include "sprite3d/sprite3d_manager.hpp"
+#include "sprite3d/manager.hpp"
 #include "lisp/list_iterator.hpp"
 
 TestObject::TestObject(const lisp::Lisp* lisp)
@@ -51,7 +51,7 @@ void
 TestObject::set_sprite(const std::string& filename)
 {
   try {
-    Sprite3D* newsprite = sprite3d_manager->create(filename);
+    sprite3d::Sprite* newsprite = sprite3d_manager->create(filename);
     delete sprite;
     sprite = newsprite;
   } catch(std::exception& e) {

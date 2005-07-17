@@ -26,7 +26,11 @@
 #include "math/matrix.hpp"
 
 class SceneContext;
-class Sprite3DData;
+
+namespace sprite3d
+{
+
+class Data;
 struct Action;
 struct ActionFrame;
 struct BonePosition;
@@ -37,10 +41,10 @@ typedef uint16_t BoneID;
  * This class is a 3d sprite. It's a set of textured meshs with different
  * animations (called actions) that are keyframe animated.
  */
-class Sprite3D
+class Sprite
 {
 public:
-  ~Sprite3D();
+  ~Sprite();
 
   /**
    * You should call this every frame
@@ -99,12 +103,12 @@ public:
   Matrix get_bone_matrix(BoneID id) const;
 
 private:
-  friend class Sprite3DDrawingRequest;
-  friend class Sprite3DManager;
-  Sprite3D(const Sprite3DData* data);
+  friend class SpriteDrawingRequest;
+  friend class Manager;
+  Sprite(const Data* data);
   
-  Sprite3D (const Sprite3D&);
-  Sprite3D& operator= (const Sprite3D&);
+  Sprite (const Sprite&);
+  Sprite& operator= (const Sprite&);
 
   struct Frame {
     const Action* action;
@@ -122,7 +126,7 @@ private:
   void set_next_frame();
   void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
 
-  const Sprite3DData* data;
+  const Data* data;
   bool actions_switched;
 
   BonePosition* bone_positions;
@@ -135,5 +139,7 @@ private:
   Frame next_action;
   Frame abort_at_frame;
 };
+
+}
 
 #endif

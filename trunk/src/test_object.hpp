@@ -2,7 +2,7 @@
 #define __TEST_OBJECT_HPP__
 
 #include "game_object.hpp"
-#include "sprite3d/sprite3d.hpp"
+#include "sprite3d/sprite.hpp"
 #include "math/vector.hpp"
 #include "lisp/lisp.hpp"
 
@@ -21,7 +21,7 @@ public:
   void set_pos(const Vector& pos);
 
 private:
-  Sprite3D* sprite;
+  sprite3d::Sprite* sprite;
   Vector pos;
 };
 

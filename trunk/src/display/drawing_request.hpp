@@ -39,10 +39,6 @@ public:
   
   virtual void draw(CL_GraphicContext* gc) = 0;
   
-  /** Returns true if the request contains an alpha channel and needs
-      to be drawn in order */
-  virtual bool has_alpha() { return true; }
-
   /** Returns the position at which the request should be drawn */
   float get_z_pos() const
   { return pos.z; }

@@ -1,12 +1,12 @@
 SubDir TOP src sprite3d ;
 
 sources =
-  sprite3d_data.cpp
-  sprite3d_data.hpp
-  sprite3d.cpp
-  sprite3d.hpp
-  sprite3d_manager.cpp
-  sprite3d_manager.hpp
+  data.cpp
+  data.hpp
+  sprite.cpp
+  sprite.hpp
+  manager.cpp
+  manager.hpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;

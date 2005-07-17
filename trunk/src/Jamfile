@@ -1,12 +1,14 @@
 SubDir TOP src ;
 
 SubInclude TOP src display ;
+SubInclude TOP src glutil ;
 SubInclude TOP src input ;
 SubInclude TOP src lisp ;
 SubInclude TOP src physfs ;
 SubInclude TOP src squirrel ;
 SubInclude TOP src sound ;
 SubInclude TOP src scripting ;
+SubInclude TOP src sprite2d ;
 SubInclude TOP src sprite3d ;
 SubInclude TOP src tinygettext ;
 SubInclude TOP src collision ;
@@ -111,6 +113,8 @@ TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
 
 Application windstille 
     :   $(display_objects)
+
+        $(glutil_objects)
     
         $(input_objects)
 
@@ -121,6 +125,8 @@ Application windstille
         $(scripting_objects)
 
         $(sound_objects)
+
+        $(sprite2d_objects)
 
         $(sprite3d_objects)
 

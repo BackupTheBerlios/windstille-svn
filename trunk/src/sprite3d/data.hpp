@@ -19,7 +19,11 @@
 #define HEADER_SPRITE3D_DATA_HPP
 
 #include <stdint.h>
-#include <ClanLib/GL/opengl_surface.h>
+#include <string>
+#include <GL/gl.h>
+
+namespace sprite3d
+{
 
 struct Mesh;
 struct Bone;
@@ -31,11 +35,11 @@ struct Marker;
 /**
  * This class holds the data of a .wsprite file.
  */
-class Sprite3DData
+class Data
 {
 public:
-  Sprite3DData(const std::string& filename);
-  ~Sprite3DData();
+  Data(const std::string& filename);
+  ~Data();
 
   const Action& get_action(const std::string& name) const;
   const Marker& get_marker(const Action* action, const std::string& name) const;
@@ -51,8 +55,8 @@ public:
 private:
   void clear();
   
-  Sprite3DData (const Sprite3DData&);
-  Sprite3DData& operator= (const Sprite3DData&);
+  Data (const Data&);
+  Data& operator= (const Data&);
 };
 
 struct Mesh
@@ -61,7 +65,7 @@ struct Mesh
     : vertex_indices(0), tex_coords(0), normals(0)
   { }
 
-  CL_OpenGLSurface texture;
+  GLuint texture;
   uint16_t triangle_count;
   uint16_t* vertex_indices;
   float* tex_coords;
@@ -117,5 +121,7 @@ struct Action
   uint16_t frame_count;
   ActionFrame* frames;
 };
+
+}
 
 #endif

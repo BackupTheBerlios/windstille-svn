@@ -25,6 +25,7 @@ Nightvision::Nightvision(const lisp::Lisp* lisp)
   : nightvision("nightvision", resources),
     noise("noise", resources)
 {
+  (void) lisp;
   name = "nightvision";
   noise.set_alignment(origin_center);
 }
@@ -61,7 +62,7 @@ Nightvision::draw(SceneContext& sc)
 }
 
 void
-Nightvision::update(float delta)
+Nightvision::update(float )
 {
 }
 
