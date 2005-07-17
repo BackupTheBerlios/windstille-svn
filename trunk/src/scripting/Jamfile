@@ -1,6 +1,12 @@
 SubDir TOP src scripting ;
 
-if $(MINISWIG)
+if $(LEX) && $(BISON) {
+    MINISWIG_AVAILABLE = 1 ;
+} else {
+    MINISWIG_AVAILABLE = ;
+}
+
+if $(MINISWIG_AVAILABLE)
 {
     ##  MiniSwigRule outputcppfile : inputfile : modulename : flags
     rule MiniSwigRule
@@ -30,18 +36,18 @@ if $(MINISWIG)
     actions MiniSwig bind headerfile
     {
         $(CPP) -x c -CC $(CPPFLAGS) $(>) -o $(LOCATE_OBJECTS)/miniswig.tmp
-        ./miniswig --output-cpp $(<) --input $(LOCATE_OBJECTS)/miniswig.tmp --output-hpp $(headerfile) --module $(modulename) $(FLAGS)
+        $(top_builddir)/miniswig --output-cpp $(<) --input $(LOCATE_OBJECTS)/miniswig.tmp --output-hpp $(headerfile) --module $(modulename) $(FLAGS)
 #       rm -f $(LOCATE_OBJECTS)/miniswig.tmp
     }
 }
 
 scripting_sources = [ Filter [ Wildcard *.cpp *.hpp ] : wrapper.cpp wrapper.hpp ] ;
-if ! $(MINISWIG)
+if ! $(MINISWIG_AVAILABLE)
 {
     scripting_sources += [ SearchSource wrapper.cpp ] ;
 }
 scripting_objects = [ CompileObjects $(scripting_sources) ] ;
-if $(MINISWIG)
+if $(MINISWIG_AVAILABLE)
 {
     scripting_objects += 
         [ MiniSwigRule wrapper.cpp : wrapper.interface.hpp : windstille : --select-namespace Scripting ] ;
