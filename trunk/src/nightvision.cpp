@@ -26,6 +26,7 @@ Nightvision::Nightvision(const lisp::Lisp* lisp)
     noise("noise", resources)
 {
   name = "nightvision";
+  noise.set_alignment(origin_center);
 }
 
 Nightvision::~Nightvision()
@@ -47,7 +48,7 @@ Nightvision::draw(SceneContext& sc)
   // FIXME: Use raw OpenGL here and offset the texture coordinates
   noise.set_scale(5.0f, 5.0f);
   noise.set_blend_func(blend_dest_color, blend_zero);
-  sc.light().draw(noise, rnd.drand(-300, 300), rnd.drand(-300, 300), 11000);
+  sc.light().draw(noise, 400 + rnd.drand(-300, 300), 300 + rnd.drand(-300, 300), 11000);
 
   sc.light().pop_modelview();
 
