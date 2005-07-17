@@ -119,3 +119,5 @@ Box::stuck () const
 {
   return get_world ()->get_tilemap()->is_ground(pos.x, pos.y-16+BOX_HEIGHT);
 }
+
+/* EOF */

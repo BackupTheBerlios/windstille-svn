@@ -356,6 +356,38 @@ static bool has_prefix(const std::string& lhs, const std::string rhs)
     return lhs.compare(0, rhs.length(), rhs) == 0;
 }
 
+static std::string longest_prefix(const std::string& lhs, const std::string rhs)
+{
+  std::string::size_type i;
+  for(i = 0; i < lhs.size() && i < rhs.size(); ++i)
+    {
+      if (lhs[i] != rhs[i])
+        return lhs.substr(0, i);
+    }
+  
+  return "";
+}
+
+static std::string find_longest_prefix(const std::vector<std::string>& lst)
+{
+  if (lst.empty())
+    {
+      return "";
+    }
+  else
+    {
+      std::string prefix = lst.front();
+
+      for(std::vector<std::string>::const_iterator i = lst.begin() + 1; 
+          i != lst.end(); ++i)
+        {
+          prefix = longest_prefix(prefix, *i);
+        }
+
+      return prefix;
+    }
+}
+
 void
 ConsoleImpl::tab_complete()
 {
@@ -389,6 +421,9 @@ ConsoleImpl::tab_complete()
           console << *i << " ";
         }
       console << std::endl;
+
+      command_line = find_longest_prefix(completions);
+      cursor_pos = command_line.size();
     }
 }
 

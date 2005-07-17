@@ -102,9 +102,12 @@ int spawn_object(HSQUIRRELVM v)
   const char* objname;
   sq_getstring(v, 2, &objname);
 
+  // FIXME: who delete's the lisp?
   lisp::Lisp* lisp = table_to_lisp(v, 3);
   if(lisp == 0) {
-    // TODO throw squirrel exception...
+    // FIXME: this should never get called, instead Lisp should handle
+    // the empty list (nil) properly, instead of just using NULL
+    // pointer
     std::cerr << "Invalid or empty table specified for spawn_object\n";
     return 0;
   }
