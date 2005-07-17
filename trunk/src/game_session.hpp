@@ -80,9 +80,6 @@ public:
   void draw_game();
   void update(float delta);
 
-  /** execute the given string in the scripting environment */
-  void execute(const std::string& str);
-
   void quit();
 };
 

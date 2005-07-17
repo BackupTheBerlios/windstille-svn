@@ -44,6 +44,7 @@ void list_objects();
 
 //Waits the specified time in seconds.
 void wait(HSQUIRRELVM vm, float time) __suspend;
+
 }
 
 #endif

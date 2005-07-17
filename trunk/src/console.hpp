@@ -40,7 +40,9 @@ public:
   void scroll(int lines);
 
   void add(char* buf, int len);
-
+  
+  /** execute the given string */
+  void execute(const std::string& str);
 private:
   Console (const Console&);
   Console& operator= (const Console&);

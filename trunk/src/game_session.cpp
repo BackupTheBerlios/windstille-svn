@@ -349,39 +349,4 @@ GameSession::on_key_down(const CL_InputEvent& event)
     }
 }
 
-void
-GameSession::execute(const std::string& str_)
-{
-  std::string str = str_; //"return (" + str_ + ")";
-
-  int i = str.length();
-  const char* buffer = str.c_str();
-
-  HSQUIRRELVM vm = script_manager->get_vm();
-  int oldtop=sq_gettop(vm); 
-  try {
-    int retval = 0;
-
-    if(i>0){
-      if(SQ_SUCCEEDED(sq_compilebuffer(vm,buffer,i,_SC("interactive console"),SQTrue))){
-        sq_pushroottable(vm);
-        if(SQ_SUCCEEDED(sq_call(vm,1, retval))) {
-          scprintf(_SC("\n"));
-          sq_pushroottable(vm);
-          sq_pushstring(vm,_SC("print"),-1);
-          sq_get(vm,-2);
-          sq_pushroottable(vm);
-          sq_push(vm,-4);
-          sq_call(vm,2,SQFalse);
-          scprintf(_SC("\n"));
-        }
-      }
-    }
-  } catch(std::exception& e) {
-    std::cerr << "Couldn't execute command '" << str_ << "': "
-      << e.what() << "\n";
-  }
-  sq_settop(vm,oldtop);
-}
-
 /* EOF */

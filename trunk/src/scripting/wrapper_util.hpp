@@ -17,6 +17,7 @@ private:
   std::string message;
 };
 
+std::string squirrel2string(HSQUIRRELVM v, int i);
 void print_squirrel_stack(HSQUIRRELVM v);
 
 #endif

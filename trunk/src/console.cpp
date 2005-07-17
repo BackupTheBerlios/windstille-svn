@@ -25,6 +25,7 @@
 #include "game_session.hpp"
 #include "input/input_manager.hpp"
 #include "script_manager.hpp"
+#include "scripting/wrapper_util.hpp"
 #include "console.hpp"
 
 Console console;
@@ -122,6 +123,8 @@ public:
   void maybe_newline();
 
   std::vector<std::string> get_roottable();
+
+  void execute(const std::string& str);
 
   void add(char* buf, int len)
   {
@@ -438,115 +441,6 @@ ConsoleImpl::tab_complete()
     }
 }
 
-
-static std::string squirrel2string(HSQUIRRELVM v, int i)
-{
-  std::ostringstream os;
-  switch(sq_gettype(v, i))
-    {
-    case OT_NULL:
-      os << "<null>";        
-      break;
-    case OT_BOOL: {
-      SQBool p;
-      sq_getbool(v, i, &p);
-      if (p) 
-        os << "true";
-      else
-        os << "false";
-      break;
-    }
-    case OT_INTEGER: {
-      int val;
-      sq_getinteger(v, i, &val);
-      os << val;
-      break;
-    }
-    case OT_FLOAT: {
-      float val;
-      sq_getfloat(v, i, &val);
-      os << val;
-      break;
-    }
-    case OT_STRING: {
-      const char* val;
-      sq_getstring(v, i, &val);
-      os << "\"" << val << "\"";
-      break;    
-    }
-    case OT_TABLE: {
-      bool first = true;
-      os << "{";
-      sq_pushnull(v);  //null iterator
-      while(SQ_SUCCEEDED(sq_next(v,i-1)))
-        {
-          if (!first) {
-            os << ", ";
-          }
-          first = false;
-
-          //here -1 is the value and -2 is the key
-          os << squirrel2string(v, -2) << " => " 
-             << squirrel2string(v, -1);
-                              
-          sq_pop(v,2); //pops key and val before the nex iteration
-        }
-      sq_pop(v, 1);
-      os << "}";
-      break;
-    }
-    case OT_ARRAY: {
-      bool first = true;
-      os << "[";
-      sq_pushnull(v);  //null iterator
-      while(SQ_SUCCEEDED(sq_next(v,i-1)))
-        {
-          if (!first) {
-            os << ", ";
-          }
-          first = false;
-
-          //here -1 is the value and -2 is the key
-          // we ignore the key, since that is just the index in an array
-          os << squirrel2string(v, -1);
-                              
-          sq_pop(v,2); //pops key and val before the nex iteration
-        }
-      sq_pop(v, 1);
-      os << "]";
-      break;
-    }
-    case OT_USERDATA:
-      os << "<userdata>";
-      break;
-    case OT_CLOSURE:        
-      os << "<closure (function)>";
-      break;
-    case OT_NATIVECLOSURE:
-      os << "<native closure (C function)>";
-      break;
-    case OT_GENERATOR:
-      os << "<generator>";
-      break;
-    case OT_USERPOINTER:
-      os << "userpointer";
-      break;
-    case OT_THREAD:
-      os << "<thread>";
-      break;
-    case OT_CLASS:
-      os << "<class>";
-      break;
-    case OT_INSTANCE:
-      os << "<instance>";
-      break;
-    default:
-      os << "<unknown>";
-      break;
-    }
-  return os.str();
-}
-
 void
 ConsoleImpl::eval_command_line()
 {
@@ -602,12 +496,43 @@ ConsoleImpl::eval_command_line()
     }
   else
     {
-      GameSession::current()->execute(command_line);
+      execute(command_line);
       maybe_newline();
     }
   command_line = "";
   cursor_pos = 0;
 }
+
+void
+ConsoleImpl::execute(const std::string& str_)
+{
+  std::string str = str_; //"return (" + str_ + ")";
+
+  int i = str.length();
+  const char* buffer = str.c_str();
+
+  HSQUIRRELVM vm = script_manager->get_vm();
+  int oldtop=sq_gettop(vm); 
+  try {
+    int retval = 1;
+
+    if(i>0){
+      if(SQ_SUCCEEDED(sq_compilebuffer(vm,buffer,i,_SC("interactive console"),SQTrue))){
+        sq_pushroottable(vm);
+        if(SQ_SUCCEEDED(sq_call(vm,1, retval))) 
+          {
+            if (sq_gettype(vm, -1) != OT_NULL)
+              console << squirrel2string(vm, -1) << std::endl;
+          }
+      }
+    }
+  } catch(std::exception& e) {
+    std::cerr << "Couldn't execute command '" << str_ << "': "
+              << e.what() << "\n";
+  }
+  sq_settop(vm,oldtop);
+}
+
 //-------------------------------------------------------------------------------
 
 Console::Console()
@@ -663,6 +588,12 @@ Console::scroll(int lines)
     impl->scroll_offset = 0;
   else if (impl->scroll_offset >= int(impl->buffer.size()))
     impl->scroll_offset = impl->buffer.size()-1;
+}
+
+void
+Console::execute(const std::string& str)
+{
+  impl->execute(str);
 }
 
 /* EOF */
