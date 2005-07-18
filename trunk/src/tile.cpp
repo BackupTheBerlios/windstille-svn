@@ -24,50 +24,11 @@
 #include "globals.hpp"
 #include "tile.hpp"
 
-Tile::Tile(const std::string& filename, 
-           const std::string& highlight_filename,
-           unsigned int arg_colmap)
+Tile::Tile(unsigned int arg_colmap)
   : colmap(arg_colmap)
 {
-  color     = CL_Sprite(filename, resources);
-  highlight = CL_Sprite(highlight_filename, resources);
-
   color_packer = -1;
   highlight_packer = -1;
-}
-
-Tile::Tile(const CL_PixelBuffer& buffer, 
-           const CL_PixelBuffer& hl_buffer, 
-           unsigned int arg_colmap)
-  : colmap(arg_colmap)
-{
-  CL_SpriteDescription desc;
-  desc.add_frame(buffer);
-  color = CL_Sprite(desc);
-
-  color.set_scale(0.5f, 0.5f);
-  if (hl_buffer)
-    {
-      CL_SpriteDescription hl_desc;
-      hl_desc.add_frame(hl_buffer);
-      highlight = CL_Sprite(hl_desc);
-      highlight.set_scale(0.5f, 0.5f);
-    }
-
-  color_packer = -1;
-  highlight_packer = -1;
-}
-
-CL_Sprite&
-Tile::get_color_sprite()
-{
-  return color;
-}
-
-CL_Sprite&
-Tile::get_highlight_sprite()
-{
-  return highlight;
 }
 
 /* EOF */

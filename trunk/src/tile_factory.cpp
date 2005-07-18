@@ -130,7 +130,6 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
     }
   
   int i = 0;
-  // FIMXE: Tiles should share one OpenGL texture
   for (int y = 0; y < image.get_height(); y += TILE_RESOLUTION)
     {
       for (int x = 0; x < image.get_width(); x += TILE_RESOLUTION)
@@ -180,8 +179,6 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
           i += 1;
         }
     }
-  
-  //CL_ProviderFactory::save(packers[0]->get_pixelbuffer(), "/tmp/pack.png");
 }
 
 static bool buffer_empty(CL_PixelBuffer buffer)
@@ -211,7 +208,7 @@ TileFactory::pack(int id, int colmap, CL_PixelBuffer color, CL_PixelBuffer highl
   if (id >= int(tiles.size()))
     tiles.resize(id + 1);
 
-  tiles[id] = new Tile(color, highlight, colmap);
+  tiles[id] = new Tile(colmap);
           
   tiles[id]->id = id;
 

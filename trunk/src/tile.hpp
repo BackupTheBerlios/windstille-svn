@@ -30,10 +30,6 @@
  *  TileMap and not here. (flyweight pattern). */
 class Tile
 {
-private:
-  CL_Sprite color;
-  CL_Sprite highlight;
-
 public:
   /** The id of the Tile by which the tilemap refers to it */
   int id; 
@@ -47,19 +43,9 @@ public:
   /** bitmap that holds the collision attributes for this tile */
   unsigned int colmap;
 
-  /** @param filename Surface to use 
-   *  @param arg_colmap a 8 char long array */
-  Tile(const std::string& filename, 
-       const std::string& highlight_filename, 
-       unsigned int arg_colmap);
-
-  Tile(const CL_PixelBuffer& buffer, 
-       const CL_PixelBuffer& hl_buffer, 
-       unsigned int arg_colmap);
+  Tile(unsigned int arg_colmap);
 
   unsigned get_colmap() const { return colmap; }
-  CL_Sprite& get_color_sprite();
-  CL_Sprite& get_highlight_sprite();
 };
 
 #endif
