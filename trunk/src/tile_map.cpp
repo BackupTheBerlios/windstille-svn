@@ -101,11 +101,12 @@ void
 TileMap::update (float delta)
 {
   total_time += delta;
-  /*for (FieldIter i = field.begin (); i != field.end (); ++i)
-    {
-      (*i)->update (delta);
-      }*/
 }
+
+struct VertexPack {
+  std::vector<float> vertices;
+  std::vector<float> texcoords;
+};
 
 class TileMapDrawingRequest : public DrawingRequest
 {
@@ -126,27 +127,6 @@ public:
 
   void draw(CL_GraphicContext* gc)
   {
-    if (!CL_Keyboard::get_keycode(CL_KEY_Z))
-      draw_new(gc);
-    else
-      draw_classic(gc);
-  }
-
-  inline void Vertex2f(float x, float y)
-  {
-    if (0) // wave effect
-      {
-        clVertex2f(x + sin(tilemap->total_time + y)*60.0f, 
-                   y + cos(tilemap->total_time + x)*60.0f);
-      }
-    else
-      {
-        clVertex2f(x, y);
-      }
-  }
-
-  void draw_new(CL_GraphicContext* gc)
-  {
     Field<Tile*>& field = tilemap->field;
 
     CL_OpenGLState state(gc);
@@ -159,70 +139,68 @@ public:
     clEnable(CL_TEXTURE_2D);
     clEnable(CL_BLEND);
     glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    TileFactory::current()->get_texture(0).bind();
 
-    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MIN_FILTER, CL_LINEAR);
-    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MAG_FILTER, CL_LINEAR);
-    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_S, CL_CLAMP_TO_EDGE);
-    clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_T, CL_CLAMP_TO_EDGE);
-      
-    clBegin(CL_QUADS);
+    std::vector<VertexPack> packs;
+
     for (int y = rect.top;   y < rect.bottom; ++y)
       for (int x = rect.left; x < rect.right; ++x)
         {
           Tile* tile = field(x, y);
           if (tile && tile->color_packer != -1 && !highlight)
             {
-              clTexCoord2f(tile->color_rect.left,
-                           tile->color_rect.top);
-              Vertex2f(x * TILE_SIZE, 
-                       y * TILE_SIZE);
+              if (tile->color_packer >= int(packs.size()))
+                packs.resize(tile->color_packer+1);
+              
+              VertexPack& pack = packs[tile->color_packer];
 
-              clTexCoord2f(tile->color_rect.right,
-                           tile->color_rect.top);
-              Vertex2f(x * TILE_SIZE + TILE_SIZE,
-                       y * TILE_SIZE);
+              pack.texcoords.push_back(tile->color_rect.left);
+              pack.texcoords.push_back(tile->color_rect.top);
 
-              clTexCoord2f(tile->color_rect.right,
-                           tile->color_rect.bottom);
-              Vertex2f(x * TILE_SIZE + TILE_SIZE,
-                       y * TILE_SIZE + TILE_SIZE);
+              pack.vertices.push_back(x * TILE_SIZE);
+              pack.vertices.push_back(y * TILE_SIZE);
 
-              clTexCoord2f(tile->color_rect.left,
-                           tile->color_rect.bottom);
-              Vertex2f(x * TILE_SIZE,
-                       y * TILE_SIZE + TILE_SIZE);
-            }
-        }     
-    clEnd();
-      
-    clPopMatrix();
-  }
+              pack.texcoords.push_back(tile->color_rect.right);
+              pack.texcoords.push_back(tile->color_rect.top);
+              
+              pack.vertices.push_back(x * TILE_SIZE + TILE_SIZE);
+              pack.vertices.push_back(y * TILE_SIZE);
 
-  void draw_classic(CL_GraphicContext* gc)
-  {
-    gc->push_modelview();
-    gc->add_modelview(modelview);
-
-    Field<Tile*>& field = tilemap->field;
-
-    for (int y = rect.top;   y < rect.bottom; ++y)
-      for (int x = rect.left; x < rect.right; ++x)
-        {
-          if (field(x,y))
-            {
-              if (!highlight)
-                {
-                  field(x,y)->get_color_sprite().draw(x * TILE_SIZE, y * TILE_SIZE);
-                }
-              else
-                {
-                  if (field(x, y)->get_highlight_sprite())
-                    field(x,y)->get_highlight_sprite().draw(x * TILE_SIZE, y * TILE_SIZE);
-                }
+              pack.texcoords.push_back(tile->color_rect.right);
+              pack.texcoords.push_back(tile->color_rect.bottom);
+              
+              pack.vertices.push_back(x * TILE_SIZE + TILE_SIZE);
+              pack.vertices.push_back(y * TILE_SIZE + TILE_SIZE);
+              
+              pack.texcoords.push_back(tile->color_rect.left);
+              pack.texcoords.push_back(tile->color_rect.bottom);
+              
+              pack.vertices.push_back(x * TILE_SIZE);
+              pack.vertices.push_back(y * TILE_SIZE + TILE_SIZE);
             }
         }
-    gc->pop_modelview();
+
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    
+    for(std::vector<VertexPack>::size_type i = 0; i < packs.size(); ++i)
+      {
+        TileFactory::current()->get_texture(i).bind();
+
+        clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MIN_FILTER, CL_LINEAR);
+        clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MAG_FILTER, CL_LINEAR);
+        clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_S, CL_CLAMP_TO_EDGE);
+        clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_T, CL_CLAMP_TO_EDGE);
+      
+        glVertexPointer  (2, GL_FLOAT, 0, &*(packs[i].vertices.begin()));
+        glTexCoordPointer(2, GL_FLOAT, 0, &*(packs[i].texcoords.begin()));
+        glDrawArrays(GL_QUADS, 0, packs[i].vertices.size()/2);
+      }
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+
+    clPopMatrix();
   }
 };
 
