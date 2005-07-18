@@ -101,7 +101,11 @@ PKG_CHECK_MODULES([CLANLIB], [clanApp-0.7 clanVorbis-0.7 clanCore-0.7 clanDispla
 XIPH_PATH_OGG(, [AC_MSG_ERROR([Please install libogg])])
 XIPH_PATH_VORBIS(, [AC_MSG_ERROR([Please install libvorbis])])
 
+# temporary switch language so that AM_PATH_SDL doesn't get confused with CFLAGS vs CXXFLAGS
+AC_LANG_SAVE
+AC_LANG_C
 AM_PATH_SDL([1.2.5], , AC_MSG_ERROR([Please install libsdl >= 1.2.5]))
+AC_LANG_RESTORE
 
 NP_FINDLIB([SDLIMAGE], [SDL_image], [SDL_image >= 1.2],
         NP_LANG_PROGRAM([#include <SDL_image.h>], [IMG_Load("");]),
