@@ -72,7 +72,7 @@ Character::draw (SceneContext& gc)
 void
 Character::use()
 {
-  Scripting::add_dialog(Dialog::TOP | Dialog::RIGHT, "human/portrait");
+  //Scripting::add_dialog(Dialog::TOP | Dialog::RIGHT, "human/portrait");
 
   //first add standard dialog functions
   std::string filename = ::datadir + "scripts/" + "dialog.nut";

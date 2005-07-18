@@ -25,11 +25,13 @@
 #include <ClanLib/Display/sprite.h>
 #include "globals.hpp"
 
-class Dialog {
-public:
+/** */
+class DialogManager
+{
+private:
   CL_Sprite portrait;
   std::string text;
-  std::vector<std::string> answers;
+  float progress;
 
   enum Alignment {
     VCENTER = 0x00,
@@ -41,18 +43,6 @@ public:
   };
   int alignment;
 
-  Dialog(int alignment, const std::string& portrait);
-};
-
-/** */
-class DialogManager
-{
-private:
-  typedef std::vector<Dialog> Dialogs;
-  Dialogs dialogs;
-  int current_dialog;
-  int current_choice;
-
   static DialogManager* current_;
 public:
   static DialogManager* current() { return current_; }
@@ -62,13 +52,7 @@ public:
   void draw();
   void update(float delta);
 
-  void add_dialog(int alignment, const std::string& portrait);
-  void add_question(const std::string& text);
-  void add_answer(const std::string& answer);
-  int  dialog_answer() const {return current_choice;}
-  int  dialog_answer();
-  void remove_dialog();
-  void clear();
+  void add_dialog(int alignment, const std::string& portrait, const std::string& text);
 
 private:
   DialogManager (const DialogManager&);

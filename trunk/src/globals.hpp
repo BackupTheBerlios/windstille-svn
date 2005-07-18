@@ -33,6 +33,7 @@ extern std::string datadir;
 
 extern CL_ResourceManager* resources;
 
+extern float text_speed;
 extern float game_speed;
 extern bool sound_disabled;
 

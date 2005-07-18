@@ -29,190 +29,108 @@
 
 DialogManager* DialogManager::current_ = 0;
 
-Dialog::Dialog(int alignment, const std::string& portrait)
-  : portrait(portrait, resources), text(""), alignment(alignment)
-{
-}
-
 DialogManager::DialogManager()
 {
   current_ = this;
-  current_dialog = -1;
-  current_choice = 0;
 }
 
 void
-DialogManager::add_dialog(int alignment, const std::string& portrait)
+DialogManager::add_dialog(int alignment_, const std::string& portrait_, const std::string& text_)
 {
-  dialogs.push_back(Dialog(alignment, portrait));
-  current_dialog = dialogs.size()-1;
-}
-
-void
-DialogManager::add_question(const std::string& text)
-{
-  Dialog& dialog = dialogs[current_dialog];
-  //FIXME!!!!!
-  dialog.text = text + " CLANLIBFONTSHAVEISSUESOHYESTHEYDOTHEYREALLYDO";
-  dialog.answers.clear();
-  current_choice = 0;
-}
-
-void
-DialogManager::add_answer(const std::string& answer)
-{
-  Dialog& dialog = dialogs[current_dialog];
-  dialog.answers.push_back(answer);
-}
-
-int
-DialogManager::dialog_answer()
-{
-  return current_choice;
-}
-
-void
-DialogManager::remove_dialog()
-{
-  dialogs.pop_back();
+  progress = 0;
+  alignment = alignment_;
+  portrait  = CL_Sprite(portrait_, resources);
+  text      = text_ + " CLANLIBFONTSHAVEISSUESOHYESTHEYDOTHEYREALLYDO";
 }
 
 void
 DialogManager::draw()
 {
-  if (current_dialog != -1)
-    {
-      static const int dialog_width = 600;
-      static const int outer_border_x = 20;
-      static const int outer_border_y = 20;
-      static const int portrait_border_x = 10;
-      static const int portrait_border_y = 10;
-      static const int text_border_x = 10;
-      static const int text_border_y = 10;
-      static const int portrait_width = 180;
-      static const int portrait_height = 192;
+  static const int dialog_width = 600;
+  static const int outer_border_x = 20;
+  static const int outer_border_y = 20;
+  static const int portrait_border_x = 10;
+  static const int portrait_border_y = 10;
+  static const int text_border_x = 10;
+  static const int text_border_y = 10;
+  static const int portrait_width = 180;
+  static const int portrait_height = 192;
 
-      Dialog& dialog = dialogs[current_dialog];
-
-      CL_Point pos;
-      if(dialog.alignment & Dialog::LEFT) {
-        pos.x = outer_border_x;
-      } else if(dialog.alignment & Dialog::RIGHT) {
-        pos.x = config->screen_width - dialog_width - outer_border_x;
-      } else {
-        pos.x = (config->screen_width - dialog_width) / 2;
-      }
+  CL_Point pos;
+  if(alignment & LEFT) {
+    pos.x = outer_border_x;
+  } else if(alignment & RIGHT) {
+    pos.x = config->screen_width - dialog_width - outer_border_x;
+  } else {
+    pos.x = (config->screen_width - dialog_width) / 2;
+  }
       
-      int text_width
-        = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
-      CL_Rect text_rect = Fonts::dialog.bounding_rect(
-        CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
-                CL_Size(text_width, 600)), dialog.text);
+  int text_width
+    = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
+  CL_Rect text_rect = Fonts::dialog.bounding_rect(
+                                                  CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
+                                                          CL_Size(text_width, 600)), text);
 
-      int dialog_height = std::max(portrait_height + portrait_border_y*2,
-                                   text_rect.get_height() + text_border_y*2);
+  int dialog_height = std::max(portrait_height + portrait_border_y*2,
+                               text_rect.get_height() + text_border_y*2);
 
-      if(dialog.answers.size() > 0) 
-          dialog_height += 80;
+  if(alignment & TOP) {
+    pos.y = outer_border_y;
+  } else if(alignment & BOTTOM) {
+    pos.y = config->screen_height - dialog_height - outer_border_y;
+  } else {
+    pos.y = (config->screen_height - dialog_height) / 2;
+  }
 
-      if(dialog.alignment & Dialog::TOP) {
-        pos.y = outer_border_y;
-      } else if(dialog.alignment & Dialog::BOTTOM) {
-        pos.y = config->screen_height - dialog_height - outer_border_y;
-      } else {
-        pos.y = (config->screen_height - dialog_height) / 2;
-      }
+  text_rect.bottom = text_rect.top + text_rect.get_height();
+  text_rect.top = pos.y + text_border_y;
 
-      text_rect.bottom = text_rect.top + text_rect.get_height();
-      text_rect.top = pos.y + text_border_y;
-
-      CL_Size dialog_size(dialog_width, dialog_height);
+  CL_Size dialog_size(dialog_width, dialog_height);
       
-      CL_Display::fill_rect(CL_Rect(pos, dialog_size), 
-                            CL_Gradient(CL_Color(0,0,0,228),
-                                        CL_Color(0,0,0,228),
-                                        CL_Color(0,0,0,128),
-                                        CL_Color(0,0,0,128)));
-      CL_Display::draw_rect(CL_Rect(pos, dialog_size),
-                            CL_Color(255,255,255, 80));
+  CL_Display::fill_rect(CL_Rect(pos, dialog_size), 
+                        CL_Gradient(CL_Color(0,0,0,228),
+                                    CL_Color(0,0,0,228),
+                                    CL_Color(0,0,0,128),
+                                    CL_Color(0,0,0,128)));
+  CL_Display::draw_rect(CL_Rect(pos, dialog_size),
+                        CL_Color(255,255,255, 80));
       
-      CL_Display::flush();
+  CL_Display::flush();
       
-      dialog.portrait.draw(pos.x + portrait_border_x,
-                           pos.y + portrait_border_y);
-      Fonts::dialog.set_alignment(origin_top_left);
-      Fonts::dialog_h.set_alignment(origin_top_left);
+  portrait.draw(pos.x + portrait_border_x,
+                pos.y + portrait_border_y);
+  Fonts::dialog.set_alignment(origin_top_left);
+  Fonts::dialog_h.set_alignment(origin_top_left);
 
-      Fonts::dialog.draw(text_rect, dialog.text);
+  int len = std::min(int(text.size()), int(progress*text_speed));
+  Fonts::dialog.draw(text_rect, text.begin(), text.begin() + len);
 
-      Fonts::dialog.set_alignment(origin_top_center);
-      Fonts::dialog_h.set_alignment(origin_top_center);
-
-      if (dialog.answers.size() > 0)
-        {
-          int w = (dialog_width/dialog.answers.size());
-          for(Dialogs::size_type i = 0; i < dialog.answers.size(); ++i)
-            {
-              if (int(i) == current_choice)
-                Fonts::dialog_h.draw(pos.x + i*w + w/2,
-                                     pos.y + text_rect.get_height() 
-                                        + text_border_y*2 + 20,
-                                     "[" + dialog.answers[i] + "]");
-              else
-                Fonts::dialog.draw(pos.x + i*w + w/2,
-                                   pos.y + text_rect.get_height() 
-                                        + text_border_y*2 + 20,
-                                   dialog.answers[i]);
-            }
-        }
-    }
+  Fonts::dialog.set_alignment(origin_top_center);
+  Fonts::dialog_h.set_alignment(origin_top_center);
 }
 
 void
-DialogManager::update(float )
+DialogManager::update(float delta)
 {
-  if (current_dialog != -1)
-    {
-      InputEventLst events = InputManager::get_controller().get_events();
+  if (InputManager::get_controller().get_button_state(FIRE_BUTTON))
+    progress += delta * 10.0f;
+  else
+    progress += delta;
 
-      for (InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+  InputEventLst events = InputManager::get_controller().get_events();
+	
+  for (InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+    {
+      if ((*i).type == BUTTON_EVENT)
         {
-          if ((*i).type == BUTTON_EVENT)
-            {
-          if ((*i).button.name == FIRE_BUTTON && (*i).button.down == true)
+          if ((*i).button.name == FIRE_BUTTON && (*i).button.down == true
+              && int(progress * text_speed) >= int(text.size()))
             {
               GameSession::current()->set_game_state();
               script_manager->fire_wakeup_event(ScriptManager::DIALOG_CLOSED);
-            }
-          else if ((*i).button.name == LEFT_BUTTON && (*i).button.down == true)
-            {
-              current_choice -= 1;
-            }
-          else if ((*i).button.name == RIGHT_BUTTON && (*i).button.down == true)
-            {
-              current_choice += 1;
-            }
-            }
+            } 
         }
-
-      if (current_choice < 0)
-        current_choice = 0;
-      else if (current_choice >= int(dialogs[current_dialog].answers.size()))
-        current_choice = int(dialogs[current_dialog].answers.size()) - 1;
     }
-  else
-    {
-      std::cout << "DialogManager: No dialog available" << std::endl;
-      GameSession::current()->set_game_state();
-    }
-}
-
-void
-DialogManager::clear()
-{
-  current_dialog = 0;
-  current_choice = 0;
-  dialogs.clear();
 }
 
 /* EOF */

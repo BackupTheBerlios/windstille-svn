@@ -25,13 +25,8 @@ static const int HCENTER = 0x00;
 static const int TOP     = 0x10;
 static const int BOTTOM  = 0x20;
 
-void add_dialog(int alignment, const std::string& portrait);
-void add_question(const std::string& text);
-void add_answer(const std::string& answer);
-int dialog_answer();
-void end_dialog();
-void show_dialog(HSQUIRRELVM vm, float fadein_time) __suspend;
-void hide_dialog(float fadeout_time);
+void dialog_show(int alignment, const std::string& portrait, const std::string& text);
+void wait_for_dialog(HSQUIRRELVM vm) __suspend;
 
 void conversation_add(const std::string& text);
 void conversation_show();
@@ -49,6 +44,9 @@ void list_objects();
 
 float get_game_speed();
 void  set_game_speed(float v);
+
+float get_text_speed();
+void  set_text_speed(float v);
 
 //Waits the specified time in seconds.
 void wait(HSQUIRRELVM vm, float time) __suspend;
