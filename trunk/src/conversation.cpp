@@ -1,0 +1,128 @@
+//  $Id$
+//
+//  Pingus - A free Lemmings clone
+//  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
+//
+//  This program is free software; you can redistribute it and/or
+//  modify it under the terms of the GNU General Public License
+//  as published by the Free Software Foundation; either version 2
+//  of the License, or (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+#include <ClanLib/Display/display.h>
+#include "input/controller.hpp"
+#include "input/input_manager.hpp"
+#include "fonts.hpp"
+#include "script_manager.hpp"
+#include "conversation.hpp"
+
+Conversation* Conversation::current_ = 0;
+
+Conversation::Conversation()
+{
+  current_ = this;
+  visible = false;
+  selection = 0;
+}
+
+void
+Conversation::add(const std::string& text)
+{
+  choices.push_back(text);
+  if (selection >= int(choices.size()))
+    selection = 0;
+}
+
+void
+Conversation::draw()
+{
+  if (visible)
+    {
+      Fonts::dialog.set_alignment(origin_top_left);
+      Fonts::dialog_h.set_alignment(origin_top_left);
+
+      int x = 100;
+      int y = 300;
+
+      CL_Rect rect(CL_Point(x - 20, y - 20 + Fonts::dialog.get_height()/2 - 5),
+                   CL_Size(300 + 20, // FIXME:
+                           (Fonts::dialog.get_height() + 10) * choices.size() + 20));
+    
+      CL_Display::fill_rect(rect,
+                            CL_Gradient(CL_Color(0,0,100,228),
+                                        CL_Color(0,0,100,228),
+                                        CL_Color(0,0,0,128),
+                                        CL_Color(0,0,0,128)));
+      CL_Display::draw_rect(rect, CL_Color(255,255,255, 80));
+ 
+      for(int i = 0; i < int(choices.size()); ++i)
+        {
+          if (i == selection)
+            Fonts::dialog_h.draw(x, y, choices[i]);
+          else
+            Fonts::dialog.draw(x, y, choices[i]);
+      
+          y += Fonts::dialog.get_height() + 10;
+        }
+    }
+}
+
+void
+Conversation::update(float delta)
+{
+  if (visible)
+    {
+      Controller controller = InputManager::get_controller();
+      const InputEventLst& events = controller.get_events();
+  
+      for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
+        {
+          if (i->type == BUTTON_EVENT && i->button.down)
+            {
+              switch (i->button.name)
+                {
+                case UP_BUTTON:
+                  selection -= 1;
+                  if (selection < 0)
+                    selection = choices.size() - 1;
+                  break;
+              
+                case DOWN_BUTTON:
+                  selection += 1;
+                  if (selection >= int(choices.size()))
+                    selection = 0;
+                  break;
+
+                case FIRE_BUTTON:
+                  visible = false;
+                  choices.clear();
+                  script_manager->fire_wakeup_event(ScriptManager::CONVERSATION_CLOSED);
+                  return;
+                  break;
+                }
+            }
+        }
+    }
+}
+
+int
+Conversation::get_selection() const
+{
+  return selection;
+}
+
+void
+Conversation::show()
+{
+  visible = true;
+}
+
+/* EOF */
