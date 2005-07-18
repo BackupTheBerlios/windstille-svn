@@ -1,34 +1,39 @@
 /* This script is read on Windstille startup, add all helper functions
    that should be available in the console all the time here */
 
-class Nightvision {
-  has_object = false
-
-  function _set(key, val) 
-  {
-    if (key == "enabled") {
-      if (has_object) {
-        ::activate_object("nightvision", val); 
-      } else if (val) {
-        ::spawn_object("nightvision", {x=5});
-      }
+has_nightvision <- false;
+function nightvision_enabled(...)
+{
+  if (vargc == 1) 
+    {
+      if (::has_nightvision) {
+        ::activate_object("nightvision", vargv[0]); 
+      } 
+      else if (vargv[0]) 
+        {
+          ::spawn_object("nightvision", {x=5});
+          ::has_nightvision = true;
+        }
+    } else {
+      return true;
     }
-    return val
-  }
-
-  function _get(key) 
-  { 
-    if (key == "enabled") {
-      ::print("Getter");
-    }
-    return true;
-  }
-
-  function p() {
-    ::print("Hello World");
-  }
 }
 
-nightvision <- Nightvision()
+function game_speed(...)
+{
+  if (vargc == 1) 
+    {
+        set_game_speed(vargv[0]);
+    } else {
+        return get_game_speed();
+    }
+}
+
+function conversation_get()
+{
+  conversation_show();
+  wait_for_conversation();
+  return conversation_get_selection();
+}
 
 /* EOF */

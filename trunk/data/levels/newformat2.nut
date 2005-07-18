@@ -1,4 +1,14 @@
 
+function display_conversation()
+{
+  conversation_add("How are you?");
+  conversation_add("Have you seen the fire over there?");
+  conversation_add("What are those two other characters doing there?");
+  conversation_add("Can you sell me a gun?");
+  conversation_add("Bye");
+  println(conversation_get());
+}
+
 wait(1.5);
 /* play_sound("sounds/speech/vr_intro.ogg"); */
 add_dialog(TOP + RIGHT, "human/portrait");

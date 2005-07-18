@@ -35,6 +35,8 @@ void hide_dialog(float fadeout_time);
 
 void conversation_add(const std::string& text);
 void conversation_show();
+int  conversation_get_selection();
+void wait_for_conversation(HSQUIRRELVM v) __suspend;
 
 bool run_before(HSQUIRRELVM vm);
 
@@ -50,6 +52,9 @@ void  set_game_speed(float v);
 
 //Waits the specified time in seconds.
 void wait(HSQUIRRELVM vm, float time) __suspend;
+
+int display(HSQUIRRELVM) __custom;
+int println(HSQUIRRELVM) __custom;
 
 }
 

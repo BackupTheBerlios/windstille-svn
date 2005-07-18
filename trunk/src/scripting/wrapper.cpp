@@ -368,6 +368,24 @@ static int conversation_show_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int conversation_get_selection_wrapper(HSQUIRRELVM v)
+{
+  
+  int return_value = Scripting::conversation_get_selection();
+  
+  sq_pushinteger(v, return_value);
+  return 1;
+}
+
+static int wait_for_conversation_wrapper(HSQUIRRELVM v)
+{
+  HSQUIRRELVM arg0 = v;
+  
+  Scripting::wait_for_conversation(arg0);
+  
+  return sq_suspendvm(v);
+}
+
 static int run_before_wrapper(HSQUIRRELVM v)
 {
   HSQUIRRELVM arg0 = v;
@@ -449,6 +467,16 @@ static int wait_wrapper(HSQUIRRELVM v)
   Scripting::wait(arg0, arg1);
   
   return sq_suspendvm(v);
+}
+
+static int display_wrapper(HSQUIRRELVM v)
+{
+  return Scripting::display(v);
+}
+
+static int println_wrapper(HSQUIRRELVM v)
+{
+  return Scripting::println(v);
 }
 
 static int spawn_object_wrapper(HSQUIRRELVM v)
@@ -611,6 +639,22 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
+  sq_pushstring(v, "conversation_get_selection", -1);
+  sq_newclosure(v, &conversation_get_selection_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'conversation_get_selection'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "wait_for_conversation", -1);
+  sq_newclosure(v, &wait_for_conversation_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'wait_for_conversation'";
+    throw SquirrelError(v, msg.str());
+  }
+
   sq_pushstring(v, "run_before", -1);
   sq_newclosure(v, &run_before_wrapper, 0);
   if(sq_createslot(v, -3) < 0) {
@@ -672,6 +716,22 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'wait'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "display", -1);
+  sq_newclosure(v, &display_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'display'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "println", -1);
+  sq_newclosure(v, &println_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'println'";
     throw SquirrelError(v, msg.str());
   }
 

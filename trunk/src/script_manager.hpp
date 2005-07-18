@@ -49,8 +49,9 @@ public:
   }
 
   enum WakeupEvent {
-    TIME            = 0x0000,
-    DIALOG_CLOSED   = 0x0001
+    TIME                = (1 << 0),
+    DIALOG_CLOSED       = (1 << 1),
+    CONVERSATION_CLOSED = (1 << 2),
   };                  
 
   void set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float timeout = -1);
