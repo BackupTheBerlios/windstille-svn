@@ -65,10 +65,11 @@ public:
   void add_dialog(int alignment, const std::string& portrait);
   void add_question(const std::string& text);
   void add_answer(const std::string& answer);
-  int dialog_answer() const {return current_choice;}
-  int dialog_answer();
+  int  dialog_answer() const {return current_choice;}
+  int  dialog_answer();
   void remove_dialog();
   void clear();
+
 private:
   DialogManager (const DialogManager&);
   DialogManager& operator= (const DialogManager&);

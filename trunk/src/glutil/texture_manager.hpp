@@ -22,7 +22,6 @@ public:
 
 private:
   Texture* create(SDL_Surface* surface);
-  Texture* create(CL_PixelBuffer* buffer);
   
   typedef std::map<std::string, Texture*> Textures;
   Textures textures;

@@ -35,6 +35,8 @@ sources =
         console.hpp
         controller_def.cpp
         controller_def.hpp
+        conversation.hpp
+        conversation.cpp
         default_shoot.cpp
         default_shoot.hpp
         dialog_manager.cpp

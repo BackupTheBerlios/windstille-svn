@@ -37,6 +37,7 @@ class View;
 class Sector;
 class Player;
 class DialogManager;
+class Conversation;
 
 class GameSession : public Windstille::Screen
 {
@@ -52,6 +53,7 @@ private:
   View* view;
   Energiebar* energiebar;
   DialogManager* dialog_manager;
+  Conversation*  conversation;
 
   enum { FADEIN, RUNNING, FADEOUT } fade_state;
   enum { DIALOG, GAME } control_state;

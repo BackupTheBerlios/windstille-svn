@@ -4,6 +4,7 @@
 #include "sound/sound_manager.hpp"
 #include "game_session.hpp"
 #include "dialog_manager.hpp"
+#include "conversation.hpp"
 #include "script_manager.hpp"
 #include "sector.hpp"
 #include "serialize.hpp"
@@ -127,6 +128,16 @@ float get_game_speed()
 void set_game_speed(float v)
 {
   game_speed = v;
+}
+
+void conversation_add(const std::string& text)
+{
+  Conversation::current()->add(text);
+}
+
+void conversation_show()
+{
+  Conversation::current()->show();
 }
 
 }

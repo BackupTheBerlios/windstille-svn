@@ -87,4 +87,17 @@ Controller::set_events(const InputEventLst& lst)
   events = lst;
 }
 
+bool
+Controller::button_pressed(int name)
+{
+  for(InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+    {
+      if (i->type == BUTTON_EVENT && i->button.name == name && i->button.down)
+        {
+          return true;
+        }
+    }
+  return false;
+}
+
 /* EOF */

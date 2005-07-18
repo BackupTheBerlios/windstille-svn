@@ -47,6 +47,7 @@
 #include "particles/surface_drawer.hpp"
 #include "script_manager.hpp"
 #include "sound/sound_manager.hpp"
+#include "conversation.hpp"
 #include "test_object.hpp"
 
 #include "game_session.hpp"
@@ -67,7 +68,8 @@ GameSession::GameSession(const std::string& arg_filename)
   view = new View();  
   energiebar = new Energiebar();
   dialog_manager = new DialogManager();
-  
+  conversation  = new Conversation();
+
   filename = arg_filename;
   change_sector();
 }
@@ -77,6 +79,7 @@ GameSession::~GameSession()
   delete energiebar;
   delete view;
   delete dialog_manager;
+  delete conversation;
   delete world;
 }
 
@@ -110,6 +113,8 @@ GameSession::draw_game()
   if (control_state == DIALOG)
     dialog_manager->draw(); 
   
+  conversation->draw();
+
   control_dialog.set_alignment(origin_bottom_right);
   control_dialog.draw(800-16, 600-16);
 }
@@ -208,6 +213,7 @@ GameSession::update(float delta)
         }
       break;
     }
+  conversation->update(delta);
   
   if (CL_Keyboard::get_keycode(CL_KEY_ESCAPE))
     quit();

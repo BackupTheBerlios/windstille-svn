@@ -349,6 +349,25 @@ static int hide_dialog_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int conversation_add_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  Scripting::conversation_add(arg0);
+  
+  return 0;
+}
+
+static int conversation_show_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::conversation_show();
+  
+  return 0;
+}
+
 static int run_before_wrapper(HSQUIRRELVM v)
 {
   HSQUIRRELVM arg0 = v;
@@ -573,6 +592,22 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'hide_dialog'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "conversation_add", -1);
+  sq_newclosure(v, &conversation_add_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'conversation_add'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "conversation_show", -1);
+  sq_newclosure(v, &conversation_show_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'conversation_show'";
     throw SquirrelError(v, msg.str());
   }
 

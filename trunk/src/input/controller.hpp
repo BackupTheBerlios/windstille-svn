@@ -52,6 +52,10 @@ public:
 
   InputEventLst get_events() const;
   void set_events(const InputEventLst& lst);
+
+  /** Convenience function that searches for a button down event for
+      the given button */
+  bool button_pressed(int name);
 };
 
 #endif

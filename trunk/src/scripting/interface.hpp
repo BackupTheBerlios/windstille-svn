@@ -33,6 +33,9 @@ void end_dialog();
 void show_dialog(HSQUIRRELVM vm, float fadein_time) __suspend;
 void hide_dialog(float fadeout_time);
 
+void conversation_add(const std::string& text);
+void conversation_show();
+
 bool run_before(HSQUIRRELVM vm);
 
 // for testing
