@@ -126,7 +126,7 @@ public:
 
   void draw(CL_GraphicContext* gc)
   {
-    if (CL_Keyboard::get_keycode(CL_KEY_Z))
+    if (!CL_Keyboard::get_keycode(CL_KEY_Z))
       draw_new(gc);
     else
       draw_classic(gc);
@@ -171,7 +171,7 @@ public:
       for (int x = rect.left; x < rect.right; ++x)
         {
           Tile* tile = field(x, y);
-          if (tile && !highlight)
+          if (tile && tile->color_packer != -1 && !highlight)
             {
               clTexCoord2f(tile->color_rect.left,
                            tile->color_rect.top);

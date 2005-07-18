@@ -184,6 +184,27 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
   //CL_ProviderFactory::save(packers[0]->get_pixelbuffer(), "/tmp/pack.png");
 }
 
+static bool buffer_empty(CL_PixelBuffer buffer)
+{
+  buffer.lock();
+  unsigned char* data = static_cast<unsigned char*>(buffer.get_data());
+  int width  = buffer.get_width();
+  int height = buffer.get_height();
+  int pitch  = buffer.get_pitch();
+
+  for(int y = 0; y < height; ++y)
+    for(int x = 0; x < width; ++x)
+      {
+        if (data[y * pitch + 4*x])
+          {
+            buffer.unlock();
+            return false;
+          }
+      }
+
+  return true;
+}
+
 void
 TileFactory::pack(int id, int colmap, CL_PixelBuffer color, CL_PixelBuffer highlight)
 {
@@ -194,8 +215,11 @@ TileFactory::pack(int id, int colmap, CL_PixelBuffer color, CL_PixelBuffer highl
           
   tiles[id]->id = id;
 
-  tiles[id]->color_rect     = packers[color_packer]->pack(color);
-  tiles[id]->color_packer   = color_packer;
+  if (!buffer_empty(color))
+    {
+      tiles[id]->color_rect     = packers[color_packer]->pack(color);
+      tiles[id]->color_packer   = color_packer;
+    }
 
   if (highlight)
     {

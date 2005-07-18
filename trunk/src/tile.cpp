@@ -31,6 +31,9 @@ Tile::Tile(const std::string& filename,
 {
   color     = CL_Sprite(filename, resources);
   highlight = CL_Sprite(highlight_filename, resources);
+
+  color_packer = -1;
+  highlight_packer = -1;
 }
 
 Tile::Tile(const CL_PixelBuffer& buffer, 
@@ -50,6 +53,9 @@ Tile::Tile(const CL_PixelBuffer& buffer,
       highlight = CL_Sprite(hl_desc);
       highlight.set_scale(0.5f, 0.5f);
     }
+
+  color_packer = -1;
+  highlight_packer = -1;
 }
 
 CL_Sprite&
