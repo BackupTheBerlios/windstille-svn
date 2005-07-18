@@ -180,6 +180,8 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
           i += 1;
         }
     }
+  
+  //CL_ProviderFactory::save(packers[0]->get_pixelbuffer(), "/tmp/pack.png");
 }
 
 void

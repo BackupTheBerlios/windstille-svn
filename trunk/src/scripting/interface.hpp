@@ -42,6 +42,9 @@ void load_state(HSQUIRRELVM v, const std::string& filename);
 void activate_object(const std::string& name, bool active);
 void list_objects();
 
+float get_game_speed();
+void  set_game_speed(float v);
+
 //Waits the specified time in seconds.
 void wait(HSQUIRRELVM vm, float time) __suspend;
 

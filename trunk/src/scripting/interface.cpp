@@ -119,4 +119,14 @@ void list_objects()
     }
 }
 
+float get_game_speed()
+{
+  return game_speed;
+}
+
+void set_game_speed(float v)
+{
+  game_speed = v;
+}
+
 }

@@ -54,6 +54,38 @@ TilePacker::~TilePacker()
   delete impl;
 }
 
+static void generate_border(CL_PixelBuffer buffer, int x_pos, int y_pos)
+{
+  buffer.lock();
+  unsigned char* data = static_cast<unsigned char*>(buffer.get_data());
+  int pitch = buffer.get_pitch();
+
+  // duplicate the top line
+  memcpy(data + (y_pos-1)*pitch + 4*x_pos, 
+         data + (y_pos)*pitch + 4*x_pos,
+         4*(TILE_RESOLUTION+2));
+  // duplicate the bottom line
+  memcpy(data + (y_pos+TILE_RESOLUTION)*pitch + 4*x_pos, 
+         data + (y_pos+TILE_RESOLUTION-1)*pitch + 4*x_pos,  
+         4*(TILE_RESOLUTION+2));
+
+  // duplicate left and right borders
+  for(int y = y_pos-1; y < y_pos + TILE_RESOLUTION+1; ++y)
+    {
+      data[y*pitch + 4*(x_pos-1) + 0] = data[y*pitch + 4*(x_pos) + 0];
+      data[y*pitch + 4*(x_pos-1) + 1] = data[y*pitch + 4*(x_pos) + 1];
+      data[y*pitch + 4*(x_pos-1) + 2] = data[y*pitch + 4*(x_pos) + 2];
+      data[y*pitch + 4*(x_pos-1) + 3] = data[y*pitch + 4*(x_pos) + 3];
+
+      data[y*pitch + 4*(x_pos + TILE_RESOLUTION) + 0] = data[y*pitch + 4*(x_pos + TILE_RESOLUTION-1) + 0];
+      data[y*pitch + 4*(x_pos + TILE_RESOLUTION) + 1] = data[y*pitch + 4*(x_pos + TILE_RESOLUTION-1) + 1];
+      data[y*pitch + 4*(x_pos + TILE_RESOLUTION) + 2] = data[y*pitch + 4*(x_pos + TILE_RESOLUTION-1) + 2];
+      data[y*pitch + 4*(x_pos + TILE_RESOLUTION) + 3] = data[y*pitch + 4*(x_pos + TILE_RESOLUTION-1) + 3];
+    }
+
+  buffer.unlock();
+}
+
 /** Pack a tile and return the position where it is placed in the
     pixel buffer */
 CL_Rectf
@@ -63,16 +95,12 @@ TilePacker::pack(CL_PixelBuffer tile)
   assert(!is_full());
 
   blit_opaque(impl->buffer, tile, impl->x_pos+1, impl->y_pos+1);
-  blit_opaque(impl->buffer, tile, impl->x_pos+1, impl->y_pos);
-  blit_opaque(impl->buffer, tile, impl->x_pos, impl->y_pos+1);
+  generate_border(impl->buffer, impl->x_pos+1, impl->y_pos+1);
 
-  blit_opaque(impl->buffer, tile, impl->x_pos, impl->y_pos);
-
-  float factor = 0;
-  CL_Rectf rect(CL_Pointf((impl->x_pos)/1024.0f, 
-                          (impl->y_pos)/1024.0f), 
-                CL_Sizef((TILE_RESOLUTION+factor)/1024.0f, 
-                         (TILE_RESOLUTION+factor)/1024.0f));
+  CL_Rectf rect(CL_Pointf((impl->x_pos+1)/1024.0f, 
+                          (impl->y_pos+1)/1024.0f), 
+                CL_Sizef((TILE_RESOLUTION)/1024.0f, 
+                         (TILE_RESOLUTION)/1024.0f));
 
   // we move by TILE_RESOLUTION+1 to avoid tiles bleeding into each other
   // when blending
