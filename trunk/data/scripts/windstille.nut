@@ -36,4 +36,10 @@ function conversation_get()
   return conversation_get_selection();
 }
 
+function dialog(align, portrait, text)
+{
+        dialog_show(align, portrait, text);
+        wait_for_dialog();
+}
+
 /* EOF */
