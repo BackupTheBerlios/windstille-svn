@@ -4,6 +4,8 @@ sources = drawing_context.hpp
           drawing_context.cpp
           scene_context.hpp
           scene_context.cpp
+          vertex_array_drawing_request.hpp
+          vertex_array_drawing_request.cpp
 ;
 
 TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;

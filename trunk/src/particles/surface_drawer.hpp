@@ -21,12 +21,13 @@
 #define HEADER_SURFACE_DRAWER_HXX
 
 #include <ClanLib/Display/surface.h>
+#include <ClanLib/GL/opengl_surface.h>
 #include "drawer.hpp"
 
 class SurfaceDrawer : public Drawer
 {
 private:
-  CL_Surface surface;
+  CL_OpenGLSurface surface;
   
 public:
   SurfaceDrawer(const CL_Surface& sur);
