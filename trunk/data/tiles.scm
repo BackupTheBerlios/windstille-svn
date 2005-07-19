@@ -1,6 +1,5 @@
 (windstille-tiles
- (tiles (color-image "../data/images/tiles/virtualreality-foreground.png")
-        ;;  (highlight-image "../data/images/virtualreality-highlight.png")
+ (tiles (image "../data/images/tiles/virtualreality-foreground.png")
         (width  16)
         (height 16)
         (colmap
@@ -41,7 +40,7 @@
          )
         )
 
- (tiles (color-image "../data/images/tiles/virtualreality-background.png")
+ (tiles (image "../data/images/tiles/virtualreality-background.png")
         (width  6)
         (height 6)
         (colmap

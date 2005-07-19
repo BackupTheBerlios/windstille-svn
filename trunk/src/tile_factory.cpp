@@ -50,7 +50,6 @@ TileFactory::TileFactory (const std::string& filename)
   packers.push_back(new TilePacker(1024, 1024));
   packers.push_back(new TilePacker(1024, 1024));
   color_packer     = 0;
-  highlight_packer = 1;
 
   const lisp::Lisp* tiles_lisp = root->get_lisp("windstille-tiles");
   if(!tiles_lisp) {
@@ -92,10 +91,8 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
   while(iter.next()) {
     if(iter.item() == "ids") {
       iter.lisp()->get_vector(ids);
-    } else if(iter.item() == "color-image") {
+    } else if(iter.item() == "image") {
       filename = iter.value().get_string();
-    } else if(iter.item() == "highlight-image") {
-      highlight_filename = iter.value().get_string();
     } else if(iter.item() == "colmap") {
       iter.lisp()->get_vector(colmap);
     } else {
@@ -109,9 +106,6 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
   CL_PixelBuffer image = CL_ProviderFactory::load(datadir + filename);
   CL_PixelBuffer hl_image;
   
-  if(highlight_filename != "")
-    hl_image = CL_ProviderFactory::load(datadir + highlight_filename);
-
   int num_tiles = (image.get_width()/TILE_RESOLUTION) * (image.get_height()/TILE_RESOLUTION);
   if (int(colmap.size()) != num_tiles)
     {
@@ -157,24 +151,8 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
                             CL_Rect(CL_Point(x, y), CL_Size(TILE_RESOLUTION, TILE_RESOLUTION)));
               chopped_image.unlock();
 
-              CL_PixelBuffer hl_chopped_image;
-
-              if (hl_image)
-                {
-                  hl_chopped_image = CL_PixelBuffer(TILE_RESOLUTION, TILE_RESOLUTION,
-                                                    hl_image.get_format().get_depth()*TILE_RESOLUTION,
-                                                    hl_image.get_format(), NULL);
-                  hl_chopped_image.lock();
-                  hl_image.convert(hl_chopped_image.get_data(), 
-                                   hl_chopped_image.get_format(), 
-                                   hl_image.get_format().get_depth()*TILE_RESOLUTION, 
-                                   CL_Rect(CL_Point(0, 0), CL_Size(TILE_RESOLUTION, TILE_RESOLUTION)),
-                                   CL_Rect(CL_Point(x, y), CL_Size(TILE_RESOLUTION, TILE_RESOLUTION)));
-                  hl_chopped_image.unlock();
-                }
-
               pack(ids[i], colmap[y/TILE_RESOLUTION * image.get_width()/TILE_RESOLUTION + x/TILE_RESOLUTION],
-                   chopped_image, hl_chopped_image);
+                   chopped_image);
             }
           i += 1;
         }
@@ -203,7 +181,7 @@ static bool buffer_empty(CL_PixelBuffer buffer)
 }
 
 void
-TileFactory::pack(int id, int colmap, CL_PixelBuffer color, CL_PixelBuffer highlight)
+TileFactory::pack(int id, int colmap, CL_PixelBuffer color)
 {
   if (id >= int(tiles.size()))
     tiles.resize(id + 1);
@@ -218,22 +196,10 @@ TileFactory::pack(int id, int colmap, CL_PixelBuffer color, CL_PixelBuffer highl
       tiles[id]->color_packer   = color_packer;
     }
 
-  if (highlight)
-    {
-      tiles[id]->highlight_rect   = packers[highlight_packer]->pack(highlight);
-      tiles[id]->highlight_packer = highlight_packer;
-    }
-
   if (packers[color_packer]->is_full())
     {
       packers.push_back(new TilePacker(1024, 1024));
       color_packer = packers.size() - 1;
-    }
-
-  if (packers[highlight_packer]->is_full())
-    {
-      packers.push_back(new TilePacker(1024, 1024));
-      highlight_packer = packers.size() - 1;
     }
 }
 

@@ -37,7 +37,6 @@ private:
   Tiles tiles;
   typedef std::vector<TilePacker*> TilePackers;
   TilePackers packers;
-  int highlight_packer;
   int color_packer;
 
   static TileFactory* current_;
@@ -74,7 +73,7 @@ public:
 
 private:
   void parse_tiles(const lisp::Lisp* data);
-  void pack(int id, int colmap, CL_PixelBuffer color, CL_PixelBuffer highlight);
+  void pack(int id, int colmap, CL_PixelBuffer color);
 };
 
 #endif
