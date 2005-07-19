@@ -21,52 +21,29 @@
 #include <ClanLib/Display/surface.h>
 #include <ClanLib/gl.h>
 #include "display/drawing_request.hpp"
+#include "display/vertex_array_drawing_request.hpp"
 #include "particle_system.hpp"
 #include "spark_drawer.hpp"
-
-class SparkDrawerDrawingRequest : public DrawingRequest
-{
-private:
-  ParticleSystem& psys;
-public:
-  SparkDrawerDrawingRequest(ParticleSystem& psys_,
-                            const CL_Vector& pos, const CL_Matrix4x4& modelview = CL_Matrix4x4(true))
-    : DrawingRequest(pos, modelview),
-      psys(psys_)
-  {
-  }
-
-  virtual ~SparkDrawerDrawingRequest() {}
-  
-  void draw(CL_GraphicContext* gc) 
-  {
-    gc->push_modelview();
-    gc->add_modelview(modelview);
-
-    CL_OpenGLState state(gc);
-    state.set_active();
-    state.setup_2d();
-  
-    glEnable(GL_BLEND);
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE );
-    glBegin(GL_LINES);
-    for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
-      {
-        glColor4f(1.0, 1.0, 0, 1.0f-psys.get_progress(i->t));
-        glVertex2f(i->x, i->y);
-        glColor4f(0, 0, 0, 0);
-        glVertex2f(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f);
-      }
-    glEnd();  
-
-    gc->pop_modelview();
-  }
-};
 
 void
 SparkDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {
-  sc.color().draw(new SparkDrawerDrawingRequest(psys, CL_Vector(0, 0, .5f), sc.color().get_modelview()));
+  VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(CL_Vector(0, 0, 100.0f),
+                                                                    sc.color().get_modelview());
+
+  buffer->set_mode(GL_LINES);
+  buffer->set_blend_func(GL_SRC_ALPHA, GL_ONE);
+
+  for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
+    {
+      buffer->color(CL_Color(255, 255, 0, 255 - int(psys.get_progress(i->t) * 255)));
+      buffer->vertex(i->x, i->y);
+
+      buffer->color(CL_Color(0, 0, 0, 0));
+      buffer->vertex(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f); 
+    }
+
+  sc.color().draw(buffer);
 }
 
 /* EOF */

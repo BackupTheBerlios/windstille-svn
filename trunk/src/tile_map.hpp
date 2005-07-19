@@ -35,7 +35,6 @@ class Tile;
 class TileMap : public GameObject
 {
 private:
-  friend class TileMapDrawingRequest;
   Field<Tile*> field;
   typedef Field<Tile*>::iterator FieldIter;
   float z_pos; 

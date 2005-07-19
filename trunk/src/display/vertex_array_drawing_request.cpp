@@ -75,13 +75,19 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc)
   glVertexPointer  (3, GL_FLOAT, 0, &*vertices.begin());
   
   glEnable(GL_BLEND);
-  glEnable(GL_TEXTURE_2D);
   glBlendFunc(blend_sfactor, blend_dfactor);
 
   if (texture)
-    texture.bind();
+    {
+      glEnable(GL_TEXTURE_2D);
+      texture.bind();
+    }
+  else
+    {
+      glDisable(GL_TEXTURE_2D);
+    }
 
-  glDrawArrays(GL_QUADS, 0, num_vertices());
+  glDrawArrays(mode, 0, num_vertices());
 
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
