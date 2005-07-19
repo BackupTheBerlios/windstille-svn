@@ -26,7 +26,7 @@ VertexArrayDrawingRequest::VertexArrayDrawingRequest(const CL_Vector& pos_, cons
   : DrawingRequest(pos_, modelview_)
 {
   blend_sfactor = GL_SRC_ALPHA;
-  blend_dfactor = GL_ONE;
+  blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
   mode = GL_QUADS;
 }
 

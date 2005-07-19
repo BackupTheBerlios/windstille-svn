@@ -26,7 +26,7 @@
 #include "tile_factory.hpp"
 #include "globals.hpp"
 #include "view.hpp"
-#include "display/drawing_request.hpp"
+#include "display/vertex_array_drawing_request.hpp"
 
 extern CL_ResourceManager* resources;
 
@@ -103,125 +103,56 @@ TileMap::update (float delta)
   total_time += delta;
 }
 
-struct VertexPack {
-  std::vector<float> vertices;
-  std::vector<float> texcoords;
-};
-
-class TileMapDrawingRequest : public DrawingRequest
-{
-private:
-  TileMap* tilemap;
-  bool highlight;
-  CL_Rect rect;
-
-public:
-  TileMapDrawingRequest(TileMap* tilemap_, bool highlight_,
-                        const CL_Rect& rect_,
-                        const CL_Vector& pos, const CL_Matrix4x4& modelview)
-    : DrawingRequest(pos, modelview),
-      tilemap(tilemap_),
-      highlight(highlight_),
-      rect(rect_)
-  {}
-
-  void draw(CL_GraphicContext* gc)
-  {
-    Field<Tile*>& field = tilemap->field;
-
-    CL_OpenGLState state(gc);
-    state.set_active();
-    state.setup_2d();
-
-    clPushMatrix();
-    clMultMatrixd(modelview);
-      
-    clEnable(CL_TEXTURE_2D);
-    clEnable(CL_BLEND);
-    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-
-    std::vector<VertexPack> packs;
-
-    for (int y = rect.top;   y < rect.bottom; ++y)
-      for (int x = rect.left; x < rect.right; ++x)
-        {
-          Tile* tile = field(x, y);
-          if (tile && tile->color_packer != -1 && !highlight)
-            {
-              if (tile->color_packer >= int(packs.size()))
-                packs.resize(tile->color_packer+1);
-              
-              VertexPack& pack = packs[tile->color_packer];
-
-              pack.texcoords.push_back(tile->color_rect.left);
-              pack.texcoords.push_back(tile->color_rect.top);
-
-              pack.vertices.push_back(x * TILE_SIZE);
-              pack.vertices.push_back(y * TILE_SIZE);
-
-              pack.texcoords.push_back(tile->color_rect.right);
-              pack.texcoords.push_back(tile->color_rect.top);
-              
-              pack.vertices.push_back(x * TILE_SIZE + TILE_SIZE);
-              pack.vertices.push_back(y * TILE_SIZE);
-
-              pack.texcoords.push_back(tile->color_rect.right);
-              pack.texcoords.push_back(tile->color_rect.bottom);
-              
-              pack.vertices.push_back(x * TILE_SIZE + TILE_SIZE);
-              pack.vertices.push_back(y * TILE_SIZE + TILE_SIZE);
-              
-              pack.texcoords.push_back(tile->color_rect.left);
-              pack.texcoords.push_back(tile->color_rect.bottom);
-              
-              pack.vertices.push_back(x * TILE_SIZE);
-              pack.vertices.push_back(y * TILE_SIZE + TILE_SIZE);
-            }
-        }
-
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    
-    for(std::vector<VertexPack>::size_type i = 0; i < packs.size(); ++i)
-      {
-        TileFactory::current()->get_texture(i).bind();
-
-        clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MIN_FILTER, CL_LINEAR);
-        clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_MAG_FILTER, CL_LINEAR);
-        clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_S, CL_CLAMP_TO_EDGE);
-        clTexParameteri(CL_TEXTURE_2D, CL_TEXTURE_WRAP_T, CL_CLAMP_TO_EDGE);
-      
-        glVertexPointer  (2, GL_FLOAT, 0, &*(packs[i].vertices.begin()));
-        glTexCoordPointer(2, GL_FLOAT, 0, &*(packs[i].texcoords.begin()));
-        glDrawArrays(GL_QUADS, 0, packs[i].vertices.size()/2);
-      }
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-
-    clPopMatrix();
-  }
-};
-
 void
 TileMap::draw (SceneContext& sc)
 {
-  CL_Rect rect = CL_Rect(View::current()->get_clip_rect());
+  CL_Rect clip_rect = CL_Rect(View::current()->get_clip_rect());
 
-  int start_x = std::max(0, rect.left/TILE_SIZE);
-  int start_y = std::max(0, rect.top/TILE_SIZE);
-  int end_x   = std::min(field.get_width(),  rect.right/TILE_SIZE + 1);
-  int end_y   = std::min(field.get_height(), rect.bottom/TILE_SIZE + 1);
+  CL_Rect rect(std::max(0, clip_rect.left/TILE_SIZE),
+               std::max(0, clip_rect.top/TILE_SIZE),
+               std::min(field.get_width(),  clip_rect.right/TILE_SIZE + 1),
+               std::min(field.get_height(), clip_rect.bottom/TILE_SIZE + 1));
 
-  sc.color().draw(new TileMapDrawingRequest(this, false, CL_Rect(start_x, start_y,
-                                                                 end_x,   end_y),
-                                            CL_Vector(0,0,z_pos),
-                                            sc.color().get_modelview()));
-  sc.highlight().draw(new TileMapDrawingRequest(this, true, CL_Rect(start_x, start_y,
-                                                                    end_x,   end_y),
-                                                CL_Vector(0,0,z_pos),
-                                                sc.color().get_modelview()));
+  std::vector<VertexArrayDrawingRequest*> requests;
+  for (int y = rect.top;   y < rect.bottom; ++y)
+    for (int x = rect.left; x < rect.right; ++x)
+      {
+        Tile* tile = field(x, y);
+        if (tile && tile->color_packer != -1)
+          {
+            if (tile->color_packer >= int(requests.size()))
+              requests.resize(tile->color_packer+1);
+
+            if (!requests[tile->color_packer])
+              {
+                requests[tile->color_packer] = new VertexArrayDrawingRequest(CL_Vector(0, 0, z_pos),
+                                                                             sc.color().get_modelview());
+                requests[tile->color_packer]->set_mode(GL_QUADS);
+                requests[tile->color_packer]->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                requests[tile->color_packer]->set_surface(TileFactory::current()->get_texture(tile->color_packer));
+              }
+              
+            VertexArrayDrawingRequest& pack = *requests[tile->color_packer];
+
+            pack.texcoord(tile->color_rect.left, tile->color_rect.top);
+            pack.vertex(x * TILE_SIZE, y * TILE_SIZE);
+
+            pack.texcoord(tile->color_rect.right, tile->color_rect.top);
+            pack.vertex(x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE);
+
+            pack.texcoord(tile->color_rect.right, tile->color_rect.bottom);
+            pack.vertex(x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE + TILE_SIZE);
+              
+            pack.texcoord(tile->color_rect.left, tile->color_rect.bottom);
+            pack.vertex(x * TILE_SIZE, y * TILE_SIZE + TILE_SIZE); 
+          }
+      }
+
+  for(std::vector<VertexArrayDrawingRequest*>::iterator i = requests.begin(); i != requests.end(); ++i)
+    {
+      if (*i)
+        sc.color().draw(*i);
+    }
 }
 
 unsigned int
