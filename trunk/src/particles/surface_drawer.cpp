@@ -78,73 +78,64 @@ static GLenum blendfunc2opengl(CL_BlendFunc blend)
 void
 SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {          
-  if (0)
-    {
-      for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
-        {
-          if (i->t != -1.0f)
-            {
-              float p = 1.0f - psys.get_progress(i->t);
-              surface.set_color(CL_Color(int(psys.color_start.get_red()   * p + psys.color_stop.get_red()   * (1.0f - p)),
-                                         int(psys.color_start.get_green() * p + psys.color_stop.get_green() * (1.0f - p)),
-                                         int(psys.color_start.get_blue()  * p + psys.color_stop.get_blue()  * (1.0f - p)),
-                                         int(psys.color_start.get_alpha() * p + psys.color_stop.get_alpha() * (1.0f - p))));
+  VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(CL_Vector(psys.get_x_pos(), psys.get_y_pos(), 0), // FIXME: add zpos
+                                                                    sc.color().get_modelview());
 
-              surface.set_scale(psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start),
-                                psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start));
-              surface.set_angle(i->angle);
-          
-              sc.color().draw(surface, 
-                              psys.get_x_pos() + i->x,
-                              psys.get_y_pos() + i->y);
+  buffer->set_mode(GL_QUADS);
+  buffer->set_surface(surface);
+  CL_BlendFunc src, dest;
+  surface.get_blend_func(src, dest);
+
+  buffer->set_blend_func(blendfunc2opengl(src), blendfunc2opengl(dest));
+
+  int s_width  = surface.get_width();
+  int s_height = surface.get_height();
+  for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
+    {
+      if (i->t != -1.0f)
+        {
+          float p = 1.0f - psys.get_progress(i->t);
+          CL_Color color(int(psys.color_start.get_red()   * p + psys.color_stop.get_red()   * (1.0f - p)),
+                         int(psys.color_start.get_green() * p + psys.color_stop.get_green() * (1.0f - p)),
+                         int(psys.color_start.get_blue()  * p + psys.color_stop.get_blue()  * (1.0f - p)),
+                         int(psys.color_start.get_alpha() * p + psys.color_stop.get_alpha() * (1.0f - p)));
+
+          // scale
+          float scale  = psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start);
+          float width  = s_width  * scale;
+          float height = s_height * scale;
+              
+          // rotate
+          float x_rot = width/2;
+          float y_rot = height/2; 
+
+          if (i->angle != 0)
+            {
+              float s = sin(M_PI * i->angle/180.0f);
+              float c = cos(M_PI * i->angle/180.0f);
+              x_rot = (width/2) * c - (height/2) * s;
+              y_rot = (width/2) * s + (height/2) * c;
             }
+
+          buffer->color(color);
+          buffer->texcoord(0, 0);
+          buffer->vertex(i->x - x_rot, i->y - y_rot);
+
+          buffer->color(color);
+          buffer->texcoord(1, 0);
+          buffer->vertex(i->x + y_rot, i->y - x_rot);
+
+          buffer->color(color);
+          buffer->texcoord(1, 1);
+          buffer->vertex(i->x + x_rot, i->y + y_rot);
+
+          buffer->color(color);
+          buffer->texcoord(0, 1);
+          buffer->vertex(i->x - y_rot, i->y + x_rot);
         }
     }
-  else
-    {
-      VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(CL_Vector(psys.get_x_pos(), psys.get_y_pos(), 0), // FIXME: add zpos
-                                                                          sc.color().get_modelview());
 
-      buffer->set_mode(GL_QUADS);
-      buffer->set_surface(surface);
-      CL_BlendFunc src, dest;
-      surface.get_blend_func(src, dest);
-
-      buffer->set_blend_func(blendfunc2opengl(src), blendfunc2opengl(dest));
-
-      int width  = surface.get_width();
-      int height = surface.get_height();
-      for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
-        {
-          if (i->t != -1.0f)
-            {
-              float p = 1.0f - psys.get_progress(i->t);
-              CL_Color color(int(psys.color_start.get_red()   * p + psys.color_stop.get_red()   * (1.0f - p)),
-                             int(psys.color_start.get_green() * p + psys.color_stop.get_green() * (1.0f - p)),
-                             int(psys.color_start.get_blue()  * p + psys.color_stop.get_blue()  * (1.0f - p)),
-                             int(psys.color_start.get_alpha() * p + psys.color_stop.get_alpha() * (1.0f - p)));
-
-              // FIXME: Add scaling and rotation
-              buffer->color(color);
-              buffer->texcoord(0, 0);
-              buffer->vertex(i->x - width/2, i->y - height/2);
-
-              buffer->color(color);
-              buffer->texcoord(1, 0);
-              buffer->vertex(i->x + width/2, i->y - height/2);
-
-              buffer->color(color);
-              buffer->texcoord(1, 1);
-              buffer->vertex(i->x + width/2, i->y + height/2);
-
-              buffer->color(color);
-              buffer->texcoord(0, 1);
-              buffer->vertex(i->x - width/2, i->y + height/2);
-            }
-        }
-
-      sc.color().draw(buffer);
-    }
+  sc.color().draw(buffer);
 }
 
 /* EOF */
