@@ -36,9 +36,12 @@ Conversation::Conversation()
 void
 Conversation::add(const std::string& text)
 {
-  choices.push_back(text);
-  if (selection >= int(choices.size()))
-    selection = 0;
+  if (!visible)
+    {
+      choices.push_back(text);
+      if (selection >= int(choices.size()))
+        selection = 0;
+    }
 }
 
 void

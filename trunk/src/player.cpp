@@ -332,10 +332,11 @@ Player::update_turnaround()
       set_walk(WEST);
     }
   } 
-  if(sprite->get_rot() && controller.get_button_state(RIGHT_BUTTON)
-     || !sprite->get_rot() && controller.get_button_state(LEFT_BUTTON)) {
+  if(sprite->get_rot() && controller.button_pressed(RIGHT_BUTTON)
+     || !sprite->get_rot() && controller.button_pressed(LEFT_BUTTON)) {
     sprite->set_speed(-1.0);
     sprite->set_next_action("Walk");
+    state = WALK;
   }
 }
 
