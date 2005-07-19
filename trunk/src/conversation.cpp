@@ -50,7 +50,7 @@ Conversation::draw()
       Fonts::dialog_h.set_alignment(origin_top_left);
 
       int x = 100;
-      int y = 300;
+      int y = 200;
 
       CL_Rect rect(CL_Point(x - 20, y - 20 + Fonts::dialog.get_height()/2 - 5),
                    CL_Size(300 + 20, // FIXME:

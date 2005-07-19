@@ -36,6 +36,7 @@ public:
   void update(float delta);
   void draw (SceneContext& gc);
   void use();
+  bool useable() const { return true; }
   
   void collision(const CollisionData& data, CollisionObject& other);
   bool unstuck() const {return true;}

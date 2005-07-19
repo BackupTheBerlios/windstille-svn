@@ -67,6 +67,13 @@ Player::draw (SceneContext& gc)
 {
   gc.light().draw(light, pos.x, pos.y, 100);
   sprite->draw(gc, pos);
+
+  Entity* obj = find_useable_entity();
+  if (obj)
+    {
+      gc.highlight().draw("[Talk]", obj->get_pos().x, obj->get_pos().y - 150, 1000);
+    }
+  
   //BoneID id = sprite->get_bone_id("Hand.R");
   //grenade->draw(gc, sprite->get_bone_matrix(id));
 }
@@ -169,10 +176,37 @@ Player::update_walk_stand()
     update_walk();
 }
   
+Entity*
+Player::find_useable_entity()
+{
+  std::vector<GameObject*>* objects = Sector::current()->get_objects();
+  for (std::vector<GameObject*>::iterator i = objects->begin(); i != objects->end(); ++i)
+    {
+      Entity* object = dynamic_cast<Entity*>(*i);
+      if (object && object != this && object->useable())
+        {
+          //FIXME use proper collision detection
+          if (object->get_pos().x > pos.x - 32 && object->get_pos().x < pos.x + 32
+              && object->get_pos().y > pos.y - 128 && object->get_pos().y < pos.y + 32)
+            {
+              return object;
+            }
+        }
+    }
+  return 0;  
+}
+
 
 void
 Player::update_stand()
-{
+{ 
+  if(controller.button_pressed(USE_BUTTON))
+    {
+      Entity* obj = find_useable_entity();
+      if (obj)
+        obj->use();
+    }
+
   if(controller.get_button_state(LEFT_BUTTON)
       && !controller.get_button_state(RIGHT_BUTTON)) {
     if(get_direction() == WEST)
@@ -205,7 +239,7 @@ void
 Player::update_walk()
 {
   if(controller.get_button_state(LEFT_BUTTON)
-      == controller.get_button_state(RIGHT_BUTTON)) {
+     == controller.get_button_state(RIGHT_BUTTON)) {
     set_stand();
     return;
   }
@@ -213,23 +247,6 @@ Player::update_walk()
   if(get_direction() == WEST && controller.get_button_state(RIGHT_BUTTON)
      || get_direction() == EAST && controller.get_button_state(LEFT_BUTTON)) {
     set_turnaround();
-    return;
-  }
-  
-  if(controller.get_button_state(USE_BUTTON)) {
-    std::vector<GameObject*>* objects = Sector::current()->get_objects();
-    for (std::vector<GameObject*>::iterator i = objects->begin(); i != objects->end(); ++i)
-      {
-        if (Entity* object = dynamic_cast<Entity*>(*i))
-        {
-          //FIXME use proper collision detection
-          if (object->get_pos().x > pos.x - 20 && object->get_pos().x < pos.x + 20) 
-            {
-              object->use();
-              return;
-            }
-        }
-      }
     return;
   }
   
@@ -266,6 +283,7 @@ Player::update_ducking()
     printf("Changespeed1.\n");
     sprite->set_speed(-1.0);
     sprite->set_next_action("Stand");
+    state = STAND;
   } else if(controller.get_button_state(DOWN_BUTTON) 
       && sprite->get_speed() < 0) {
     printf("Changespeed2.\n");

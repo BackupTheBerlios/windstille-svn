@@ -98,6 +98,8 @@ public:
   bool unstuck() const {return true;}
   bool unstuck_movable() const {return true;}
 
+  Entity* find_useable_entity();
+
 private:
   void update_walk_stand();
   void set_stand();

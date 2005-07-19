@@ -40,7 +40,7 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
   progress = 0;
   alignment = alignment_;
   portrait  = CL_Sprite(portrait_, resources);
-  text      = text_ + " CLANLIBFONTSHAVEISSUESOHYESTHEYDOTHEYREALLYDO";
+  text      = text_;
 }
 
 void
@@ -88,8 +88,8 @@ DialogManager::draw()
   CL_Size dialog_size(dialog_width, dialog_height);
       
   CL_Display::fill_rect(CL_Rect(pos, dialog_size), 
-                        CL_Gradient(CL_Color(0,0,0,228),
-                                    CL_Color(0,0,0,228),
+                        CL_Gradient(CL_Color(0,0,100,228),
+                                    CL_Color(0,0,100,228),
                                     CL_Color(0,0,0,128),
                                     CL_Color(0,0,0,128)));
   CL_Display::draw_rect(CL_Rect(pos, dialog_size),
@@ -103,8 +103,9 @@ DialogManager::draw()
   Fonts::dialog_h.set_alignment(origin_top_left);
 
   int len = std::min(int(text.size()), int(progress*text_speed));
-  Fonts::dialog.draw(text_rect, text.begin(), text.begin() + len);
-
+  Fonts::dialog.draw(CL_Rect(CL_Point(text_rect.left, text_rect.top),
+                             CL_Size(text_width, 600)),
+                     text.begin(), text.begin() + len);
   Fonts::dialog.set_alignment(origin_top_center);
   Fonts::dialog_h.set_alignment(origin_top_center);
 }
@@ -113,7 +114,7 @@ void
 DialogManager::update(float delta)
 {
   if (InputManager::get_controller().get_button_state(FIRE_BUTTON))
-    progress += delta * 10.0f;
+    progress += delta * 25.0f;
   else
     progress += delta;
 

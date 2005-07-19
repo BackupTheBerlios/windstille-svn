@@ -24,6 +24,7 @@
 #include <ClanLib/Display/graphic_context.h>
 #include <iostream>
 #include <iosfwd>
+#include "fonts.hpp"
 #include "drawing_context.hpp"
 
 std::ostream& operator<<(std::ostream& s, const CL_Matrix4x4& m)
@@ -110,15 +111,18 @@ class TextDrawingRequest : public DrawingRequest
 private:
   std::string text;
 public:
-  TextDrawingRequest(const std::string& text_, const CL_Vector& pos_)
-    : DrawingRequest(pos_),
+  TextDrawingRequest(const std::string& text_, const CL_Vector& pos_, const CL_Matrix4x4& modelview_)
+    : DrawingRequest(pos_, modelview_),
       text(text_)
   {}
   virtual ~TextDrawingRequest() {}
 
   void draw(CL_GraphicContext* gc) {
-    (void) gc;
-    // FIXME: not implemented
+    gc->push_modelview();
+    gc->add_modelview(modelview);
+    Fonts::dialog_h.set_alignment(origin_center);
+    Fonts::dialog_h.draw(int(pos.x), int(pos.y), text);
+    gc->pop_modelview();
   }
 };
 
@@ -181,7 +185,7 @@ DrawingContext::draw(const CL_Sprite&   sprite,  float x, float y, float z)
 void
 DrawingContext::draw(const std::string& text,    float x, float y, float z)
 { 
-  draw(new TextDrawingRequest(text, CL_Vector(x, y, z)));
+  draw(new TextDrawingRequest(text, CL_Vector(x, y, z), modelview_stack.back()));
 }
 
 void

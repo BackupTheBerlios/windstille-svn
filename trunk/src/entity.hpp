@@ -44,6 +44,7 @@ public:
   void debug_draw();
   virtual void update(float delta) = 0;
   virtual void use() {}
+  virtual bool useable() const { return false; }
 
   CL_Signal_v0& sig_done() { return done; }
 private:
