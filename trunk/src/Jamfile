@@ -29,8 +29,6 @@ sources =
         camera.hpp
         character.cpp
         character.hpp
-        collision_manager.cpp
-        collision_manager.hpp
         console.cpp
         console.hpp
         controller_def.cpp
