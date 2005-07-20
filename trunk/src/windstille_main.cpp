@@ -258,7 +258,6 @@ WindstilleMain::init_modules()
 
   resources =  new CL_ResourceManager();
   resources->add_resources(CL_ResourceManager(datadir + "windstille.xml", false));
-  resources->add_resources(CL_ResourceManager(datadir + "tiles.xml", false));
 
   if (debug) std::cout << "Initialising Fonts" << std::endl;
   Fonts::init(); 
