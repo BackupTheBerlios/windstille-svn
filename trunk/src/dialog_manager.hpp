@@ -32,6 +32,7 @@ private:
   CL_Sprite portrait;
   std::string text;
   float progress;
+  float delay;
 
   enum Alignment {
     VCENTER = 0x00,

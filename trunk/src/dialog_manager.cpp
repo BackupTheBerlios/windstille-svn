@@ -38,6 +38,7 @@ void
 DialogManager::add_dialog(int alignment_, const std::string& portrait_, const std::string& text_)
 {
   progress = 0;
+  delay = 0.0;
   alignment = alignment_;
   portrait  = CL_Sprite(portrait_, resources);
   text      = text_;
@@ -113,8 +114,9 @@ DialogManager::draw()
 void
 DialogManager::update(float delta)
 {
-  if (InputManager::get_controller().get_button_state(FIRE_BUTTON))
-    progress += delta * 25.0f;
+  delay += delta;
+  if (InputManager::get_controller().get_button_state(FIRE_BUTTON) && delay > 0.2 && progress * text_speed < text.size())
+    progress = int(text.size()) / text_speed;
   else
     progress += delta;
 
@@ -125,7 +127,7 @@ DialogManager::update(float delta)
       if ((*i).type == BUTTON_EVENT)
         {
           if ((*i).button.name == FIRE_BUTTON && (*i).button.down == true
-              && int(progress * text_speed) >= int(text.size()))
+              && int(progress * text_speed) > int(text.size()))
             {
               GameSession::current()->set_game_state();
               script_manager->fire_wakeup_event(ScriptManager::DIALOG_CLOSED);
