@@ -11,29 +11,6 @@
     (y 650)
   )
   (objects
-    (trigger
-      (x 400)
-      (y 700)
-      (width 200)
-      (height 200)
-      (script "display_conversation()"))
-
-
-    (trigger
-      (x 768)
-      (y 632)
-      (width 200)
-      (height 200)
-      (script "
-print(\"Script was here\");
-wait(2);
-print(\"1\");
-wait(2);
-print(\"2\");
-wait(2);
-print(\"3\");
-")
-    )
     (flashing-sign
       (name "Block0Sign")
       (x 550)
