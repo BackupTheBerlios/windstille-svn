@@ -29,9 +29,6 @@ CollisionEngine::CollisionEngine()
 {
   friction       = 0.01f;
   
-  x_acceleration = 0.0f;
-  y_acceleration = 100.0f;
-
   unstuck_velocity = 50.0f;
   minimum_velocity = .1f;
 }
@@ -203,9 +200,5 @@ float CollisionEngine::get_min_velocity() const
 float CollisionEngine::get_friction() const
 {
   return friction;
-}
-CL_Vector CollisionEngine::get_graphity() const
-{
-  return CL_Vector(x_acceleration, y_acceleration,0);
 }
 

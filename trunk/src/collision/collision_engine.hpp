@@ -52,9 +52,6 @@ private:
   float friction;
   float unstuck_velocity;
 
-  float x_acceleration;
-  float y_acceleration;
-
   float minimum_velocity;
 
   void unstuck(CollisionObject& a, CollisionObject& b, float delta);
