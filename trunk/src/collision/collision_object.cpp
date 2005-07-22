@@ -39,7 +39,7 @@ CollisionObject::~CollisionObject()
 }
 
 void
-CollisionObject::insertCollPrimitive(CollPrimitive *primitive)
+CollisionObject::insertCollPrimitive(const CollPrimitive& primitive)
 {
   colliders.push_back(primitive);
 }
@@ -47,11 +47,9 @@ CollisionObject::insertCollPrimitive(CollPrimitive *primitive)
 void
 CollisionObject::drawCollision()
 {
-  std::list<CollPrimitive*>::iterator j=colliders.begin();
-
-  for(;j!=colliders.end();j++)
+  for(std::vector<CollPrimitive>::iterator j = colliders.begin(); j != colliders.end(); j++)
     {
-      (*j)->drawCollision();
+      (*j).drawCollision();
     }
 }
 
@@ -94,3 +92,4 @@ CollisionObject::set_pos(const CL_Vector& p)
   pos = p;
 }
 
+/* EOF */

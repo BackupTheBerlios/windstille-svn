@@ -54,8 +54,8 @@ private:
   float minimum_velocity;
 
   void unstuck(CollisionObject& a, CollisionObject& b, float delta);
-
+  CollisionData collide(CollisionObject &a,CollisionObject &b,float delta);
+  CollisionData collide(CollPrimitive& b1, CollPrimitive& b2, float delta);
 };
-
 
 #endif

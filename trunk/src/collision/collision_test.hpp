@@ -67,28 +67,9 @@ inline std::ostream &operator<<(std::ostream &o,const SweepResult &r)
   return o;
 }
 
-
 SweepResult simple_sweep_1d(float a, float aw, float av,
 			    float b, float bw, float bv);
 
-class CollRect;
-class CollTri;
-
-struct InstantCollisionResult
-{
-  float depth;
-  CL_Vector2 direction;
-  bool collision;
-
-  InstantCollisionResult()
-  {
-    collision=false;
-  }
-};
-
-void collideRectRect(InstantCollisionResult &result,const CollRect &a,const CollRect &b);
-void collideRectTri(InstantCollisionResult &result,const CollRect &a,const CollTri &b);
-void collideTriTri(InstantCollisionResult &result,const CollTri &a,const CollTri &b);
-
-
 #endif
+
+/* EOF */

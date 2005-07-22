@@ -24,6 +24,7 @@
 
 #include <ClanLib/core.h>
 #include <ClanLib/Core/Math/cl_vector.h>
+#include "collision_data.hpp"
 #include "collision.hpp"
 
 class CollisionEngine;
@@ -50,7 +51,7 @@ public:
   { }
   //virtual void collision(const CollisionData& data, CollisionObject& other) = 0; 
 
-  void insertCollPrimitive(CollPrimitive *primitive);
+  void insertCollPrimitive(const CollPrimitive& primitive);
 
   void update(float delta);
 
@@ -63,14 +64,8 @@ public:
   // is this object movable within unstucking ?
   virtual bool unstuck_movable() const { return true; }
 
-  void set_bounding_box(const CL_Rectf& b) { bbox = b; }
-
   CL_Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
 protected:
-  /// only rectangular objects for now
-  // FIXME: isn't this redundant?
-  CL_Rectf bbox;
- 
   /// position of the object
   CL_Vector pos;
 
@@ -82,12 +77,13 @@ protected:
 
   CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
 private:
-  std::list<CollPrimitive*> colliders;
+  std::vector<CollPrimitive> colliders;
   CollisionEngine *coll_engine;
 
   friend class CollisionEngine;
   friend CollisionData collide(CollisionObject &a,CollisionObject &b,float delta);
 };
 
-
 #endif
+
+/* EOF */

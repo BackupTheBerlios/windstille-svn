@@ -19,6 +19,7 @@
  * License along with this program.
  */
 
+#include "collision_test.hpp"
 #include "collision_engine.hpp"
 
 /***********************************************************************
@@ -60,6 +61,8 @@ CollisionEngine::collision(CollisionObject& a, CollisionObject& b, const Collisi
 void
 CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
 {
+  std::cout << "Unstucker currently not working" << std::endl;
+#if 0
   // The distance A needs to unstuck from B in the given direction
   float left   = fabsf(a.get_pos().x + a.bbox.get_width() - b.get_pos().x);
   float right  = fabsf(b.get_pos().x + b.bbox.get_width() - a.get_pos().x);
@@ -98,6 +101,7 @@ CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
       
   if (b.unstuck_movable())
     b.pos += dir;
+#endif 
 }
 
 void
@@ -187,6 +191,84 @@ CollisionEngine::remove(CollisionObject *obj)
   Objects::iterator i=std::find(objects.begin(),objects.end(),obj);
   if(i!=objects.end())
     objects.erase(i);
+}
+
+// LEFT means b1 is left of b2
+CollisionData
+CollisionEngine::collide(CollPrimitive& b1, CollPrimitive& b2, float delta)
+{
+  SweepResult result0 = simple_sweep_1d(b1.x_pos(), b1.width(), b1.x_velocity(),
+					b2.x_pos(), b2.width(), b2.x_velocity());
+  SweepResult result1 = simple_sweep_1d(b1.y_pos(), b1.height(), b1.y_velocity(),
+					b2.y_pos(), b2.height(), b2.y_velocity());
+
+  CollisionData result;
+  result.delta=delta;
+
+  if(result0.collision(delta) && result1.collision(delta))
+    {
+      if(result0.always() && result1.always())
+	result.state=CollisionData::STUCK;
+      else
+	{
+	  if(result0.begin(delta)<result1.begin(delta))
+	    {
+	      // x direction prior
+	      if(b1.x_pos()<b2.x_pos())
+		{
+		  result.state=CollisionData::COLLISION;
+		  result.direction=CL_Vector(-1,0);
+		}
+	      else
+		{
+		  result.state=CollisionData::COLLISION;
+		  result.direction=CL_Vector(1,0);
+		}
+	      result.col_time=result0.t0;
+	    }
+	  else
+	    {
+	      // x direction prior
+	      if(b1.y_pos()<b2.y_pos())
+		{
+		  result.state=CollisionData::COLLISION;
+		  result.direction=CL_Vector(0,-1);
+		}
+	      else
+		{
+		  result.state=CollisionData::COLLISION;
+		  result.direction=CL_Vector(0,1);
+		}
+	      result.col_time=result1.t0;
+	    }
+	}
+    }
+  return result;
+}
+
+CollisionData
+CollisionEngine::collide(CollisionObject &a,CollisionObject &b,float delta)
+{
+  CollisionData r;
+
+  //  if(!(a.movable or b.movable))
+  //    return r;
+
+  bool first=true;
+  for(std::vector<CollPrimitive>::iterator i=a.colliders.begin(); i != a.colliders.end(); ++i)
+    {
+      for(std::vector<CollPrimitive>::iterator j = b.colliders.begin(); j !=b.colliders.end(); ++j)
+	{
+	  if(first)
+	    {
+	      r = collide(*i,*j,delta);
+	      first=false;
+	    }
+	  else
+	    r.merge(collide(*i,*j,delta));
+	}
+    }
+  return r;
 }
 
 /* EOF */

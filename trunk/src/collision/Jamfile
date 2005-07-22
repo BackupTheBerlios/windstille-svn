@@ -2,13 +2,15 @@ SubDir TOP src collision ;
 
 sources =
   collision.cpp
+  collision.hpp
+  collision_data.cpp
+  collision_data.hpp
   collision_engine.cpp
   collision_engine.hpp
-  collision.hpp
   collision_object.cpp
   collision_object.hpp
   collision_test.cpp
-  collision_test.hpp 
+  collision_test.hpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
