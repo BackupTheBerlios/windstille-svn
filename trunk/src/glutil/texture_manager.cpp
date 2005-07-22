@@ -17,6 +17,10 @@
 #include "globals.hpp"
 #include "texture.hpp"
 #include "physfs/physfs_sdl.hpp"
+//for some reason additions to OpenGL in versions 1.2 and onwards are treated as extensions in windows
+#ifdef WIN32
+#include <GL/glext.h>
+#endif
 
 TextureManager::TextureManager* texture_manager = 0;
 
