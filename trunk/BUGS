@@ -18,9 +18,9 @@ Windstille Bugs
 - you have to hold down the use keyboard use button for a short time, 
   just pressing it quickly doesn't do anything
   
-- config.ac does not successfully check for -lopenal32 if -lopenal is not found
+- configure.ac does not successfully check for -lopenal32 if -lopenal is not found
 
-- Now that clanSound is no longer linked I have to manually add -lvorbisfile before 
+- now that clanSound is no longer linked I have to manually add -lvorbisfile before 
   -lvorbis to avoid link errors.
 
 # EOF #
