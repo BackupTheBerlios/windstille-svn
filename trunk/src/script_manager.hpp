@@ -17,9 +17,9 @@ public:
 
   void update();
 
-  int run_script_file(const std::string& filename);
-  int run_script(const std::string& string, const std::string& sourcename);
-  int run_script(std::istream& in, const std::string& sourcename);
+  void run_script_file(const std::string& filename);
+  void run_script(const std::string& string, const std::string& sourcename);
+  void run_script(std::istream& in, const std::string& sourcename);
 
   template<typename T>
   void expose_object(T* object, const std::string& name, bool free)
@@ -64,7 +64,6 @@ private:
   {
   public:
     SquirrelVM(const std::string& arg_name, HSQUIRRELVM arg_vm, HSQOBJECT arg_obj);
-    unsigned id;
     std::string name;
     HSQUIRRELVM vm;
     HSQOBJECT vm_obj;
@@ -77,7 +76,6 @@ private:
   std::map<std::string, bool> already_run_scripts;
 
   HSQUIRRELVM v;
-  unsigned new_vm_id;
 };
 
 extern ScriptManager* script_manager;

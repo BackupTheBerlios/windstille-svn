@@ -31,7 +31,6 @@ static void printfunc(HSQUIRRELVM, const char* str, ...)
 }
 
 ScriptManager::ScriptManager()
-  : new_vm_id(0)
 {
   v = sq_open(1024);
   if(v == 0)
@@ -76,22 +75,22 @@ static SQInteger squirrel_read_char(SQUserPointer file)
   return c;
 }
 
-int
+void
 ScriptManager::run_script_file(const std::string& filename)
 {
   IFileStream in(filename);
-  return run_script(in, filename);
+  run_script(in, filename);
 }
 
-int
+void
 ScriptManager::run_script(const std::string& the_string,
     const std::string& sourcename)
 {
   std::istringstream stream(the_string);
-  return run_script(stream, sourcename);
+  run_script(stream, sourcename);
 }
 
-int
+void
 ScriptManager::run_script(std::istream& in, const std::string& sourcename)
 {
   HSQUIRRELVM vm = sq_newthread(v, 1024);
@@ -115,8 +114,6 @@ ScriptManager::run_script(std::istream& in, const std::string& sourcename)
   sq_pushroottable(vm);
   if(sq_call(vm, 1, false) < 0)
     throw SquirrelError(vm, "Couldn't start script");
-	
-  return new_vm_id - 1;
 }
 
 void
@@ -134,7 +131,7 @@ ScriptManager::update()
         }
       } catch(std::exception& e) {
         std::cerr << "Problem executing script: " << e.what() << "\n";
-		sq_release(v, &squirrel_vm.vm_obj);
+        sq_release(v, &squirrel_vm.vm_obj);
         i = squirrel_vms.erase(i);
         continue;
       }
@@ -208,7 +205,6 @@ bool ScriptManager::run_before(HSQUIRRELVM vm)
 ScriptManager::SquirrelVM::SquirrelVM(const std::string& arg_name, HSQUIRRELVM arg_vm, HSQOBJECT arg_obj)
   : name(arg_name), vm(arg_vm), vm_obj(arg_obj)
 {
-  id = (script_manager->new_vm_id)++;
   waiting_for_events = 0;
   wakeup_time = 0;
 }
