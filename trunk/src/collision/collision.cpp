@@ -60,16 +60,16 @@ CollPrimitive::~CollPrimitive()
 
 inline float CollPrimitive::x_velocity() const
 {
-  return object->get_movement ().x;
+  return object->get_velocity ().x;
 }
 inline float CollPrimitive::y_velocity() const
 {
-  return object->get_movement ().y;
+  return object->get_velocity ().y;
 }
 
 CL_Vector CollPrimitive::get_velocity() const
 {
-  return object->get_movement();
+  return object->get_velocity();
 }
 
 /***********************************************************************
@@ -108,7 +108,7 @@ float CollRect::height() const
 
 inline std::ostream& operator<<(std::ostream& out, const CollRect &b)
 {
-  out<<"("<<b.x_pos()<<","<<b.y_pos()<<","<<b.width()<<","<<b.height()<<","<<b.object->get_movement().x<<","<<b.object->get_movement().y<<")";
+  out<<"("<<b.x_pos()<<","<<b.y_pos()<<","<<b.width()<<","<<b.height()<<","<<b.object->get_velocity().x<<","<<b.object->get_velocity().y<<")";
   return out;
 }
 
@@ -144,8 +144,8 @@ void CollRect::drawCollision() const
   
   CL_Display::draw_line (r.left + r.get_width ()/2,
 			 r.top  + r.get_height ()/2,
-			 r.left + r.get_width ()/2 + object->get_movement ().x,
-			 r.top  + r.get_height ()/2 + object->get_movement ().y,
+			 r.left + r.get_width ()/2 + object->get_velocity ().x,
+			 r.top  + r.get_height ()/2 + object->get_velocity ().y,
 			 CL_Color (255, 0, 255));
 
 }
@@ -226,8 +226,8 @@ void CollTri::drawCollision() const
   
   CL_Display::draw_line(act_pos.x + dx/4,
 			act_pos.y + dy/4,
-			act_pos.x + dx/4 + object->get_movement().x,
-			act_pos.y + dy/4 + object->get_movement().y,
+			act_pos.x + dx/4 + object->get_velocity().x,
+			act_pos.y + dy/4 + object->get_velocity().y,
 			CL_Color(255, 0, 255));
 }
 

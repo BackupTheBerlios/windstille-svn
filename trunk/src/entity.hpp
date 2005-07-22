@@ -27,21 +27,24 @@
 
 /** A GameObject which has a position and some other properties which
     are shared among all/most things in the world */
-class Entity : public GameObject, public CollisionObject
+class Entity : public GameObject
 {
 private:
   CL_Signal_v0 done; 
+
+protected:
+  CL_Vector pos;
 
 public:
   Entity();
   virtual ~Entity();
    
-  CL_Vector get_pos() const { return pos; }
+  virtual CL_Vector get_pos() const { return pos; }
 
   void set_pos(float x, float y);
 
   virtual void draw(SceneContext& gc) = 0;
-  void debug_draw();
+
   virtual void update(float delta) = 0;
   virtual void use() {}
   virtual bool useable() const { return false; }

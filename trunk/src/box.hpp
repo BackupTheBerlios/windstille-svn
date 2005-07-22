@@ -22,28 +22,23 @@
 
 #include "entity.hpp"
 #include "lisp/lisp.hpp"
+#include "collision/collision_object.hpp"
 #include "sector.hpp"
 
-class Box:public Entity
+class Box : public Entity
 {
+private:
+  CL_Sprite sprite;
+  CollisionObject* colobj;
+  CL_Slot slot;
 public:
   Box(const lisp::Lisp* lisp);
 
-  virtual void collision(const CollisionData& data, CollisionObject& other); 
+  void collision(const CollisionData& data, CollisionObject& other); 
 
-  virtual bool unstuck() const;
-  virtual bool unstuck_movable() const;
-
-  virtual void update(float delta);
-  virtual void move(float delta);
+  void update(float delta);
 
   void draw(SceneContext& gc);
-
-  bool on_ground() const;
-  bool stuck() const;
-private:
-  CL_Sprite sprite;
-  CL_Sprite light_sprite;
 };
 
 #endif

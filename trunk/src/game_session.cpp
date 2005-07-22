@@ -48,6 +48,7 @@
 #include "script_manager.hpp"
 #include "sound/sound_manager.hpp"
 #include "conversation.hpp"
+#include "collision/collision_engine.hpp"
 #include "test_object.hpp"
 
 #include "game_session.hpp"
@@ -58,7 +59,7 @@ GameSession* GameSession::current_ = 0;
 
 GameSession::GameSession(const std::string& arg_filename)
   : control_dialog("controldialog", resources),
-    world (0)
+    sector (0)
 {
   current_ = this;
   
@@ -80,7 +81,7 @@ GameSession::~GameSession()
   delete view;
   delete dialog_manager;
   delete conversation;
-  delete world;
+  delete sector;
 }
 
 void
@@ -103,6 +104,7 @@ GameSession::draw_game()
     }
 
   view->draw(sc);
+  sector->get_collision_engine()->draw();
 
   // Render the scene to the screen
   sc.render();
@@ -144,7 +146,7 @@ GameSession::draw()
     }
 
 #if 0
-  if (world->get_player()->get_movement_state() == Player::DEAD)
+  if (sector->get_player()->get_movement_state() == Player::DEAD)
     {
       Fonts::dialog.set_alignment(origin_bottom_center);
       Fonts::dialog.draw(CL_Display::get_width()/2, 200,
@@ -201,7 +203,7 @@ GameSession::update(float delta)
       break;
 
     case RUNNING:
-      world->update (delta);
+      sector->update (delta);
       energiebar->update(delta);
       switch (control_state) 
         {
@@ -222,10 +224,10 @@ GameSession::update(float delta)
 void
 GameSession::change_sector()
 {
-  if (world)
-    delete world;
+  if (sector)
+    delete sector;
 
-  world = new Sector(filename);
+  sector = new Sector(filename);
   
   if (1)
     {
@@ -268,19 +270,19 @@ GameSession::change_sector()
       psystem2->set_spawn_point(768, 832);
       psystem3->set_spawn_point(768, 832);
       
-      world->add(psystem3);
-      world->add(psystem2);
-      world->add(psystem);
+      sector->add(psystem3);
+      sector->add(psystem2);
+      sector->add(psystem);
       
       script_manager->run_script_file("scripts/init_script_vars.nut");
     }
 
-  //world->add(new TestObject());
+  //sector->add(new TestObject());
   
-  world->activate();
-  world->spawn_player("default");
+  sector->activate();
+  sector->spawn_player("default");
   
-  GameObject::set_world (world);
+  GameObject::set_world(sector);
   
   fade_state = FADEIN;
   fadeout_value = 0;

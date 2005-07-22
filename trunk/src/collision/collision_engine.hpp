@@ -38,8 +38,8 @@ public:
   void update(CollisionObject& obj, float delta);
   void collision(CollisionObject& a, CollisionObject& b, const CollisionData &result, float delta);
 
-  CollisionObject* add_object(CollisionObject *obj);
-  void remove_object(CollisionObject *obj);
+  CollisionObject* add(CollisionObject *obj);
+  void remove(CollisionObject *obj);
 
 
   float get_min_velocity() const;

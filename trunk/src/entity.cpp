@@ -31,15 +31,6 @@ Entity::~Entity()
 }
 
 void
-Entity::debug_draw()
-{
-  if (parent)
-    CL_Display::draw_line(int(get_pos().x), int(get_pos().y),
-                          int(parent->get_pos().x), int(parent->get_pos().y),
-                          CL_Color(255, 255, 255, 255));
-}
-
-void
 Entity::set_pos(float x, float y)
 {
   pos.x = x;

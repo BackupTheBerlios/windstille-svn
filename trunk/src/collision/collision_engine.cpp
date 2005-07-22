@@ -27,8 +27,6 @@
 
 CollisionEngine::CollisionEngine()
 {
-  friction       = 0.01f;
-  
   unstuck_velocity = 50.0f;
   minimum_velocity = .1f;
 }
@@ -171,11 +169,11 @@ CollisionEngine::update(float delta)
 void
 CollisionEngine::update(CollisionObject& obj, float delta)
 {
-  obj.move(delta);
+  obj.update(delta);
 }
 
 CollisionObject *
-CollisionEngine::add_object(CollisionObject *obj)
+CollisionEngine::add(CollisionObject *obj)
 {
   objects.push_back(obj);
   obj->coll_engine=this;
@@ -184,21 +182,12 @@ CollisionEngine::add_object(CollisionObject *obj)
 }
 
 void 
-CollisionEngine::remove_object(CollisionObject *obj)
+CollisionEngine::remove(CollisionObject *obj)
 {
   Objects::iterator i=std::find(objects.begin(),objects.end(),obj);
   if(i!=objects.end())
     objects.erase(i);
 }
 
-
-
-float CollisionEngine::get_min_velocity() const
-{
-  return minimum_velocity;
-}
-float CollisionEngine::get_friction() const
-{
-  return friction;
-}
+/* EOF */
 

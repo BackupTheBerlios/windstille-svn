@@ -94,6 +94,8 @@ public:
   void add_entity(Entity *);
   void add_object(const std::string& name, const lisp::Lisp* lisp);
 
+  CollisionEngine* get_collision_engine() const { return collision_engine; }
+
   GameObject* get_object(const std::string& name) const;
 
   std::vector<GameObject*>* get_objects() { return &objects; }

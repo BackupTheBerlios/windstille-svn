@@ -38,14 +38,14 @@ CollisionObject::~CollisionObject()
 {
 }
 
-void CollisionObject::insertCollPrimitive(CollPrimitive *primitive)
+void
+CollisionObject::insertCollPrimitive(CollPrimitive *primitive)
 {
   colliders.push_back(primitive);
 }
 
-
-
-void CollisionObject::drawCollision()
+void
+CollisionObject::drawCollision()
 {
   std::list<CollPrimitive*>::iterator j=colliders.begin();
 
@@ -55,29 +55,22 @@ void CollisionObject::drawCollision()
     }
 }
 
-void CollisionObject::move(float delta)
+void CollisionObject::update(float delta)
 {
   assert(coll_engine);
 
-  pos += movement * delta;
-  movement -= movement * coll_engine->get_friction() * delta;
-  
-  if (fabsf(movement.x) < coll_engine->get_min_velocity()*delta)
-    movement.x = 0.0f;
-
-  if (fabsf(movement.y) < coll_engine->get_min_velocity()*delta)
-    movement.y = 0.0f;
-
+  pos += velocity * delta;
 }
 
 void 
-CollisionObject::set_movement(const CL_Vector &m)
+CollisionObject::set_velocity(const CL_Vector &m)
 {
-  movement=m;
+  velocity=m;
 }
 
 
-CL_Vector CollisionObject::get_pos() const
+CL_Vector
+CollisionObject::get_pos() const
 {
   if(parent != 0)
     return parent->get_pos() + pos;
@@ -85,11 +78,19 @@ CL_Vector CollisionObject::get_pos() const
   return pos;
 }
 
-CL_Vector CollisionObject::get_movement() const
+CL_Vector
+CollisionObject::get_velocity() const
 {
-  if(parent != 0)
-    return parent->get_movement() + movement;
+  if (parent != 0)
+    return parent->get_velocity() + velocity;
   
-  return movement;
+  return velocity;
+}
+
+void
+CollisionObject::set_pos(const CL_Vector& p)
+{
+  // FIXME: Do this somewhat more clever to avoid stuck issues
+  pos = p;
 }
 

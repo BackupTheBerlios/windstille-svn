@@ -47,7 +47,7 @@ Sector* Sector::current_ = 0;
 Sector::Sector(const std::string& filename)
   : player(0)
 {
-  collision_engine=new CollisionEngine;
+  collision_engine = new CollisionEngine();
 
   current_ = this;
   interactive_tilemap = 0;
@@ -225,8 +225,6 @@ void Sector::update(float delta)
 void
 Sector::commit_removes()
 {
-  CollisionObject *coll_object=0;
-
   // remove objects
   for(Objects::iterator i = objects.begin(); i != objects.end(); ) {
     GameObject* object = *i;
@@ -234,12 +232,6 @@ Sector::commit_removes()
       if(object->get_name() != "") {
         remove_object_from_squirrel(object);
       }
-      coll_object=dynamic_cast<CollisionObject*>(*i);
-      if(coll_object)
-	{
-	  collision_engine->remove_object(coll_object);
-	}
-
       object->unref();
 
       i = objects.erase(i);
@@ -263,7 +255,6 @@ Sector::add(GameObject* obj)
 void 
 Sector::add_entity(Entity* ent)
 {
-  collision_engine->add_object(ent);
   add(ent);
 }
 
@@ -277,6 +268,9 @@ Sector::remove_object_from_squirrel(GameObject* object)
 void
 Sector::expose_object_to_squirrel(GameObject* object)
 {
+  // FIXME: Grumbel: I don't consider this brute-force exposing a good
+  // idea, should be up to the scripter if we ones to keep a refrence
+  // to an object or not
   FlashingSign* sign = dynamic_cast<FlashingSign*> (object);
   if(sign) {
     script_manager->expose_object(new Scripting::FlashingSign(sign),

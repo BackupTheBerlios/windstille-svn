@@ -21,15 +21,15 @@
     )
     (box
       (name "Box0")
-      (x 550)
-      (y 550)
-      (sprite "bomb")
+      (x 350)
+      (y 700)
+        (vx 10)
     )
     (box
       (name "Box1")
       (x 555)
-      (y 500)
-      (sprite "bomb")
+      (y 700)
+                (vx -10)
       (light "bomblight")
     )
     (character

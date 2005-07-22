@@ -3,6 +3,10 @@
     <surface name="smoke" file="images/particles/smoke.png" />
     <surface name="smoke2" file="images/particles/smoke2.png" />
   </section>
+
+  <sprite name="box">
+    <image file="images/objects/box.png" />
+  </sprite>
   
   <section name="vrdoor">
     <sprite name="color">

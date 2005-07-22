@@ -49,7 +49,7 @@ private:
   CL_Sprite control_dialog;
 
   std::string filename;
-  Sector* world;
+  Sector* sector;
   View* view;
   Energiebar* energiebar;
   DialogManager* dialog_manager;

@@ -20,15 +20,19 @@
 #include "box.hpp"
 #include "globals.hpp"
 #include "lisp/list_iterator.hpp"
+#include "collision/collision.hpp"
+#include "collision/collision_engine.hpp"
 #include "tile_map.hpp"
+#include "random.hpp"
 
 #define BOX_HEIGHT 16
 
-Box::Box(const lisp::Lisp* lisp):
-  light_sprite("bomblight", resources)
+Box::Box(const lisp::Lisp* lisp)
+  : sprite("box", resources),
+    colobj(new CollisionObject())
 {
-  std::string spritename;
-
+  std::string spritename = "box";
+  CL_Vector vel;
   lisp::ListIterator iter(lisp);
   while(iter.next()) {
     if(iter.item() == "sprite") {
@@ -37,6 +41,10 @@ Box::Box(const lisp::Lisp* lisp):
       pos.x = iter.value().get_float();
     } else if(iter.item() == "y") {
       pos.y = iter.value().get_float();
+    } else if (iter.item() == "vx") {
+      vel.x = iter.value().get_float();
+    } else if (iter.item() == "vy") {
+      vel.y = iter.value().get_float();
     } else if(iter.item() == "name") {
       name = iter.value().get_string();
     } else {
@@ -49,10 +57,15 @@ Box::Box(const lisp::Lisp* lisp):
     throw std::runtime_error("No sprite name specified in Box");
   sprite = CL_Sprite(spritename, resources);
 
-  bbox=CL_Rectf(0,0,22,16);
-  insertCollPrimitive(new CollRect(bbox,this));
+  colobj->set_bounding_box(CL_Rectf(0,0,64,64));
+  colobj->insertCollPrimitive(new CollRect(CL_Rectf(0,0,64,64), colobj));
 
-  light_sprite.set_blend_func(blend_src_alpha, blend_one);
+  Sector::current()->get_collision_engine()->add(colobj);
+
+  colobj->set_velocity(vel);
+  colobj->set_pos(CL_Vector(pos.x, pos.y));
+
+  slot = colobj->sig_collision().connect(this, &Box::collision);
 }
 
 void 
@@ -60,64 +73,21 @@ Box::collision(const CollisionData& data, CollisionObject& other)
 {
   (void) data;
   (void) other;
-  movement.y=0;
-}
-
-bool 
-Box::unstuck() const
-{
-  return true;
-}
-
-bool 
-Box::unstuck_movable() const
-{
-  bool v= !on_ground();
-  return v;
-  //  return true;
+  std::cout << this << ": Collision Event" << std::endl;
+  colobj->set_velocity(CL_Vector(-colobj->get_velocity().x, 0));
 }
 
 void 
 Box::update(float delta)
 {
   sprite.update(delta);
+  pos = colobj->get_pos();
 }
-
-void 
-Box::move(float delta)
-{  
-  CollisionObject::move(delta);
-
-  if(stuck())
-    {
-      movement.y=0;
-      while(stuck())
-	{
-	  pos.y-=0.1;
-	}
-      assert(on_ground());
-    }
-}
-
 
 void 
 Box::draw(SceneContext& sc)
 {
-  sc.light().draw(light_sprite, pos.x, pos.y, 0);
-  sc.color().draw(sprite, pos.x, pos.y, 10);
-}
-
-bool
-Box::on_ground() const
-{
-  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y-16+BOX_HEIGHT+1);
-}
-
-
-bool 
-Box::stuck () const
-{
-  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y-16+BOX_HEIGHT);
+  sc.color().draw(sprite, colobj->get_pos().x, colobj->get_pos().y, 10);
 }
 
 /* EOF */

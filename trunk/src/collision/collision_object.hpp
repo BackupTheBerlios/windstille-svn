@@ -22,6 +22,7 @@
 #ifndef HEADER_COLLISION_OBJECT_HPP
 #define HEADER_COLLISION_OBJECT_HPP
 
+#include <ClanLib/core.h>
 #include <ClanLib/Core/Math/cl_vector.h>
 #include "collision.hpp"
 
@@ -35,9 +36,10 @@ public:
   virtual ~CollisionObject();
 
   CL_Vector get_pos() const;
-  CL_Vector get_movement() const;
+  CL_Vector get_velocity() const;
 
-  void set_movement(const CL_Vector &m);
+  void set_velocity(const CL_Vector &v);
+  void set_pos(const CL_Vector& p);
 
   // this function is for preparing impulse collisions
   // you have to calculate the resulting impulse for both object before changing,
@@ -46,34 +48,39 @@ public:
   // this isn't really fast, because everything's done twice, maybe someone has a better idea?
   virtual void prepare_collision(const CollisionData &, CollisionObject &)
   { }
-  virtual void collision(const CollisionData& data, CollisionObject& other) = 0; 
-
-  virtual void move(float delta);
+  //virtual void collision(const CollisionData& data, CollisionObject& other) = 0; 
 
   void insertCollPrimitive(CollPrimitive *primitive);
+
+  void update(float delta);
 
   // debugging helpers
   void drawCollision();
 
   // this functions support unstucking, which needs to be done, when more than 2 object stack over one another
   // should this object be unstuck ??
-  virtual bool unstuck() const=0;
+  virtual bool unstuck() const { return true; }
   // is this object movable within unstucking ?
-  virtual bool unstuck_movable() const=0;
+  virtual bool unstuck_movable() const { return true; }
 
+  void set_bounding_box(const CL_Rectf& b) { bbox = b; }
+
+  CL_Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
 protected:
   /// only rectangular objects for now
+  // FIXME: isn't this redundant?
   CL_Rectf bbox;
  
   /// position of the object
   CL_Vector pos;
-  /// movement till next frame
-  CL_Vector movement;
+
+  /// velocity of the object
+  CL_Vector velocity;
 
   CollisionObject* parent;
   std::vector<CollisionObject*> children;
 
-
+  CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
 private:
   std::list<CollPrimitive*> colliders;
   CollisionEngine *coll_engine;
