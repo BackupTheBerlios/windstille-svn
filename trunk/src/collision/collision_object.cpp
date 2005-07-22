@@ -62,8 +62,6 @@ void CollisionObject::move(float delta)
   pos += movement * delta;
   movement -= movement * coll_engine->get_friction() * delta;
   
-  movement += coll_engine->get_graphity() * delta;
-
   if (fabsf(movement.x) < coll_engine->get_min_velocity()*delta)
     movement.x = 0.0f;
 

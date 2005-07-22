@@ -44,7 +44,6 @@ public:
 
   float get_min_velocity() const;
   float get_friction() const;
-  CL_Vector get_graphity() const;
 
 private:
   Objects objects;
