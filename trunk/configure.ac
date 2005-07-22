@@ -117,7 +117,7 @@ NP_FINDLIB([SDLIMAGE], [SDL_image], [SDL_image >= 1.2],
 NP_FINDLIB([OPENAL], [OpenAL], [OpenAL],
          NP_LANG_PROGRAM([#include <AL/alc.h>],
            [alcOpenDevice(0);]),
-         [], [-lopenal],
+         [], [-lopenal32],
          [openal_found="yes"],
          [openal_found="no"],
          [], [])
