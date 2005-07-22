@@ -36,9 +36,10 @@ class CollisionObject;
 
 struct CollPrimitive
 {
-protected:
+public:
   CollisionObject *object;
   CL_Rectf rect;
+
 public:
   CollPrimitive(const CL_Rectf &r_,CollisionObject *object_);
 

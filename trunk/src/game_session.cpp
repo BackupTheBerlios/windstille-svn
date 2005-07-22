@@ -104,10 +104,11 @@ GameSession::draw_game()
     }
 
   view->draw(sc);
-  sector->get_collision_engine()->draw();
 
   // Render the scene to the screen
   sc.render();
+
+  sector->get_collision_engine()->draw();
 
   // Draw HUD
   energiebar->draw();

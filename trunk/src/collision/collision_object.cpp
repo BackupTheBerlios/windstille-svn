@@ -92,4 +92,18 @@ CollisionObject::set_pos(const CL_Vector& p)
   pos = p;
 }
 
+CL_Rectf
+CollisionObject::get_bounding_box() const
+{
+  assert(!colliders.empty());
+  CL_Rectf rect = colliders.front().rect;
+ 
+  for(std::vector<CollPrimitive>::const_iterator i = colliders.begin()+1; i != colliders.end(); ++i)
+    {
+      rect = rect.calc_union(i->rect);
+    }
+
+  return rect;
+}
+
 /* EOF */

@@ -63,6 +63,8 @@ public:
   virtual bool unstuck() const { return true; }
   // is this object movable within unstucking ?
   virtual bool unstuck_movable() const { return true; }
+  
+  CL_Rectf get_bounding_box() const;
 
   CL_Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
 protected:

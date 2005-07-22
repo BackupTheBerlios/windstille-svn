@@ -56,18 +56,16 @@ CollisionEngine::collision(CollisionObject& a, CollisionObject& b, const Collisi
   b.collision(inv,a);
 }
 
-
-
 void
 CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
 {
   std::cout << "Unstucker currently not working" << std::endl;
-#if 0
+
   // The distance A needs to unstuck from B in the given direction
-  float left   = fabsf(a.get_pos().x + a.bbox.get_width() - b.get_pos().x);
-  float right  = fabsf(b.get_pos().x + b.bbox.get_width() - a.get_pos().x);
-  float top    = fabsf(a.get_pos().y + a.bbox.get_height() - b.get_pos().y);
-  float bottom = fabsf(b.get_pos().y + b.bbox.get_height() - a.get_pos().y);
+  float left   = fabsf(a.get_pos().x + a.get_bounding_box().get_width() - b.get_pos().x);
+  float right  = fabsf(b.get_pos().x + b.get_bounding_box().get_width() - a.get_pos().x);
+  float top    = fabsf(a.get_pos().y + a.get_bounding_box().get_height() - b.get_pos().y);
+  float bottom = fabsf(b.get_pos().y + b.get_bounding_box().get_height() - a.get_pos().y);
 
   float grace =  0.05f;
 
@@ -101,7 +99,6 @@ CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
       
   if (b.unstuck_movable())
     b.pos += dir;
-#endif 
 }
 
 void
