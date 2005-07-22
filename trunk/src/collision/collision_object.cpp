@@ -66,7 +66,6 @@ CollisionObject::set_velocity(const CL_Vector &m)
   velocity=m;
 }
 
-
 CL_Vector
 CollisionObject::get_pos() const
 {

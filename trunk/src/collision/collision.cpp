@@ -27,54 +27,61 @@
 
 #include <ClanLib/display.h>
 
-float CollPrimitive::x_velocity() const
-{
-  return object->get_velocity ().x;
-}
-
-float CollPrimitive::y_velocity() const
-{
-  return object->get_velocity ().y;
-}
-
-CL_Vector CollPrimitive::get_velocity() const
-{
-  return object->get_velocity();
-}
-
 CollPrimitive::CollPrimitive(const CL_Rectf &r_,CollisionObject *object_)
   : object(object_), rect(r_)
 {
 }
 
-float CollPrimitive::x_pos() const
+float
+CollPrimitive::x_velocity() const
+{
+  return object->get_velocity ().x;
+}
+
+float
+CollPrimitive::y_velocity() const
+{
+  return object->get_velocity ().y;
+}
+
+CL_Vector
+CollPrimitive::get_velocity() const
+{
+  return object->get_velocity();
+}
+
+float
+CollPrimitive::x_pos() const
 {
   return rect.left+object->get_pos ().x;
 }
 
-float CollPrimitive::y_pos() const
+float
+CollPrimitive::y_pos() const
 {
   return rect.top+object->get_pos ().y;
 }
 
-float CollPrimitive::width() const
+float
+CollPrimitive::width() const
 {
   return rect.get_width ();
 }
-float CollPrimitive::height() const
+
+float
+CollPrimitive::height() const
 {
   return rect.get_height ();
 }
 
-void CollPrimitive::drawCollision() const
+void
+CollPrimitive::drawCollision() const
 {
-  CL_Gradient g (CL_Color (255, 255, 255),CL_Color (255, 255, 255),CL_Color (255, 255, 255),CL_Color (255, 255, 255));
-
   CL_Vector v=object->get_pos ();
   CL_Rectf r=rect;
-  r+=CL_Pointf (v.x,v.y);
+  r += CL_Pointf (v.x,v.y);
 
-  CL_Display::fill_rect (r,g);
+  CL_Display::fill_rect (r, CL_Color (255, 255, 255));
   
   CL_Display::draw_rect (r,
 			 CL_Color(155, 155, 155));        
@@ -84,7 +91,6 @@ void CollPrimitive::drawCollision() const
 			 r.left + r.get_width ()/2 + object->get_velocity ().x,
 			 r.top  + r.get_height ()/2 + object->get_velocity ().y,
 			 CL_Color (255, 0, 255));
-
 }
 
 std::ostream& operator<<(std::ostream& out, const CollPrimitive &b)
