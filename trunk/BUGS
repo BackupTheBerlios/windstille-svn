@@ -14,10 +14,7 @@ Windstille Bugs
 - when a Windstille is in window mode a window infront of it will
   cause graphical errors, this is caused by the non-pbuffer based
   lightmap rendering, implementing proper pbuffer would fix itx 
-  
-- you have to hold down the use keyboard use button for a short time, 
-  just pressing it quickly doesn't do anything
-  
+   
 - configure.ac does not successfully check for -lopenal32 if -lopenal is not found
 
 - Pressing left (or right), jump and up at the same time throws an exception that causes the game to exit
