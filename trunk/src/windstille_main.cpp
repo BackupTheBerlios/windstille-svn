@@ -151,15 +151,6 @@ WindstilleMain::parse_command_line(int argc, char** argv)
     }
 }
 
-//give SDLmain something to link to in WIN32
-#ifdef WIN32
-int
-SDL_main(int argc, char** argv)
-{
-  return 1;
-}
-#endif
-
 int 
 WindstilleMain::main(int argc, char** argv)
 {
