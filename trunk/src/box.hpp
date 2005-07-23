@@ -31,6 +31,8 @@ private:
   CL_Sprite sprite;
   CollisionObject* colobj;
   CL_Slot slot;
+  float gravity;
+
 public:
   Box(const lisp::Lisp* lisp);
 

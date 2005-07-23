@@ -31,6 +31,7 @@ Box::Box(const lisp::Lisp* lisp)
   : sprite("box", resources),
     colobj(new CollisionObject())
 {
+  gravity = 0.0f;
   std::string spritename = "box";
   CL_Vector vel;
   lisp::ListIterator iter(lisp);
@@ -47,6 +48,8 @@ Box::Box(const lisp::Lisp* lisp)
       vel.y = iter.value().get_float();
     } else if(iter.item() == "name") {
       name = iter.value().get_string();
+    } else if(iter.item() == "gravity") {
+      gravity = iter.value().get_float();
     } else {
       std::cerr << "Skipping unknown attribute '" 
                 << iter.item() << "' in Box\n";
@@ -57,7 +60,7 @@ Box::Box(const lisp::Lisp* lisp)
     throw std::runtime_error("No sprite name specified in Box");
   sprite = CL_Sprite(spritename, resources);
 
-  colobj->insertCollPrimitive(CollPrimitive(CL_Rectf(0,0,64,64), colobj));
+  colobj->insertCollPrimitive(CollPrimitive(CL_Rectf(0,0,64,64)));
 
   Sector::current()->get_collision_engine()->add(colobj);
 
@@ -72,13 +75,16 @@ Box::collision(const CollisionData& data, CollisionObject& other)
 {
   (void) data;
   (void) other;
-  std::cout << this << ": Collision Event" << std::endl;
+  //std::cout << this << ": Collision Event" << std::endl;
   colobj->set_velocity(CL_Vector(-colobj->get_velocity().x, 0));
 }
 
 void 
 Box::update(float delta)
 {
+  colobj->set_velocity(CL_Vector(colobj->get_velocity().x, 
+                                 colobj->get_velocity().y + gravity * delta));
+
   sprite.update(delta);
   pos = colobj->get_pos();
 }
@@ -87,6 +93,8 @@ void
 Box::draw(SceneContext& sc)
 {
   sc.color().draw(sprite, colobj->get_pos().x, colobj->get_pos().y, 10);
+  
+  std::cout << "Hello World: " << colobj->get_pos() << std::endl;
 }
 
 /* EOF */
