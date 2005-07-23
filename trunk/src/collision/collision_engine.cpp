@@ -49,8 +49,6 @@ void
 CollisionEngine::collision(CollisionObject& a, CollisionObject& b, const CollisionData &result, float delta)
 {
   CollisionData inv=result.invert();
-  a.prepare_collision(result,b);
-  b.prepare_collision(inv,a);
 
   a.collision(result,b);
   b.collision(inv,a);

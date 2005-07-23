@@ -27,7 +27,7 @@
 
 #include <ClanLib/display.h>
 
-CollPrimitive::CollPrimitive(const CL_Rectf &r_,CollisionObject *object_)
+CollPrimitive::CollPrimitive(const CL_Rectf &r_, CollisionObject *object_)
   : object(object_), rect(r_)
 {
 }

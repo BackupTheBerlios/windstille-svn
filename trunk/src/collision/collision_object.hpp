@@ -36,20 +36,17 @@ public:
   CollisionObject();
   virtual ~CollisionObject();
 
-  CL_Vector get_pos() const;
+  /** Sets the velocity of this object */
+  void set_velocity(const CL_Vector &v);
   CL_Vector get_velocity() const;
 
-  void set_velocity(const CL_Vector &v);
+  /** Sets the CollisionObject to the given pos FIXME: unstucking is
+      currently not handled special here, but simply in the next run
+      of the collision engine, this should probally be changed so that
+      the object is unstuck here without affecting other objects and
+      then the real placement position is returned */
   void set_pos(const CL_Vector& p);
-
-  // this function is for preparing impulse collisions
-  // you have to calculate the resulting impulse for both object before changing,
-  // so this is called for both objects first and then collision() for both.
-  //
-  // this isn't really fast, because everything's done twice, maybe someone has a better idea?
-  virtual void prepare_collision(const CollisionData &, CollisionObject &)
-  { }
-  //virtual void collision(const CollisionData& data, CollisionObject& other) = 0; 
+  CL_Vector get_pos() const;
 
   void insertCollPrimitive(const CollPrimitive& primitive);
 
