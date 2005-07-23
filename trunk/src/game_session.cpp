@@ -35,7 +35,7 @@
 #include "tile_map.hpp"
 #include "view.hpp"
 #include "timer.hpp"
-#include "energiebar.hpp"
+#include "energy_bar.hpp"
 #include "dialog_manager.hpp"
 #include "windstille_main.hpp"
 #include "display/scene_context.hpp"
@@ -67,7 +67,7 @@ GameSession::GameSession(const std::string& arg_filename)
   slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
 
   view = new View();  
-  energiebar = new Energiebar();
+  energy_bar = new EnergyBar();
   dialog_manager = new DialogManager();
   conversation  = new Conversation();
 
@@ -77,7 +77,7 @@ GameSession::GameSession(const std::string& arg_filename)
 
 GameSession::~GameSession()
 {
-  delete energiebar;
+  delete energy_bar;
   delete view;
   delete dialog_manager;
   delete conversation;
@@ -116,7 +116,7 @@ GameSession::draw_game()
     }
 
   // Draw HUD
-  energiebar->draw();
+  energy_bar->draw();
 
   if (control_state == DIALOG)
     dialog_manager->draw(); 
@@ -210,7 +210,7 @@ GameSession::update(float delta)
 
     case RUNNING:
       sector->update (delta);
-      energiebar->update(delta);
+      energy_bar->update(delta);
       switch (control_state) 
         {
         case DIALOG:

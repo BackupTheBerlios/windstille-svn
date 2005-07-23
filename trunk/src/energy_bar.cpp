@@ -23,34 +23,34 @@
 #include <ClanLib/Display/graphic_context.h>
 #include "globals.hpp"
 #include "player.hpp"
-#include "energiebar.hpp"
+#include "energy_bar.hpp"
 
-Energiebar::Energiebar()
-  : bar("energiebar", resources)
+EnergyBar::EnergyBar()
+  : bar("energy_bar", resources)
 {
 }
 
-Energiebar::~Energiebar()
+EnergyBar::~EnergyBar()
 {
 }
   
 void
-Energiebar::draw()
+EnergyBar::draw()
 {
-  int energie     = Player::current()->get_energy();
-  int max_energie = Player::current()->get_max_energy();
+  int energy     = Player::current()->get_energy();
+  int max_energy = Player::current()->get_max_energy();
 
-  for(int i = 0; i < energie; ++i)
+  for(int i = 0; i < energy; ++i)
     {
       float red   = 1.0f;
-      float green = (i/float(max_energie));
+      float green = (i/float(max_energy));
       CL_Sprite sprite = bar;
       sprite.set_color(red, green, 0, 1.0f);
       sprite.draw(15 + (i * 10), 15);
       CL_Display::get_current_window()->get_gc()->flush();
     }
 
-  for(int i = energie; i < max_energie; ++i)
+  for(int i = energy; i < max_energy; ++i)
     {
       bar.set_color(.5f, .5f, .5f, .5f);
       bar.draw(15 + (i * 10), 15);
@@ -58,7 +58,7 @@ Energiebar::draw()
 }
 
 void
-Energiebar::update(float delta)
+EnergyBar::update(float delta)
 {
   bar.update(delta);
 }

@@ -32,7 +32,7 @@
 
 class CL_InputEvent;
 
-class Energiebar;
+class EnergyBar;
 class View;
 class Sector;
 class Player;
@@ -51,7 +51,7 @@ private:
   std::string filename;
   Sector* sector;
   View* view;
-  Energiebar* energiebar;
+  EnergyBar* energy_bar;
   DialogManager* dialog_manager;
   Conversation*  conversation;
 

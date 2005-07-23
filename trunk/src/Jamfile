@@ -39,8 +39,8 @@ sources =
         default_shoot.hpp
         dialog_manager.cpp
         dialog_manager.hpp
-        energiebar.cpp
-        energiebar.hpp
+        energy_bar.cpp
+        energy_bar.hpp
         entity.cpp
         entity.hpp
         field.hpp

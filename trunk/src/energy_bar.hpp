@@ -17,25 +17,25 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef HEADER_ENERGIEBAR_HXX
-#define HEADER_ENERGIEBAR_HXX
+#ifndef HEADER_ENERGYBAR_HXX
+#define HEADER_ENERGYBAR_HXX
 
 #include <ClanLib/Display/sprite.h>
 
 /** */
-class Energiebar
+class EnergyBar
 {
 private:
   CL_Sprite bar;
 public:
-  Energiebar();
-  ~Energiebar();
+  EnergyBar();
+  ~EnergyBar();
   
   void draw();
   void update(float delta);
 private:
-  Energiebar (const Energiebar&);
-  Energiebar& operator= (const Energiebar&);
+  EnergyBar (const EnergyBar&);
+  EnergyBar& operator= (const EnergyBar&);
 };
 
 #endif

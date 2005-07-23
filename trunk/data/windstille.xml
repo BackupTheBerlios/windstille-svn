@@ -94,8 +94,8 @@
     </sprite>
   </section>
 
-  <sprite name="energiebar">
-    <image file="images/energiebar.png" name="image1" />
+  <sprite name="energy_bar">
+    <image file="images/energy_bar.png" name="image1" />
   </sprite>
 
   <sprite name="igel_light">
