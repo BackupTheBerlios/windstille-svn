@@ -27,10 +27,12 @@
 #define BOX_HEIGHT 16
 
 Box::Box(const lisp::Lisp* lisp)
-  : sprite("box", resources),
-    colobj(new CollisionObject(CL_Rect(0, 0, 64, 64)))
+  : sprite("box", resources)
 {
   gravity = 0.0f;
+  float width  = 64.0f;
+  float height = 64.0f;
+
   std::string spritename = "box";
   CL_Vector vel;
   lisp::ListIterator iter(lisp);
@@ -41,6 +43,10 @@ Box::Box(const lisp::Lisp* lisp)
       pos.x = iter.value().get_float();
     } else if(iter.item() == "y") {
       pos.y = iter.value().get_float();
+    } else if(iter.item() == "width") {
+      width = iter.value().get_float();
+    } else if(iter.item() == "height") {
+      height = iter.value().get_float();
     } else if (iter.item() == "vx") {
       vel.x = iter.value().get_float();
     } else if (iter.item() == "vy") {
@@ -55,14 +61,14 @@ Box::Box(const lisp::Lisp* lisp)
     }
   }
 
-  if(spritename == "")
-    throw std::runtime_error("No sprite name specified in Box");
-  sprite = CL_Sprite(spritename, resources);
+  if (!spritename.empty())
+    sprite = CL_Sprite(spritename, resources);
 
-  Sector::current()->get_collision_engine()->add(colobj);
-
+  colobj = new CollisionObject(CL_Rectf(0, 0, width, height));
   colobj->set_velocity(vel);
   colobj->set_pos(CL_Vector(pos.x, pos.y));
+
+  Sector::current()->get_collision_engine()->add(colobj);
 
   slot = colobj->sig_collision().connect(this, &Box::collision);
 }
@@ -76,7 +82,13 @@ Box::collision(const CollisionData& data, CollisionObject& other)
   if ((data.direction.x > 0 && colobj->get_velocity().x < 0) ||
       (data.direction.x < 0 && colobj->get_velocity().x > 0))
     {
-      colobj->set_velocity(CL_Vector(-colobj->get_velocity().x, 0));
+      colobj->set_velocity(CL_Vector(-colobj->get_velocity().x, colobj->get_velocity().y));
+    }
+  
+  if ((data.direction.y > 0 && colobj->get_velocity().y < 0) ||
+      (data.direction.y < 0 && colobj->get_velocity().y > 0))
+    {
+      colobj->set_velocity(CL_Vector(colobj->get_velocity().x, -colobj->get_velocity().y));
     }
 }
 
@@ -93,7 +105,8 @@ Box::update(float delta)
 void 
 Box::draw(SceneContext& sc)
 {
-  sc.color().draw(sprite, colobj->get_pos().x, colobj->get_pos().y, 10);
+  if (sprite)
+    sc.color().draw(sprite, colobj->get_pos().x, colobj->get_pos().y, 10);
 }
 
 /* EOF */

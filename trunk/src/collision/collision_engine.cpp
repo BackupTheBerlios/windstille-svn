@@ -103,10 +103,11 @@ CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
 void
 CollisionEngine::update(float delta)
 {
+  if (objects.empty())
+    return; 
+  
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
     {
-      bool moved = false;
-      
       for(Objects::iterator j = i + 1; j != objects.end(); ++j)
         {
           if (i != j)
@@ -115,15 +116,13 @@ CollisionEngine::update(float delta)
 	      if(r.state!=CollisionData::NONE)
 		{
 		  collision(**i, **j, r, delta);
-
-		  if(r.col_time > 0)
-		    moved=true;
 		}
             }
         }
       
       update(**i, delta);
     }
+
   //  return;
   // check penetration and resolve
   bool penetration = true;

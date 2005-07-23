@@ -26,7 +26,10 @@
 
 class CollisionEngine
 {
+private:
   typedef std::vector<CollisionObject*> Objects;
+  Objects objects;
+  float unstuck_velocity;
 
 public:
   CollisionEngine();
@@ -41,9 +44,6 @@ public:
   void remove(CollisionObject *obj);
 
 private:
-  Objects objects;
-  float unstuck_velocity;
-
   void unstuck(CollisionObject& a, CollisionObject& b, float delta);
   CollisionData collide(CollisionObject& a, CollisionObject& b, float delta);
   CollisionData collide(const CL_Rectf& b1, const CL_Rectf& b2,
