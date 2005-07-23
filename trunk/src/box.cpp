@@ -60,7 +60,7 @@ Box::Box(const lisp::Lisp* lisp)
     throw std::runtime_error("No sprite name specified in Box");
   sprite = CL_Sprite(spritename, resources);
 
-  colobj->insertCollPrimitive(CollPrimitive(CL_Rectf(0,0,64,64)));
+  colobj->insertCollPrimitive(CollPrimitive(CL_Rectf(0,0,64,64), colobj));
 
   Sector::current()->get_collision_engine()->add(colobj);
 
@@ -93,8 +93,6 @@ void
 Box::draw(SceneContext& sc)
 {
   sc.color().draw(sprite, colobj->get_pos().x, colobj->get_pos().y, 10);
-  
-  std::cout << "Hello World: " << colobj->get_pos() << std::endl;
 }
 
 /* EOF */
