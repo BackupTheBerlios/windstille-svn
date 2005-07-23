@@ -30,8 +30,10 @@
 
 CollisionObject::CollisionObject()
 {
-  parent=0;
-  coll_engine=0;
+  parent             = 0;
+  coll_engine        = 0;
+  is_unstuckable     = true;
+  is_unstuck_movable = true;
 }
 
 CollisionObject::~CollisionObject()

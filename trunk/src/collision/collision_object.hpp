@@ -31,6 +31,23 @@ class CollisionEngine;
 
 class CollisionObject
 {
+private:
+  /// position of the object
+  CL_Vector pos;
+
+  /// velocity of the object
+  CL_Vector velocity;
+
+  CollisionObject* parent;
+  std::vector<CollisionObject*> children;
+
+  CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
+
+  std::vector<CollPrimitive> colliders;
+  CollisionEngine *coll_engine;
+  
+  bool is_unstuckable;
+  bool is_unstuck_movable;
 
 public:
   CollisionObject();
@@ -57,27 +74,16 @@ public:
 
   // this functions support unstucking, which needs to be done, when more than 2 object stack over one another
   // should this object be unstuck ??
-  virtual bool unstuck() const { return true; }
+  bool unstuck() const { return is_unstuckable; }
   // is this object movable within unstucking ?
-  virtual bool unstuck_movable() const { return true; }
+  bool unstuck_movable() const { return is_unstuck_movable; }
   
+  void set_unstuck(bool s) { is_unstuckable = s; }
+  void set_unstuck_movable(bool s) { is_unstuck_movable = s; }
+
   CL_Rectf get_bounding_box() const;
 
   CL_Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
-protected:
-  /// position of the object
-  CL_Vector pos;
-
-  /// velocity of the object
-  CL_Vector velocity;
-
-  CollisionObject* parent;
-  std::vector<CollisionObject*> children;
-
-  CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
-private:
-  std::vector<CollPrimitive> colliders;
-  CollisionEngine *coll_engine;
 
   friend class CollisionEngine;
   friend CollisionData collide(CollisionObject &a,CollisionObject &b,float delta);

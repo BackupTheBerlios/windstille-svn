@@ -57,8 +57,6 @@ CollisionEngine::collision(CollisionObject& a, CollisionObject& b, const Collisi
 void
 CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
 {
-  std::cout << "Unstucker currently not working" << std::endl;
-
   // The distance A needs to unstuck from B in the given direction
   float left   = fabsf(a.get_pos().x + a.get_bounding_box().get_width() - b.get_pos().x);
   float right  = fabsf(b.get_pos().x + b.get_bounding_box().get_width() - a.get_pos().x);
@@ -67,10 +65,10 @@ CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
 
   float grace =  0.05f;
 
-  float add= unstuck_velocity * delta;
+  float add = unstuck_velocity * delta;
 
-  add= 0.5;
-  add=50;
+  add = 0.5;
+  add = 50;
   //  grace=0;
 
   CL_Vector dir;
