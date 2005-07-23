@@ -41,6 +41,10 @@
 #include "sprite3d/manager.hpp"
 #include "sprite2d/manager.hpp"
 
+#ifdef main
+#undef main
+#endif
+
 using namespace Windstille;
 
 WindstilleMain main_app;
