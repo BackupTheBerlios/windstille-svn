@@ -26,11 +26,16 @@
 #include <ClanLib/Core/Math/cl_vector.h>
 #include "collision_data.hpp"
 
+class TileMap;
 class CollisionEngine;
 
 class CollisionObject
 {
 private:
+  enum ObjectType {RECTANGLE, TILEMAP };
+
+  ObjectType object_type;
+
   /// position of the object
   CL_Vector pos;
 
@@ -42,6 +47,8 @@ private:
   CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
 
   CL_Rectf primitive;
+  TileMap* tilemap;
+
   CollisionEngine* coll_engine;
   
   bool is_unstuckable;
@@ -49,6 +56,8 @@ private:
 
 public:
   CollisionObject(const CL_Rectf& rect_);
+  CollisionObject(TileMap* tilemap_);
+
   virtual ~CollisionObject();
 
   /** Sets the velocity of this object */

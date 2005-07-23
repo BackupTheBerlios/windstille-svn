@@ -49,6 +49,7 @@ private:
   CollisionData collide(const CL_Rectf& b1, const CL_Rectf& b2,
                         const CL_Vector& b1_v, const CL_Vector& b2_v,
                         float delta);
+  CollisionData collide_tilemap(CollisionObject& a, CollisionObject& b, float delta);
 };
 
 #endif

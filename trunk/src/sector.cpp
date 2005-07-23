@@ -55,6 +55,11 @@ Sector::Sector(const std::string& filename)
   parse_file(filename);
   if (!interactive_tilemap)
     std::cout << "Error: Sector: No interactive-tilemap available" << std::endl;
+  else
+    {
+      // add interactive to collision engine
+      collision_engine->add (new CollisionObject (interactive_tilemap));
+    }
 }
 
 Sector::~Sector()

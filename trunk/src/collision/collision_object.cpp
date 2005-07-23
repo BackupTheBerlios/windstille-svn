@@ -32,10 +32,23 @@
 CollisionObject::CollisionObject(const CL_Rectf& rect_)
   : primitive(rect_)
 {
+  object_type        = RECTANGLE;
   parent             = 0;
   coll_engine        = 0;
   is_unstuckable     = true;
   is_unstuck_movable = true;
+  velocity           = CL_Vector(0,0,0);
+  pos                = CL_Vector(0,0,0);
+}
+
+CollisionObject::CollisionObject(TileMap* tilemap_)
+  : tilemap(tilemap_)
+{
+  object_type        = TILEMAP;
+  parent             = 0;
+  coll_engine        = 0;
+  is_unstuckable     = true;
+  is_unstuck_movable = false;
   velocity           = CL_Vector(0,0,0);
   pos                = CL_Vector(0,0,0);
 }
