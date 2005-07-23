@@ -29,9 +29,9 @@ struct CollisionData
   enum State { NONE, STUCK, COLLISION } state;
 
   /**
-   * This is a unit vector that points into the "direction" of the other
-   * object, ie. it's the normal vector of the side/face that we collided with.
-   * The vector points away from the object we collided with.
+   * This is a unit vector that specifies the direction of the collision.
+   * It's the normal vector of the side/face that we collided with. The vector
+   * points away from the object we collided with.
    */
   CL_Vector direction;
   
