@@ -57,7 +57,7 @@ struct SweepResult
 
   bool always() const
   {
-    return state==COL_ALWAYS;
+    return state == COL_ALWAYS;
   }
 
 };

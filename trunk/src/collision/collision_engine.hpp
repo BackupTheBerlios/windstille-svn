@@ -26,7 +26,7 @@
 
 class CollisionEngine
 {
-  typedef std::list<CollisionObject*> Objects;
+  typedef std::vector<CollisionObject*> Objects;
 
 public:
 
