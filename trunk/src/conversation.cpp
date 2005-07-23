@@ -81,6 +81,7 @@ Conversation::draw()
 void
 Conversation::update(float delta)
 {
+  (void) delta;
   if (visible)
     {
       Controller controller = InputManager::get_controller();
