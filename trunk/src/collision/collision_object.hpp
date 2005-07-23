@@ -25,7 +25,6 @@
 #include <ClanLib/core.h>
 #include <ClanLib/Core/Math/cl_vector.h>
 #include "collision_data.hpp"
-#include "collision.hpp"
 
 class CollisionEngine;
 
@@ -43,14 +42,14 @@ private:
 
   CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
 
-  std::vector<CollPrimitive> colliders;
-  CollisionEngine *coll_engine;
+  CL_Rectf primitive;
+  CollisionEngine* coll_engine;
   
   bool is_unstuckable;
   bool is_unstuck_movable;
 
 public:
-  CollisionObject();
+  CollisionObject(const CL_Rectf& rect_);
   virtual ~CollisionObject();
 
   /** Sets the velocity of this object */
@@ -65,8 +64,6 @@ public:
   void set_pos(const CL_Vector& p);
   CL_Vector get_pos() const;
 
-  void insertCollPrimitive(const CollPrimitive& primitive);
-
   void update(float delta);
 
   // debugging helpers
@@ -80,8 +77,6 @@ public:
   
   void set_unstuck(bool s) { is_unstuckable = s; }
   void set_unstuck_movable(bool s) { is_unstuck_movable = s; }
-
-  CL_Rectf get_bounding_box() const;
 
   CL_Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
 

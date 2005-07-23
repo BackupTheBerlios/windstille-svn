@@ -29,7 +29,6 @@ class CollisionEngine
   typedef std::vector<CollisionObject*> Objects;
 
 public:
-
   CollisionEngine();
   ~CollisionEngine();
 
@@ -41,21 +40,15 @@ public:
   CollisionObject* add(CollisionObject *obj);
   void remove(CollisionObject *obj);
 
-
-  float get_min_velocity() const;
-  float get_friction() const;
-
 private:
   Objects objects;
-
-  float friction;
   float unstuck_velocity;
-
-  float minimum_velocity;
 
   void unstuck(CollisionObject& a, CollisionObject& b, float delta);
   CollisionData collide(CollisionObject& a, CollisionObject& b, float delta);
-  CollisionData collide(CollPrimitive& b1, CollPrimitive& b2, float delta);
+  CollisionData collide(const CL_Rectf& b1, const CL_Rectf& b2,
+                        const CL_Vector& b1_v, const CL_Vector& b2_v,
+                        float delta);
 };
 
 #endif

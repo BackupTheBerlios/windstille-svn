@@ -19,16 +19,18 @@
  * License along with this program.
  */
 
+#include <ClanLib/display.h>
+#include <assert.h>
+
 #include "collision_object.hpp"
 #include "collision_engine.hpp"
-
-#include <assert.h>
 
 /***********************************************************************
  * CollisionObject
  ***********************************************************************/
 
-CollisionObject::CollisionObject()
+CollisionObject::CollisionObject(const CL_Rectf& rect_)
+  : primitive(rect_)
 {
   parent             = 0;
   coll_engine        = 0;
@@ -41,18 +43,23 @@ CollisionObject::~CollisionObject()
 }
 
 void
-CollisionObject::insertCollPrimitive(const CollPrimitive& primitive)
-{
-  colliders.push_back(primitive);
-}
-
-void
 CollisionObject::drawCollision()
 {
-  for(std::vector<CollPrimitive>::iterator j = colliders.begin(); j != colliders.end(); j++)
-    {
-      (*j).drawCollision();
-    }
+  CL_Vector v = get_pos ();
+  CL_Rectf  r = primitive;
+
+  r += CL_Pointf (v.x, v.y);
+
+  CL_Display::fill_rect (r, CL_Color (255, 255, 255));
+  
+  CL_Display::draw_rect (r,
+			 CL_Color(155, 155, 155));        
+  
+  CL_Display::draw_line (r.left + r.get_width ()/2,
+			 r.top  + r.get_height ()/2,
+			 r.left + r.get_width ()/2  + get_velocity ().x,
+			 r.top  + r.get_height ()/2 + get_velocity ().y,
+			 CL_Color (255, 0, 255));
 }
 
 void CollisionObject::update(float delta)
@@ -91,20 +98,6 @@ CollisionObject::set_pos(const CL_Vector& p)
 {
   // FIXME: Do this somewhat more clever to avoid stuck issues
   pos = p;
-}
-
-CL_Rectf
-CollisionObject::get_bounding_box() const
-{
-  assert(!colliders.empty());
-  CL_Rectf rect = colliders.front().rect;
- 
-  for(std::vector<CollPrimitive>::const_iterator i = colliders.begin()+1; i != colliders.end(); ++i)
-    {
-      rect = rect.calc_union(i->rect);
-    }
-
-  return rect;
 }
 
 /* EOF */

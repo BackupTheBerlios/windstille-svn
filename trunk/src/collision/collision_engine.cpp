@@ -29,7 +29,6 @@
 CollisionEngine::CollisionEngine()
 {
   unstuck_velocity = 50.0f;
-  minimum_velocity = .1f;
 }
 
 CollisionEngine::~CollisionEngine()
@@ -58,10 +57,10 @@ void
 CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
 {
   // The distance A needs to unstuck from B in the given direction
-  float left   = fabsf(a.get_pos().x + a.get_bounding_box().get_width() - b.get_pos().x);
-  float right  = fabsf(b.get_pos().x + b.get_bounding_box().get_width() - a.get_pos().x);
-  float top    = fabsf(a.get_pos().y + a.get_bounding_box().get_height() - b.get_pos().y);
-  float bottom = fabsf(b.get_pos().y + b.get_bounding_box().get_height() - a.get_pos().y);
+  float left   = fabsf(a.get_pos().x + a.primitive.get_width() - b.get_pos().x);
+  float right  = fabsf(b.get_pos().x + b.primitive.get_width() - a.get_pos().x);
+  float top    = fabsf(a.get_pos().y + a.primitive.get_height() - b.get_pos().y);
+  float bottom = fabsf(b.get_pos().y + b.primitive.get_height() - a.get_pos().y);
 
   float grace =  0.05f;
 
@@ -108,7 +107,7 @@ CollisionEngine::update(float delta)
         {
           if (i != j)
             {
-	      CollisionData r=collide(**i, **j, delta);
+	      CollisionData r = collide(**i, **j, delta);
 	      if(r.state!=CollisionData::NONE)
 		{
 		  collision(**i, **j, r, delta);
@@ -141,7 +140,7 @@ CollisionEngine::update(float delta)
 	      
 	      if (i != j && ((*i)->unstuck_movable() || ((*j)->unstuck_movable())))
 		{
-		  CollisionData r=collide(**i, **j, delta/1000.0f);
+		  CollisionData r = collide(**i, **j, delta/1000.0f);
 		  if(r.state!=CollisionData::NONE)
 		    {
 		      //		      collision(**i, **j, r, delta);///30.0f);
@@ -166,6 +165,7 @@ CollisionEngine::update(CollisionObject& obj, float delta)
 CollisionObject*
 CollisionEngine::add(CollisionObject *obj)
 {
+  // FIXME: This might need commit_add/commit_remove stuff like in sector
   objects.push_back(obj);
   obj->coll_engine=this;
 
@@ -175,6 +175,7 @@ CollisionEngine::add(CollisionObject *obj)
 void 
 CollisionEngine::remove(CollisionObject *obj)
 {
+  // FIXME: This might need commit_add/commit_remove stuff like in sector
   Objects::iterator i = std::find(objects.begin(), objects.end(), obj);
   if(i != objects.end())
     objects.erase(i);
@@ -182,12 +183,14 @@ CollisionEngine::remove(CollisionObject *obj)
 
 // LEFT means b1 is left of b2
 CollisionData
-CollisionEngine::collide(CollPrimitive& b1, CollPrimitive& b2, float delta)
+CollisionEngine::collide(const CL_Rectf& b1, const CL_Rectf& b2,
+                         const CL_Vector& b1_v, const CL_Vector& b2_v,
+                         float delta)
 {
-  SweepResult result0 = simple_sweep_1d(b1.x_pos(), b1.width(), b1.x_velocity(),
-					b2.x_pos(), b2.width(), b2.x_velocity());
-  SweepResult result1 = simple_sweep_1d(b1.y_pos(), b1.height(), b1.y_velocity(),
-					b2.y_pos(), b2.height(), b2.y_velocity());
+  SweepResult result0 = simple_sweep_1d(b1.left, b1.get_width(),  b1_v.x,
+					b2.left, b2.get_width(),  b2_v.x);
+  SweepResult result1 = simple_sweep_1d(b1.top,  b1.get_height(), b1_v.y,
+					b2.top,  b2.get_height(), b2_v.y);
 
   CollisionData result;
   result.delta = delta;
@@ -201,7 +204,7 @@ CollisionEngine::collide(CollPrimitive& b1, CollPrimitive& b2, float delta)
 	  if(result0.begin(delta)<result1.begin(delta))
 	    {
 	      // x direction prior
-	      if(b1.x_pos()<b2.x_pos())
+	      if(b1.left < b2.left)
 		{
 		  result.state=CollisionData::COLLISION;
 		  result.direction=CL_Vector(-1, 0);
@@ -216,7 +219,7 @@ CollisionEngine::collide(CollPrimitive& b1, CollPrimitive& b2, float delta)
 	  else
 	    {
 	      // x direction prior
-	      if(b1.y_pos()<b2.y_pos())
+	      if(b1.top < b2.top)
 		{
 		  result.state=CollisionData::COLLISION;
 		  result.direction=CL_Vector(0, -1);
@@ -236,26 +239,22 @@ CollisionEngine::collide(CollPrimitive& b1, CollPrimitive& b2, float delta)
 CollisionData
 CollisionEngine::collide(CollisionObject& a, CollisionObject& b, float delta)
 {
-  CollisionData r;
+  CL_Rectf ra = a.primitive;
+  CL_Rectf rb = b.primitive;
 
-  //  if(!(a.movable or b.movable))
-  //    return r;
+  ra.left   += a.get_pos().x;
+  ra.right  += a.get_pos().x;
+  ra.top    += a.get_pos().y;
+  ra.bottom += a.get_pos().y;
 
-  bool first=true;
-  for(std::vector<CollPrimitive>::iterator i = a.colliders.begin(); i != a.colliders.end(); ++i)
-    {
-      for(std::vector<CollPrimitive>::iterator j = b.colliders.begin(); j !=b.colliders.end(); ++j)
-	{
-	  if(first)
-	    {
-	      r = collide(*i, *j, delta);
-	      first=false;
-	    }
-	  else
-	    r.merge(collide(*i, *j, delta));
-	}
-    }
-  return r;
+  rb.left   += b.get_pos().x;
+  rb.right  += b.get_pos().x;
+  rb.top    += b.get_pos().y;
+  rb.bottom += b.get_pos().y;
+
+  return collide(ra, rb,
+                 a.get_velocity(), b.get_velocity(),
+                 delta);
 }
 
 /* EOF */
