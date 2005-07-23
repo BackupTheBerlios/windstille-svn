@@ -20,7 +20,6 @@
 #include "box.hpp"
 #include "globals.hpp"
 #include "lisp/list_iterator.hpp"
-#include "collision/collision.hpp"
 #include "collision/collision_engine.hpp"
 #include "tile_map.hpp"
 #include "random.hpp"
