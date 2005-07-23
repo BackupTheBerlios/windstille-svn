@@ -36,6 +36,8 @@ CollisionObject::CollisionObject(const CL_Rectf& rect_)
   coll_engine        = 0;
   is_unstuckable     = true;
   is_unstuck_movable = true;
+  velocity           = CL_Vector(0,0,0);
+  pos                = CL_Vector(0,0,0);
 }
 
 CollisionObject::~CollisionObject()

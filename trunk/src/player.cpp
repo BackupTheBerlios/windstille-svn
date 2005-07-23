@@ -27,6 +27,7 @@
 #include "bomb.hpp"
 #include "globals.hpp"
 #include "sprite3d/manager.hpp"
+#include "collision/collision_engine.hpp"
 
 static const int MAX_ENERGY = 16;
 static const float WALK_SPEED = 128.0;
@@ -54,6 +55,18 @@ Player::Player () :
 
   hit_count = 0.0f;
   sprite->set_action("Stand");
+
+  // collision detection init
+  CollisionObject* c_object;
+
+  col_objects.push_back(c_object = new CollisionObject ( CL_Rectf ( -15, -120, 15, 0 )));
+
+  c_object->set_pos(pos);
+  c_object->set_velocity(velocity);
+  
+  slot = c_object->sig_collision().connect(this, &Player::collision);
+
+  Sector::current()->get_collision_engine()->add(c_object);
 }
 
 Player::~Player()
@@ -151,6 +164,10 @@ Player::update (float elapsed_time)
   pos += velocity * elapsed_time;
   sprite->update(elapsed_time);
   //grenade->update(elapsed_time);
+
+  // FIXME: actually movement should be done through CollisionObject
+  //        and this->pos should be set by getting value from the current CollisionObject
+  (*col_objects.begin ())->set_pos (pos);
 }
 
 void

@@ -47,6 +47,9 @@ private:
   bool bomb_placed;
   float hit_count;
   int energy;
+
+  CL_Slot slot;
+
 public:
   enum State
   {
