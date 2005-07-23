@@ -28,7 +28,11 @@ struct CollisionData
 {
   enum State { NONE, STUCK, COLLISION } state;
 
-  // points into direction from where the other object came
+  /**
+   * This is a unit vector that points into the "direction" of the other
+   * object, ie. it's the normal vector of the side/face that we collided with.
+   * The vector points away from the object we collided with.
+   */
   CL_Vector direction;
   
   // size of time frame
