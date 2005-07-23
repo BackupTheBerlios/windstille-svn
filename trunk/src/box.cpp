@@ -29,7 +29,7 @@
 
 Box::Box(const lisp::Lisp* lisp)
   : sprite("box", resources),
-    colobj(new CollisionObject())
+    colobj(new CollisionObject(CL_Rect(0, 0, 64, 64)))
 {
   gravity = 0.0f;
   std::string spritename = "box";
@@ -59,8 +59,6 @@ Box::Box(const lisp::Lisp* lisp)
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in Box");
   sprite = CL_Sprite(spritename, resources);
-
-  colobj->insertCollPrimitive(CollPrimitive(CL_Rectf(0,0,64,64), colobj));
 
   Sector::current()->get_collision_engine()->add(colobj);
 

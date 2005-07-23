@@ -38,7 +38,6 @@ private:
   CL_Vector velocity;
 
   CollisionObject* parent;
-  std::vector<CollisionObject*> children;
 
   CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
 
