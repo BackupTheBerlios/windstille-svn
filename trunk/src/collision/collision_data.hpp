@@ -54,9 +54,9 @@ struct CollisionData
   } 
 };
 
-inline std::ostream &operator<<(std::ostream &o,const CollisionData &r)
+inline std::ostream &operator<<(std::ostream &o, const CollisionData &r)
 {
-  o<<"("<<r.direction.x<<","<<r.direction.y<<","<<r.col_time<<")";
+  o << "(" << r.direction.x << ", " << r.direction.y << ", " << r.col_time << ")";
   return o;
 }
 

@@ -31,7 +31,8 @@ struct SweepResult
 {
   enum CollisionState { COL_AT, COL_ALWAYS, COL_NEVER };
   CollisionState state;
-  float t0,t1;
+  float t0;
+  float t1;
 
   SweepResult()
   {
@@ -61,9 +62,9 @@ struct SweepResult
 
 };
 
-inline std::ostream &operator<<(std::ostream &o,const SweepResult &r)
+inline std::ostream &operator<<(std::ostream &o, const SweepResult &r)
 {
-  o<<"("<<r.state<<","<<r.t0<<","<<r.t1<<")";
+  o << "(" << r.state << ", " << r.t0 << ", " << r.t1 << ")";
   return o;
 }
 

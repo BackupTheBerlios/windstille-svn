@@ -86,7 +86,7 @@ public:
   CL_Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
 
   friend class CollisionEngine;
-  friend CollisionData collide(CollisionObject &a,CollisionObject &b,float delta);
+  friend CollisionData collide(CollisionObject& a, CollisionObject& b, float delta);
 };
 
 #endif

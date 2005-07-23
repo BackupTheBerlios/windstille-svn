@@ -79,7 +79,7 @@ CollPrimitive::drawCollision() const
 {
   CL_Vector v=object->get_pos ();
   CL_Rectf r=rect;
-  r += CL_Pointf (v.x,v.y);
+  r += CL_Pointf (v.x, v.y);
 
   CL_Display::fill_rect (r, CL_Color (255, 255, 255));
   
@@ -95,7 +95,11 @@ CollPrimitive::drawCollision() const
 
 std::ostream& operator<<(std::ostream& out, const CollPrimitive &b)
 {
-  out<<"("<<b.x_pos()<<","<<b.y_pos()<<","<<b.width()<<","<<b.height()<<","<<b.object->get_velocity().x<<","<<b.object->get_velocity().y<<")";
+  out << "(" 
+      << b.x_pos() << ", " << b.y_pos() << ", " 
+      << b.width() << ", " << b.height() << ", " 
+      << b.object->get_velocity().x << ", " << b.object->get_velocity().y
+      << ")";
   return out;
 }
 

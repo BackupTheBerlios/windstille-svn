@@ -41,7 +41,7 @@ public:
   CL_Rectf rect;
 
 public:
-  CollPrimitive(const CL_Rectf &r_,CollisionObject *object_);
+  CollPrimitive(const CL_Rectf& r_, CollisionObject* object_);
 
   float x_pos() const;
   float y_pos() const;
