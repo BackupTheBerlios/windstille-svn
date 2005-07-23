@@ -34,7 +34,6 @@ private:
 
 protected:
   CL_Vector pos;
-  std::vector<CollisionObject* > col_objects;
 
 public:
   Entity();

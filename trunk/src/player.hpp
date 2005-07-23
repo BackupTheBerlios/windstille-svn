@@ -48,6 +48,7 @@ private:
   float hit_count;
   int energy;
 
+  std::vector<CollisionObject* > col_objects;
   CL_Slot slot;
 
 public:
