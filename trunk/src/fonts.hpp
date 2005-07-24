@@ -21,6 +21,7 @@
 #define HEADER_FONTS_HXX
 
 #include <ClanLib/Display/font.h>
+#include "ttf_font.hpp"
 
 namespace Fonts {
 
@@ -31,6 +32,8 @@ extern CL_Font menu;
 extern CL_Font menu_h;
 
 extern CL_Font copyright;
+
+extern TTFFont* ttffont;
 
 void init();
 void deinit();

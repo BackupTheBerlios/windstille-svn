@@ -31,8 +31,23 @@
 class Character
 {
 public:
-  CL_Rectf rect;
-  int texture_id;
+  /** The left-side bearing, i.e., the horizontal distance from the
+      current pen position to the left border of the glyph bitmap. */
+  int left;
+  
+  /* The top-side bearing, i.e., the vertical distance from the
+     current pen position to the top border of the glyph bitmap. This
+     distance is positive for upwards-y! */
+  int top;
+  
+  int width;
+  int height;
+
+  /** The position of the character in a OpenGL texture, given in
+      uv-coordinates */
+  CL_Rectf uv;
+
+  Character(int left, int top, int width, int height, const CL_Rectf& uv);
 };
 
 class TTFFontImpl;
@@ -44,11 +59,13 @@ public:
   static void init();
   static void deinit();
 
-  TTFFont(const std::string& file, unsigned int size);
+  TTFFont(const std::string& file, int size);
   ~TTFFont();
 
+  int get_height() const;
+
   Character get_character(int c);
-  void draw(const std::string& str);
+  void draw(float x_pos, float y_pos, const std::string& str);
 private:
   TTFFontImpl* impl;
 };

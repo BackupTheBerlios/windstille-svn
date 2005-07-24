@@ -28,6 +28,8 @@ CL_Font Fonts::menu_h;
 
 CL_Font Fonts::copyright;
 
+TTFFont* Fonts::ttffont = 0;
+
 void
 Fonts::init()
 {
@@ -38,6 +40,8 @@ Fonts::init()
   menu_h = CL_Font("menu_h", resources);
 
   copyright = CL_Font("copyright", resources);
+
+  ttffont = new TTFFont("data/fonts/Vera.ttf", 12);
 }
 
 void
@@ -50,6 +54,8 @@ Fonts::deinit()
   menu_h = CL_Font();
 
   copyright = CL_Font();
+
+  delete ttffont;
 }
 
 /* EOF */

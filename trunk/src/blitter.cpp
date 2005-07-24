@@ -24,6 +24,38 @@
 #include <ClanLib/Display/palette.h>
 #include "blitter.hpp"
 
+void generate_border(CL_PixelBuffer buffer, int x_pos, int y_pos, int width, int height)
+{
+  buffer.lock();
+  unsigned char* data = static_cast<unsigned char*>(buffer.get_data());
+  int pitch = buffer.get_pitch();
+
+  // duplicate the top line
+  memcpy(data + (y_pos-1)*pitch + 4*x_pos, 
+         data + (y_pos)*pitch + 4*x_pos,
+         4*(width+2));
+  // duplicate the bottom line
+  memcpy(data + (y_pos+height)*pitch + 4*x_pos, 
+         data + (y_pos+height-1)*pitch + 4*x_pos,  
+         4*(width+2));
+
+  // duplicate left and right borders
+  for(int y = y_pos-1; y < y_pos + height+1; ++y)
+    {
+      data[y*pitch + 4*(x_pos-1) + 0] = data[y*pitch + 4*(x_pos) + 0];
+      data[y*pitch + 4*(x_pos-1) + 1] = data[y*pitch + 4*(x_pos) + 1];
+      data[y*pitch + 4*(x_pos-1) + 2] = data[y*pitch + 4*(x_pos) + 2];
+      data[y*pitch + 4*(x_pos-1) + 3] = data[y*pitch + 4*(x_pos) + 3];
+
+      data[y*pitch + 4*(x_pos + width) + 0] = data[y*pitch + 4*(x_pos + width-1) + 0];
+      data[y*pitch + 4*(x_pos + width) + 1] = data[y*pitch + 4*(x_pos + width-1) + 1];
+      data[y*pitch + 4*(x_pos + width) + 2] = data[y*pitch + 4*(x_pos + width-1) + 2];
+      data[y*pitch + 4*(x_pos + width) + 3] = data[y*pitch + 4*(x_pos + width-1) + 3];
+    }
+
+  buffer.unlock();
+}
+
 void 
 blit_opaque(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos)
 {

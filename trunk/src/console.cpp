@@ -173,12 +173,12 @@ ConsoleImpl::draw()
           else
             Fonts::copyright.set_alpha(1.0f);
 
-          Fonts::copyright.draw(x_pos, y, buffer[i].message);
+          Fonts::ttffont->draw(x_pos, y, buffer[i].message);
         }
-      y -= Fonts::copyright.get_height() + 2;
+      y -= Fonts::ttffont->get_height() + 2;
     }
 
-  Fonts::copyright.set_color(CL_Color(255, 255, 255));
+  //Fonts::ttffont->set_color(CL_Color(255, 255, 255));
   if (active)
     {
       std::string str = command_line;
@@ -190,14 +190,14 @@ ConsoleImpl::draw()
             str += "_";
         }
 
-      Fonts::copyright.set_alignment(origin_bottom_left);
-      Fonts::copyright.set_alpha(1.0f);
-      Fonts::copyright.draw(x_pos, y_pos, ">" + str);
+      //Fonts::ttffont->set_alignment(origin_bottom_left);
+      //Fonts::ttffont->set_alpha(1.0f);
+      Fonts::ttffont->draw(x_pos, y_pos, ">" + str);
     }
   
   //needed because ClanLib font operator= doesn't deal with uniqueness properly, so we need to
   //reset it again
-  Fonts::copyright.set_alpha(1.0f);
+  //Fonts::ttffont->set_alpha(1.0f);
 }
 
 void

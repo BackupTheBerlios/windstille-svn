@@ -250,8 +250,6 @@ WindstilleMain::init_modules()
     
   TTFFont::init();
 
-  //TTFFont font("font.ttf", 12);
-
   if (debug) std::cout << "Initialising ClanLib" << std::endl;
   // Init ClanLib
   CL_SetupCore::init();

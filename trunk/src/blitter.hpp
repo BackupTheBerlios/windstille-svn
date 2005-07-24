@@ -22,6 +22,18 @@
 
 #include <ClanLib/Display/pixel_buffer.h>
 
+/** Duplicate all the edge pixel of the given rectangle to the outside
+    of the rectangle, thus creating a border around the given
+    rectangle, this is needed for OpenGL textures to avoid filtering
+    artefacts:
+
+    X X X X X    1 1 2 3 3
+    X 1 2 3 X _\ 1 1 2 3 3
+    X 4 5 6 X  / 4 4 5 6 6
+    X X X X X    4 4 5 6 6
+*/
+void generate_border(CL_PixelBuffer buffer, int x_pos, int y_pos, int width, int height);
+
 void blit_opaque(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos);
 void blit(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos);
 void clear(CL_PixelBuffer target);
