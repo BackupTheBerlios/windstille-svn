@@ -200,7 +200,7 @@ Player::find_useable_entity()
   for (std::vector<GameObject*>::iterator i = objects->begin(); i != objects->end(); ++i)
     {
       Entity* object = dynamic_cast<Entity*>(*i);
-      if (object && object != this && object->useable())
+      if (object && object != this && object->is_useable())
         {
           //FIXME use proper collision detection
           if (object->get_pos().x > pos.x - 32 && object->get_pos().x < pos.x + 32

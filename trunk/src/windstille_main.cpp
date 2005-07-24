@@ -37,6 +37,7 @@
 #include "tinygettext/gettext.hpp"
 #include "gameconfig.hpp"
 #include "util.hpp"
+#include "ttf_font.hpp"
 #include "glutil/texture_manager.hpp"
 #include "sprite3d/manager.hpp"
 #include "sprite2d/manager.hpp"
@@ -166,7 +167,7 @@ WindstilleMain::main(int argc, char** argv)
   try {
     init_physfs(argv[0]);
     init_sdl();
-    
+
     dictionaryManager = new TinyGetText::DictionaryManager();
     dictionaryManager->set_charset("iso8859-1");
     dictionaryManager->add_directory("locale");                    
@@ -245,6 +246,12 @@ WindstilleMain::main(int argc, char** argv)
 void
 WindstilleMain::init_modules()
 {
+  if (debug) std::cout << "Initialising Freetype2" << std::endl;
+    
+  TTFFont::init();
+
+  //TTFFont font("font.ttf", 12);
+
   if (debug) std::cout << "Initialising ClanLib" << std::endl;
   // Init ClanLib
   CL_SetupCore::init();
@@ -270,7 +277,7 @@ WindstilleMain::init_modules()
   sound_manager->enable_music(config->music_enabled);
 
   if (debug) std::cout << "Initialising ScriptManager" << std::endl;
-  texture_manager = new TextureManager();
+  texture_manager  = new TextureManager();
   script_manager   = new ScriptManager();
   sprite2d_manager = new sprite2d::Manager();
   sprite3d_manager = new sprite3d::Manager();
@@ -299,11 +306,13 @@ WindstilleMain::deinit_modules()
 
   delete window;
 
-  CL_SetupDisplay::init();
+  CL_SetupDisplay::deinit();
 
-  CL_SetupGL::init();
+  CL_SetupGL::deinit();
 
-  CL_SetupCore::init(); 
+  CL_SetupCore::deinit(); 
+
+  TTFFont::deinit();
 }
 
 void

@@ -36,6 +36,7 @@
 #include "script_manager.hpp"
 #include "collision/collision_engine.hpp"
 #include "test_object.hpp"
+#include "elevator.hpp"
 #include "nightvision.hpp"
 #include "character.hpp"
 #include "spider_mine.hpp"
@@ -135,6 +136,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new Trigger(lisp));
   } else if(name == "box") {
     add_entity(new Box(lisp));
+  } else if(name == "elevator") {
+    add_entity(new Elevator(lisp));
   } else if(name == "flashing-sign") {
     add(new FlashingSign(lisp));
   } else if(name == "character") {    

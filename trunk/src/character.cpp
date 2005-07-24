@@ -33,6 +33,8 @@
 
 Character::Character(const lisp::Lisp* lisp)
 {
+  set_useable(true);
+
   pos.z = 100;
   lisp::ListIterator iter(lisp);
   while(iter.next()) {

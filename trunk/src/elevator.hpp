@@ -1,10 +1,10 @@
 /*  $Id$
-**  __      __.__            .___        __  .__.__  .__
-** /  \    /  \__| ____    __| _/_______/  |_|__|  | |  |   ____
-** \   \/\/   /  |/    \  / __ |/  ___/\   __\  |  | |  | _/ __ \
-**  \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
-**   \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
-**        \/          \/      \/    \/                         \/
+**   __      __.__            .___        __  .__.__  .__
+**  /  \    /  \__| ____    __| _/_______/  |_|__|  | |  |   ____
+**  \   \/\/   /  |/    \  / __ |/  ___/\   __\  |  | |  | _/ __ \
+**   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
+**    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
+**         \/          \/      \/    \/                         \/
 **  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
 **
 **  This program is free software; you can redistribute it and/or
@@ -22,25 +22,26 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <ClanLib/Display/display.h>
-#include <assert.h>
-#include "globals.hpp"
+#ifndef HEADER_ELEVATOR_HXX
+#define HEADER_ELEVATOR_HXX
+
+#include "lisp/lisp.hpp"
 #include "entity.hpp"
 
-Entity::Entity()
-  : useable(false)
+/** */
+class Elevator : public Entity
 {
-}
+private:
+  CL_Sizef size;
+  CollisionObject* colobject;
+public:
+  Elevator(const lisp::Lisp* lisp);
+  ~Elevator();
 
-Entity::~Entity()
-{
-}
+  void draw(SceneContext& sc);
+  void update(float delta);
+};
 
-void
-Entity::set_pos(float x, float y)
-{
-  pos.x = x;
-  pos.y = y;
-}
+#endif
 
 /* EOF */

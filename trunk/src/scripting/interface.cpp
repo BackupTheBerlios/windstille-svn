@@ -141,4 +141,14 @@ int println(HSQUIRRELVM v) __custom
   return 0;
 }
 
+void set_debug(bool t)
+{
+  debug = t;
+}
+
+bool get_debug()
+{
+  return debug;
+}
+
 }

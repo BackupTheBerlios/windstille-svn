@@ -25,6 +25,7 @@ UseableObject::UseableObject(const lisp::Lisp* lisp)
   : highlight("vrdoor/highlight", resources),
     color("vrdoor/color", resources)
 {
+  set_useable(true);
   pos.z = 0;
   lisp::ListIterator iter(lisp);
   while(iter.next()) {
