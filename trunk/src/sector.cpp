@@ -123,11 +123,9 @@ Sector::parse_file(const std::string& filename)
 void
 Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
 {
-  printf("ParseObject: '%s'.\n", name.c_str());
   if(name == "tilemap") {
     TileMap* tilemap = new TileMap(lisp);
     add(tilemap);
-    printf("Name: %s.\n", tilemap->get_name().c_str());
     if (tilemap->get_name() == "interactive")
       interactive_tilemap = tilemap;
   } else if(name == "background") {
