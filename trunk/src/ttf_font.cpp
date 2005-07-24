@@ -22,10 +22,12 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <physfs.h>
 #include <assert.h>
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <sstream>
 #include <ClanLib/gl.h>
 #include <ClanLib/Display/pixel_buffer.h>
 #include <ClanLib/Display/Providers/provider_factory.h>
@@ -95,18 +97,51 @@ blit_ftbitmap(CL_PixelBuffer target, const FT_Bitmap& brush, int x_pos, int y_po
   target.unlock();
 }
 
-TTFFont::TTFFont(const std::string& file, int size)
+TTFFont::TTFFont(const std::string& filename, int size)
   : impl(new TTFFontImpl())
 {
   assert(size > 0);
 
   impl->size = size;
 
+  FT_Byte*  buffer = 0;
+  size_t buffer_len = 0;
   // FIXME: Use FT_NewMemory_Face and physfs
-  FT_Face face;
-  if (FT_New_Face(TTFFontImpl::library, file.c_str(), 0, &face))
+  PHYSFS_file* file = PHYSFS_openRead(filename.c_str());
+  if(!file) {
+    std::ostringstream msg;
+    msg << "Couldn't open '" << filename << "': "
+        << PHYSFS_getLastError();
+    throw std::runtime_error(msg.str());
+  }
+   
+  PHYSFS_sint64 fsize = PHYSFS_fileLength(file);
+  if (fsize == -1)
+    {      
+      std::ostringstream msg;
+      msg << "Couldn't get filesize of file '" << filename << "': "
+          << PHYSFS_getLastError();
+      throw std::runtime_error(msg.str());
+    }
+  else
     {
-      throw std::runtime_error("Couldn't load font: '" + file + "'");
+      buffer_len = fsize;
+      buffer = new FT_Byte[buffer_len];
+      PHYSFS_sint64 read_size = PHYSFS_read(file, buffer, 1, fsize);
+      if (read_size != fsize)
+        {
+          std::ostringstream msg;
+          msg << "Couldn't read  file '" << filename << "': "
+              << PHYSFS_getLastError();
+          throw std::runtime_error(msg.str());          
+        }     
+    }
+  PHYSFS_close(file);
+
+  FT_Face face;
+  if (FT_New_Memory_Face(TTFFontImpl::library, buffer, buffer_len, 0, &face))
+    {
+      throw std::runtime_error("Couldn't load font: '" + filename + "'");
     }
   
   FT_Set_Pixel_Sizes( face, size, size);
@@ -166,13 +201,13 @@ TTFFont::TTFFont(const std::string& file, int size)
                       glyph_bitmap->bitmap.width, glyph_bitmap->bitmap.rows);
 
       impl->characters.push_back(TTFCharacter(glyph_bitmap->left, 
-                                           glyph_bitmap->top, 
-                                           glyph_bitmap->bitmap.width, 
-                                           glyph_bitmap->bitmap.rows, 
-                                           CL_Rectf(x_pos/float(pixelbuffer.get_width()),
-                                                    y_pos/float(pixelbuffer.get_height()),
-                                                    (x_pos + glyph_bitmap->bitmap.width)/float(pixelbuffer.get_width()),
-                                                    (y_pos + glyph_bitmap->bitmap.rows)/float(pixelbuffer.get_height()))));
+                                              glyph_bitmap->top, 
+                                              glyph_bitmap->bitmap.width, 
+                                              glyph_bitmap->bitmap.rows, 
+                                              CL_Rectf(x_pos/float(pixelbuffer.get_width()),
+                                                       y_pos/float(pixelbuffer.get_height()),
+                                                       (x_pos + glyph_bitmap->bitmap.width)/float(pixelbuffer.get_width()),
+                                                       (y_pos + glyph_bitmap->bitmap.rows)/float(pixelbuffer.get_height()))));
 
       // we leave a one pixel border around the letters which we fill with generate_border
       x_pos += glyph_bitmap->bitmap.width + 2;
