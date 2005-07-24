@@ -45,7 +45,7 @@ Player::Player () :
   pos.y = 200;
   pos.z = 100;
   name = "player";
-  sprite = sprite3d_manager->create("3dsprites/hero.wsprite");
+  sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
   grenade = sprite3d_manager->create("3dsprites/grenade.wsprite");
   light.set_blend_func(blend_src_alpha, blend_one);
 
