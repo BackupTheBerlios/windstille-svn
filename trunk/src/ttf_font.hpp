@@ -28,7 +28,7 @@
 #include <ClanLib/Core/Math/rect.h>
 #include <string>
 
-class Character
+class TTFCharacter
 {
 public:
   /** The left-side bearing, i.e., the horizontal distance from the
@@ -47,7 +47,7 @@ public:
       uv-coordinates */
   CL_Rectf uv;
 
-  Character(int left, int top, int width, int height, const CL_Rectf& uv);
+  TTFCharacter(int left, int top, int width, int height, const CL_Rectf& uv);
 };
 
 class TTFFontImpl;
@@ -64,7 +64,7 @@ public:
 
   int get_height() const;
 
-  Character get_character(int c);
+  TTFCharacter get_character(int c);
   void draw(float x_pos, float y_pos, const std::string& str);
 private:
   TTFFontImpl* impl;

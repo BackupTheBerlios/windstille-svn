@@ -39,7 +39,7 @@
 #include "blitter.hpp"
 #include "ttf_font.hpp"
 
-Character::Character(int left_, int top_, int width_, int height_,
+TTFCharacter::TTFCharacter(int left_, int top_, int width_, int height_,
                      const CL_Rectf& uv_)
   : left(left_), top(top_), width(width_), height(height_),
     uv(uv_)
@@ -55,7 +55,7 @@ public:
 
   /** Array of characters available in this font, current limited to
       256 characters, no full unicode */
-  std::vector<Character> characters;
+  std::vector<TTFCharacter> characters;
 
   int size;
 
@@ -146,7 +146,7 @@ TTFFont::TTFFont(const std::string& file, int size)
 
       if (0)
         {
-          std::cout << "\n\nCharacter: " << glyph_index << " '" << (char)glyph_index << "' "  
+          std::cout << "\n\nTTFCharacter: " << glyph_index << " '" << (char)glyph_index << "' "  
                     << "Size: " << glyph_bitmap->bitmap.width << "x" << glyph_bitmap->bitmap.rows << std::endl;
 
           int pitch = glyph_bitmap->bitmap.pitch;
@@ -165,7 +165,7 @@ TTFFont::TTFFont(const std::string& file, int size)
       generate_border(pixelbuffer, x_pos, y_pos, 
                       glyph_bitmap->bitmap.width, glyph_bitmap->bitmap.rows);
 
-      impl->characters.push_back(Character(glyph_bitmap->left, 
+      impl->characters.push_back(TTFCharacter(glyph_bitmap->left, 
                                            glyph_bitmap->top, 
                                            glyph_bitmap->bitmap.width, 
                                            glyph_bitmap->bitmap.rows, 
@@ -197,7 +197,7 @@ TTFFont::~TTFFont()
 {
 }
 
-Character
+TTFCharacter
 TTFFont::get_character(int c)
 {
   assert(c >= 0 && c < 256);
@@ -236,7 +236,7 @@ TTFFont::draw(float x_pos, float y_pos, const std::string& str)
         }
       else
         {
-          Character& character = impl->characters[*i];
+          TTFCharacter& character = impl->characters[*i];
       
           glTexCoord2f(character.uv.left, character.uv.top);
           glVertex2f(x_pos + character.left + mx,
