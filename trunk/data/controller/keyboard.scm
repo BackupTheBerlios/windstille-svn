@@ -7,7 +7,7 @@
  (fire  (keyboard-button "space"))
  (use   (keyboard-button "s"))
  (run   (keyboard-button "e"))
- (keyboard)
+ (keyboard #t)
  )
  
 ;; EOF ;;
