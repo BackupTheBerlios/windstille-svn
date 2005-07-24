@@ -16,11 +16,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include "box.hpp"
 #include "globals.hpp"
-#include "lisp/list_iterator.hpp"
+#include "lisp/lisp.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 #include "collision/collision_engine.hpp"
+#include "math/vector.hpp"
 #include "tile_map.hpp"
 #include "random.hpp"
 
@@ -32,41 +36,25 @@ Box::Box(const lisp::Lisp* lisp)
   gravity = 0.0f;
   float width  = 64.0f;
   float height = 64.0f;
-
   std::string spritename = "box";
-  CL_Vector vel;
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "sprite") {
-      spritename = iter.value().get_string();
-    } else if(iter.item() == "x") {
-      pos.x = iter.value().get_float();
-    } else if(iter.item() == "y") {
-      pos.y = iter.value().get_float();
-    } else if(iter.item() == "width") {
-      width = iter.value().get_float();
-    } else if(iter.item() == "height") {
-      height = iter.value().get_float();
-    } else if (iter.item() == "vx") {
-      vel.x = iter.value().get_float();
-    } else if (iter.item() == "vy") {
-      vel.y = iter.value().get_float();
-    } else if(iter.item() == "name") {
-      name = iter.value().get_string();
-    } else if(iter.item() == "gravity") {
-      gravity = iter.value().get_float();
-    } else {
-      std::cerr << "Skipping unknown attribute '" 
-                << iter.item() << "' in Box\n";
-    }
-  }
+  Vector vel;
+
+  lisp::Properties props(lisp);
+  props.get("sprite", spritename);
+  props.get("pos", pos);
+  props.get("width", width);
+  props.get("height", height);
+  props.get("vel", vel);
+  props.get("name", name);
+  props.get("gravity", gravity);
+  props.print_unused_warnings("box object");
 
   if (!spritename.empty())
     sprite = CL_Sprite(spritename, resources);
 
   colobj = new CollisionObject(CL_Rectf(0, 0, width, height));
   colobj->set_velocity(vel);
-  colobj->set_pos(CL_Vector(pos.x, pos.y));
+  colobj->set_pos(Vector(pos.x, pos.y));
 
   Sector::current()->get_collision_engine()->add(colobj);
 
@@ -82,21 +70,21 @@ Box::collision(const CollisionData& data, CollisionObject& other)
   if ((data.direction.x > 0 && colobj->get_velocity().x < 0) ||
       (data.direction.x < 0 && colobj->get_velocity().x > 0))
     {
-      colobj->set_velocity(CL_Vector(-colobj->get_velocity().x, colobj->get_velocity().y));
+      colobj->set_velocity(Vector(-colobj->get_velocity().x, colobj->get_velocity().y));
     }
   
   if ((data.direction.y > 0 && colobj->get_velocity().y < 0) ||
       (data.direction.y < 0 && colobj->get_velocity().y > 0))
     {
-      colobj->set_velocity(CL_Vector(colobj->get_velocity().x, -colobj->get_velocity().y));
+      colobj->set_velocity(Vector(colobj->get_velocity().x, -colobj->get_velocity().y));
     }
 }
 
 void 
 Box::update(float delta)
 {
-  colobj->set_velocity(CL_Vector(colobj->get_velocity().x, 
-                                 colobj->get_velocity().y + gravity * delta));
+  colobj->set_velocity(Vector(colobj->get_velocity().x, 
+                              colobj->get_velocity().y + gravity * delta));
 
   sprite.update(delta);
   pos = colobj->get_pos();

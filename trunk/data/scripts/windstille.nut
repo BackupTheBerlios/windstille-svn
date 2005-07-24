@@ -11,7 +11,7 @@ function nightvision_enabled(...)
       } 
       else if (vargv[0]) 
         {
-          ::spawn_object("nightvision", {x=5});
+          ::spawn_object("nightvision", {});
           ::has_nightvision = true;
         }
     } else {
@@ -40,6 +40,17 @@ function dialog(align, portrait, text)
 {
         dialog_show(align, portrait, text);
         wait_for_dialog();
+}
+
+/* Some debugging/testing stuff */
+function testo(spritename)
+{
+  spawn_object("test-object", {
+      name="Test",
+      x = 435,
+      y = 709,
+      sprite = spritename
+      });
 }
 
 /* EOF */

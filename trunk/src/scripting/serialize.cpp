@@ -4,32 +4,33 @@
 #include <assert.h>
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
 #include "lisp/writer.hpp"
 
 void load_squirrel_table(HSQUIRRELVM v, int table_idx, const lisp::Lisp* lisp)
 {
   using namespace lisp;
   
-  ListIterator iter(lisp);
+  Properties props(lisp);
+  PropertyIterator<const Lisp*> iter = props.get_iter();
   while(iter.next()) {
     sq_pushstring(v, iter.item().c_str(), iter.item().size());
-    switch(iter.value().get_type()) {
-      case Lisp::TYPE_CONS:
+    switch((*iter)->get_type()) {
+      case Lisp::TYPE_LIST:
         sq_newtable(v);
-        load_squirrel_table(v, sq_gettop(v), iter.lisp());
+        load_squirrel_table(v, sq_gettop(v), *iter);
         break;
-      case Lisp::TYPE_INTEGER:
-        sq_pushinteger(v, iter.value().get_int());
+      case Lisp::TYPE_INT:
+        sq_pushinteger(v, (*iter)->get_int());
         break;
-      case Lisp::TYPE_REAL:
-        sq_pushfloat(v, iter.value().get_float());
+      case Lisp::TYPE_FLOAT:
+        sq_pushfloat(v, (*iter)->get_float());
         break;
       case Lisp::TYPE_STRING:
-        sq_pushstring(v, iter.value().get_string().c_str(), -1);
+        sq_pushstring(v, (*iter)->get_string(), -1);
         break;
-      case Lisp::TYPE_BOOLEAN:
-        sq_pushbool(v, iter.value().get_bool());
+      case Lisp::TYPE_BOOL:
+        sq_pushbool(v, (*iter)->get_bool());
         break;
       case Lisp::TYPE_SYMBOL:
         std::cerr << "Unexpected symbol in lisp file...";
@@ -52,9 +53,11 @@ void load_squirrel_table(HSQUIRRELVM v, int table_idx, const std::string& file)
   using namespace lisp;
   std::auto_ptr<Lisp> root (Parser::parse(file));
 
-  const lisp::Lisp* table = root->get_lisp("squirrel-state");
-  if(!table)
+  Properties rootp(root.get());
+  const lisp::Lisp* table;
+  if(rootp.get("squirrel-state", table) == false)
     throw std::runtime_error("Not a squirrel-state file");
+
   load_squirrel_table(v, table_idx, table);
 }
 

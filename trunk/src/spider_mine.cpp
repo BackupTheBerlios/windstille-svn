@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include "spider_mine.hpp"
 #include "sector.hpp"
@@ -25,7 +26,8 @@
 #include "console.hpp"
 #include "sprite3d/manager.hpp"
 #include "util.hpp"
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 #include "player.hpp"
 #include "tile_map.hpp"
 
@@ -39,20 +41,13 @@ SpiderMine::SpiderMine(const lisp::Lisp* lisp)
     explode("explo", resources),
     explode_light("explolight", resources)
 {
+  using namespace lisp;
   pos.z = 100;
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "name") {
-      name = iter.value().get_string();
-    } else if(iter.item() == "x") {
-      pos.x = iter.value().get_float();
-    } else if(iter.item() == "y") {
-      pos.y = iter.value().get_float();
-    } else {
-      std::cerr << "Skipping unknown attribute '" 
-                << iter.item() << "' in SpiderMine\n";
-    }
-  }
+
+  Properties props(lisp);
+  props.get("name", name);
+  props.get("pos", pos);
+  props.print_unused_warnings("spidermine");
 
   spider_mine.set_scale(.5, .5);
   initial_position = pos;

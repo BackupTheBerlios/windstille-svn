@@ -1,29 +1,21 @@
+#include <config.h>
+
 #include "test_object.hpp"
 #include "sprite3d/manager.hpp"
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 
 TestObject::TestObject(const lisp::Lisp* lisp)
 {
+  using namespace lisp;
   pos = Vector(0, 0, 100);
   std::string spritename;
 
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "sprite") {
-      spritename = iter.value().get_string();
-    } else if(iter.item() == "x") {
-      pos.x = iter.value().get_float();
-    } else if(iter.item() == "y") {
-      pos.y = iter.value().get_float();
-    } else if(iter.item() == "z") {
-      pos.z = iter.value().get_float();
-    } else if(iter.item() == "name") {
-      name = iter.value().get_string();
-    } else {
-      std::cerr << "Skipping unknown attribute '" 
-                << iter.item() << "' in Box\n";
-    }
-  }
+  Properties props(lisp);
+  props.get("sprite", spritename);
+  props.get("pos", pos);
+  props.get("name", name);
+  props.print_unused_warnings("testobject");
 
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in Box");

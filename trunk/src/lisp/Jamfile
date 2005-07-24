@@ -5,12 +5,14 @@ sources =
   lexer.hpp
   lisp.cpp
   lisp.hpp
-  list_iterator.cpp
-  list_iterator.hpp
   parser.cpp
   parser.hpp
   writer.cpp
   writer.hpp
+  properties.cpp
+  properties.hpp
+  getters.hpp
+  getters.cpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;

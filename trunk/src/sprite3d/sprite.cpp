@@ -28,7 +28,6 @@
 #include <physfs.h>
 #include "display/drawing_request.hpp"
 #include "display/scene_context.hpp"
-#include "lisp_util.hpp"
 #include "globals.hpp"
 #include "util.hpp"
 #include "timer.hpp"
@@ -101,9 +100,9 @@ Sprite::set_next_action(const std::string& name, float speed)
   abort_at_frame.speed = frame->speed;
   abort_at_frame.rot = frame->rot;
   if(frame->speed >= 0) {
-      abort_at_frame.frame = frame->action->frame_count - 1;
+    abort_at_frame.frame = frame->action->frame_count - 1;
   } else {
-      abort_at_frame.frame = 0;
+    abort_at_frame.frame = 0;
   }
 }
 
@@ -240,7 +239,6 @@ Sprite::get_bone_matrix(BoneID id) const
   m.matrix[3] += pos[0];
   m.matrix[7] += pos[1];
   m.matrix[11] += pos[2];
-  printf("Pos: %f %f %f\n", pos[0], pos[1], pos[2]);
 
   return m;
 }

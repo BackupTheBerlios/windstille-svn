@@ -23,7 +23,8 @@
 #include <ClanLib/Display/display_iostream.h>
 #include <ClanLib/Display/keys.h>
 
-#include "lisp/list_iterator.hpp"
+#include "lisp/lisp.hpp"
+#include "lisp/properties.hpp"
 #include "controller_def.hpp"
 #include "input_button_input_device.hpp"
 #include "input_axis_input_device.hpp"
@@ -84,14 +85,16 @@ InputManagerCustom::init(const lisp::Lisp* lisp)
   axes.resize(ControllerDef::get_axis_count());
   keyboards.resize(ControllerDef::get_keyboard_count());
 
-  lisp::ListIterator iter(lisp);
+  lisp::Properties props(lisp);
+  lisp::PropertyIterator<const lisp::Lisp*> iter = props.get_iter();
   while(iter.next()) {
     std::string name = iter.item();
+    const lisp::Lisp* lisp = (*iter)->get_list_elem(1);
 
     int id = ControllerDef::button_name2id(name);
     if (id != -1)
       {
-        buttons[id] = ButtonFactory::create(iter.lisp());
+        buttons[id] = ButtonFactory::create(lisp);
       }
     else if (name == "keyboard")
       {
@@ -102,7 +105,7 @@ InputManagerCustom::init(const lisp::Lisp* lisp)
         id = ControllerDef::axis_name2id(name);
         if (id != -1)
           {
-            axes[id] = AxisFactory::create(iter.lisp());
+            axes[id] = AxisFactory::create(lisp);
           }
         else
           {

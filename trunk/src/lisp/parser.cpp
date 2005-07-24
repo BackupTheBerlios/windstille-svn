@@ -20,10 +20,10 @@
 #include <config.h>
 
 #include <sstream>
-#include <stdexcept>
-#include <fstream>
 #include <cassert>
 #include <iostream>
+#include <string>
+#include <exception>
 
 #include "tinygettext/tinygettext.hpp"
 #include "physfs/physfs_stream.hpp"
@@ -32,6 +32,28 @@
 
 namespace lisp
 {
+
+class ParseError : public std::exception
+{
+public:
+  ParseError(const Parser* parser, const std::string& message) throw()
+  {
+    std::ostringstream msg;
+    msg << "Parse error in '" << parser->filename << "' line "
+      << parser->lexer->getLineNumber() << ": " << message;
+    string = msg.str();
+  }
+  ~ParseError() throw()
+  {}
+
+  const char* what() const throw()
+  {
+    return string.c_str();
+  }
+
+private:
+  std::string string;
+};
 
 Parser::Parser()
   : lexer(0), dictionary_manager(0), dictionary(0)
@@ -65,127 +87,107 @@ Parser::parse(const std::string& filename)
     throw std::runtime_error(msg.str());
   }
 
-  return parse(in, dirname(filename));
+  return parse(in, filename);
 }
 
 Lisp*
-Parser::parse(std::istream& stream, const std::string& basedir)
+Parser::parse(std::istream& stream, const std::string& filename)
 {
   std::auto_ptr<Parser> parser (new Parser());
-  
-  parser->dictionary_manager->add_directory(basedir);   
+
+  parser->filename = filename;
+  parser->dictionary_manager->add_directory(dirname(filename));
   parser->dictionary = & (parser->dictionary_manager->get_dictionary());
   parser->lexer = new Lexer(stream);
 
   parser->token = parser->lexer->getNextToken();
-  Lisp* result = new Lisp(Lisp::TYPE_CONS);
-  result->v.cons.car = parser->read();
-  result->v.cons.cdr = 0; 
-
-  return result;    
+  std::auto_ptr<Lisp> result (parser->parse());
+  if(parser->token != Lexer::TOKEN_EOF) {
+    if(parser->token == Lexer::TOKEN_CLOSE_PAREN)
+      throw ParseError(parser.get(), "too many ')'");
+    else
+      throw ParseError(parser.get(), "extra tokens at end of file");
+  }
+    
+  return result.release();
 }
 
 Lisp*
-Parser::read()
+Parser::parse()
 {
-  Lisp* result;
-  switch(token) {
-    case Lexer::TOKEN_EOF: {
-      std::stringstream msg;
-      msg << "Parse Error at line " << lexer->getLineNumber() << ": "
-        << "Unexpected EOF.";
-      throw std::runtime_error(msg.str());
-    }
-    case Lexer::TOKEN_CLOSE_PAREN: {
-      std::stringstream msg;
-      msg << "Parse Error at line " << lexer->getLineNumber() << ": "
-        << "Unexpected ')'.";
-      throw std::runtime_error(msg.str());
-    }
-    case Lexer::TOKEN_OPEN_PAREN: {
-      result = new Lisp(Lisp::TYPE_CONS);
-      
-      token = lexer->getNextToken();
-      if(token == Lexer::TOKEN_CLOSE_PAREN) {
-        result->v.cons.car = 0;
-        result->v.cons.cdr = 0;
-        break;
-      }
-
-      if(token == Lexer::TOKEN_SYMBOL &&
-          strcmp(lexer->getString(), "_") == 0) {
-        // evaluate translation function (_ str) in place here
-        token = lexer->getNextToken();
-        if(token != Lexer::TOKEN_STRING)
-          throw std::runtime_error("Expected string after '(_'");
+  std::vector<Lisp*> entries;
+  try {
+    while(token != Lexer::TOKEN_CLOSE_PAREN && token != Lexer::TOKEN_EOF) {
+      switch(token) {
+        case Lexer::TOKEN_OPEN_PAREN:
+          token = lexer->getNextToken();
         
-        result = new Lisp(Lisp::TYPE_STRING);
-        if(dictionary) {
-          std::string translation = dictionary->translate(lexer->getString());
-          result->v.string = new char[translation.size()+1];
-          memcpy(result->v.string, translation.c_str(), translation.size()+1);
-        } else {
-          size_t len = strlen(lexer->getString()) + 1;                                
-          result->v.string = new char[len];
-          memcpy(result->v.string, lexer->getString(), len);
-        }
-        token = lexer->getNextToken();
-        if(token != Lexer::TOKEN_CLOSE_PAREN)
-          throw std::runtime_error("Expected ')' after '(_ string'");
-        break;
-      }
-
-      Lisp* cur = result;
-      do {
-        cur->v.cons.car = read();
-        if(token == Lexer::TOKEN_CLOSE_PAREN) {
-          cur->v.cons.cdr = 0;
+          // Handle (_ "blup") strings that need to be translated
+          if(token == Lexer::TOKEN_SYMBOL
+              && strcmp(lexer->getString(), "_") == 0) {
+            token = lexer->getNextToken();
+            if(token != Lexer::TOKEN_STRING)
+              throw ParseError(this, "Expected string after '(_' sequence");
+            if(dictionary) {
+              std::string translation = dictionary->translate(lexer->getString());
+              entries.push_back(new Lisp(Lisp::TYPE_STRING, translation));
+            } else {
+              entries.push_back(new Lisp(Lisp::TYPE_STRING, lexer->getString()));
+            }
+            
+            token = lexer->getNextToken();
+            if(token != Lexer::TOKEN_CLOSE_PAREN)
+              throw ParseError(this, "Expected ')' after '(_ ""' sequence");
+            break;
+          }
+        
+          entries.push_back(parse());
+          if(token != Lexer::TOKEN_CLOSE_PAREN) {
+            if(token == Lexer::TOKEN_EOF)
+              throw ParseError(this, "Expected ')' token, got EOF");
+            else
+              throw ParseError(this, "Expected ')' token");
+          }
+          break;
+        case Lexer::TOKEN_SYMBOL:
+          entries.push_back(new Lisp(Lisp::TYPE_SYMBOL, lexer->getString()));
+          break;
+        case Lexer::TOKEN_STRING:
+          entries.push_back(new Lisp(Lisp::TYPE_STRING, lexer->getString()));
+          break;
+        case Lexer::TOKEN_INTEGER: {
+          int val;
+          sscanf(lexer->getString(), "%d", &val);
+          entries.push_back(new Lisp(val));
           break;
         }
-        cur->v.cons.cdr = new Lisp(Lisp::TYPE_CONS);
-        cur = cur->v.cons.cdr;
-      } while(1);
+        case Lexer::TOKEN_REAL: {
+          float val;
+          sscanf(lexer->getString(), "%f", &val);
+          entries.push_back(new Lisp(val));
+          break;
+        }
+        case Lexer::TOKEN_TRUE:
+          entries.push_back(new Lisp(true));
+          break;
+        case Lexer::TOKEN_FALSE:
+          entries.push_back(new Lisp(false));
+          break;
+        default:
+          // this should never happen
+          assert(false);
+      }
 
-      break;
+      token = lexer->getNextToken();
     }
-    case Lexer::TOKEN_SYMBOL: {
-      result = new Lisp(Lisp::TYPE_SYMBOL);
-      size_t len = strlen(lexer->getString()) + 1;
-      result->v.string = new char[len];
-      memcpy(result->v.string, lexer->getString(), len);
-      break;
-    }
-    case Lexer::TOKEN_STRING: {
-      result = new Lisp(Lisp::TYPE_STRING);
-      size_t len = strlen(lexer->getString()) + 1;
-      result->v.string = new char[len];
-      memcpy(result->v.string, lexer->getString(), len);
-      break;
-    }
-    case Lexer::TOKEN_INTEGER:
-      result = new Lisp(Lisp::TYPE_INTEGER);
-      sscanf(lexer->getString(), "%d", &result->v.integer);
-      break;
-    case Lexer::TOKEN_REAL:
-      result = new Lisp(Lisp::TYPE_REAL);
-      sscanf(lexer->getString(), "%f", &result->v.real);
-      break;
-    case Lexer::TOKEN_TRUE:
-      result = new Lisp(Lisp::TYPE_BOOLEAN);
-      result->v.boolean = true;
-      break;
-    case Lexer::TOKEN_FALSE:
-      result = new Lisp(Lisp::TYPE_BOOLEAN);
-      result->v.boolean = false;
-      break;
-
-    default:
-      // this should never happen
-      assert(false);
+  } catch(...) {
+    for(std::vector<Lisp*>::iterator i = entries.begin();
+        i != entries.end(); ++i)
+      delete *i;
+    throw;
   }
-
-  token = lexer->getNextToken();
-  return result;
+  
+  return new Lisp(entries);
 }
 
 } // end of namespace lisp

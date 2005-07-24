@@ -16,6 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include "character.hpp"
 #include "sector.hpp"
@@ -27,7 +28,8 @@
 #include "console.hpp"
 #include "sprite3d/manager.hpp"
 #include "util.hpp"
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 
 #include <exception>
 
@@ -36,19 +38,11 @@ Character::Character(const lisp::Lisp* lisp)
   set_useable(true);
 
   pos.z = 100;
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "name") {
-      name = iter.value().get_string();
-    } else if(iter.item() == "x") {
-      pos.x = iter.value().get_float();
-    } else if(iter.item() == "y") {
-      pos.y = iter.value().get_float();
-    } else {
-      std::cerr << "Skipping unknown attribute '" 
-                << iter.item() << "' in Character\n";
-    }
-  }
+
+  lisp::Properties props(lisp);
+  props.get("name", name);
+  props.get("pos", pos);
+  props.print_unused_warnings("character");
   
   sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
   sprite->set_action("Stand");

@@ -16,39 +16,47 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include <ClanLib/Display/joystick.h>
+#include <sstream>
+#include <stdexcept>
 #include "input_axis_input_device.hpp"
 #include "windstille_error.hpp"
 #include "button_factory.hpp"
 #include "button_axis.hpp"
 #include "axis_factory.hpp"
-#include "lisp_util.hpp"
 #include "lisp/lisp.hpp"
-#include "lisp/list_iterator.hpp"
 
 InputAxis* 
 AxisFactory::create(const lisp::Lisp* lisp)
 {
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "joystick-axis") {
-      return create_joystick_axis(iter.lisp());
-    } else if(iter.item() == "button-axis") {
-      return create_button_axis(iter.lisp());
-    } else {
-      std::cerr << "Skipping unknown tag '" << iter.item() << "' in axis.\n";
-    }
-  }
+  if(lisp->get_type() != lisp::Lisp::TYPE_LIST)
+    throw std::runtime_error("expected list in axis argument");
+  if(lisp->get_list_size() == 0)
+    throw std::runtime_error("List needs at least 1 argument in axis");
+  const lisp::Lisp* namel = lisp->get_list_elem(0);
+  if(namel->get_type() != lisp::Lisp::TYPE_SYMBOL)
+    throw std::runtime_error("axis needs symbol as first argument");
 
-  return 0;
+  std::string name = namel->get_string();
+  if(name == "joystick-axis")
+    return create_joystick_axis(lisp);
+  else if(name == "button-axis")
+    return create_button_axis(lisp);
+  
+  std::ostringstream msg;
+  msg << "Unknown axis type '" << name << "' found";
+  throw std::runtime_error(msg.str());
 }
 
 InputAxis*
 AxisFactory::create_joystick_axis(const lisp::Lisp* lisp)
 {
-  int device_num = lisp_get_list_nth(lisp, 0)->get_int();
-  int axis_num   = lisp_get_list_nth(lisp, 1)->get_int();
+  if(lisp->get_list_size() != 3)
+    throw std::runtime_error("joystick-axis needs 2 arguments");
+  int device_num = lisp->get_list_elem(1)->get_int();
+  int axis_num   = lisp->get_list_elem(2)->get_int();
 
   if (device_num >= 0 && device_num < CL_Joystick::get_device_count())
     return new InputAxisInputDevice(CL_Joystick::get_device(device_num), axis_num);
@@ -59,8 +67,10 @@ AxisFactory::create_joystick_axis(const lisp::Lisp* lisp)
 InputAxis*
 AxisFactory::create_button_axis(const lisp::Lisp* lisp)
 {
-  InputButton* left  = ButtonFactory::create(lisp_get_list_nth(lisp, 0));
-  InputButton* right = ButtonFactory::create(lisp_get_list_nth(lisp, 1));
+  if(lisp->get_list_size() != 3)
+    throw std::runtime_error("button-axis needs 2 arguments");
+  InputButton* left  = ButtonFactory::create(lisp->get_list_elem(1));
+  InputButton* right = ButtonFactory::create(lisp->get_list_elem(2));
 
   return new ButtonAxis(left, right);
 }

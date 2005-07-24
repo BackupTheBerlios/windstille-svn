@@ -22,8 +22,8 @@
 
 #include <string>
 #include <vector>
-#include <ClanLib/Display/color.h>
 #include "lisp/lisp.hpp"
+#include "color.hpp"
 
 class GameObject;
 class TileMap;
@@ -51,7 +51,7 @@ private:
   typedef std::vector<SpawnPoint*> SpawnPoints;
   SpawnPoints spawn_points;
 
-  CL_Color ambient_light;
+  Color ambient_light;
 
   /** The TileMap with which the player interacts */
   TileMap* interactive_tilemap;

@@ -166,7 +166,7 @@ Lexer::getNextToken()
         }
 
       default:
-        if(isdigit(*c) || *c == '-') {
+        if(isdigit(*c) || *c == '-' || *c == '.') {
           bool have_nondigits = false;
           bool have_digits = false;
           int have_floating_point = 0;

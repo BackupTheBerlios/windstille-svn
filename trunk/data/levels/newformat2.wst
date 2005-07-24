@@ -3,73 +3,61 @@
   (version 2)
   (name   "")
   (music  "music/techdemo.ogg")
-  (ambient-color 170 170 170)
+  (ambient-color .666 .666 .666)
   (init-script "levels/newformat2.nut")
   (spawnpoint
     (name "default")
-    (x 300)
-    (y 650)
+    (pos 300 650)
   )
   (objects
     (flashing-sign
       (name "Block0Sign")
-      (x 550)
-      (y 370)
+      (pos 550 370)
       (flashspeed 0.7)
       (sprite "images/arrow.sprite")
       (enabled #f)
     )
     (box
       (name "Box0")
-      (x 350)
-      (y 700)
-        (vx 10)
+      (pos 350 700)
+      (vel 10 0)
     )
     (box
       (name "Box1")
-      (x 555)
-      (y 700)
-                (vx -10)
+      (pos 555 700)
+      (vel -10 0)
       (light "bomblight")
     )
     (character
       (name "bob")
-      (x 50)
-      (y 831)
+      (pos 50 831)
     )
     (character
       (name "frank")
-      (x 200)
-      (y 831)
+      (pos 200 831)
     )
     (spider_mine
       (name "spider2")
-      (x 550)
-      (y 550)
+      (pos 550 550)
     )
     (spider_mine
       (name "spider1")
-      (x 500)
-      (y 831)
+      (pos 500 831)
     )
     (spider_mine
       (name "spider3")
-      (x 1100)
-      (y 550)
+      (pos 1100 550)
     )
     (useable-object
-      (x 768)
-      (y 192)
+      (pos 768 192)
       (script "")
     )
     (useable-object
-      (x 1024)
-      (y 448)
+      (pos 1024 448)
       (script "")
     )
     (useable-object
-      (x 256)
-      (y 704)
+      (pos 256 704)
       (script "set_sector(\"levels/newformat2.wst\")")
     )
 
@@ -138,7 +126,7 @@
       34 35 52 35 51 36 36 51 36 52 35 51 36 36 51 36 52 35 51 36 36 51 36 36 36 39 40 4 4 41 42 36 36 51 36 36 51 36 36 36 39 40 4 4 41 42 36 36 36 36 51 36 36 36 39 40 4 4 41 42 36 36 36 36 51 36 36 51 36 36 36 39 40 4 4 41 42 36 36 51 36 35 36 52 52 36 36 36 51 36 51 35 36 39 3 3 3 41 42 51 
       50 51 52 51 51 52 52 51 52 52 51 51 52 52 51 52 52 51 51 52 52 51 52 52 52 55 56 20 20 57 58 52 51 52 52 52 51 52 52 52 55 56 20 20 57 58 52 51 52 52 51 52 52 52 55 56 20 20 57 58 52 51 52 52 51 52 52 51 52 52 52 55 56 20 20 57 58 52 51 52 52 51 52 36 35 52 52 52 36 52 36 51 51 55 19 19 19 57 58 35 
       66 67 68 67 67 68 68 67 68 68 67 67 68 68 67 68 68 67 67 68 68 67 68 68 68 68 68 67 68 67 68 68 67 68 68 68 67 68 68 68 68 68 67 68 67 68 68 67 68 68 67 68 68 68 68 68 67 68 67 68 68 67 68 68 67 68 68 67 68 68 68 68 68 67 68 67 68 68 67 68 68 67 68 68 67 68 68 68 68 67 68 68 67 68 68 67 68 68 67 68 
-     ))
+     )
    )
 
   (tilemap (name "foreground") (width 100) (height 30)

@@ -20,53 +20,50 @@
 #include <ClanLib/gl.h>
 #include <ClanLib/display.h>
 #include <sstream>
-#include "lisp/list_iterator.hpp"
 #include "tile_map.hpp"
 #include "tile.hpp"
 #include "tile_factory.hpp"
 #include "globals.hpp"
 #include "view.hpp"
 #include "display/vertex_array_drawing_request.hpp"
+#include "lisp/properties.hpp"
 
 extern CL_ResourceManager* resources;
 
 TileMap::TileMap(const lisp::Lisp* lisp)
 {
+  using namespace lisp;
   int width = -1;
   int height = -1;
   z_pos = 0;
   total_time = 0;
   
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "name") {
-      name = iter.value().get_string();
-    } else if(iter.item() == "z-pos") {
-      z_pos = iter.value().get_float();
-    } else if(iter.item() == "width") {
-      width = iter.value().get_int();
-    } else if(iter.item() == "height") {
-      height = iter.value().get_int();
-    } else if(iter.item() == "data") {
-      if(width <= 0 || height <= 0) {
-        throw std::runtime_error(
-            "Invalid width or height defined or "
-            "data defined before width and height");
-      }
-      Field<int> tmpfield(width, height);
-      iter.lisp()->get_vector(tmpfield.get_vector());
-    
-      field = Field<Tile*>(width, height);
-
-      for (int y = 0; y < field.get_height (); ++y) 
-        {
-          for (int x = 0; x < field.get_width (); ++x)
-            {
-              field(x, y) = TileFactory::current()->create(tmpfield(x, y));
-            }
-        }
-    } else {
-      std::cout << "Skipping unknown Tag '" << iter.item() << "' in tilemap\n";
+  Properties props(lisp);
+  props.get("name", name);
+  props.get("z-pos", z_pos);
+  props.get("width", width);
+  props.get("height", height);
+  if(width <= 0 || height <= 0) {
+    throw std::runtime_error(
+        "Invalid width or height defined or "
+        "data defined before width and height");  
+  }
+  Field<int> tmpfield(width, height);
+  props.get("data", tmpfield.get_vector());
+  props.print_unused_warnings("tilemap");
+  
+  if(width <= 0 || height <= 0) {
+    throw std::runtime_error(
+        "Invalid width or height defined or "
+        "data defined before width and height");
+  }
+  
+  field = Field<Tile*>(width, height);
+  for (int y = 0; y < field.get_height (); ++y) 
+  {
+    for (int x = 0; x < field.get_width (); ++x)
+    {
+      field(x, y) = TileFactory::current()->create(tmpfield(x, y));
     }
   }
 

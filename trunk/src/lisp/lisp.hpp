@@ -1,6 +1,5 @@
 //  $Id: lisp.h 2419 2005-05-06 19:08:24Z matzebraun $
 //
-//  TuxKart - a fun racing game with go-kart
 //  Copyright (C) 2004 Matthias Braun <matze@braunis.de>
 //  code in this file based on lispreader from Mark Probst
 //
@@ -17,8 +16,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#ifndef __LISPREADER_HPP__
-#define __LISPREADER_HPP__
+#ifndef __LISP_HPP__
+#define __LISP_HPP__
 
 #include <string>
 #include <vector>
@@ -33,203 +32,84 @@ class Lisp
 {
 public:
   enum LispType {
-    TYPE_CONS,
+    TYPE_LIST,
     TYPE_SYMBOL,
-    TYPE_INTEGER,
+    TYPE_INT,
     TYPE_STRING,
-    TYPE_REAL,
-    TYPE_BOOLEAN
+    TYPE_FLOAT,
+    TYPE_BOOL
   };
 
-  Lisp(LispType newtype);
-  Lisp(LispType newtype, const std::string& value);  
+  /// construct a new Lisp object symbol or string object
+  Lisp(LispType newtype, const std::string& value);
+  Lisp(const std::vector<Lisp*>& list_elements);
+  Lisp(int val);
+  Lisp(float val);
+  Lisp(bool val);
   ~Lisp();                                             
 
   LispType get_type() const
   { return type; } 
 
-  Lisp* get_car() const
-  { return v.cons.car; }
-  Lisp* get_cdr() const
-  { return v.cons.cdr; }
-
-  std::string get_string() const
+  size_t get_list_size() const
   {
-    std::string result;
-    if(!get(result)) {
-      std::ostringstream msg;
-      msg << "Expected string, got ";
-      print(msg);
-      throw std::runtime_error(msg.str());
-    }
-    return result;
+    return v.list.size;
+  }
+  Lisp* get_list_elem(size_t i) const
+  {
+    assert(i < v.list.size);
+    return v.list.entries[i];
+  }
+
+  const char* get_string() const
+  {
+    if(type != TYPE_STRING)
+      throw std::runtime_error("Lisp is not a string");
+    return v.string;
+  }
+
+  const char* get_symbol() const
+  {
+    if(type != TYPE_SYMBOL)
+      throw std::runtime_error("Lisp is not a symbol");
+    return v.string;
   }
 
   int get_int() const
   {
-    int result;
-    if(!get(result)) {
-      std::ostringstream msg;
-      msg << "Expected integer, got ";
-      print(msg);
-      throw std::runtime_error(msg.str());
-    }
-    return result;
+    if(type != TYPE_INT)
+      throw std::runtime_error("Lisp is not an int");
+    return v.int_;
   }
 
   float get_float() const
   {
-    float result;
-    if(!get(result)) {
-      std::ostringstream msg;
-      msg << "Expected float, got ";
-      print(msg);
-      throw std::runtime_error(msg.str());
-    }
-    return result;
+    if(type != TYPE_FLOAT)
+      throw std::runtime_error("Lisp is not a float");
+    return v.float_;
   }
 
   bool get_bool() const
   {
-    bool result;
-    if(!get(result)) {
-      std::ostringstream msg;
-      msg << "Expected bool, got ";
-      print(msg);
-      throw std::runtime_error(msg.str());
-    }
-    return result;
+    if(type != TYPE_BOOL)
+      throw std::runtime_error("Lisp is not a bool");
+    return v.bool_;
   }
 
-  template<class T>
-  void get_vector(std::vector<T>& vec) const
-  {
-    vec.clear();
- 
-    for(const lisp::Lisp* child = this ; child != 0; child = child->get_cdr()) {
-      if(type != TYPE_CONS)
-        throw std::runtime_error("get_vector called on non-list");
-      
-      T val;
-      if(!child->get_car())                           
-        continue;
-      if(child->get_car()->get(val)) {
-        vec.push_back(val);
-      }
-    }
-  }
-
-  /** conveniance functions which traverse the list until a child with a
-   * specified name is found. The value part is then interpreted in a specific
-   * way. The functions return true, if a child was found and could be
-   * interpreted correctly, otherwise false is returned and the variable value
-   * is not changed.
-   * (Please note that searching the lisp structure is O(n) so these functions
-   *  are no good idea for performance critical areas)
-   */
-  template<class T>
-  bool get(const char* name, T& val) const
-  {
-    const Lisp* lisp = get_lisp(name);
-    if(!lisp)
-      return false;
-
-    if(lisp->get_type() != TYPE_CONS)
-      return false;
-    lisp = lisp->get_car();
-    if(!lisp)
-      return false;
-    return lisp->get(val);
-  }
-
-  template<class T>
-  bool get_vector(const char* name, std::vector<T>& vec) const
-  {
-    vec.clear();
-    
-    const Lisp* child = get_lisp(name);
-    if(!child)
-      return false;
-    
-    for( ; child != 0; child = child->get_cdr()) {
-      T val;
-      if(!child->get_car())
-        continue;
-      if(child->get_car()->get(val)) {
-        vec.push_back(val);
-      }
-    }
-    
-    return true;
-  }
-  
-  Lisp* get_lisp(const char* name) const;
-  Lisp* get_lisp(const std::string& name) const
-  { return get_lisp(name.c_str()); }
-
-  // for debugging/error messages
-  void print(std::ostream& out, int indent = 0) const;
-
-  union
-  {
-    struct
-    {
-      Lisp* car;
-      Lisp* cdr;
-    } cons;
-
-    char* string;
-    int integer;
-    bool boolean;
-    float real;
-  } v;
+  void print(std::ostream& out = std::cout, int indent = 0) const;
 
 private:
-  bool get(std::string& val) const
-  { 
-    if(type != TYPE_STRING && type != TYPE_SYMBOL)
-      return false;
-    val = v.string;
-    return true;
-  }
-  
-  bool get(unsigned int& val) const
+  union
   {
-    if(type != TYPE_INTEGER)
-      return false;
-    val = v.integer;
-    return true;
-  }
-  
-  bool get(int& val) const
-  {
-    if(type != TYPE_INTEGER)
-      return false;
-    val = v.integer;
-    return true;
-  }
-  
-  bool get(float& val) const
-  {
-    if(type != TYPE_REAL) {
-      if(type == TYPE_INTEGER) {
-        val = v.integer;
-        return true;
-      }
-      return false;
-    }
-    val = v.real;
-    return true;
-  }
-  
-  bool get(bool& val) const
-  {
-    if(type != TYPE_BOOLEAN)
-      return false;
-    val = v.boolean;
-    return true;
-  }
- 
+    struct {
+      Lisp** entries;
+      size_t size;
+    } list;
+    char* string;
+    int int_;
+    bool bool_;
+    float float_;
+  } v;
   LispType type;
 };
 

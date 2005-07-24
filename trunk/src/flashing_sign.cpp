@@ -1,7 +1,10 @@
+#include <config.h>
+
 #include "flashing_sign.hpp"
 
 #include <math.h>
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 #include "timer.hpp"
 #include "globals.hpp"
 #include "sprite2d/manager.hpp"
@@ -12,27 +15,13 @@ FlashingSign::FlashingSign(const lisp::Lisp* lisp)
   std::string spritename;
   flashspeed = 5;
 
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "sprite") {
-      spritename = iter.value().get_string();
-    } else if(iter.item() == "x") {
-      pos.x = iter.value().get_float();
-    } else if(iter.item() == "y") {
-      pos.y = iter.value().get_float();
-    } else if(iter.item() == "z") {
-      pos.z = iter.value().get_float();
-    } else if(iter.item() == "flashspeed") {
-      flashspeed = iter.value().get_float();
-    } else if(iter.item() == "name") {
-      name = iter.value().get_string();
-    } else if(iter.item() == "enabled") {
-      enabled = iter.value().get_bool();
-    } else {
-      std::cerr << "Skipping unknown attribute '" 
-                << iter.item() << "' in FlashingSign\n";
-    }
-  }
+  lisp::Properties props(lisp);
+  props.get("sprite", spritename);
+  props.get("pos", pos);
+  props.get("flashspeed", flashspeed);
+  props.get("name", name);
+  props.get("enabled", enabled);
+  props.print_unused_warnings("flahing-sign");
 
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in FlashingSign");

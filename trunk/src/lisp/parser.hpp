@@ -2,7 +2,6 @@
 //
 //  TuxKart - a fun racing game with go-kart
 //  Copyright (C) 2004 Matthias Braun <matze@braunis.de>
-//  code in this file based on lispreader from Mark Probst
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -38,13 +37,16 @@ class Parser
 public:
   ~Parser();
   static Lisp* parse(const std::string& filename);
-  static Lisp* parse(std::istream& stream, const std::string& basedir = "");
+  static Lisp* parse(std::istream& stream, const std::string& filename = "");
 
 private:
+  friend class ParseError;
+
   Parser();
   
-  Lisp* read();
-    
+  Lisp* parse();
+  
+  std::string filename;
   Lexer* lexer;
   TinyGetText::DictionaryManager* dictionary_manager;
   TinyGetText::Dictionary* dictionary;

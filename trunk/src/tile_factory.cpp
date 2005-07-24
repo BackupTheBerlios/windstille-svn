@@ -16,6 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include <string>
 #include <sstream>
@@ -35,7 +36,7 @@
 #include "tile_factory.hpp"
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
 
 extern CL_ResourceManager* resources;
 
@@ -45,27 +46,29 @@ std::string TileFactory::tile_def_file = "tiles.scm";
 
 TileFactory::TileFactory (const std::string& filename)
 {
-  std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
+  using namespace lisp;
 
   packers.push_back(new TilePacker(1024, 1024));
   packers.push_back(new TilePacker(1024, 1024));
   color_packer     = 0;
 
-  const lisp::Lisp* tiles_lisp = root->get_lisp("windstille-tiles");
-  if(!tiles_lisp) {
+  std::auto_ptr<Lisp> root (Parser::parse(filename));
+  Properties rootp(root.get());
+  
+  const lisp::Lisp* tiles_lisp;
+  if(rootp.get("windstille-tiles", tiles_lisp) == false) {
     std::ostringstream msg;
     msg << "'" << filename << "' is not a windstille tiles file";
     throw std::runtime_error(msg.str());
   }
-
-  lisp::ListIterator iter(tiles_lisp);
+  
+  Properties props(tiles_lisp);
+  PropertyIterator<const lisp::Lisp*> iter;
+  props.get_iter("tiles", iter);
   while(iter.next()) {
-    if(iter.item() == "tiles") {
-      parse_tiles(iter.lisp());
-    } else {
-      std::cout << "Unknown tag in tiles file: " << iter.item() << "\n";
-    }
+    parse_tiles(*iter);
   }
+  props.print_unused_warnings("windstille-tiles");
 }
 
 TileFactory::~TileFactory()
@@ -80,25 +83,19 @@ TileFactory::~TileFactory()
 void
 TileFactory::parse_tiles(const lisp::Lisp* data)
 {
+  using namespace lisp;
   assert(data);
 
   std::string filename;
   std::string highlight_filename;
   std::vector<int> colmap;
   std::vector<int> ids;
-  
-  lisp::ListIterator iter(data);
-  while(iter.next()) {
-    if(iter.item() == "ids") {
-      iter.lisp()->get_vector(ids);
-    } else if(iter.item() == "image") {
-      filename = iter.value().get_string();
-    } else if(iter.item() == "colmap") {
-      iter.lisp()->get_vector(colmap);
-    } else {
-      std::cerr << "Unknown tag '" << iter.item() << "' found in tiles\n";
-    }
-  }
+
+  Properties props(data);
+  props.get("ids", ids);
+  props.get("image", filename);
+  props.get("colmap", colmap);
+  props.print_unused_warnings("tiles");
 
   if(filename == "")
     throw std::runtime_error("Missing color-image");

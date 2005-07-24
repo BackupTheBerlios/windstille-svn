@@ -47,16 +47,20 @@ struct DrawingRequestsSorter
 class FillScreenDrawingRequest : public DrawingRequest
 {
 private:
-  CL_Color color;
+  Color color;
 public:
-  FillScreenDrawingRequest(const CL_Color& color_) 
+  FillScreenDrawingRequest(const Color& color_) 
     : DrawingRequest(CL_Vector(0, 0, -1000.0f)), color(color_)
   {
   }
   virtual ~FillScreenDrawingRequest() {}
 
   void draw(CL_GraphicContext* gc) {
-    gc->clear(color);
+    gc->clear(CL_Color(
+                static_cast<unsigned int> (color.r * 255.0),
+                static_cast<unsigned int> (color.g * 255.0),
+                static_cast<unsigned int> (color.b * 255.0),
+                static_cast<unsigned int> (color.a * 255.0)));
   }
 };
 
@@ -189,43 +193,7 @@ DrawingContext::draw(const std::string& text,    float x, float y, float z)
 }
 
 void
-DrawingContext::draw_line (float , float , float , float , 
-                           const CL_Color& )
-{
-}
-
-void
-DrawingContext::draw_fillrect (float , float , float , float , 
-		      const CL_Color& )
-{
-}
-
-void
-DrawingContext::draw_rect (float , float , float , float , 
-		  const CL_Color& )
-{
-}
-
-void
-DrawingContext::draw_pixel (float , float , const CL_Color& )
-{
-}
-
-void
-DrawingContext::draw_circle (float , float , float , const CL_Color& )
-{
-}
-
-/** Draws an arc, starting from angle_start to angle_end in
-      counterclockwise direction. Angles are taken in radian */
-void
-DrawingContext::draw_arc (float , float , float , float , float ,
-                          const CL_Color& )
-{
-}
-
-void
-DrawingContext::fill_screen(const CL_Color& color)
+DrawingContext::fill_screen(const Color& color)
 {
   draw(new FillScreenDrawingRequest(color));
 }

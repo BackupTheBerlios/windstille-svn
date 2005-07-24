@@ -5,6 +5,7 @@
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
 #include "lisp/writer.hpp"
+#include "lisp/properties.hpp"
 
 Config* config = 0;
 
@@ -26,21 +27,26 @@ Config::~Config()
 void
 Config::load()
 {
+  using namespace lisp;
+  
   try {
-    std::auto_ptr<lisp::Lisp> root(lisp::Parser::parse("config"));
-
-    const lisp::Lisp* config_lisp = root->get_lisp("windstille-config");
-    if(!config) {
+    std::auto_ptr<Lisp> root(lisp::Parser::parse("config"));
+    Properties rootp(root.get());
+    
+    const Lisp* config_lisp;
+    if(rootp.get("windstille-config", config_lisp) == false) {
       std::cerr << "Warning: Config file is not a windstille-config file.\n";
       return;
     }
 
-    config_lisp->get("screen_width", screen_width);
-    config_lisp->get("screen_height", screen_height);
-    config_lisp->get("fullscreen", use_fullscreen);
-    config_lisp->get("show_fps", show_fps);
-    config_lisp->get("sound_enabled", sound_enabled);
-    config_lisp->get("music_enabled", music_enabled);
+    Properties props(config_lisp);
+    props.get("screen_width", screen_width);
+    props.get("screen_height", screen_height);
+    props.get("fullscreen", use_fullscreen);
+    props.get("show_fps", show_fps);
+    props.get("sound_enabled", sound_enabled);
+    props.get("music_enabled", music_enabled);
+    props.print_unused_warnings("configfile");
 
     // TODO read controller config
   } catch(std::exception& e) {

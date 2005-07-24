@@ -25,6 +25,8 @@
 #include <ClanLib/Display/joystick.h>
 
 #include "lisp/parser.hpp"
+#include "lisp/lisp.hpp"
+#include "lisp/properties.hpp"
 #include "windstille_error.hpp"
 #include "input_manager_custom.hpp"
 #include "input_manager_player.hpp"
@@ -45,9 +47,10 @@ void
 InputManager::init(const std::string& filename)
 {
   std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
+  lisp::Properties rootp(root.get());
 
-  const lisp::Lisp* controller = root->get_lisp("windstille-controller");
-  if(controller == 0) {
+  const lisp::Lisp* controller;
+  if(rootp.get("windstille-controller", controller) == false) {
     std::ostringstream msg;
     msg << "'" << filename << "' is not a windstille-controller file";
     throw std::runtime_error(msg.str());

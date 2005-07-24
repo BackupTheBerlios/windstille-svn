@@ -11,7 +11,8 @@ namespace Scripting
 
 using namespace lisp;
 
-lisp::Lisp* table_to_lisp(HSQUIRRELVM v, int table_idx)
+lisp::Lisp* table_to_lisp(HSQUIRRELVM v, int table_idx,
+                          std::vector<lisp::Lisp*>& entries)
 {
   using namespace lisp;
   Lisp* lisp = 0;
@@ -21,17 +22,8 @@ lisp::Lisp* table_to_lisp(HSQUIRRELVM v, int table_idx)
     table_idx--;
 
   // iterate table
-  Lisp* cur = 0;
   sq_pushnull(v);
   while(SQ_SUCCEEDED(sq_next(v, table_idx))) {
-    if(cur == 0) {
-      lisp = new Lisp(Lisp::TYPE_CONS);
-      cur = lisp;
-    } else {
-      cur->v.cons.cdr = new Lisp(Lisp::TYPE_CONS);
-      cur = cur->v.cons.cdr;
-    }
-    
     // key is -2, value -1 now
     if(sq_gettype(v, -2) != OT_STRING) {
       std::cerr << "Table contains a non string key\n";
@@ -40,16 +32,23 @@ lisp::Lisp* table_to_lisp(HSQUIRRELVM v, int table_idx)
     const char* key;
     sq_getstring(v, -2, &key);
 
+    std::vector<Lisp*> childs;
+    childs.push_back(new Lisp(Lisp::TYPE_SYMBOL, key));
+
     Lisp* val = 0;
     switch(sq_gettype(v, -1)) {
-      case OT_INTEGER:
-        val = new Lisp(Lisp::TYPE_INTEGER);
-        sq_getinteger(v, -1, &val->v.integer);
+      case OT_INTEGER: {
+        int val;
+        sq_getinteger(v, -1, &val);
+        childs.push_back(new Lisp(val));
         break;
-      case OT_FLOAT:
-        val = new Lisp(Lisp::TYPE_REAL);
-        sq_getfloat(v, -1, &val->v.real);
+      }
+      case OT_FLOAT: {
+        float val;
+        sq_getfloat(v, -1, &val);
+        childs.push_back(new Lisp(val));
         break;
+      }
       case OT_STRING: {
         const char* str;
         sq_getstring(v, -1, &str);
@@ -59,38 +58,25 @@ lisp::Lisp* table_to_lisp(HSQUIRRELVM v, int table_idx)
       case OT_BOOL: {
         SQBool boolean;
         sq_getbool(v, -1, &boolean);
-        val = new Lisp(Lisp::TYPE_BOOLEAN);
-        val->v.boolean = boolean;
-      }
-      case OT_TABLE:
-        val = table_to_lisp(v, -1);
+        val = new Lisp((bool) boolean);
         break;
+      }
+      case OT_TABLE: {
+        table_to_lisp(v, -1, childs);
+        break;
+      }
       case OT_ARRAY:
         // TODO...
       default:
         std::cerr << "Unsupported value type in table\n";
         break;
     }
-    if(val == 0)
-      continue;
 
-    Lisp* node = new Lisp(Lisp::TYPE_CONS);
-    cur->v.cons.car = node;
-
-    node->v.cons.car = new Lisp(Lisp::TYPE_SYMBOL, key);
-    if(val->get_type() == Lisp::TYPE_CONS) {
-      node->v.cons.cdr = val;
-    } else {
-      node->v.cons.cdr = new Lisp(Lisp::TYPE_CONS);
-      node->v.cons.cdr->v.cons.car = val;
-      node->v.cons.cdr->v.cons.cdr = 0;
-    }
-    
     // pop table key and value
     sq_pop(v, 2);
+
+    entries.push_back(new Lisp(childs));
   }
-  if(cur != 0)
-    cur->v.cons.cdr = 0;
   // pop iterator
   sq_pop(v, 1);
 
@@ -99,20 +85,17 @@ lisp::Lisp* table_to_lisp(HSQUIRRELVM v, int table_idx)
 
 int spawn_object(HSQUIRRELVM v)
 {
+  using namespace lisp;
+  
   const char* objname;
   sq_getstring(v, 2, &objname);
 
-  // FIXME: who delete's the lisp?
-  lisp::Lisp* lisp = table_to_lisp(v, 3);
-  if(lisp == 0) {
-    // FIXME: this should never get called, instead Lisp should handle
-    // the empty list (nil) properly, instead of just using NULL
-    // pointer
-    std::cerr << "Invalid or empty table specified for spawn_object\n";
-    return 0;
-  }
+  std::vector<lisp::Lisp*> entries;
+  entries.push_back(new Lisp(Lisp::TYPE_SYMBOL, objname));
+  table_to_lisp(v, 3, entries);
+  std::auto_ptr<Lisp> lisp (new Lisp(entries));
   try {
-    Sector::current()->add_object(objname, lisp);
+    Sector::current()->add_object(objname, lisp.get());
   } catch(std::exception& e) {
     std::cerr << "Error parsing object in spawn_object: " << e.what()
       << "\n";

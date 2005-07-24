@@ -2,23 +2,17 @@
 
 #include <iostream>
 #include <stdexcept>
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 
 SpawnPoint::SpawnPoint(const lisp::Lisp* lisp)
 {
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "name")
-      name = iter.value().get_string();
-    else if(iter.item() == "x")
-      pos.x = iter.value().get_float();
-    else if(iter.item() == "y")
-      pos.y = iter.value().get_float();
-    else {
-      std::cerr << "Skipping unknown tag '" << iter.item() 
-                << "' in SpawnPoint.\n";
-    }
-  }
+  using namespace lisp;
+
+  Properties props(lisp);
+  props.get("name", name);
+  props.get("pos", pos);
+  props.print_unused_warnings("spawnpoint");
 
   if(name == "")
     throw std::runtime_error("No name specified for spawnpoint");

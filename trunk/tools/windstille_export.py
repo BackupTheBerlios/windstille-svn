@@ -32,8 +32,7 @@ Tip: 'Export meshes/actions to windstille format'
 #
 # See windstille/docs/models.txt for more details
 
-import struct, shlex
-import os.path
+import struct, shlex, os.path, math
 import Blender
 from Blender import NMesh
 from Blender import Window
@@ -46,6 +45,25 @@ DEFAULT_SPEED = 1.0
 SPEED_MULTIPLIER = 9.8
 # DO NOT change this
 FORMAT_VERSION = 2
+
+def matrix2quaternion(m):
+  s = math.sqrt(abs(m[0][0] + m[1][1] + m[2][2] + m[3][3]))
+  if s == 0.0:
+    x = abs(m[2][1] - m[1][2])
+    y = abs(m[0][2] - m[2][0])
+    z = abs(m[1][0] - m[0][1])
+    if   (x >= y) and (x >= z): return 1.0, 0.0, 0.0, 0.0
+    elif (y >= x) and (y >= z): return 0.0, 1.0, 0.0, 0.0
+    else:                       return 0.0, 0.0, 1.0, 0.0
+  return quaternion_normalize([
+    -(m[2][1] - m[1][2]) / (2.0 * s),     -(m[0][2] - m[2][0]) / (2.0 * s),
+    -(m[1][0] - m[0][1]) / (2.0 * s),
+    0.5 * s,
+    ])
+
+def quaternion_normalize(q):
+  l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
+  return q[0] / l, q[1] / l, q[2] / l, q[3] / l
 
 # config entry (first_frame, last_frame, speed, samplerate, markers[])
 #  a marker is (name, frame)
@@ -386,10 +404,11 @@ def export(filename):
 
       # bone positions
       for bone in bones:
-        loc = bone.getLoc()
+        bonemat = bone.getRestMatrix('worldspace')
+        loc = (m[3][0], m[3][1], m[3][2])
         file.write(struct.pack("=fff", loc[0], loc[1], loc[2]))
-        quat = bone.getQuat()
-        file.write(struct.pack("=ffff", quat.w, quat.x, quat.y, quat.z))
+        quat = matrix2quaternion(bonemat)
+        file.write(struct.pack("=ffff", quat[0], quat[1], quat[2], quat[3]))
       
 def fs_callback(filename):
   export(filename)

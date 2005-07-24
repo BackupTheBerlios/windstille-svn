@@ -107,6 +107,8 @@ sources =
         water_splash.hpp
         windstille_error.cpp
         windstille_error.hpp
+        windstille_getters.hpp
+        windstille_getters.cpp
         windstille_main.cpp
         windstille_main.hpp
         windstille_menu.cpp

@@ -20,8 +20,9 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
 #include "lisp/parser.hpp"
+#include "windstille_getters.hpp"
 #include "globals.hpp"
 #include "display/scene_context.hpp"
 #include "tile_map.hpp"
@@ -52,15 +53,12 @@ Sector::Sector(const std::string& filename)
 
   current_ = this;
   interactive_tilemap = 0;
-  ambient_light = CL_Color(0, 0, 0);
   parse_file(filename);
   if (!interactive_tilemap)
-    std::cout << "Error: Sector: No interactive-tilemap available" << std::endl;
-  else
-    {
-      // add interactive to collision engine
-      collision_engine->add (new CollisionObject (interactive_tilemap));
-    }
+    throw std::runtime_error("No interactive-tilemap available");
+
+  // add interactive to collision engine
+  collision_engine->add (new CollisionObject (interactive_tilemap));
 }
 
 Sector::~Sector()
@@ -79,55 +77,57 @@ Sector::~Sector()
 void
 Sector::parse_file(const std::string& filename)
 {
-  std::auto_ptr<lisp::Lisp> root(lisp::Parser::parse(filename));
+  using namespace lisp;
+  
+  std::auto_ptr<Lisp> root(Parser::parse(filename));
+  Properties rootp(root.get());
 
-  const lisp::Lisp* sector = root->get_lisp("windstille-sector");
-  if(!sector) {
+  const Lisp* sector;
+  if(!rootp.get("windstille-sector", sector)) {
     std::ostringstream msg;
     msg << "'" << filename << "' is not a windstille-sector file";
     throw std::runtime_error(msg.str());
   }
-
-  std::vector<int> ambient_colors;
+  rootp.print_unused_warnings("sector");
   
-  lisp::ListIterator iter(sector);
+  Properties props(sector);
+
+  int version = 1;
+  if(!props.get("version", version))
+    std::cerr << "Warning no version specified in levelformat.\n";
+  if(version > 1)
+    std::cerr << "Warning: format version is newer than game.\n";
+  props.get("name", name);
+  props.get("music", music);
+  props.get("init-script", init_script);
+  props.get("ambient-color", ambient_light);
+  
+  PropertyIterator<const Lisp*> iter;
+  props.get_iter("spawnpoint", iter);
   while(iter.next()) {
-    if(iter.item() == "version") {
-      if(iter.value().get_int() > 2) {
-        std::cerr << "Warning: Levelformat is newer than game.\n";
-      }
-    } else if(iter.item() == "name") {
-      name = iter.value().get_string();
-    } else if(iter.item() == "music") {
-      music = iter.value().get_string();
-    } else if(iter.item() == "init-script") {
-      init_script = iter.value().get_string();
-    } else if(iter.item() == "ambient-color") {
-      iter.lisp()->get_vector(ambient_colors);
-      if(ambient_colors.size() != 3)
-        throw std::runtime_error(
-            "ambient-color contains has to contain exactly 3 values");
-      ambient_light 
-        = CL_Color(ambient_colors[0], ambient_colors[1], ambient_colors[2]);
-    } else if(iter.item() == "spawnpoint") {
-      spawn_points.push_back(new SpawnPoint(iter.lisp()));
-    } else if(iter.item() == "objects") {
-      lisp::ListIterator oiter(iter.lisp());
-      while(oiter.next()) {
-        add_object(oiter.item(), oiter.lisp());
-      }
-    } else {
-      std::cerr << "Skipping unknown tag '" << iter.item() << "' in sector\n";
-    }
+    spawn_points.push_back(new SpawnPoint(*iter));
   }
+
+  const Lisp* objects;
+  if(props.get("objects", objects) == false)
+    throw std::runtime_error("No objects specified");
+  Properties pobjects(objects);
+  iter = pobjects.get_iter();
+  while(iter.next()) {
+    add_object(iter.item(), *iter);
+  }
+
+  props.print_unused_warnings("sector");
 }
 
 void
 Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
 {
+  printf("ParseObject: '%s'.\n", name.c_str());
   if(name == "tilemap") {
     TileMap* tilemap = new TileMap(lisp);
     add(tilemap);
+    printf("Name: %s.\n", tilemap->get_name().c_str());
     if (tilemap->get_name() == "interactive")
       interactive_tilemap = tilemap;
   } else if(name == "background") {
@@ -178,7 +178,7 @@ Sector::spawn_player(const std::string& spawnpoint)
     }
   }
 
-  CL_Pointf spawnpos(320, 200);
+  Vector spawnpos(320, 200, 0);
   if(result == 0) {
     if(spawnpoint != "default") {
       std::cerr << "SpawnPoint '" << spawnpoint << "' not found.\n";
@@ -193,7 +193,7 @@ Sector::spawn_player(const std::string& spawnpoint)
     player = new Player();
     add(player);
   }
-  player->set_pos(spawnpos.x, spawnpos.y);
+  player->set_pos(spawnpos);
 }
 
 void

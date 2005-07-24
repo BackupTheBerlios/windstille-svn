@@ -26,8 +26,8 @@
 #ifndef HEADER_ENTITY_HXX
 #define HEADER_ENTITY_HXX
 
-#include <ClanLib/Core/Math/cl_vector.h>
 #include <ClanLib/Display/sprite.h>
+#include "math/vector.hpp"
 #include "game_object.hpp"
 #include "collision/collision_object.hpp"
 
@@ -39,16 +39,17 @@ private:
   CL_Signal_v0 done; 
 
 protected:
-  CL_Vector pos;
+  Vector pos;
   bool useable;
   
 public:
   Entity();
   virtual ~Entity();
    
-  virtual CL_Vector get_pos() const { return pos; }
+  virtual Vector get_pos() const
+  { return pos; }
 
-  void set_pos(float x, float y);
+  void set_pos(Vector pos);
 
   /** Called once per frame to allow the object to draw itself */
   virtual void draw(SceneContext& gc) = 0;

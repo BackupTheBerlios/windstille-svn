@@ -16,30 +16,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include "globals.hpp"
 #include "useable_object.hpp"
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 
 UseableObject::UseableObject(const lisp::Lisp* lisp)
   : highlight("vrdoor/highlight", resources),
     color("vrdoor/color", resources)
 {
+  using namespace lisp;
   set_useable(true);
   pos.z = 0;
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "x") {
-      pos.x = iter.value().get_float();
-    } else if(iter.item() == "y") {
-      pos.y = iter.value().get_float();
-    } else if(iter.item() == "script") {
-      use_script = iter.value().get_string();
-    } else {
-      std::cerr << "Skipping unknown attribute '" 
-                << iter.item() << "' in UseableObject\n";
-    }
-  }
+
+  Properties props(lisp);
+  props.get("pos", pos);
+  props.get("script", use_script);
+  props.print_unused_warnings("usableobject");
 }
 
 void

@@ -24,9 +24,22 @@
 namespace lisp
 {
     
-Lisp::Lisp(LispType newtype)
-  : type(newtype)
+Lisp::Lisp(int val)
+  : type(TYPE_INT)
 {
+  v.int_ = val;
+}
+
+Lisp::Lisp(float val)
+  : type(TYPE_FLOAT)
+{
+  v.float_ = val;
+}
+
+Lisp::Lisp(bool val)
+  : type(TYPE_BOOL)
+{
+  v.bool_ = val;
 }
 
 Lisp::Lisp(LispType newtype, const std::string& str)
@@ -37,35 +50,25 @@ Lisp::Lisp(LispType newtype, const std::string& str)
   memcpy(v.string, str.c_str(), str.size()+1);
 }
 
-Lisp::~Lisp()
+Lisp::Lisp(const std::vector<Lisp*>& list_elements)
+  : type(TYPE_LIST)
 {
-  if(type == TYPE_SYMBOL || type == TYPE_STRING)
-    delete[] v.string;
-  if(type == TYPE_CONS) {
-    delete v.cons.cdr;
-    delete v.cons.car;
+  v.list.size = list_elements.size();
+  v.list.entries = new Lisp* [v.list.size];
+  for(size_t i = 0; i < v.list.size; ++i) {
+    v.list.entries[i] = list_elements[i];
   }
 }
 
-Lisp*
-Lisp::get_lisp(const char* name) const
+Lisp::~Lisp()
 {
-  for(const Lisp* p = this; p != 0; p = p->get_cdr()) {
-    Lisp* child = p->get_car();
-    if(!child || child->get_type() != TYPE_CONS)
-      continue;
-    Lisp* childname = child->get_car();
-    if(!childname)
-      continue;
-    std::string childName;
-    if(!childname->get(childName))
-      continue;
-    if(childName == name) {
-      return child->get_cdr();
-    }
+  if(type == TYPE_SYMBOL || type == TYPE_STRING) {
+    delete[] v.string;
+  } else if(type == TYPE_LIST) {
+    for(size_t i = 0; i < v.list.size; ++i)
+      delete v.list.entries[i];
+    delete[] v.list.entries;
   }
-
-  return 0;
 }
 
 void
@@ -73,33 +76,34 @@ Lisp::print(std::ostream& out, int indent) const
 {
   for(int i = 0; i < indent; ++i)
     out << ' ';
-  
-  if(type == TYPE_CONS) {
-    out << "(\n";
-    const Lisp* lisp = this;
-    while(lisp) {
-      if(lisp->v.cons.car)
-        lisp->v.cons.car->print(out, indent + 1);
-      lisp = lisp->v.cons.cdr;
-    }
-    for(int i = 0; i < indent; ++i)
-      out << ' ';
-    out << ')';
-  }
-  if(type == TYPE_STRING) {
-    out << '\'' << v.string << '\'';
-  }
-  if(type == TYPE_INTEGER) {
-    out << v.integer;
-  }
-  if(type == TYPE_REAL) {
-    out << v.real;
-  }
-  if(type == TYPE_SYMBOL) {
-    out << v.string;
-  }
-  if(type == TYPE_BOOLEAN) {
-    out << (v.boolean ? "true" : "false");
+ 
+  switch(type) {
+    case TYPE_LIST:
+      out << "(\n";
+      for(size_t i = 0; i < v.list.size; ++i)
+        v.list.entries[i]->print(out, indent+2);
+      for(int i = 0; i < indent; ++i)
+        out << ' ';                      
+      out << ")";
+      break;
+    case TYPE_STRING:
+      out << '\'' << v.string << '\'';
+      break;
+    case TYPE_INT:
+      out << v.int_;
+      break;
+    case TYPE_FLOAT:
+      out << v.float_;
+      break;
+    case TYPE_SYMBOL:
+      out << v.string;
+      break;
+    case TYPE_BOOL:
+      out << (v.bool_ ? "true" : "false");
+      break;
+    default:
+      out << "UNKNOWN?!?";
+      break;
   }
   out << '\n';
 }

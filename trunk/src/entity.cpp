@@ -37,10 +37,9 @@ Entity::~Entity()
 }
 
 void
-Entity::set_pos(float x, float y)
+Entity::set_pos(Vector pos)
 {
-  pos.x = x;
-  pos.y = y;
+  this->pos = pos;
 }
 
 /* EOF */

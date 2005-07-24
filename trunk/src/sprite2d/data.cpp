@@ -7,9 +7,10 @@
 #include <sstream>
 #include <stdexcept>
 #include "util.hpp"
-#include "lisp/list_iterator.hpp"
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 #include "glutil/texture.hpp"
 #include "glutil/texture_manager.hpp"
 
@@ -19,8 +20,9 @@ namespace sprite2d
 Data::Data(const std::string& filename)
 {
   std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
-  const lisp::Lisp* sprite = root->get_lisp("sprite");
-  if(sprite == 0) {
+  lisp::Properties rootp(root.get());
+  const lisp::Lisp* sprite;
+  if(rootp.get("sprite", sprite) == false) {
     std::ostringstream msg;
     msg << "File '" << filename << "' is not a windstille sprite";
     throw std::runtime_error(msg.str());
@@ -39,14 +41,13 @@ Data::~Data()
 void
 Data::parse(const std::string& dir, const lisp::Lisp* lisp)
 {
-  lisp::ListIterator iter(lisp);
+  lisp::Properties props(lisp);
+  lisp::PropertyIterator<const lisp::Lisp*> iter;
+  props.get_iter("action", iter);
   while(iter.next()) {
-    if(iter.item() == "action") {
-      actions.push_back(parse_action(dir, iter.lisp()));
-    } else {
-      std::cerr << "Skipping unknown tag '" << iter.item() << "' in sprite.\n";
-    }
+    actions.push_back(parse_action(dir, *iter));
   }
+  props.print_unused_warnings("sprite");
 
   if(actions.size() == 0)
     throw std::runtime_error("Sprite contains no actions");
@@ -58,27 +59,20 @@ Data::parse_action(const std::string& dir, const lisp::Lisp* lisp)
   std::auto_ptr<Action> action (new Action);
   action->speed = 1.0;
   action->offset = Vector(0, 0, 0);
+ 
+  lisp::Properties props(lisp);
+  props.get("name", action->name);
+  props.get("speed", action->speed);
+  props.get("offset", action->offset);
   
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "name") {
-      action->name = iter.value().get_string();
-    } else if(iter.item() == "speed") {
-      action->speed = iter.value().get_float();
-    } else if(iter.item() == "x-offset") {
-      action->offset.x = iter.value().get_float();
-    } else if(iter.item() == "y-offset") {
-      action->offset.y = iter.value().get_float();
-    } else if(iter.item() == "z-offset") {
-      // do we use that for anything anyway?
-      action->offset.z = iter.value().get_float();
-    } else if(iter.item() == "images") {
-      parse_images(action.get(), dir, iter.lisp());
-    } else if(iter.item() == "image-grid") {
-      parse_image_grid(action.get(), dir, iter.lisp());
-    }
+  const lisp::Lisp* ilisp;
+  if(props.get("images", ilisp)) {
+    parse_images(action.get(), dir, ilisp);
+  } else if(props.get("image-grid", ilisp)) {
+    parse_image_grid(action.get(), dir, ilisp);
   }
-
+  props.print_unused_warnings("sprite action");
+  
   if(action->name == "")
     throw std::runtime_error("No Name defined for action");
   if(action->images.size() == 0) {
@@ -86,7 +80,6 @@ Data::parse_action(const std::string& dir, const lisp::Lisp* lisp)
     msg << "Action '" << action->name << "' contains no images";
     throw std::runtime_error(msg.str());
   }
-
   return action.release();
 }
 
@@ -94,9 +87,8 @@ void
 Data::parse_images(Action* action, const std::string& dir,
                    const lisp::Lisp* lisp)
 {
-  while(lisp && lisp->get_type() == lisp::Lisp::TYPE_CONS) {
-    const lisp::Lisp* cur = lisp->get_car();
-    std::string file = cur->get_string();
+  for(size_t n = 1; n < lisp->get_list_size(); ++n) {
+    std::string file = lisp->get_list_elem(n)->get_string();
     const Texture* texture = texture_manager->get(dir + "/" + file);
     
     ActionImage image;
@@ -113,8 +105,6 @@ Data::parse_images(Action* action, const std::string& dir,
     uvs[6] = 0;
     uvs[7] = texture->get_max_v();
     action->images.push_back(image);
-
-    lisp = lisp->get_cdr();
   }
 }
 
@@ -125,20 +115,14 @@ Data::parse_image_grid(Action* action, const std::string& dir,
   std::string filename;
   int x_size = -1;
   int y_size = -1;
-  
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "file") {
-      filename = iter.value().get_string();
-    } else if(iter.item() == "x-size") {
-      x_size = iter.value().get_int();
-    } else if(iter.item() == "y-size") {
-      y_size = iter.value().get_int();
-    } else {
-      std::cerr << "Skipping unknown element '" << iter.item() 
-                << "' in image-grid declaration.\n";
-    }
-  }
+ 
+  lisp::Properties props(lisp);
+
+  props.get("file", filename);
+  props.get("x-size", x_size);
+  props.get("y-size", y_size);
+
+  props.print_unused_warnings("action image-grid");
 
   if(filename == "" || x_size <= 0 || y_size <= 0)
     throw std::runtime_error("Invalid or too few data in image-grid");

@@ -23,35 +23,25 @@
 #include "player.hpp"
 #include "script_manager.hpp"
 #include "lisp/lisp.hpp"
-#include "lisp/list_iterator.hpp"
+#include "lisp/properties.hpp"
 
 Trigger::Trigger(const lisp::Lisp* lisp)
   : triggered(false), one_time_trigger(false)
 {
+  using namespace lisp;
   float x = -1;
   float y = -1;
   float width = -1;
   float height = -1;
   
-  lisp::ListIterator iter(lisp);
-  while(iter.next()) {
-    if(iter.item() == "x") {
-      x = iter.value().get_float();
-    } else if(iter.item() == "y") {
-      y = iter.value().get_float();
-    } else if(iter.item() == "width") {
-      width = iter.value().get_float();
-    } else if(iter.item() == "height") {
-      height = iter.value().get_float();
-    } else if(iter.item() == "script") {
-      script = iter.value().get_string();
-    } else if(iter.item() == "one_time_trigger") {
-      one_time_trigger = iter.value().get_bool();
-    } else {
-      std::cerr << "Skipping unknown tag '"
-                << iter.item() << "' in Trigger object.\n";
-    }
-  }
+  Properties props(lisp);
+  props.get("x", x);
+  props.get("y", y);
+  props.get("width", width);
+  props.get("height", height);
+  props.get("script", script);
+  props.get("one_time_trigger", one_time_trigger);
+  props.print_unused_warnings("trigger");
 
   if(x < 0 || y < 0 || width < 0 || height < 0)
     throw std::runtime_error("Invalid or missing area in Trigger object");
