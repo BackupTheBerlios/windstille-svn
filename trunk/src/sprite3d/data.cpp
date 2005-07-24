@@ -93,9 +93,6 @@ Data::Data(const std::string& filename)
       mesh.triangle_count = read_uint16_t(file);
       mesh.vertex_count = read_uint16_t(file);
 
-      printf("Reading Mesh Tex %s Tri %u Vs %u.\n", texturename.c_str(),
-              mesh.triangle_count, mesh.vertex_count);
-
       const Texture* texture = texture_manager->get(texturename);
       mesh.texture = texture->handle;
 
@@ -133,15 +130,12 @@ Data::Data(const std::string& filename)
       action.marker_count = read_uint16_t(file);
       action.frame_count = read_uint16_t(file);
 
-      printf("ReadingAction %s Frames %u.\n", action.name.c_str(), action.frame_count);
-
       // read markers
       action.markers = new Marker[action.marker_count];
       for(uint16_t m = 0; m < action.marker_count; ++m) {
         Marker& marker = action.markers[m];
         marker.name = read_string(file, 64);
         marker.frame = read_uint16_t(file);
-        printf("Marker '%s' at %u.\n", marker.name.c_str(), marker.frame);
       }
 
       // read frames
