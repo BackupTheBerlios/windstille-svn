@@ -134,6 +134,8 @@ if test "$openal_found" = "no"; then
     AC_MSG_ERROR([Please install OpenAL])
 fi
 
+AC_CHECK_FT2(,,AC_MSG_ERROR([Please install freetype2]))
+
 NP_FINDLIB([PHYSFS], [physfs], [physfs >= 1.0.0],
         NP_LANG_PROGRAM([#include <physfs.h>
 #if PHYSFS_VER_MAJOR < 1
