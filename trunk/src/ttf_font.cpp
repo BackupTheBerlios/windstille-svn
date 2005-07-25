@@ -22,7 +22,6 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <physfs.h>
 #include <assert.h>
 #include <iostream>
 #include <vector>
@@ -38,6 +37,7 @@
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
+#include "physfs/physfs_stream.hpp"
 #include "blitter.hpp"
 #include "ttf_font.hpp"
 
@@ -104,41 +104,12 @@ TTFFont::TTFFont(const std::string& filename, int size)
 
   impl->size = size;
 
-  FT_Byte*  buffer = 0;
-  size_t buffer_len = 0;
-  PHYSFS_file* file = PHYSFS_openRead(filename.c_str());
-  if(!file) {
-    std::ostringstream msg;
-    msg << "Couldn't open '" << filename << "': "
-        << PHYSFS_getLastError();
-    throw std::runtime_error(msg.str());
-  }
-   
-  PHYSFS_sint64 fsize = PHYSFS_fileLength(file);
-  if (fsize == -1)
-    {      
-      std::ostringstream msg;
-      msg << "Couldn't get filesize of file '" << filename << "': "
-          << PHYSFS_getLastError();
-      throw std::runtime_error(msg.str());
-    }
-  else
-    {
-      buffer_len = fsize;
-      buffer = new FT_Byte[buffer_len];
-      PHYSFS_sint64 read_size = PHYSFS_read(file, buffer, 1, fsize);
-      if (read_size != fsize)
-        {
-          std::ostringstream msg;
-          msg << "Couldn't read  file '" << filename << "': "
-              << PHYSFS_getLastError();
-          throw std::runtime_error(msg.str());          
-        }     
-    }
-  PHYSFS_close(file);
+  IFileStream fin(filename);
+  std::istreambuf_iterator<char> first(fin), last;
+  std::vector<char> buffer(first, last); 
 
   FT_Face face;
-  if (FT_New_Memory_Face(TTFFontImpl::library, buffer, buffer_len, 0, &face))
+  if (FT_New_Memory_Face(TTFFontImpl::library, reinterpret_cast<FT_Byte*>(&*buffer.begin()), buffer.size(), 0, &face))
     {
       throw std::runtime_error("Couldn't load font: '" + filename + "'");
     }
