@@ -53,7 +53,9 @@ IFileStreambuf::underflow()
     }
     setg(buf, buf, buf + bytesread);
 
-    return buf[0];
+    // without the conversation some characters (255?) would be
+    // handled like EOF
+    return traits_type::to_int_type(buf[0]);
 }
 
 IFileStreambuf::pos_type
