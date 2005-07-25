@@ -21,7 +21,97 @@
 #include <ClanLib/gl.h>
 #include "particle_system.hpp"
 #include "display/scene_context.hpp"
+#include "math/vector.hpp"
+#include "color.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
+#include "spark_drawer.hpp"
 #include "randomizer.hpp"
+
+ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
+{
+  // Init some defaults
+  randomizer = new PointRandomizer;
+  drawer     = 0;
+  x_pos      = 320.0f;
+  y_pos      = 240.0f;
+  life_time  = 1.0f;
+
+  gravity_x = 0.0f;
+  gravity_y = -10.0f;
+
+  cone_start = 0;
+  cone_stop  = 2*M_PI;
+
+  size_start = 1.0f;
+  size_stop  = 1.0f;
+
+  speed_start = 100.0;
+  speed_stop  = 200.0f;
+
+  color_start = CL_Color(255, 255, 255, 255);
+  color_stop  = CL_Color(  0,   0,   0,   0);
+
+  set_count(70);
+  
+  // Set stuff from Lisp
+  lisp::Properties props(lisp);
+  float p_lifetime;
+  if (props.get("lifetime", p_lifetime))
+    set_lifetime(p_lifetime);
+  
+  int p_count;
+  if (props.get("count", p_count))
+    set_count(p_count);
+
+  Vector p_gravity;
+  if (props.get("gravity", p_gravity))
+    set_gravity(p_gravity.x, p_gravity.y);
+
+  float p_cycles;
+  if (props.get("cycles",  p_cycles))
+    set_cycles(p_cycles);
+
+  Vector p_spawn_point;
+  if (props.get("spawn-point", p_spawn_point))
+    set_spawn_point(p_spawn_point.x, p_spawn_point.y);
+
+  Vector p_pos;
+  if (props.get("pos", p_pos))
+    set_pos(p_pos.x, p_pos.y);
+  
+  Vector p_cone;
+  if (props.get("cone", p_cone))
+    set_cone(p_cone.x, p_cone.y);
+
+  Vector p_size;
+  if (props.get("size", p_size))
+    set_size(p_size.x, p_size.y);
+
+  Vector p_aspect;
+  if (props.get("aspect", p_aspect))
+    set_aspect(p_aspect.x, p_aspect.y);
+
+  Color p_color;
+  if (props.get("color", p_color))
+    set_color(CL_Color(CL_Colorf(p_color.r, p_color.g, p_color.b, p_color.a)));
+
+  Color p_fade_color;
+  if (props.get("fade-color", p_fade_color))
+    set_color(CL_Color(CL_Colorf(p_fade_color.r, p_fade_color.g, p_fade_color.b, p_fade_color.a)));
+
+  Vector p_speed;
+  if (props.get("speed", p_speed))
+    set_speed(p_speed.x, p_speed.y);
+  
+  //props.get("point-distribution",   ); // void
+  //props.get("line-distribution",   ); // 2xvector2
+  //props.get("circle", ); // float
+  //props.get("rect-distribution", ); // vector2
+
+  set_drawer(new SparkDrawer());
+  props.print_unused_warnings("ParticleSystem");
+}
 
 ParticleSystem::ParticleSystem()
 {

@@ -36,6 +36,7 @@
 #include "sound/sound_manager.hpp"
 #include "script_manager.hpp"
 #include "collision/collision_engine.hpp"
+#include "particles/particle_system.hpp"
 #include "test_object.hpp"
 #include "elevator.hpp"
 #include "nightvision.hpp"
@@ -146,6 +147,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new TestObject(lisp));
   } else if (name == "nightvision") {
     add(new Nightvision(lisp));
+  } else if (name == "particle-system") {
+    add(new ParticleSystem(lisp));
   } else if(name == "useable-object") {    
     add(new UseableObject(lisp));
   } else {

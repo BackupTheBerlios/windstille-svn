@@ -23,6 +23,7 @@
 #include <ClanLib/display.h>
 #include <vector>
 #include "drawer.hpp"
+#include "lisp/lisp.hpp"
 #include "game_object.hpp"
 
 class SceneContext;
@@ -89,6 +90,7 @@ private:
   void spawn(Particle& particle);
 public:
   ParticleSystem();
+  ParticleSystem(const lisp::Lisp* lisp);
   virtual ~ParticleSystem();
 
   void set_drawer(Drawer*);

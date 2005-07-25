@@ -17,15 +17,28 @@
       (sprite "images/arrow.sprite")
       (enabled #f)
     )
+    (particle-system
+     (lifetime    0.8)
+     (count      250)
+     (pos       0 0)
+     (spawn-point 532 826)
+     (speed    70 300)
+     (cone   -115 -65)
+     (gravity 0 10)
+     (size   1.0 3.0)
+     )
+
     (box
       (name "Box0")
       (pos 350 700)
       (vel 10 0)
+        (gravity 50)
     )
     (box
       (name "Box1")
       (pos 555 700)
       (vel -10 0)
+        (gravity 50)
     )
     (character
       (name "bob")
