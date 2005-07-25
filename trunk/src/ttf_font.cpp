@@ -23,7 +23,6 @@
 */
 
 #include <assert.h>
-#include <iostream>
 #include <vector>
 #include <stdexcept>
 #include <sstream>
@@ -111,8 +110,9 @@ TTFFont::TTFFont(const std::string& filename, int size)
   std::vector<char> buffer(first, last); 
 
   FT_Face face;
-  std::cout << "Buffer size: " << buffer.size() << std::endl;
-  if (FT_New_Memory_Face(TTFFontImpl::library, reinterpret_cast<FT_Byte*>(&*buffer.begin()), buffer.size(), 0, &face))
+  if (FT_New_Memory_Face(TTFFontImpl::library, 
+                         reinterpret_cast<FT_Byte*>(&*buffer.begin()), buffer.size(), 
+                         0, &face))
     {
       throw std::runtime_error("Couldn't load font: '" + filename + "'");
     }
