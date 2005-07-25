@@ -15,8 +15,6 @@ Windstille Bugs
   cause graphical errors, this is caused by the non-pbuffer based
   lightmap rendering, implementing proper pbuffer would fix itx 
    
-- configure.ac does not successfully check for -lopenal32 if -lopenal is not found
-
 - Pressing left (or right), jump and up at the same time throws an exception that causes the game to exit
 
 - there might be a bug in IFileStream:
