@@ -17,12 +17,4 @@ Windstille Bugs
    
 - Pressing left (or right), jump and up at the same time throws an exception that causes the game to exit
 
-- there might be a bug in IFileStream:
-
-  IFileStream fin(filename);
-  std::istreambuf_iterator<char> first(fin), last;
-  std::vector<char> buffer(first, last); 
-
-  doesn't read the complete file for 'Vera.ttf', only 41984 instead of 65932 bytes
-
 # EOF #
