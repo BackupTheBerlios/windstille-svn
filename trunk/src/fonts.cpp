@@ -1,4 +1,4 @@
-//  $Id: fonts.cxx,v 1.2 2003/09/29 19:29:17 grumbel Exp $
+//  $Id$
 //
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -30,6 +30,8 @@ CL_Font Fonts::copyright;
 
 TTFFont* Fonts::ttffont = 0;
 
+TTFFont* Fonts::ttfdialog = 0;
+
 void
 Fonts::init()
 {
@@ -42,6 +44,7 @@ Fonts::init()
   copyright = CL_Font("copyright", resources);
 
   ttffont = new TTFFont("fonts/VeraMono.ttf", 12);
+  ttfdialog  = new TTFFont("fonts/Vera.ttf", 20);
 }
 
 void
@@ -56,6 +59,7 @@ Fonts::deinit()
   copyright = CL_Font();
 
   delete ttffont;
+  delete ttfdialog;
 }
 
 /* EOF */

@@ -85,6 +85,8 @@ sources =
 	spider_mine.cpp
         test_object.cpp
         test_object.hpp
+        text_area.hpp
+        text_area.cpp
         tile.cpp
         tile_factory.cpp
         tile_factory.hpp

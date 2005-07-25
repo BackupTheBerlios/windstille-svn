@@ -172,8 +172,8 @@ TTFFont::~TTFFont()
 {
 }
 
-TTFCharacter
-TTFFont::get_character(int c)
+const TTFCharacter&
+TTFFont::get_character(int c) const
 {
   assert(c >= 0 && c < 256);
   return impl->characters[c];
@@ -227,6 +227,21 @@ TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& col
       x_pos += character.advance;       
     }
   glEnd();
+}
+
+int
+TTFFont::get_width(const std::string& text) const
+{
+  int width = 0;
+  for(std::string::const_iterator i = text.begin(); i != text.end(); ++i)
+    width += impl->characters[*i].advance;
+  return width;
+}
+
+CL_OpenGLSurface
+TTFFont::get_surface() const
+{
+  return impl->surface;
 }
 
 void

@@ -1,4 +1,4 @@
-//  $Id: fonts.hpp,v 1.2 2003/09/29 19:29:17 grumbel Exp $
+//  $Id$
 // 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -34,6 +34,8 @@ extern CL_Font menu_h;
 extern CL_Font copyright;
 
 extern TTFFont* ttffont;
+
+extern TTFFont* ttfdialog;
 
 void init();
 void deinit();

@@ -23,54 +23,36 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_TTF_FONT_HXX
-#define HEADER_TTF_FONT_HXX
+#ifndef HEADER_TEXT_AREA_HPP
+#define HEADER_TEXT_AREA_HPP
 
 #include <ClanLib/Core/Math/rect.h>
-#include <ClanLib/GL/opengl_surface.h>
 #include <string>
-#include "color.hpp"
 
-class TTFCharacter
+class TTFFont;
+class TextAreaImpl;
+
+/** A class for managing multiple lines of text in combination with
+    special formating.
+*/
+class TextArea
 {
 public:
-  /** The position of the image, relative to the current cursor
-      position in screen coordinates */
-  CL_Rect pos;
+  /** The area which the TextArea should cover */
+  TextArea(const CL_Rect& rect);
+  ~TextArea();
 
-  /** The position of the character in a OpenGL texture, given in
-      uv-coordinates */
-  CL_Rectf uv;
+  /** Sets the text to be displayed in the text box */
+  void set_text(const std::string& str);
 
-  int advance;
+  /** Sets the default font to be used in the text box, can be changed
+      with special tags */
+  void set_font(TTFFont* font);
 
-  TTFCharacter(const CL_Rect& pos, const CL_Rectf& uv, int advance);
-};
+  void draw();
 
-class TTFFontImpl;
-
-/** */
-class TTFFont
-{
-public:
-  static void init();
-  static void deinit();
-
-  TTFFont(const std::string& file, int size);
-  ~TTFFont();
-
-  int get_height() const;
-
-  /** Returns the width of a given piece of text, doesn't take
-      newlines into account */
-  int get_width(const std::string& text) const;
-
-  CL_OpenGLSurface get_surface() const;
-
-  const TTFCharacter& get_character(int c) const;
-  void draw(float x_pos, float y_pos, const std::string& str, const Color& color = Color(1.0f, 1.0f, 1.0f));
 private:
-  TTFFontImpl* impl;
+  TextAreaImpl* impl;
 };
 
 #endif

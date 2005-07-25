@@ -1,4 +1,4 @@
-//  $Id: dialog_manager.cxx,v 1.3 2003/09/30 16:42:26 grumbel Exp $
+//  $Id$
 //
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -25,6 +25,7 @@
 #include "input/input_manager.hpp"
 #include "dialog_manager.hpp"
 #include "script_manager.hpp"
+#include "text_area.hpp"
 #include "gameconfig.hpp"
 
 DialogManager* DialogManager::current_ = 0;
@@ -100,15 +101,27 @@ DialogManager::draw()
       
   portrait.draw(pos.x + portrait_border_x,
                 pos.y + portrait_border_y);
-  Fonts::dialog.set_alignment(origin_top_left);
-  Fonts::dialog_h.set_alignment(origin_top_left);
+  
+  if (0)
+    {
+      Fonts::dialog.set_alignment(origin_top_left);
+      Fonts::dialog_h.set_alignment(origin_top_left);
 
-  int len = std::min(int(text.size()), int(progress*text_speed));
-  Fonts::dialog.draw(CL_Rect(CL_Point(text_rect.left, text_rect.top),
-                             CL_Size(text_width, 600)),
-                     text.begin(), text.begin() + len);
-  Fonts::dialog.set_alignment(origin_top_center);
-  Fonts::dialog_h.set_alignment(origin_top_center);
+      int len = std::min(int(text.size()), int(progress*text_speed));
+      Fonts::dialog.draw(CL_Rect(CL_Point(text_rect.left, text_rect.top),
+                                 CL_Size(text_width, 600)),
+                         text.begin(), text.begin() + len);
+      Fonts::dialog.set_alignment(origin_top_center);
+      Fonts::dialog_h.set_alignment(origin_top_center);
+    }
+  else
+    {
+      TextArea area(CL_Rect(CL_Point(text_rect.left, text_rect.top + Fonts::ttfdialog->get_height()),
+                            CL_Size(text_width, 600)));
+      area.set_font(Fonts::ttfdialog);
+      area.set_text(text);
+      area.draw();
+    }
 }
 
 void
