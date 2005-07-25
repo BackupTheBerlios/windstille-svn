@@ -1,4 +1,4 @@
-//  $Id: tile_factory.cxx,v 1.10 2003/09/22 18:37:05 grumbel Exp $
+//  $Id$
 //
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -55,7 +55,7 @@ TileFactory::TileFactory (const std::string& filename)
   std::auto_ptr<Lisp> root (Parser::parse(filename));
   Properties rootp(root.get());
   
-  const lisp::Lisp* tiles_lisp;
+  const lisp::Lisp* tiles_lisp = 0;
   if(rootp.get("windstille-tiles", tiles_lisp) == false) {
     std::ostringstream msg;
     msg << "'" << filename << "' is not a windstille tiles file";

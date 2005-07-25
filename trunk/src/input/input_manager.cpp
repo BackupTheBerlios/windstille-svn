@@ -49,7 +49,7 @@ InputManager::init(const std::string& filename)
   std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
   lisp::Properties rootp(root.get());
 
-  const lisp::Lisp* controller;
+  const lisp::Lisp* controller = 0;
   if(rootp.get("windstille-controller", controller) == false) {
     std::ostringstream msg;
     msg << "'" << filename << "' is not a windstille-controller file";

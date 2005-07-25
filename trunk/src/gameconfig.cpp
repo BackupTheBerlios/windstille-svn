@@ -33,7 +33,7 @@ Config::load()
     std::auto_ptr<Lisp> root(lisp::Parser::parse("config"));
     Properties rootp(root.get());
     
-    const Lisp* config_lisp;
+    const Lisp* config_lisp = 0;
     if(rootp.get("windstille-config", config_lisp) == false) {
       std::cerr << "Warning: Config file is not a windstille-config file.\n";
       return;

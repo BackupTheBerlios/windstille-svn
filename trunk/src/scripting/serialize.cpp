@@ -54,7 +54,7 @@ void load_squirrel_table(HSQUIRRELVM v, int table_idx, const std::string& file)
   std::auto_ptr<Lisp> root (Parser::parse(file));
 
   Properties rootp(root.get());
-  const lisp::Lisp* table;
+  const lisp::Lisp* table = 0;
   if(rootp.get("squirrel-state", table) == false)
     throw std::runtime_error("Not a squirrel-state file");
 
