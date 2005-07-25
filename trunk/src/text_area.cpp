@@ -27,14 +27,27 @@
 #include <ClanLib/Display/display.h>
 #include "ttf_font.hpp"
 #include "text_area.hpp"
+#include "baby_xml.hpp"
 #include "text_area.hpp"
+
+struct TextAreaCommand 
+{
+  enum Type { WORD, START, END } type;
+  std::string content;
+    
+  TextAreaCommand(Type type_, const std::string& content_)
+    : type(type_),
+      content(content_)
+  {}
+};
 
 class TextAreaImpl
 {
 public:
   TTFFont* font;
   CL_Rectf rect;
-  std::vector<std::string> words;
+  
+  std::vector<TextAreaCommand> commands;
 };
 
 TextArea::TextArea(const CL_Rect& rect)
@@ -51,26 +64,46 @@ TextArea::~TextArea()
 void
 TextArea::set_text(const std::string& str)
 {
-  // Seperate the given str into words, words are seperated by either
-  // ' ' or '\n', space is threaded as a word of its own
-  // "Hello  World \n" => ("Hello", " ", " ", "World", " ", "\n")
-  std::string word;
-  for(std::string::const_iterator i = str.begin(); i != str.end(); ++i)
+  BabyXML xml(str);
+
+  for(BabyXML::iterator i = xml.begin(); i != xml.end(); ++i)
     {
-      if (*i == ' ' || *i == '\n')
+      if (i->type == BabyXML::Node::START_TAG)
         {
-          if (word.empty())
-            impl->words.push_back(std::string(1, *i));
-          else
-            {
-              impl->words.push_back(word);
-              impl->words.push_back(std::string(1, *i));
-              word = "";
-            }
+          impl->commands.push_back(TextAreaCommand(TextAreaCommand::START, i->content));
         }
-      else
+      else if (i->type == BabyXML::Node::END_TAG)
         {
-          word += *i;
+          impl->commands.push_back(TextAreaCommand(TextAreaCommand::END, i->content));
+        }
+      else if (i->type == BabyXML::Node::TEXT)
+        {      
+          // Seperate the given str into words, words are seperated by either
+          // ' ' or '\n', space is threaded as a word of its own
+          // "Hello  World \n" => ("Hello", " ", " ", "World", " ", "\n")
+          std::string word;
+          for(std::string::const_iterator j = i->content.begin(); j != i->content.end(); ++j)
+            {
+              if (*j == ' ' || *j == '\n')
+                {
+                  if (word.empty())
+                    {
+                      impl->commands.push_back(TextAreaCommand(TextAreaCommand::WORD, std::string(1, *j)));
+                    }
+                  else
+                    {
+                      impl->commands.push_back(TextAreaCommand(TextAreaCommand::WORD, word));
+                      impl->commands.push_back(TextAreaCommand(TextAreaCommand::WORD, std::string(1, *j)));
+                      word = "";
+                    }
+                }
+              else
+                {
+                  word += *j;
+                }
+            }
+          if (!word.empty())
+            impl->commands.push_back(TextAreaCommand(TextAreaCommand::WORD, word));
         }
     }
 }
@@ -107,45 +140,61 @@ TextArea::draw()
 
   int x_pos = 0;
   int y_pos = 0;
-  for(std::vector<std::string>::const_iterator i = impl->words.begin(); i != impl->words.end(); ++i)
+
+  for(std::vector<TextAreaCommand>::const_iterator i = impl->commands.begin(); i != impl->commands.end(); ++i)
     {
-    retry:
-      int word_width = impl->font->get_width(*i);
-      if (*i == "\n")
+      switch (i->type)
         {
-          x_pos = 0;
-          y_pos += impl->font->get_height();
-        }
-      else if (x_pos + word_width > impl->rect.get_width() && word_width <= impl->rect.get_width())
-        {
-          x_pos = 0;
-          y_pos += impl->font->get_height();
-          goto retry;
-        }
-      else
-        {
-          for(std::string::const_iterator j = i->begin(); j != i->end(); ++j)
+        case TextAreaCommand::START:
+          if (i->content == "b")
+            glColor3f(1.0f, 0, 0);
+          break;
+
+        case TextAreaCommand::END:
+          if (i->content == "b")
+            glColor3f(1.0f, 1.0f, 1.0f);
+          break;
+          
+        case TextAreaCommand::WORD:
+        retry:
+          int word_width = impl->font->get_width(i->content);
+          if (i->content == "\n")
             {
-              const TTFCharacter& character = impl->font->get_character(*j);
-      
-              glTexCoord2f(character.uv.left, character.uv.top);
-              glVertex2f(x_pos + character.pos.left + mx,
-                         y_pos + character.pos.top  + my);
-
-              glTexCoord2f(character.uv.right, character.uv.top);
-              glVertex2f(x_pos + character.pos.right + mx, 
-                         y_pos + character.pos.top   + my);
-
-              glTexCoord2f(character.uv.right, character.uv.bottom);
-              glVertex2f(x_pos + character.pos.right  + mx, 
-                         y_pos + character.pos.bottom + my);
-
-              glTexCoord2f(character.uv.left, character.uv.bottom);
-              glVertex2f(x_pos + character.pos.left   + mx, 
-                         y_pos + character.pos.bottom + my);
-
-              x_pos += character.advance;
+              x_pos = 0;
+              y_pos += impl->font->get_height();
             }
+          else if (x_pos + word_width > impl->rect.get_width() && word_width <= impl->rect.get_width())
+            {
+              x_pos = 0;
+              y_pos += impl->font->get_height();
+              goto retry;
+            }
+          else
+            {
+              for(std::string::const_iterator j = i->content.begin(); j != i->content.end(); ++j)
+                {
+                  const TTFCharacter& character = impl->font->get_character(*j);
+      
+                  glTexCoord2f(character.uv.left, character.uv.top);
+                  glVertex2f(x_pos + character.pos.left + mx,
+                             y_pos + character.pos.top  + my);
+
+                  glTexCoord2f(character.uv.right, character.uv.top);
+                  glVertex2f(x_pos + character.pos.right + mx, 
+                             y_pos + character.pos.top   + my);
+
+                  glTexCoord2f(character.uv.right, character.uv.bottom);
+                  glVertex2f(x_pos + character.pos.right  + mx, 
+                             y_pos + character.pos.bottom + my);
+
+                  glTexCoord2f(character.uv.left, character.uv.bottom);
+                  glVertex2f(x_pos + character.pos.left   + mx, 
+                             y_pos + character.pos.bottom + my);
+
+                  x_pos += character.advance;
+                }
+            }
+          break;
         }
     }
   glEnd();
