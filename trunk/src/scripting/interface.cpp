@@ -7,6 +7,7 @@
 #include "conversation.hpp"
 #include "script_manager.hpp"
 #include "sector.hpp"
+#include "fonts.hpp"
 #include "serialize.hpp"
 
 namespace Scripting
@@ -149,6 +150,18 @@ void set_debug(bool t)
 bool get_debug()
 {
   return debug;
+}
+
+void set_console_font(const std::string& font, int size)
+{
+  TTFFont* oldfont = Fonts::ttffont;
+
+  try {
+    Fonts::ttffont = new TTFFont("fonts/" + font, size);
+    delete oldfont;
+  } catch(std::exception& err) {
+    console << err.what() << std::endl;
+  }
 }
 
 }

@@ -82,7 +82,7 @@ Sector::parse_file(const std::string& filename)
   std::auto_ptr<Lisp> root(Parser::parse(filename));
   Properties rootp(root.get());
 
-  const Lisp* sector;
+  const Lisp* sector = 0;
   if(!rootp.get("windstille-sector", sector)) {
     std::ostringstream msg;
     msg << "'" << filename << "' is not a windstille-sector file";
@@ -108,7 +108,7 @@ Sector::parse_file(const std::string& filename)
     spawn_points.push_back(new SpawnPoint(*iter));
   }
 
-  const Lisp* objects;
+  const Lisp* objects = 0;
   if(props.get("objects", objects) == false)
     throw std::runtime_error("No objects specified");
   Properties pobjects(objects);

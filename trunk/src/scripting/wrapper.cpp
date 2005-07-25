@@ -469,6 +469,18 @@ static int println_wrapper(HSQUIRRELVM v)
   return Scripting::println(v);
 }
 
+static int set_console_font_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  int arg1;
+  sq_getinteger(v, 3, &arg1);
+  
+  Scripting::set_console_font(arg0, arg1);
+  
+  return 0;
+}
+
 static int spawn_object_wrapper(HSQUIRRELVM v)
 {
   return Scripting::spawn_object(v);
@@ -714,6 +726,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'println'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "set_console_font", -1);
+  sq_newclosure(v, &set_console_font_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'set_console_font'";
     throw SquirrelError(v, msg.str());
   }
 

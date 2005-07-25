@@ -57,6 +57,8 @@ void wait(HSQUIRRELVM vm, float time) __suspend;
 int display(HSQUIRRELVM) __custom;
 int println(HSQUIRRELVM) __custom;
 
+void set_console_font(const std::string& font, int size);
+
 }
 
 #endif

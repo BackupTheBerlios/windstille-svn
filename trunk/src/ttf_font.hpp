@@ -47,7 +47,9 @@ public:
       uv-coordinates */
   CL_Rectf uv;
 
-  TTFCharacter(int left, int top, int width, int height, const CL_Rectf& uv);
+  int advance;
+
+  TTFCharacter(int left, int top, int width, int height, const CL_Rectf& uv, int advance);
 };
 
 class TTFFontImpl;

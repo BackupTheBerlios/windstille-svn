@@ -41,7 +41,7 @@ Fonts::init()
 
   copyright = CL_Font("copyright", resources);
 
-  ttffont = new TTFFont("fonts/Vera.ttf", 12);
+  ttffont = new TTFFont("fonts/VeraMono.ttf", 12);
 }
 
 void

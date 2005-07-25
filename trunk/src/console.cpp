@@ -153,7 +153,7 @@ ConsoleImpl::draw()
   int y = y_pos;
 
   if (active)
-    y -= Fonts::copyright.get_height() + 2;
+    y -= Fonts::ttffont->get_height() + 2;
 
   Fonts::copyright.set_alignment(origin_bottom_left);
 
