@@ -106,7 +106,6 @@ TTFFont::TTFFont(const std::string& filename, int size)
 
   FT_Byte*  buffer = 0;
   size_t buffer_len = 0;
-  // FIXME: Use FT_NewMemory_Face and physfs
   PHYSFS_file* file = PHYSFS_openRead(filename.c_str());
   if(!file) {
     std::ostringstream msg;
@@ -162,40 +161,23 @@ TTFFont::TTFFont(const std::string& filename, int size)
           // FIXME: happens when character is not in font, should be handled more gentle
           throw std::runtime_error("couldn't load char");
         }
-
-      FT_Glyph        glyph;                                         
-      FT_BitmapGlyph  glyph_bitmap;    
-      if (FT_Get_Glyph( face->glyph, &glyph ))
-        {
-          std::cout << "Couldn't get glyph" << std::endl;
-        }
-
-      if ( glyph->format != FT_GLYPH_FORMAT_BITMAP )
-        {                                                              
-          FT_Error error = FT_Glyph_To_Bitmap( &glyph, FT_RENDER_MODE_NORMAL,  
-                                               0, 1 );
-          if ( error )
-            throw std::runtime_error( "could not convert glyph" );
-        }
-
-      glyph_bitmap = (FT_BitmapGlyph)glyph;
       
-      blit_ftbitmap(pixelbuffer, glyph_bitmap->bitmap, x_pos, y_pos);
+      blit_ftbitmap(pixelbuffer, face->glyph->bitmap, x_pos, y_pos);
       generate_border(pixelbuffer, x_pos, y_pos, 
-                      glyph_bitmap->bitmap.width, glyph_bitmap->bitmap.rows);
+                      face->glyph->bitmap.width, face->glyph->bitmap.rows);
 
-      impl->characters.push_back(TTFCharacter(glyph_bitmap->left, 
-                                              glyph_bitmap->top, 
-                                              glyph_bitmap->bitmap.width, 
-                                              glyph_bitmap->bitmap.rows, 
+      impl->characters.push_back(TTFCharacter(face->glyph->bitmap_left, 
+                                              face->glyph->bitmap_top, 
+                                              face->glyph->bitmap.width, 
+                                              face->glyph->bitmap.rows, 
                                               CL_Rectf(x_pos/float(pixelbuffer.get_width()),
                                                        y_pos/float(pixelbuffer.get_height()),
-                                                       (x_pos + glyph_bitmap->bitmap.width)/float(pixelbuffer.get_width()),
-                                                       (y_pos + glyph_bitmap->bitmap.rows)/float(pixelbuffer.get_height())),
-                                              glyph->advance.x >> 16));
+                                                       (x_pos + face->glyph->bitmap.width)/float(pixelbuffer.get_width()),
+                                                       (y_pos + face->glyph->bitmap.rows)/float(pixelbuffer.get_height())),
+                                              face->glyph->advance.x >> 6));
 
       // we leave a one pixel border around the letters which we fill with generate_border
-      x_pos += glyph_bitmap->bitmap.width + 2;
+      x_pos += face->glyph->bitmap.width + 2;
       if (x_pos + size + 2 > pixelbuffer.get_width())
         {
           y_pos += size + 2;
@@ -204,8 +186,6 @@ TTFFont::TTFFont(const std::string& filename, int size)
 
       if (y_pos + size + 2 > pixelbuffer.get_height())
         throw std::runtime_error("Font Texture to small");
-
-      FT_Done_Glyph( glyph );
     }
   FT_Done_Face(face);
 
