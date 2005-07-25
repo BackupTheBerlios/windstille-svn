@@ -46,14 +46,17 @@ class TextAreaImpl
 public:
   TTFFont* font;
   CL_Rectf rect;
-  
+
+  int v_space;
   std::vector<TextAreaCommand> commands;
 };
 
 TextArea::TextArea(const CL_Rect& rect)
   : impl(new TextAreaImpl)
 {
-  impl->rect = rect;
+  impl->rect    = rect;
+  // FIXME: freetype might provide info for vspacing, not sure
+  impl->v_space = 2;
 }
 
 TextArea::~TextArea()
@@ -117,8 +120,6 @@ TextArea::set_font(TTFFont* font)
 void
 TextArea::draw()
 {
-  Color color(1.0f, 1.0f, 1.0f);
-
   CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
   state.set_active();
   state.setup_2d();
@@ -136,23 +137,23 @@ TextArea::draw()
   float mx = -0.375;
   float my = -0.375; 
   glBegin(GL_QUADS);
-  glColor4f(color.r, color.g, color.b, color.a);
 
   int x_pos = 0;
   int y_pos = 0;
 
+  Color color = Color(1.0f, 1.0f, 1.0f);
   for(std::vector<TextAreaCommand>::const_iterator i = impl->commands.begin(); i != impl->commands.end(); ++i)
     {
       switch (i->type)
         {
         case TextAreaCommand::START:
           if (i->content == "b")
-            glColor3f(1.0f, 0, 0);
+            color = Color(1.0f, 0, 0);
           break;
 
         case TextAreaCommand::END:
           if (i->content == "b")
-            glColor3f(1.0f, 1.0f, 1.0f);
+            color = Color(1.0f, 1.0f, 1.0f);
           break;
           
         case TextAreaCommand::WORD:
@@ -161,37 +162,46 @@ TextArea::draw()
           if (i->content == "\n")
             {
               x_pos = 0;
-              y_pos += impl->font->get_height();
+              y_pos += impl->font->get_height() + impl->v_space;
             }
           else if (x_pos + word_width > impl->rect.get_width() && word_width <= impl->rect.get_width())
             {
               x_pos = 0;
-              y_pos += impl->font->get_height();
+              y_pos += impl->font->get_height() + impl->v_space;
               goto retry;
             }
           else
             {
-              for(std::string::const_iterator j = i->content.begin(); j != i->content.end(); ++j)
+              if (x_pos == 0 && i->content == " ")
                 {
-                  const TTFCharacter& character = impl->font->get_character(*j);
-      
-                  glTexCoord2f(character.uv.left, character.uv.top);
-                  glVertex2f(x_pos + character.pos.left + mx,
-                             y_pos + character.pos.top  + my);
+                  // ignore space at the beginning of a line
+                }
+              else
+                {
+                  for(std::string::const_iterator j = i->content.begin(); j != i->content.end(); ++j)
+                    {
+                      const TTFCharacter& character = impl->font->get_character(*j);
+                      
+                      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+                      glTexCoord2f(character.uv.left, character.uv.top);
+                      glVertex2f(x_pos + character.pos.left + mx,
+                                 y_pos + character.pos.top  + my);
 
-                  glTexCoord2f(character.uv.right, character.uv.top);
-                  glVertex2f(x_pos + character.pos.right + mx, 
-                             y_pos + character.pos.top   + my);
+                      glTexCoord2f(character.uv.right, character.uv.top);
+                      glVertex2f(x_pos + character.pos.right + mx, 
+                                 y_pos + character.pos.top   + my);
 
-                  glTexCoord2f(character.uv.right, character.uv.bottom);
-                  glVertex2f(x_pos + character.pos.right  + mx, 
-                             y_pos + character.pos.bottom + my);
+                      glColor4f(color.r, color.g, color.b, color.a);
+                      glTexCoord2f(character.uv.right, character.uv.bottom);
+                      glVertex2f(x_pos + character.pos.right  + mx, 
+                                 y_pos + character.pos.bottom + my);
 
-                  glTexCoord2f(character.uv.left, character.uv.bottom);
-                  glVertex2f(x_pos + character.pos.left   + mx, 
-                             y_pos + character.pos.bottom + my);
+                      glTexCoord2f(character.uv.left, character.uv.bottom);
+                      glVertex2f(x_pos + character.pos.left   + mx, 
+                                 y_pos + character.pos.bottom + my);
 
-                  x_pos += character.advance;
+                      x_pos += character.advance;
+                    }
                 }
             }
           break;
