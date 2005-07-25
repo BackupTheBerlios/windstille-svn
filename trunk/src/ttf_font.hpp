@@ -27,21 +27,14 @@
 
 #include <ClanLib/Core/Math/rect.h>
 #include <string>
+#include "color.hpp"
 
 class TTFCharacter
 {
 public:
-  /** The left-side bearing, i.e., the horizontal distance from the
-      current pen position to the left border of the glyph bitmap. */
-  int left;
-  
-  /* The top-side bearing, i.e., the vertical distance from the
-     current pen position to the top border of the glyph bitmap. This
-     distance is positive for upwards-y! */
-  int top;
-  
-  int width;
-  int height;
+  /** The position of the image, relative to the current cursor
+      position in screen coordinates */
+  CL_Rect pos;
 
   /** The position of the character in a OpenGL texture, given in
       uv-coordinates */
@@ -49,7 +42,7 @@ public:
 
   int advance;
 
-  TTFCharacter(int left, int top, int width, int height, const CL_Rectf& uv, int advance);
+  TTFCharacter(const CL_Rect& pos, const CL_Rectf& uv, int advance);
 };
 
 class TTFFontImpl;
@@ -67,7 +60,7 @@ public:
   int get_height() const;
 
   TTFCharacter get_character(int c);
-  void draw(float x_pos, float y_pos, const std::string& str);
+  void draw(float x_pos, float y_pos, const std::string& str, const Color& color = Color(1.0f, 1.0f, 1.0f));
 private:
   TTFFontImpl* impl;
 };

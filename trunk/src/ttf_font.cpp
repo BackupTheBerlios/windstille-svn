@@ -41,10 +41,12 @@
 #include "blitter.hpp"
 #include "ttf_font.hpp"
 
-TTFCharacter::TTFCharacter(int left_, int top_, int width_, int height_,
-                     const CL_Rectf& uv_, int advance_)
-  : left(left_), top(top_), width(width_), height(height_),
-    uv(uv_), advance(advance_)
+TTFCharacter::TTFCharacter(const CL_Rect& pos_,
+                           const CL_Rectf& uv_, 
+                           int advance_)
+  : pos(pos_),
+    uv(uv_), 
+    advance(advance_)
 {
   
 }
@@ -109,6 +111,7 @@ TTFFont::TTFFont(const std::string& filename, int size)
   std::vector<char> buffer(first, last); 
 
   FT_Face face;
+  std::cout << "Buffer size: " << buffer.size() << std::endl;
   if (FT_New_Memory_Face(TTFFontImpl::library, reinterpret_cast<FT_Byte*>(&*buffer.begin()), buffer.size(), 0, &face))
     {
       throw std::runtime_error("Couldn't load font: '" + filename + "'");
@@ -137,14 +140,15 @@ TTFFont::TTFFont(const std::string& filename, int size)
       generate_border(pixelbuffer, x_pos, y_pos, 
                       face->glyph->bitmap.width, face->glyph->bitmap.rows);
 
-      impl->characters.push_back(TTFCharacter(face->glyph->bitmap_left, 
-                                              face->glyph->bitmap_top, 
-                                              face->glyph->bitmap.width, 
-                                              face->glyph->bitmap.rows, 
-                                              CL_Rectf(x_pos/float(pixelbuffer.get_width()),
-                                                       y_pos/float(pixelbuffer.get_height()),
-                                                       (x_pos + face->glyph->bitmap.width)/float(pixelbuffer.get_width()),
-                                                       (y_pos + face->glyph->bitmap.rows)/float(pixelbuffer.get_height())),
+      CL_Rect pos(CL_Point(face->glyph->bitmap_left,  -face->glyph->bitmap_top), 
+                  CL_Size (face->glyph->bitmap.width, face->glyph->bitmap.rows));
+
+      CL_Rectf uv(x_pos/float(pixelbuffer.get_width()),
+                  y_pos/float(pixelbuffer.get_height()),
+                  (x_pos + face->glyph->bitmap.width)/float(pixelbuffer.get_width()),
+                  (y_pos + face->glyph->bitmap.rows)/float(pixelbuffer.get_height()));
+      
+      impl->characters.push_back(TTFCharacter(pos, uv,
                                               face->glyph->advance.x >> 6));
 
       // we leave a one pixel border around the letters which we fill with generate_border
@@ -182,7 +186,7 @@ TTFFont::get_height() const
 }
 
 void
-TTFFont::draw(float x_pos, float y_pos, const std::string& str)
+TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& color)
 {
   CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
   state.set_active();
@@ -199,25 +203,26 @@ TTFFont::draw(float x_pos, float y_pos, const std::string& str)
   float mx = -0.375;
   float my = -0.375; 
   glBegin(GL_QUADS);
+  glColor4f(color.r, color.g, color.b, color.a);
   for(std::string::const_iterator i = str.begin(); i != str.end(); ++i)
     {
       TTFCharacter& character = impl->characters[*i];
       
       glTexCoord2f(character.uv.left, character.uv.top);
-      glVertex2f(x_pos + character.left + mx,
-                 y_pos - character.top + my);
+      glVertex2f(x_pos + character.pos.left + mx,
+                 y_pos + character.pos.top  + my);
 
       glTexCoord2f(character.uv.right, character.uv.top);
-      glVertex2f(x_pos + character.left + character.width + mx, 
-                 y_pos - character.top + my);
+      glVertex2f(x_pos + character.pos.right + mx, 
+                 y_pos + character.pos.top   + my);
 
       glTexCoord2f(character.uv.right, character.uv.bottom);
-      glVertex2f(x_pos + character.left + character.width + mx, 
-                 y_pos - character.top + character.height + my);
+      glVertex2f(x_pos + character.pos.right  + mx, 
+                 y_pos + character.pos.bottom + my);
 
       glTexCoord2f(character.uv.left, character.uv.bottom);
-      glVertex2f(x_pos + character.left + mx, 
-                 y_pos - character.top + character.height + my);
+      glVertex2f(x_pos + character.pos.left   + mx, 
+                 y_pos + character.pos.bottom + my);
 
       x_pos += character.advance;       
     }

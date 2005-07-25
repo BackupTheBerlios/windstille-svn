@@ -167,13 +167,11 @@ ConsoleImpl::draw()
     {
       if (buffer[i].display_time < 5.0f || console.is_active())
         {
-          Fonts::copyright.set_color(CL_Color(225, 225, 255));
+          float alpha = 1.0f;
           if (buffer[i].display_time > 4.0f && !console.is_active())
-            Fonts::copyright.set_alpha(1.0f - (buffer[i].display_time - 4.0f));
-          else
-            Fonts::copyright.set_alpha(1.0f);
+            alpha = 1.0f - (buffer[i].display_time - 4.0f);
 
-          Fonts::ttffont->draw(x_pos, y, buffer[i].message);
+          Fonts::ttffont->draw(x_pos, y, buffer[i].message, Color(0.88, 0.88, 1.0f, alpha));
         }
       y -= Fonts::ttffont->get_height() + 2;
     }
@@ -192,7 +190,7 @@ ConsoleImpl::draw()
 
       //Fonts::ttffont->set_alignment(origin_bottom_left);
       //Fonts::ttffont->set_alpha(1.0f);
-      Fonts::ttffont->draw(x_pos, y_pos, ">" + str);
+      Fonts::ttffont->draw(x_pos, y_pos, ">" + str, Color(1.0f, 1.0f, 1.0f));
     }
   
   //needed because ClanLib font operator= doesn't deal with uniqueness properly, so we need to
