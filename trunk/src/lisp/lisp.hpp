@@ -24,6 +24,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <assert.h>
 
 namespace lisp
 {
