@@ -1,21 +1,26 @@
-//  $Id: console.cxx,v 1.3 2003/06/08 15:49:00 grumbel Exp $
-//
-//  Pingus - A free Lemmings clone
-//  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
-//
-//  This program is free software; you can redistribute it and/or
-//  modify it under the terms of the GNU General Public License
-//  as published by the Free Software Foundation; either version 2
-//  of the License, or (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+/*  $Id$
+**   __      __ __             ___        __   __ __   __
+**  /  \    /  \__| ____    __| _/_______/  |_|__|  | |  |   ____
+**  \   \/\/   /  |/    \  / __ |/  ___/\   __\  |  | |  | _/ __ \
+**   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
+**    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
+**         \/          \/      \/    \/                         \/
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
+**
+**  This program is free software; you can redistribute it and/or
+**  modify it under the terms of the GNU General Public License
+**  as published by the Free Software Foundation; either version 2
+**  of the License, or (at your option) any later version.
+**
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+** 
+**  You should have received a copy of the GNU General Public License
+**  along with this program; if not, write to the Free Software
+**  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
 
 #include <assert.h>
 #include <ClanLib/Display/keys.h>
@@ -155,9 +160,7 @@ ConsoleImpl::draw()
   if (active)
     y -= Fonts::ttffont->get_height() + 2;
 
-  Fonts::copyright.set_alignment(origin_bottom_left);
-
-  int num_lines = 600 / (Fonts::copyright.get_height() + 2);
+  int num_lines = 600 / (Fonts::ttffont->get_height() + 2);
 
   if (console.is_active())
     CL_Display::fill_rect(CL_Rect(0,0, 800, 600),
@@ -176,7 +179,6 @@ ConsoleImpl::draw()
       y -= Fonts::ttffont->get_height() + 2;
     }
 
-  //Fonts::ttffont->set_color(CL_Color(255, 255, 255));
   if (active)
     {
       std::string str = command_line;
@@ -188,14 +190,8 @@ ConsoleImpl::draw()
             str += "_";
         }
 
-      //Fonts::ttffont->set_alignment(origin_bottom_left);
-      //Fonts::ttffont->set_alpha(1.0f);
       Fonts::ttffont->draw(x_pos, y_pos, ">" + str, Color(1.0f, 1.0f, 1.0f));
     }
-  
-  //needed because ClanLib font operator= doesn't deal with uniqueness properly, so we need to
-  //reset it again
-  //Fonts::ttffont->set_alpha(1.0f);
 }
 
 void

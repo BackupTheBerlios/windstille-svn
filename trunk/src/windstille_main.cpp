@@ -1,21 +1,27 @@
-//  $Id: windstille_main.cxx,v 1.30 2003/11/13 12:59:42 grumbel Exp $
-//
-//  Windstille - A Jump'n Shoot Game
-//  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
-//
-//  This program is free software; you can redistribute it and/or
-//  modify it under the terms of the GNU General Public License
-//  as published by the Free Software Foundation; either version 2
-//  of the License, or (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+/*  $Id$
+**   __      __ __             ___        __   __ __   __
+**  /  \    /  \__| ____    __| _/_______/  |_|__|  | |  |   ____
+**  \   \/\/   /  |/    \  / __ |/  ___/\   __\  |  | |  | _/ __ \
+**   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
+**    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
+**         \/          \/      \/    \/                         \/
+**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**
+**  This program is free software; you can redistribute it and/or
+**  modify it under the terms of the GNU General Public License
+**  as published by the Free Software Foundation; either version 2
+**  of the License, or (at your option) any later version.
+**
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+** 
+**  You should have received a copy of the GNU General Public License
+**  along with this program; if not, write to the Free Software
+**  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+**  02111-1307, USA.
+*/
 
 #include <ClanLib/core.h>
 #include <ClanLib/vorbis.h>
@@ -86,6 +92,7 @@ WindstilleMain::parse_command_line(int argc, char** argv)
   argp.add_group("Misc Options:");
   argp.add_option('d', "datadir",    "DIR", "Fetch game data from DIR");
   argp.add_option(debug_flag, "debug",      "", "Turn on debug output");
+  argp.add_option('v', "version",       "", "Print Windstille Version");
   argp.add_option('h', "help",       "", "Print this help");
 
   argp.add_group("Demo Recording/Playback Options:");
@@ -144,6 +151,11 @@ WindstilleMain::parse_command_line(int argc, char** argv)
           controller_file = argp.get_argument();
           break;
 
+        case 'v':
+          std::cout << "Windstille " << PACKAGE_VERSION << std::endl;
+          exit(EXIT_SUCCESS);
+          break;
+
         case 'h':
           argp.print_help();
           exit(EXIT_SUCCESS);
@@ -170,7 +182,7 @@ WindstilleMain::main(int argc, char** argv)
 
     dictionaryManager = new TinyGetText::DictionaryManager();
     dictionaryManager->set_charset("iso8859-1");
-    dictionaryManager->add_directory("locale");                    
+    dictionaryManager->add_directory("locale");
 
     config = new Config();
     config->load();
