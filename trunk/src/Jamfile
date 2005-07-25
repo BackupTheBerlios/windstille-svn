@@ -17,6 +17,8 @@ SubInclude TOP src particles ;
 sources = 
         animation_obj.cpp
         animation_obj.hpp
+        baby_xml.cpp
+        baby_xml.hpp
         bomb.cpp
         bomb.hpp
 	box.cpp
