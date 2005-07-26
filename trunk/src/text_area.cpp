@@ -142,7 +142,8 @@ TextArea::draw()
   int y_pos = 0;
 
   Color top_color    = Color(1.0f, 1.0f, 1.0f);
-  Color bottom_color = Color(0.6f, 0.6f, 0.6f);
+  Color bottom_color = Color(1.0f, 1.0f, 1.0f);
+  bool small = false;
   for(std::vector<TextAreaCommand>::const_iterator i = impl->commands.begin(); i != impl->commands.end(); ++i)
     {
       switch (i->type)
@@ -151,15 +152,28 @@ TextArea::draw()
           if (i->content == "b")
             {
               top_color    = Color(1.0f, 0.0f, 0.0f);
-              bottom_color = Color(0.5f, 0.0f, 0.0f);
+              bottom_color = Color(0.8f, 0.0f, 0.0f);
+            }
+          else if (i->content == "i")
+            {
+              top_color    = Color(0.65f, 0.7f, 1.0f);
+              bottom_color = Color(0.65f, 0.7f, 1.0f);
+            }
+          else if (i->content == "small")
+            {
+              small = true;
             }
           break;
 
         case TextAreaCommand::END:
-          if (i->content == "b")
+          if (i->content == "b" || i->content == "i")
             {
               top_color    = Color(1.0f, 1.0f, 1.0f);
-              bottom_color = Color(0.6f, 0.6f, 0.6f);
+              bottom_color = Color(1.0f, 1.0f, 1.0f);
+            }
+          else if (i->content == "small")
+            {
+              small = false;
             }
           break;
           
@@ -189,25 +203,49 @@ TextArea::draw()
                     {
                       const TTFCharacter& character = impl->font->get_character(*j);
                       
-                      glColor4f(top_color.r, top_color.g, top_color.b, top_color.a);
-                      glTexCoord2f(character.uv.left, character.uv.top);
-                      glVertex2f(x_pos + character.pos.left + mx,
-                                 y_pos + character.pos.top  + my);
+                      if (small)
+                        {
+                          float scale = 0.6f;
+                          glColor4f(top_color.r, top_color.g, top_color.b, top_color.a);
+                          glTexCoord2f(character.uv.left, character.uv.top);
+                          glVertex2f(x_pos + scale * character.pos.left + mx,
+                                     y_pos + scale * (character.pos.top  + my));
 
-                      glTexCoord2f(character.uv.right, character.uv.top);
-                      glVertex2f(x_pos + character.pos.right + mx, 
-                                 y_pos + character.pos.top   + my);
+                          glTexCoord2f(character.uv.right, character.uv.top);
+                          glVertex2f(x_pos + scale * character.pos.right + mx, 
+                                     y_pos + scale * (character.pos.top) + my);
 
-                      glColor4f(bottom_color.r, bottom_color.g, bottom_color.b, bottom_color.a);
-                      glTexCoord2f(character.uv.right, character.uv.bottom);
-                      glVertex2f(x_pos + character.pos.right  + mx, 
-                                 y_pos + character.pos.bottom + my);
+                          glColor4f(bottom_color.r, bottom_color.g, bottom_color.b, bottom_color.a);
+                          glTexCoord2f(character.uv.right, character.uv.bottom);
+                          glVertex2f(x_pos + scale * character.pos.right  + mx, 
+                                     y_pos + scale * (character.pos.bottom) + my);
 
-                      glTexCoord2f(character.uv.left, character.uv.bottom);
-                      glVertex2f(x_pos + character.pos.left   + mx, 
-                                 y_pos + character.pos.bottom + my);
+                          glTexCoord2f(character.uv.left, character.uv.bottom);
+                          glVertex2f(x_pos + scale * character.pos.left   + mx, 
+                                     y_pos + scale * (character.pos.bottom) + my);
+                          x_pos += scale * character.advance;
+                        }
+                      else   
+                        {
+                          glColor4f(top_color.r, top_color.g, top_color.b, top_color.a);
+                          glTexCoord2f(character.uv.left, character.uv.top);
+                          glVertex2f(x_pos + character.pos.left + mx,
+                                     y_pos + character.pos.top  + my);
 
-                      x_pos += character.advance;
+                          glTexCoord2f(character.uv.right, character.uv.top);
+                          glVertex2f(x_pos + character.pos.right + mx, 
+                                     y_pos + character.pos.top   + my);
+
+                          glColor4f(bottom_color.r, bottom_color.g, bottom_color.b, bottom_color.a);
+                          glTexCoord2f(character.uv.right, character.uv.bottom);
+                          glVertex2f(x_pos + character.pos.right  + mx, 
+                                     y_pos + character.pos.bottom + my);
+
+                          glTexCoord2f(character.uv.left, character.uv.bottom);
+                          glVertex2f(x_pos + character.pos.left   + mx, 
+                                     y_pos + character.pos.bottom + my);
+                          x_pos += character.advance;
+                        }
                     }
                 }
             }
