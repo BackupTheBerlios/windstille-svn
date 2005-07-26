@@ -254,7 +254,7 @@ GameSession::change_sector()
       ParticleSystem* psystem3 = new ParticleSystem();
       psystem3->set_lifetime(8);
       psystem3->set_count(30);
-      SurfaceDrawer* drawer = new SurfaceDrawer(smoke2->texture.handle, smoke2->uv.right, smoke2->uv.bottom);
+      SurfaceDrawer* drawer = new SurfaceDrawer(smoke2);
       drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       psystem3->set_drawer(drawer);
       psystem3->set_pos(0,0);
@@ -266,8 +266,7 @@ GameSession::change_sector()
  
       ParticleSystem* psystem = new ParticleSystem();
       psystem->set_count(100);
-      drawer = new SurfaceDrawer(
-          smoke->texture.handle, smoke->uv.right, smoke->uv.bottom);
+      drawer = new SurfaceDrawer(smoke);
       drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE);
       psystem->set_drawer(drawer);
       psystem->set_pos(0,0);

@@ -34,12 +34,19 @@ class Surface
 {
 public:
   Texture texture;
-  Rect    uv;
 
-  int width;
-  int height;
+private:
+  Rect  uv;
+  int   width;
+  int   height;
+
 public:
   Surface(const Texture& texture, const Rect& uv_, int width, int height);
+
+  int get_width()  const { return width;  }
+  int get_height() const { return height; }
+
+  const Rect& get_uv() const { return uv; }
 };
 
 typedef const Surface* SurfaceHandle;

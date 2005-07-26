@@ -20,23 +20,21 @@
 #ifndef HEADER_SURFACE_DRAWER_HXX
 #define HEADER_SURFACE_DRAWER_HXX
 
-#include <ClanLib/Display/surface.h>
-#include <ClanLib/GL/opengl_surface.h>
+#include "glutil/surface.hpp"
 #include "drawer.hpp"
 
 class SurfaceDrawer : public Drawer
 {
 private:
-  GLuint texture;
-  float width, height;
+  SurfaceHandle surface;
   GLenum blendfunc_src;
   GLenum blendfunc_dest;
   
 public:
-  SurfaceDrawer(GLuint texture, float width, float height);
+  SurfaceDrawer(SurfaceHandle surface);
   virtual ~SurfaceDrawer();
   
-  void set_texture(GLuint texture, float width, float height);
+  void set_texture(SurfaceHandle surface);
   void set_blendfuncs(GLenum blendfunc_src, GLenum blendfunc_dst);
   void draw(SceneContext& sc, ParticleSystem& psys);
 };

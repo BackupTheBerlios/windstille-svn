@@ -92,16 +92,16 @@ Data::parse_images(Action* action, const std::string& dir,
     const Surface* surface = surface_manager->get(dir + "/" + file);
     ActionImage image;
     image.surface      = surface;
-    image.width        = surface->width;
-    image.height       = surface->height;
-    image.texcoords[0] = surface->uv.left;
-    image.texcoords[1] = surface->uv.top;
-    image.texcoords[2] = surface->uv.right;
-    image.texcoords[3] = surface->uv.top;
-    image.texcoords[4] = surface->uv.right;
-    image.texcoords[5] = surface->uv.bottom;
-    image.texcoords[6] = surface->uv.left;
-    image.texcoords[7] = surface->uv.bottom;
+    image.width        = surface->get_width();
+    image.height       = surface->get_height();
+    image.texcoords[0] = surface->get_uv().left;
+    image.texcoords[1] = surface->get_uv().top;
+    image.texcoords[2] = surface->get_uv().right;
+    image.texcoords[3] = surface->get_uv().top;
+    image.texcoords[4] = surface->get_uv().right;
+    image.texcoords[5] = surface->get_uv().bottom;
+    image.texcoords[6] = surface->get_uv().left;
+    image.texcoords[7] = surface->get_uv().bottom;
     action->images.push_back(image);
   }
 }
@@ -127,23 +127,23 @@ Data::parse_image_grid(Action* action, const std::string& dir,
 
   const Surface* surface = surface_manager->get(dir + "/" + filename);
 
-  if(surface->width % x_size != 0 || surface->height % y_size != 0) {
+  if(surface->get_width() % x_size != 0 || surface->get_height() % y_size != 0) {
     std::cerr << "Warning texture '" << filename
               << "' doesn't match a grid size.\n";
   }
 
-  for(int y = 0; y <= surface->height - y_size; y += y_size) {
-    for(int x = 0; x <= surface->width - x_size; x += x_size) {
+  for(int y = 0; y <= surface->get_height() - y_size; y += y_size) {
+    for(int x = 0; x <= surface->get_width() - x_size; x += x_size) {
       ActionImage image;
       image.surface = surface;
       image.width   = x_size;
       image.height  = y_size;
 
       // TODO: check if (x + x_size - 1) is correct or (x + x_size)
-      float min_u = (surface->uv.right * x) / static_cast<float>(surface->width);
-      float max_u = (surface->uv.right * (x + x_size)) / static_cast<float>(surface->width);
-      float min_v = (surface->uv.bottom * y) / static_cast<float>(surface->height);
-      float max_v = (surface->uv.bottom * (y + y_size)) / static_cast<float>(surface->height);
+      float min_u = (surface->get_uv().right * x) / static_cast<float>(surface->get_width());
+      float max_u = (surface->get_uv().right * (x + x_size)) / static_cast<float>(surface->get_width());
+      float min_v = (surface->get_uv().bottom * y) / static_cast<float>(surface->get_height());
+      float max_v = (surface->get_uv().bottom * (y + y_size)) / static_cast<float>(surface->get_height());
       
       float* uvs = image.texcoords;
       uvs[0] = min_u;

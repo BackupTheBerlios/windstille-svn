@@ -21,8 +21,8 @@
 #include "particle_system.hpp"
 #include "surface_drawer.hpp"
 
-SurfaceDrawer::SurfaceDrawer(GLuint texture, float width, float height)
-  : texture(texture), width(width), height(height)
+SurfaceDrawer::SurfaceDrawer(SurfaceHandle surface_)
+  : surface(surface_)
 {
 }
 
@@ -31,28 +31,27 @@ SurfaceDrawer::~SurfaceDrawer()
 }
   
 void
-SurfaceDrawer::set_texture(GLuint texture, float width, float height)
+SurfaceDrawer::set_texture(SurfaceHandle surface_)
 {
-  this->texture = texture;
-  this->width = width;
-  this->height = height;
+  surface = surface_;
 }
 
 void
 SurfaceDrawer::set_blendfuncs(GLenum blendfunc_src, GLenum blendfunc_dest)
 {
-  this->blendfunc_src = blendfunc_src;
+  this->blendfunc_src  = blendfunc_src;
   this->blendfunc_dest = blendfunc_dest;
 }
 
 void
 SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {          
-  VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(CL_Vector(psys.get_x_pos(), psys.get_y_pos(), 0), // FIXME: add zpos
-                                                                    sc.color().get_modelview());
+  VertexArrayDrawingRequest* buffer 
+    = new VertexArrayDrawingRequest(CL_Vector(psys.get_x_pos(), psys.get_y_pos(), 0), // FIXME: add zpos
+                                    sc.color().get_modelview());
 
   buffer->set_mode(GL_QUADS);
-  buffer->set_texture(texture);
+  buffer->set_texture(surface->texture.handle);
   buffer->set_blend_func(blendfunc_src, blendfunc_dest);
 
   for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
@@ -67,8 +66,9 @@ SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys)
 
           // scale
           float scale  = psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start);
-          float width  = this->width  * scale;
-          float height = this->height * scale;
+          
+          float width  = surface->get_width()  * scale;
+          float height = surface->get_height() * scale;
               
           // rotate
           float x_rot = width/2;
