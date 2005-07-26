@@ -26,8 +26,6 @@ sources =
  	box.hpp
         brush.cpp
         brush.hpp
-        blitter.cpp
-        blitter.hpp
         camera.cpp
         camera.hpp
         character.cpp
