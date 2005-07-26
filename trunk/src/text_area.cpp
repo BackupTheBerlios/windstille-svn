@@ -146,8 +146,8 @@ TextArea::draw()
 
   Color top_color    = Color(1.0f, 1.0f, 1.0f);
   Color bottom_color = Color(1.0f, 1.0f, 1.0f);
-  bool small = false;
-  bool large = false;
+  bool is_small = false;
+  bool is_large = false;
   float eat_time = impl->passed_time;
   bool sinus = false;
   for(std::vector<TextAreaCommand>::const_iterator i = impl->commands.begin(); i != impl->commands.end(); ++i)
@@ -167,11 +167,11 @@ TextArea::draw()
             }
           else if (i->content == "small")
             {
-              small = true;
+              is_small = true;
             }
           else if (i->content == "large")
             {
-              large = true;
+              is_large = true;
             }
           else if (i->content == "sleep")
             {
@@ -191,11 +191,11 @@ TextArea::draw()
             }
           else if (i->content == "small")
             {
-              small = false;
+              is_small = false;
             }
           else if (i->content == "large")
             {
-              large = false;
+              is_large = false;
             }
           else if (i->content == "sin")
             {
@@ -207,9 +207,9 @@ TextArea::draw()
         retry:
           int word_width;
 
-          if (small)
+          if (is_small)
             word_width = static_cast<int>(impl->font->get_width(i->content) * 0.6f);
-          else if (large)
+          else if (is_large)
             word_width = static_cast<int>(impl->font->get_width(i->content) * 2.0f);
           else
             word_width = impl->font->get_width(i->content);
@@ -248,7 +248,7 @@ TextArea::draw()
 
                       const TTFCharacter& character = impl->font->get_character(*j);
                       
-                      if (small)
+                      if (is_small)
                         {
                           float scale = 0.6f;
                           glColor4f(top_color.r, top_color.g, top_color.b, top_color.a);
@@ -270,7 +270,7 @@ TextArea::draw()
                                      y + scale * (character.pos.bottom) + my);
                           x_pos += static_cast<int>(scale * character.advance);
                         }
-                      else if (large)
+                      else if (is_large)
                         {
                           float scale = 2.0f;
                           glColor4f(top_color.r, top_color.g, top_color.b, top_color.a);
