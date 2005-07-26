@@ -39,7 +39,7 @@ class TextArea
 {
 public:
   /** The area which the TextArea should cover */
-  TextArea(const CL_Rect& rect);
+  TextArea(const CL_Rectf& rect);
   ~TextArea();
 
   /** Sets the text to be displayed in the text box */

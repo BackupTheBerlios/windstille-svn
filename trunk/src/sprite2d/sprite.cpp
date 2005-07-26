@@ -166,7 +166,7 @@ Sprite::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview)
     = current_action->images[ static_cast<int> (frame) ];
   glScalef(image.width, image.height, 1.0);
 
-  glBindTexture(GL_TEXTURE_2D, image.texture);
+  glBindTexture(GL_TEXTURE_2D, image.surface->texture.handle);
 
   // TODO find out which of the 2 is faster
 #if 1

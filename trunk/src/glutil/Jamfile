@@ -3,8 +3,10 @@ SubDir TOP src glutil ;
 sources =
     texture.cpp
     texture.hpp
-    texture_manager.cpp
-    texture_manager.hpp
+    surface.hpp
+    surface.cpp
+    surface_manager.cpp
+    surface_manager.hpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;

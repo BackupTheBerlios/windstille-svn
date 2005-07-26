@@ -8,8 +8,8 @@
 #include <stdexcept>
 #include "util.hpp"
 #include "globals.hpp"
-#include "glutil/texture_manager.hpp"
-#include "glutil/texture.hpp"
+#include "glutil/surface_manager.hpp"
+#include "glutil/surface.hpp"
 
 namespace sprite3d
 {
@@ -93,8 +93,8 @@ Data::Data(const std::string& filename)
       mesh.triangle_count = read_uint16_t(file);
       mesh.vertex_count = read_uint16_t(file);
 
-      const Texture* texture = texture_manager->get(texturename);
-      mesh.texture = texture->handle;
+      const Surface* surface = surface_manager->get(texturename);
+      mesh.texture = surface->texture.handle;
 
       // read triangles
       mesh.vertex_indices = new uint16_t[mesh.triangle_count * 3];

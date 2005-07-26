@@ -7,27 +7,27 @@
 
 #include <ClanLib/Display/pixel_buffer.h>
 
-class Texture;
+class Surface;
 
-class TextureManager
+class SurfaceManager
 {
 public:
-  TextureManager();
-  ~TextureManager();
+  SurfaceManager();
+  ~SurfaceManager();
 
   /** returns a texture containing the image specified with filename
    * Note: You must NOT delete the returned Texture
    */
-  const Texture* get(const std::string& filename);
+  const Surface* get(const std::string& filename);
 
 private:
-  Texture* create(SDL_Surface* surface);
+  Surface* create(SDL_Surface* surface);
   
-  typedef std::map<std::string, Texture*> Textures;
-  Textures textures;
+  typedef std::map<std::string, Surface*> Surfaces;
+  Surfaces textures;
 };
 
-extern TextureManager* texture_manager;
+extern SurfaceManager* surface_manager;
 
 #endif
 

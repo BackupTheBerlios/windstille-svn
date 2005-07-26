@@ -1,6 +1,6 @@
 #include <config.h>
 
-#include "texture_manager.hpp"
+#include "surface_manager.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -14,25 +14,26 @@
 #include "util.hpp"
 #include "globals.hpp"
 #include "texture.hpp"
+#include "surface.hpp"
 #include "physfs/physfs_sdl.hpp"
 
-TextureManager::TextureManager* texture_manager = 0;
+SurfaceManager::SurfaceManager* surface_manager = 0;
 
-TextureManager::TextureManager()
+SurfaceManager::SurfaceManager()
 {
 }
 
-TextureManager::~TextureManager()
+SurfaceManager::~SurfaceManager()
 {
-  for(Textures::iterator i = textures.begin(); i != textures.end(); ++i) {
+  for(Surfaces::iterator i = textures.begin(); i != textures.end(); ++i) {
     delete i->second;
   }
 }
 
-const Texture*
-TextureManager::get(const std::string& filename)
+const Surface*
+SurfaceManager::get(const std::string& filename)
 {
-  Textures::iterator i = textures.find(filename);
+  Surfaces::iterator i = textures.find(filename);
   if(i != textures.end())
     return i->second;
 
@@ -44,7 +45,7 @@ TextureManager::get(const std::string& filename)
   }
 
   std::cerr << filename << " loaded.\n";
-  Texture* result;
+  Surface* result;
   try {
     result = create(image);
   } catch(std::exception& e) {
@@ -67,8 +68,8 @@ static int power_of_two(int val) {
   return result;
 }
 
-Texture*
-TextureManager::create(SDL_Surface* image)
+Surface*
+SurfaceManager::create(SDL_Surface* image)
 {
   CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
   state.set_active();
@@ -121,10 +122,7 @@ TextureManager::create(SDL_Surface* image)
 
   SDL_FreeSurface(convert);
   
-  Texture* result = new Texture();
-  result->handle = handle;
-  result->orig_width = image->w;
-  result->orig_height = image->h;
+  Surface* result = new Surface(Texture(handle), Rect(0, 0, image->w, image->h), image->w, image->h);
   return result;
 }
 

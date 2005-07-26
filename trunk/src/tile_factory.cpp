@@ -36,7 +36,7 @@
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
 #include "lisp/properties.hpp"
-#include "glutil/texture_manager.hpp"
+#include "glutil/surface_manager.hpp"
 #include "glutil/texture.hpp"
 #include "physfs/physfs_sdl.hpp"
 

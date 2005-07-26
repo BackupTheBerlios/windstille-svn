@@ -51,7 +51,7 @@ public:
   std::vector<TextAreaCommand> commands;
 };
 
-TextArea::TextArea(const CL_Rect& rect)
+TextArea::TextArea(const CL_Rectf& rect)
   : impl(new TextAreaImpl)
 {
   impl->rect    = rect;

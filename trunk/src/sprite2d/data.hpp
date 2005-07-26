@@ -5,12 +5,12 @@
 #include <vector>
 #include <GL/gl.h>
 #include "math/vector.hpp"
+#include "glutil/surface.hpp"
 #include "lisp/lisp.hpp"
 
 namespace sprite2d
 {
 struct Action;
-struct ActionImage;
 
 class Data
 {
@@ -33,9 +33,9 @@ private:
 
 struct ActionImage
 {
-  GLuint texture;
-  float width;
-  float height;
+  const Surface* surface;
+  int   width;
+  int   height;
   float texcoords[8];
 };
 

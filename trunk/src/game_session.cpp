@@ -50,8 +50,8 @@
 #include "conversation.hpp"
 #include "collision/collision_engine.hpp"
 #include "test_object.hpp"
-#include "glutil/texture_manager.hpp"
-#include "glutil/texture.hpp"
+#include "glutil/surface_manager.hpp"
+#include "glutil/surface.hpp"
 
 #include "game_session.hpp"
 
@@ -240,9 +240,8 @@ GameSession::change_sector()
   if (1)
     {
       std::cout << "Adding test objects to sector" << std::endl;
-      const Texture* smoke = texture_manager->get("images/particles/smoke.png");
-      const Texture* smoke2 
-        = texture_manager->get("images/particles/smoke2.png");
+      const Surface* smoke  = surface_manager->get("images/particles/smoke.png");
+      const Surface* smoke2 = surface_manager->get("images/particles/smoke2.png");
       
       ParticleSystem* psystem2 = new ParticleSystem();
       psystem2->set_drawer(new SparkDrawer());
@@ -255,8 +254,7 @@ GameSession::change_sector()
       ParticleSystem* psystem3 = new ParticleSystem();
       psystem3->set_lifetime(8);
       psystem3->set_count(30);
-      SurfaceDrawer* drawer = new SurfaceDrawer(
-          smoke2->handle, smoke2->orig_width, smoke2->orig_height);
+      SurfaceDrawer* drawer = new SurfaceDrawer(smoke2->texture.handle, smoke2->uv.right, smoke2->uv.bottom);
       drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       psystem3->set_drawer(drawer);
       psystem3->set_pos(0,0);
@@ -269,7 +267,7 @@ GameSession::change_sector()
       ParticleSystem* psystem = new ParticleSystem();
       psystem->set_count(100);
       drawer = new SurfaceDrawer(
-          smoke->handle, smoke->orig_height, smoke->orig_height);
+          smoke->texture.handle, smoke->uv.right, smoke->uv.bottom);
       drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE);
       psystem->set_drawer(drawer);
       psystem->set_pos(0,0);

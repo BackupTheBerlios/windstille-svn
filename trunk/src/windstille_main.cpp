@@ -44,7 +44,7 @@
 #include "gameconfig.hpp"
 #include "util.hpp"
 #include "ttf_font.hpp"
-#include "glutil/texture_manager.hpp"
+#include "glutil/surface_manager.hpp"
 #include "sprite3d/manager.hpp"
 #include "sprite2d/manager.hpp"
 
@@ -287,7 +287,7 @@ WindstilleMain::init_modules()
   sound_manager->enable_music(config->music_enabled);
 
   if (debug) std::cout << "Initialising ScriptManager" << std::endl;
-  texture_manager  = new TextureManager();
+  surface_manager  = new SurfaceManager();
   script_manager   = new ScriptManager();
   sprite2d_manager = new sprite2d::Manager();
   sprite3d_manager = new sprite3d::Manager();
@@ -307,8 +307,8 @@ WindstilleMain::deinit_modules()
   delete script_manager;
   script_manager = 0;
 
-  delete texture_manager;
-  texture_manager = 0;
+  delete surface_manager;
+  surface_manager = 0;
   
   delete sound_manager;
   sound_manager = 0;

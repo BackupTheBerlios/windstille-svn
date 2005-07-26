@@ -11,8 +11,8 @@
 #include "lisp/parser.hpp"
 #include "lisp/properties.hpp"
 #include "windstille_getters.hpp"
-#include "glutil/texture.hpp"
-#include "glutil/texture_manager.hpp"
+#include "glutil/surface.hpp"
+#include "glutil/surface_manager.hpp"
 
 namespace sprite2d
 {
@@ -89,21 +89,19 @@ Data::parse_images(Action* action, const std::string& dir,
 {
   for(size_t n = 1; n < lisp->get_list_size(); ++n) {
     std::string file = lisp->get_list_elem(n)->get_string();
-    const Texture* texture = texture_manager->get(dir + "/" + file);
-    
+    const Surface* surface = surface_manager->get(dir + "/" + file);
     ActionImage image;
-    image.texture = texture->handle;
-    image.width = texture->orig_width;
-    image.height = texture->orig_height;
-    float* uvs = image.texcoords;
-    uvs[0] = 0;
-    uvs[1] = 0;
-    uvs[2] = texture->get_max_u();
-    uvs[3] = 0;
-    uvs[4] = texture->get_max_u();
-    uvs[5] = texture->get_max_v();
-    uvs[6] = 0;
-    uvs[7] = texture->get_max_v();
+    image.surface      = surface;
+    image.width        = surface->width;
+    image.height       = surface->height;
+    image.texcoords[0] = surface->uv.left;
+    image.texcoords[1] = surface->uv.top;
+    image.texcoords[2] = surface->uv.right;
+    image.texcoords[3] = surface->uv.top;
+    image.texcoords[4] = surface->uv.right;
+    image.texcoords[5] = surface->uv.bottom;
+    image.texcoords[6] = surface->uv.left;
+    image.texcoords[7] = surface->uv.bottom;
     action->images.push_back(image);
   }
 }
@@ -127,24 +125,25 @@ Data::parse_image_grid(Action* action, const std::string& dir,
   if(filename == "" || x_size <= 0 || y_size <= 0)
     throw std::runtime_error("Invalid or too few data in image-grid");
 
-  const Texture* texture = texture_manager->get(dir + "/" + filename);
+  const Surface* surface = surface_manager->get(dir + "/" + filename);
 
-  if(texture->orig_width % x_size != 0 || texture->orig_height % y_size != 0) {
+  if(surface->width % x_size != 0 || surface->height % y_size != 0) {
     std::cerr << "Warning texture '" << filename
               << "' doesn't match a grid size.\n";
   }
 
-  for(int y = 0; y <= texture->orig_height - y_size; y += y_size) {
-    for(int x = 0; x <= texture->orig_width - x_size; x += x_size) {
+  for(int y = 0; y <= surface->height - y_size; y += y_size) {
+    for(int x = 0; x <= surface->width - x_size; x += x_size) {
       ActionImage image;
-      image.texture = texture->handle;
-      image.width = x_size;
-      image.height = y_size;
+      image.surface = surface;
+      image.width   = x_size;
+      image.height  = y_size;
+
       // TODO: check if (x + x_size - 1) is correct or (x + x_size)
-      float min_u = (texture->get_max_u() * x) / static_cast<float>(texture->orig_width);
-      float max_u = (texture->get_max_u() * (x + x_size)) / static_cast<float>(texture->orig_width);
-      float min_v = (texture->get_max_v() * y) / static_cast<float>(texture->orig_height);
-      float max_v = (texture->get_max_v() * (y + y_size)) / static_cast<float>(texture->orig_height);
+      float min_u = (surface->uv.right * x) / static_cast<float>(surface->width);
+      float max_u = (surface->uv.right * (x + x_size)) / static_cast<float>(surface->width);
+      float min_v = (surface->uv.bottom * y) / static_cast<float>(surface->height);
+      float max_v = (surface->uv.bottom * (y + y_size)) / static_cast<float>(surface->height);
       
       float* uvs = image.texcoords;
       uvs[0] = min_u;
