@@ -29,6 +29,7 @@
 #include <ClanLib/Core/Math/rect.h>
 #include <ClanLib/GL/opengl_surface.h>
 #include <string>
+#include "glutil/texture.hpp"
 #include "color.hpp"
 
 class TTFCharacter
@@ -65,7 +66,7 @@ public:
       newlines into account */
   int get_width(const std::string& text) const;
 
-  CL_OpenGLSurface get_surface() const;
+  Texture get_surface() const;
 
   const TTFCharacter& get_character(int c) const;
   void draw(float x_pos, float y_pos, const std::string& str, const Color& color = Color(1.0f, 1.0f, 1.0f));

@@ -27,9 +27,6 @@
 #include <stdexcept>
 #include <sstream>
 #include <ClanLib/gl.h>
-#include <ClanLib/Display/pixel_buffer.h>
-#include <ClanLib/Display/Providers/provider_factory.h>
-#include <ClanLib/Display/pixel_format.h>
 #include <ClanLib/Display/display.h>
 
 #include <ft2build.h>
@@ -37,6 +34,8 @@
 #include FT_GLYPH_H
 
 #include "physfs/physfs_stream.hpp"
+#include "glutil/surface_manager.hpp"
+#include "glutil/surface.hpp"
 #include "blitter.hpp"
 #include "ttf_font.hpp"
 
@@ -47,7 +46,6 @@ TTFCharacter::TTFCharacter(const CL_Rect& pos_,
     uv(uv_), 
     advance(advance_)
 {
-  
 }
 
 class TTFFontImpl
@@ -63,25 +61,25 @@ public:
   int size;
 
   /** OpenGL Texture which holds all the characters */
-  CL_OpenGLSurface surface;
+  Texture texture;
 };
 
 FT_Library TTFFontImpl::library;
 
 void 
-blit_ftbitmap(CL_PixelBuffer target, const FT_Bitmap& brush, int x_pos, int y_pos)
+blit_ftbitmap(SDL_Surface* target, const FT_Bitmap& brush, int x_pos, int y_pos)
 {
-  target.lock();
+  SDL_LockSurface(target);
   
   int start_x = std::max(0, -x_pos);
   int start_y = std::max(0, -y_pos);
   
-  int end_x = std::min(brush.width, target.get_width()  - x_pos);
-  int end_y = std::min(brush.rows,  target.get_height() - y_pos);
+  int end_x = std::min(brush.width, target->w  - x_pos);
+  int end_y = std::min(brush.rows,  target->h - y_pos);
 
-  unsigned char* target_buf = static_cast<unsigned char*>(target.get_data());
+  unsigned char* target_buf = static_cast<unsigned char*>(target->pixels);
 
-  int target_pitch = target.get_pitch();
+  int target_pitch = target->pitch;
 
   for (int y = start_y; y < end_y; ++y)
     for (int x = start_x; x < end_x; ++x)
@@ -89,13 +87,13 @@ blit_ftbitmap(CL_PixelBuffer target, const FT_Bitmap& brush, int x_pos, int y_po
         int target_pos = (y + y_pos) * target_pitch + 4*(x + x_pos);
         int brush_pos  = y * brush.pitch + x;
             
-        target_buf[target_pos + 0] = brush.buffer[brush_pos];
+        target_buf[target_pos + 0] = 255;
         target_buf[target_pos + 1] = 255;
         target_buf[target_pos + 2] = 255;
-        target_buf[target_pos + 3] = 255;
+        target_buf[target_pos + 3] = brush.buffer[brush_pos];
       }
     
-  target.unlock();
+  SDL_UnlockSurface(target);
 }
 
 TTFFont::TTFFont(const std::string& filename, int size)
@@ -122,7 +120,16 @@ TTFFont::TTFFont(const std::string& filename, int size)
   FT_Select_Charmap(face,  FT_ENCODING_UNICODE);
 
   // FIXME: should calculate texture size, based on font size
-  CL_PixelBuffer pixelbuffer(1024, 1024, 1024*4, CL_PixelFormat::rgba8888);
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+  SDL_Surface* pixelbuffer = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                                              1024, 1024, 32,
+                                              0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+#else
+  SDL_Surface* pixelbuffer = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                                              1024, 1024, 32,
+                                              0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+#endif
+  SDL_SetAlpha(pixelbuffer, 0, 0);
 
   int x_pos = 1;
   int y_pos = 1;
@@ -143,29 +150,29 @@ TTFFont::TTFFont(const std::string& filename, int size)
       CL_Rect pos(CL_Point(face->glyph->bitmap_left,  -face->glyph->bitmap_top), 
                   CL_Size (face->glyph->bitmap.width, face->glyph->bitmap.rows));
 
-      CL_Rectf uv(x_pos/float(pixelbuffer.get_width()),
-                  y_pos/float(pixelbuffer.get_height()),
-                  (x_pos + face->glyph->bitmap.width)/float(pixelbuffer.get_width()),
-                  (y_pos + face->glyph->bitmap.rows)/float(pixelbuffer.get_height()));
+      CL_Rectf uv(x_pos/float(pixelbuffer->w),
+                  y_pos/float(pixelbuffer->h),
+                  (x_pos + face->glyph->bitmap.width)/float(pixelbuffer->w),
+                  (y_pos + face->glyph->bitmap.rows)/float(pixelbuffer->h));
       
       impl->characters.push_back(TTFCharacter(pos, uv,
                                               face->glyph->advance.x >> 6));
 
       // we leave a one pixel border around the letters which we fill with generate_border
       x_pos += face->glyph->bitmap.width + 2;
-      if (x_pos + size + 2 > pixelbuffer.get_width())
+      if (x_pos + size + 2 > pixelbuffer->w)
         {
           y_pos += size + 2;
           x_pos = 1;
         }
 
-      if (y_pos + size + 2 > pixelbuffer.get_height())
+      if (y_pos + size + 2 > pixelbuffer->h)
         throw std::runtime_error("Font Texture to small");
     }
   FT_Done_Face(face);
 
-  //CL_ProviderFactory::save(pixelbuffer, "/tmp/packfont.png");
-  impl->surface = CL_OpenGLSurface(pixelbuffer);
+  impl->texture = surface_manager->create(pixelbuffer)->texture;
+  SDL_FreeSurface(pixelbuffer);
 }
 
 TTFFont::~TTFFont()
@@ -197,7 +204,7 @@ TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& col
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  impl->surface.bind();
+  glBindTexture(GL_TEXTURE_2D, impl->texture.handle);
 
   // Voodoo to get non-blurry fonts
   float mx = -0.375;
@@ -238,10 +245,10 @@ TTFFont::get_width(const std::string& text) const
   return width;
 }
 
-CL_OpenGLSurface
+Texture
 TTFFont::get_surface() const
 {
-  return impl->surface;
+  return impl->texture;
 }
 
 void

@@ -132,7 +132,7 @@ TextArea::draw()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  impl->font->get_surface().bind();
+  glBindTexture(GL_TEXTURE_2D, impl->font->get_surface().handle);
 
   glPushMatrix();
   glTranslatef(impl->rect.left, impl->rect.top, 0);

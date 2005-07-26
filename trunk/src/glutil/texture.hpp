@@ -9,6 +9,7 @@ public:
   GLuint handle;
 
   Texture(GLuint handle);
+  Texture() {}
   ~Texture();
 };
 

@@ -36,10 +36,6 @@
 void generate_border(CL_PixelBuffer buffer, int x_pos, int y_pos, int width, int height);
 void generate_border(SDL_Surface* surface, int x_pos, int y_pos, int width, int height);
 
-void blit_opaque(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos);
-void blit(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos);
-void clear(CL_PixelBuffer target);
-
 #endif
 
 /* EOF */

@@ -20,7 +20,6 @@ public:
    */
   const Surface* get(const std::string& filename);
 
-private:
   Surface* create(SDL_Surface* surface);
   
   typedef std::map<std::string, Surface*> Surfaces;
