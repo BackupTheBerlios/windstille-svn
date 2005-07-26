@@ -20,6 +20,8 @@ sources =
         animation_obj.hpp
         baby_xml.cpp
         baby_xml.hpp
+        blitter.cpp
+        blitter.hpp        
         bomb.cpp
         bomb.hpp
 	box.cpp

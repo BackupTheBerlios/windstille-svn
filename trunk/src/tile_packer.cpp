@@ -25,10 +25,10 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include "windstille_error.hpp"
-#include "blitter.hpp"
 #include "globals.hpp"
 #include "tile_packer.hpp"
 #include "util.hpp"
+#include "blitter.hpp"
 
 class TilePackerImpl
 {
@@ -75,36 +75,6 @@ TilePacker::~TilePacker()
 {
   glDeleteTextures(1, &impl->texture);
   delete impl;
-}
-
-void generate_border(SDL_Surface* surface,
-                     int x_pos, int y_pos, int width, int height)
-{
-  assert(surface->format->BitsPerPixel == 32);
-  SDL_LockSurface(surface);
- 
-  uint8_t* data = static_cast<uint8_t*>(surface->pixels);
-  int pitch = surface->pitch;
-
-  // duplicate the top line
-  memcpy(data + (y_pos-1)*pitch + 4*x_pos, 
-         data + (y_pos)*pitch + 4*x_pos,
-         4*width);
-  // duplicate the bottom line
-  memcpy(data + (y_pos+height)*pitch + 4*x_pos, 
-         data + (y_pos+height-1)*pitch + 4*x_pos,  
-         4*width);
-
-  // duplicate left and right borders
-  for(int y = y_pos-1; y < y_pos + height+1; ++y)
-    {
-      uint32_t* p = reinterpret_cast<uint32_t*> (data + (y*pitch + 4*(x_pos-1)));
-      *p = *(p+1);
-      p = reinterpret_cast<uint32_t*> (data + (y*pitch + 4*(x_pos + width)));
-      *p = *(p-1);
-    }
-
-  SDL_UnlockSurface(surface);
 }
 
 /** Pack a tile and return the position where it is placed in the
