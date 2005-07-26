@@ -23,7 +23,7 @@ bool get(const Lisp* lisp, int& val);
 bool get(const Lisp* lisp, std::string& val);
 bool get(const Lisp* lisp, const Lisp*& val);
 
-template<class T>
+template<typename T>
 static inline bool property_get(const Lisp* lisp, T& val)
 {
   const Lisp* el = lisp->get_list_elem(1);
@@ -36,7 +36,7 @@ static inline bool property_get(const Lisp* lisp, const Lisp*& val)
   return true;
 }
 
-template<class T>
+template<typename T>
 static inline bool property_get(const Lisp* lisp, std::vector<T>& list)
 {
   list.clear();

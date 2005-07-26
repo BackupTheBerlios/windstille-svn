@@ -16,6 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include <assert.h>
 
@@ -116,6 +117,16 @@ VertexArrayDrawingRequest::texcoord(float u, float v)
 {
   texcoords.push_back(u);
   texcoords.push_back(v);
+}
+
+void
+VertexArrayDrawingRequest::add_texcoords(const float* coords, size_t n)
+{
+  assert(n % 2 == 0);
+  for(size_t i = 0; i < n; ++i)
+  {
+    texcoords.push_back(coords[i]);
+  }
 }
 
 void

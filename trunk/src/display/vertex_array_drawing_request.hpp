@@ -49,6 +49,7 @@ public:
   void vertex(float x, float y, float z = 0.0f);
   void texcoord(float u, float v);
   void color(const Color& color);
+  void add_texcoords(const float* coords, size_t n);
 
   int num_vertices() const;
 

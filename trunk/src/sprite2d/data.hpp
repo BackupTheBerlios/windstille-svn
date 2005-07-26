@@ -7,6 +7,7 @@
 #include "math/vector.hpp"
 #include "glutil/surface.hpp"
 #include "lisp/lisp.hpp"
+#include "ref.hpp"
 
 namespace sprite2d
 {
@@ -31,21 +32,13 @@ private:
                         const lisp::Lisp* lisp); 
 };
 
-struct ActionImage
-{
-  const Surface* surface;
-  int   width;
-  int   height;
-  float texcoords[8];
-};
-
 struct Action
 {
   std::string name;
   float speed;
   Vector offset;
-  typedef std::vector<ActionImage> Images;
-  Images images;
+  typedef std::vector< Ref<Surface> > Surfaces;
+  Surfaces surfaces;
 };
 
 }

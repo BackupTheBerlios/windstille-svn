@@ -21,20 +21,21 @@
 #define HEADER_SURFACE_DRAWER_HXX
 
 #include "glutil/surface.hpp"
+#include "ref.hpp"
 #include "drawer.hpp"
 
 class SurfaceDrawer : public Drawer
 {
 private:
-  SurfaceHandle surface;
+  Ref<Surface> surface;
   GLenum blendfunc_src;
   GLenum blendfunc_dest;
   
 public:
-  SurfaceDrawer(SurfaceHandle surface);
+  SurfaceDrawer(Surface* );
   virtual ~SurfaceDrawer();
   
-  void set_texture(SurfaceHandle surface);
+  void set_texture(Surface* surface);
   void set_blendfuncs(GLenum blendfunc_src, GLenum blendfunc_dst);
   void draw(SceneContext& sc, ParticleSystem& psys);
 };

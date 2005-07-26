@@ -21,6 +21,8 @@
 #include <stdint.h>
 #include <string>
 #include <GL/gl.h>
+#include "ref.hpp"
+#include "glutil/texture.hpp"
 
 namespace sprite3d
 {
@@ -61,11 +63,9 @@ private:
 
 struct Mesh
 {
-  Mesh()
-    : vertex_indices(0), tex_coords(0), normals(0)
-  { }
+  Mesh();
 
-  GLuint texture;
+  Ref<Texture> texture;
   uint16_t triangle_count;
   uint16_t* vertex_indices;
   float* tex_coords;

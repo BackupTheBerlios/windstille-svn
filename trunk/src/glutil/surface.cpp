@@ -22,12 +22,28 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 **  02111-1307, USA.
 */
+#include <config.h>
 
 #include "surface.hpp"
+#include "surface_manager.hpp"
 
-Surface::Surface(const Texture& texture_, const Rect& uv_, int width_, int height_)
-  : texture(texture_), uv(uv_), width(width_), height(height_)
+Surface::Surface()
 {
 }
 
-/* EOF */
+Surface::~Surface()
+{
+  glDeleteTextures(1, &texture);
+  if(surface_manager == 0)
+    return;
+
+  for(SurfaceManager::Surfaces::iterator i = surface_manager->surfaces.begin();
+      i != surface_manager->surfaces.end(); ++i)
+  {
+    if(i->second == this)                                               
+    {
+      surface_manager->surfaces.erase(i);
+      return;
+    }
+  }
+}

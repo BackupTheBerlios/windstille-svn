@@ -34,10 +34,10 @@
 #include FT_GLYPH_H
 
 #include "physfs/physfs_stream.hpp"
-#include "glutil/surface_manager.hpp"
-#include "glutil/surface.hpp"
+#include "glutil/texture_manager.hpp"
 #include "blitter.hpp"
 #include "ttf_font.hpp"
+#include "util.hpp"
 
 TTFCharacter::TTFCharacter(const CL_Rect& pos_,
                            const CL_Rectf& uv_, 
@@ -61,7 +61,7 @@ public:
   int size;
 
   /** OpenGL Texture which holds all the characters */
-  Texture texture;
+  GLuint texture;
 };
 
 FT_Library TTFFontImpl::library;
@@ -171,12 +171,23 @@ TTFFont::TTFFont(const std::string& filename, int size)
     }
   FT_Done_Face(face);
 
-  impl->texture = surface_manager->create(pixelbuffer)->texture;
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active();
+  state.setup_2d();
+
+  try {
+    impl->texture = TextureManager::create_texture_from_surface(pixelbuffer);
+  } catch(...) {
+    SDL_FreeSurface(pixelbuffer);
+    throw;
+  }
   SDL_FreeSurface(pixelbuffer);
 }
 
 TTFFont::~TTFFont()
 {
+  glDeleteTextures(1, &impl->texture);
+  delete impl;
 }
 
 const TTFCharacter&
@@ -204,7 +215,7 @@ TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& col
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  glBindTexture(GL_TEXTURE_2D, impl->texture.handle);
+  glBindTexture(GL_TEXTURE_2D, impl->texture);
 
   // Voodoo to get non-blurry fonts
   float mx = -0.375;
@@ -213,7 +224,7 @@ TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& col
   glColor4f(color.r, color.g, color.b, color.a);
   for(std::string::const_iterator i = str.begin(); i != str.end(); ++i)
     {
-      TTFCharacter& character = impl->characters[*i];
+      const TTFCharacter& character = impl->characters[*i];
       
       glTexCoord2f(character.uv.left, character.uv.top);
       glVertex2f(x_pos + character.pos.left + mx,
@@ -245,8 +256,8 @@ TTFFont::get_width(const std::string& text) const
   return width;
 }
 
-Texture
-TTFFont::get_surface() const
+GLuint
+TTFFont::get_texture() const
 {
   return impl->texture;
 }

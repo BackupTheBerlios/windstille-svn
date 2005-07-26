@@ -7,6 +7,6 @@ Texture::Texture(GLuint handle_)
 
 Texture::~Texture()
 {
-  //glDeleteTextures(1, &handle);
+  glDeleteTextures(1, &handle);
 }
 

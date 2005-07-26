@@ -22,10 +22,13 @@
 #include <ClanLib/Display/display.h>
 #include <ClanLib/Display/display_window.h>
 #include <ClanLib/Display/graphic_context.h>
+#include <ClanLib/gl.h>
+#include <ClanLib/display.h>
 #include <iostream>
 #include <iosfwd>
 #include "fonts.hpp"
 #include "drawing_context.hpp"
+#include "glutil/surface.hpp"
 
 std::ostream& operator<<(std::ostream& s, const Matrix& m)
 {
@@ -88,17 +91,17 @@ public:
   }
 };
 
-class SurfaceDrawingRequest : public DrawingRequest
+class CLSurfaceDrawingRequest : public DrawingRequest
 {
 private:
   CL_Surface sprite;
 
 public:
-  SurfaceDrawingRequest(const CL_Surface& sprite_, const Vector& pos_, const Matrix& modelview_)
+  CLSurfaceDrawingRequest(const CL_Surface& sprite_, const Vector& pos_, const Matrix& modelview_)
     : DrawingRequest(pos_, modelview_),
       sprite(sprite_)
   {}
-  virtual ~SurfaceDrawingRequest() {}
+  virtual ~CLSurfaceDrawingRequest() {}
 
   void draw(CL_GraphicContext* gc) {
     // FIXME: frequent push/pops might be slow
@@ -127,6 +130,59 @@ public:
     Fonts::dialog_h.set_alignment(origin_center);
     Fonts::dialog_h.draw(int(pos.x), int(pos.y), text);
     gc->pop_modelview();
+  }
+};
+
+class SurfaceDrawingRequest : public DrawingRequest
+{
+private:
+  const Surface* surface;
+  float alpha;
+
+public:
+  SurfaceDrawingRequest(const Surface* surface, const Vector& pos,
+                        const Matrix modelview, float alpha)
+    : DrawingRequest(pos, modelview), surface(surface), alpha(alpha)
+  {}
+  virtual ~SurfaceDrawingRequest()
+  {}
+
+  void draw(CL_GraphicContext* gc) {
+    static const float rectvertices[12]
+      = { 0, 0, 0,
+          1, 0, 0,
+          1, 1, 0,
+          0, 1, 0 };
+
+    CL_OpenGLState state(gc);
+    state.set_active();
+    state.setup_2d();
+
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glPushMatrix();
+    glMultMatrixd(modelview);
+    glTranslatef(pos.x, pos.y, 0);
+    glScalef(surface->get_width(), surface->get_height(), 1.0);
+
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+
+    if(alpha != 0.0)
+      glColor4f(1.0, 1.0, 1.0, alpha);
+    
+    glBindTexture(GL_TEXTURE_2D, surface->get_texture());
+    
+    glVertexPointer(3, GL_FLOAT, 0, rectvertices);
+    glTexCoordPointer(2, GL_FLOAT, 0, surface->get_texcoords());
+    glDrawArrays(GL_QUADS, 0, 4);
+
+    if(alpha != 0.0)
+      glColor4f(1.0, 1.0, 1.0, 0.0);
+    glPopMatrix();
   }
 };
 
@@ -176,7 +232,7 @@ void
 DrawingContext::draw(const CL_Surface&   sprite,  float x, float y, float z)
 { // FIXME: This should get flattend down to a simple texture draw
   // command for easier sorting after texture-id/alpha
-  draw(new SurfaceDrawingRequest(sprite, Vector(x, y, z), modelview_stack.back()));
+  draw(new CLSurfaceDrawingRequest(sprite, Vector(x, y, z), modelview_stack.back()));
 }
 
 void
@@ -184,6 +240,13 @@ DrawingContext::draw(const CL_Sprite&   sprite,  float x, float y, float z)
 { // FIXME: This should get flattend down to a simple texture draw
   // command for easier sorting after texture-id/alpha
   draw(new SpriteDrawingRequest(sprite, Vector(x, y, z), modelview_stack.back()));
+}
+
+void
+DrawingContext::draw(const Surface* surface, float x, float y, float z, float a)
+{
+  draw(new SurfaceDrawingRequest(surface, Vector(x, y, z),
+                                 modelview_stack.back(), a));
 }
 
 void

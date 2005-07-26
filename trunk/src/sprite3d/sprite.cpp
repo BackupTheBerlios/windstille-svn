@@ -347,6 +347,7 @@ Sprite::draw(CL_GraphicContext* gc, const Vector& pos,
   glEnable(GL_TEXTURE_2D);
 
   glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);  
 
   assert_gl("gl init before sprite");
@@ -361,7 +362,7 @@ Sprite::draw(CL_GraphicContext* gc, const Vector& pos,
     const MeshVertices& vertices2 = aframe2.meshs[m];
 
     // set texture
-    glBindTexture(GL_TEXTURE_2D, mesh.texture);
+    glBindTexture(GL_TEXTURE_2D, mesh.texture->handle);
     
     // blend between frame1 + frame2
     float* verts = new float[mesh.vertex_count * 3];

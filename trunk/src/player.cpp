@@ -27,6 +27,7 @@
 #include "bomb.hpp"
 #include "globals.hpp"
 #include "sprite3d/manager.hpp"
+#include "glutil/surface_manager.hpp"
 #include "collision/collision_engine.hpp"
 
 static const int MAX_ENERGY = 16;
@@ -36,7 +37,7 @@ static const float RUN_SPEED = 256.0;
 Player* Player::current_ = 0;
 
 Player::Player () :
-  light    ("hero/light", resources),
+  light("hero/light", resources),
   state (STAND)
 {
   pos.x = 320;
@@ -45,7 +46,6 @@ Player::Player () :
   name = "player";
   sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
   grenade = sprite3d_manager->create("3dsprites/grenade.wsprite");
-  light.set_blend_func(blend_src_alpha, blend_one);
 
   jumping = false;
   energy = MAX_ENERGY;

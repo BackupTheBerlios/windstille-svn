@@ -29,6 +29,8 @@
 #include "math/vector.hpp"
 #include "globals.hpp"
 #include "entity.hpp"
+#include "ref.hpp"
+#include "glutil/surface.hpp"
 
 class Controller;
 
@@ -36,7 +38,7 @@ class Player : public Entity
 {
 private:
   Controller controller;
- 
+
   CL_Sprite light;
   sprite3d::Sprite* sprite;
   sprite3d::Sprite* grenade;

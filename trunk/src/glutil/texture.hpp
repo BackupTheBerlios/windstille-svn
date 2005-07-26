@@ -2,8 +2,9 @@
 #define __TEXTURE_HPP__
 
 #include <GL/gl.h>
+#include "refcounter.hpp"
 
-class Texture
+class Texture : public RefCounter
 {
 public:
   GLuint handle;

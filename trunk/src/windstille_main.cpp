@@ -45,6 +45,7 @@
 #include "util.hpp"
 #include "ttf_font.hpp"
 #include "glutil/surface_manager.hpp"
+#include "glutil/texture_manager.hpp"
 #include "sprite3d/manager.hpp"
 #include "sprite2d/manager.hpp"
 
@@ -287,6 +288,7 @@ WindstilleMain::init_modules()
   sound_manager->enable_music(config->music_enabled);
 
   if (debug) std::cout << "Initialising ScriptManager" << std::endl;
+  texture_manager  = new TextureManager();
   surface_manager  = new SurfaceManager();
   script_manager   = new ScriptManager();
   sprite2d_manager = new sprite2d::Manager();
@@ -309,6 +311,9 @@ WindstilleMain::deinit_modules()
 
   delete surface_manager;
   surface_manager = 0;
+
+  delete texture_manager;
+  texture_manager = 0;
   
   delete sound_manager;
   sound_manager = 0;
@@ -328,7 +333,12 @@ WindstilleMain::deinit_modules()
 void
 WindstilleMain::init_sdl()
 {
+#ifdef DEBUG
+  // I wanna have usefull backtraces in debug mode
+  if(SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_NOPARACHUTE) < 0) {
+#else
   if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+#endif
     std::stringstream msg;
     msg << "Couldn't initialize SDL: " << SDL_GetError();
     throw std::runtime_error(msg.str());

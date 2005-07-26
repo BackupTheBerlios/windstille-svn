@@ -8,8 +8,8 @@
 #include <stdexcept>
 #include "util.hpp"
 #include "globals.hpp"
-#include "glutil/surface_manager.hpp"
-#include "glutil/surface.hpp"
+#include "glutil/texture_manager.hpp"
+#include "glutil/texture.hpp"
 
 namespace sprite3d
 {
@@ -93,8 +93,7 @@ Data::Data(const std::string& filename)
       mesh.triangle_count = read_uint16_t(file);
       mesh.vertex_count = read_uint16_t(file);
 
-      const Surface* surface = surface_manager->get(texturename);
-      mesh.texture = surface->texture.handle;
+      mesh.texture = texture_manager->get(texturename);
 
       // read triangles
       mesh.vertex_indices = new uint16_t[mesh.triangle_count * 3];
@@ -257,6 +256,11 @@ Data::get_bone_id(const std::string& name) const
   std::ostringstream msg;
   msg << "No bone with name '" << name << "' defined";
   throw std::runtime_error(msg.str());
+}
+
+Mesh::Mesh()
+  : vertex_indices(0), tex_coords(0), normals(0)
+{
 }
 
 }

@@ -22,34 +22,47 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 **  02111-1307, USA.
 */
-
 #ifndef HEADER_SURFACE_HPP
 #define HEADER_SURFACE_HPP
 
 #include "math/rect.hpp"
 #include "texture.hpp"
+#include "refcounter.hpp"
 
-/** */
-class Surface
+/**
+ * Surface class. This class basically holds a reference to an opengl texture
+ * along with texture coordinates that specify a rectangle on that texture.
+ * Several surface may share a single texture (but have different texture
+ * coordinates then)
+ */
+class Surface : public RefCounter
 {
-public:
-  Texture texture;
-
 private:
-  Rect  uv;
-  int   width;
-  int   height;
+  GLuint texture;
+  float texcoords[8];
+
+  int width;
+  int height;
+  
+  friend class SurfaceManager;
+  Surface();
 
 public:
-  Surface(const Texture& texture, const Rect& uv_, int width, int height);
+  virtual ~Surface();
+  
+  int get_width()  const
+  { return width;  }
+  
+  int get_height() const
+  { return height; }
 
-  int get_width()  const { return width;  }
-  int get_height() const { return height; }
+  GLuint get_texture() const
+  { return texture; }
 
-  const Rect& get_uv() const { return uv; }
+  /** Returns texture coordinates for the Surface rectangle (float[8]) */
+  const float* get_texcoords() const
+  { return texcoords; }
 };
-
-typedef const Surface* SurfaceHandle;
 
 #endif
 

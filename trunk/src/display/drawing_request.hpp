@@ -34,7 +34,8 @@ protected:
   Matrix modelview;
 public:
   DrawingRequest(const Vector& pos_, const Matrix& modelview_ = Matrix(true))
-    : pos(pos_), modelview(modelview_) {}
+    : pos(pos_), modelview(modelview_)
+  {}
   virtual ~DrawingRequest() {}
   
   virtual void draw(CL_GraphicContext* gc) = 0;

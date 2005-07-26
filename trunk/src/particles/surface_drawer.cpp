@@ -21,8 +21,8 @@
 #include "particle_system.hpp"
 #include "surface_drawer.hpp"
 
-SurfaceDrawer::SurfaceDrawer(SurfaceHandle surface_)
-  : surface(surface_)
+SurfaceDrawer::SurfaceDrawer(Surface* surface)
+  : surface(surface)
 {
 }
 
@@ -31,9 +31,9 @@ SurfaceDrawer::~SurfaceDrawer()
 }
   
 void
-SurfaceDrawer::set_texture(SurfaceHandle surface_)
+SurfaceDrawer::set_texture(Surface* surface)
 {
-  surface = surface_;
+  this->surface = surface;
 }
 
 void
@@ -47,11 +47,11 @@ void
 SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {          
   VertexArrayDrawingRequest* buffer 
-    = new VertexArrayDrawingRequest(CL_Vector(psys.get_x_pos(), psys.get_y_pos(), 0), // FIXME: add zpos
+    = new VertexArrayDrawingRequest(Vector(psys.get_x_pos(), psys.get_y_pos(), 0), // FIXME: add zpos
                                     sc.color().get_modelview());
 
   buffer->set_mode(GL_QUADS);
-  buffer->set_texture(surface->texture.handle);
+  buffer->set_texture(surface->get_texture());
   buffer->set_blend_func(blendfunc_src, blendfunc_dest);
 
   for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
@@ -82,20 +82,18 @@ SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys)
               y_rot = (width/2) * s + (height/2) * c;
             }
 
+          buffer->add_texcoords(surface->get_texcoords(), 8);
+
           buffer->color(color);
-          buffer->texcoord(0, 0);
           buffer->vertex(i->x - x_rot, i->y - y_rot);
 
           buffer->color(color);
-          buffer->texcoord(1, 0);
           buffer->vertex(i->x + y_rot, i->y - x_rot);
 
           buffer->color(color);
-          buffer->texcoord(1, 1);
           buffer->vertex(i->x + x_rot, i->y + y_rot);
 
           buffer->color(color);
-          buffer->texcoord(0, 1);
           buffer->vertex(i->x - y_rot, i->y + x_rot);
         }
     }

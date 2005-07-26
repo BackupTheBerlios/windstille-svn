@@ -17,7 +17,7 @@ struct ListEntry {
 };
 typedef std::multimap<std::string, ListEntry> PropertyMap;
 
-template<class T>
+template<typename T>
 class PropertyIterator
 {
 public:

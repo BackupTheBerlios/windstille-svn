@@ -75,7 +75,7 @@ Data::parse_action(const std::string& dir, const lisp::Lisp* lisp)
   
   if(action->name == "")
     throw std::runtime_error("No Name defined for action");
-  if(action->images.size() == 0) {
+  if(action->surfaces.size() == 0) {
     std::ostringstream msg;
     msg << "Action '" << action->name << "' contains no images";
     throw std::runtime_error(msg.str());
@@ -89,20 +89,8 @@ Data::parse_images(Action* action, const std::string& dir,
 {
   for(size_t n = 1; n < lisp->get_list_size(); ++n) {
     std::string file = lisp->get_list_elem(n)->get_string();
-    const Surface* surface = surface_manager->get(dir + "/" + file);
-    ActionImage image;
-    image.surface      = surface;
-    image.width        = surface->get_width();
-    image.height       = surface->get_height();
-    image.texcoords[0] = surface->get_uv().left;
-    image.texcoords[1] = surface->get_uv().top;
-    image.texcoords[2] = surface->get_uv().right;
-    image.texcoords[3] = surface->get_uv().top;
-    image.texcoords[4] = surface->get_uv().right;
-    image.texcoords[5] = surface->get_uv().bottom;
-    image.texcoords[6] = surface->get_uv().left;
-    image.texcoords[7] = surface->get_uv().bottom;
-    action->images.push_back(image);
+    Surface* surface = surface_manager->get(dir + "/" + file);
+    action->surfaces.push_back(surface);
   }
 }
 
@@ -125,39 +113,8 @@ Data::parse_image_grid(Action* action, const std::string& dir,
   if(filename == "" || x_size <= 0 || y_size <= 0)
     throw std::runtime_error("Invalid or too few data in image-grid");
 
-  const Surface* surface = surface_manager->get(dir + "/" + filename);
-
-  if(surface->get_width() % x_size != 0 || surface->get_height() % y_size != 0) {
-    std::cerr << "Warning texture '" << filename
-              << "' doesn't match a grid size.\n";
-  }
-
-  for(int y = 0; y <= surface->get_height() - y_size; y += y_size) {
-    for(int x = 0; x <= surface->get_width() - x_size; x += x_size) {
-      ActionImage image;
-      image.surface = surface;
-      image.width   = x_size;
-      image.height  = y_size;
-
-      // TODO: check if (x + x_size - 1) is correct or (x + x_size)
-      float min_u = (surface->get_uv().right * x) / static_cast<float>(surface->get_width());
-      float max_u = (surface->get_uv().right * (x + x_size)) / static_cast<float>(surface->get_width());
-      float min_v = (surface->get_uv().bottom * y) / static_cast<float>(surface->get_height());
-      float max_v = (surface->get_uv().bottom * (y + y_size)) / static_cast<float>(surface->get_height());
-      
-      float* uvs = image.texcoords;
-      uvs[0] = min_u;
-      uvs[1] = min_v;
-      uvs[2] = max_u;
-      uvs[3] = min_v;
-      uvs[4] = max_u;
-      uvs[5] = max_v;
-      uvs[6] = min_u;
-      uvs[7] = max_v;
-
-      action->images.push_back(image);
-    }
-  }
+  surface_manager->load_grid(dir + "/" + filename,
+                             action->surfaces, x_size, y_size);
 }
  
 }

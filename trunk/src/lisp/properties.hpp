@@ -20,7 +20,7 @@ public:
    * You have to define get() or property_get() functions to support new
    * datatypes. See getters.hpp for details
    */
-  template<class T>
+  template<typename T>
   bool get(const std::string& name, T& val)
   {
     PropertyMap::iterator i = properties.find(name);
@@ -35,7 +35,7 @@ public:
   /**
    * returns an iterator over all properties with a certain name
    */
-  template<class T>
+  template<typename T>
   bool get_iter(const std::string& name, PropertyIterator<T>& iter)
   {
     PropertyMap::iterator beg = properties.lower_bound(name);
