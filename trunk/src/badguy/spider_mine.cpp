@@ -1,37 +1,33 @@
-//  Windstille - A Jump'n Shoot Game
-//  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
-//
-//  This program is free software; you can redistribute it and/or
-//  modify it under the terms of the GNU General Public License
-//  as published by the Free Software Foundation; either version 2
-//  of the License, or (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-// 
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+/*  $Id$
+**   __      __ __             ___        __   __ __   __
+**  /  \    /  \__| ____    __| _/_______/  |_|__|  | |  |   ____
+**  \   \/\/   /  |/    \  / __ |/  ___/\   __\  |  | |  | _/ __ \
+**   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
+**    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
+**         \/          \/      \/    \/                         \/
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
+**
+**  This program is free software; you can redistribute it and/or
+**  modify it under the terms of the GNU General Public License
+**  as published by the Free Software Foundation; either version 2
+**  of the License, or (at your option) any later version.
+**
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+** 
+**  You should have received a copy of the GNU General Public License
+**  along with this program; if not, write to the Free Software
+**  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
 #include <config.h>
 
 #include "spider_mine.hpp"
-#include "sector.hpp"
-#include "game_session.hpp"
-#include "scripting/wrapper.interface.hpp"
-#include "dialog_manager.hpp"
-#include "script_manager.hpp"
-#include "physfs/physfs_stream.hpp"
-#include "console.hpp"
-#include "sprite3d/manager.hpp"
-#include "util.hpp"
 #include "lisp/properties.hpp"
 #include "windstille_getters.hpp"
 #include "player.hpp"
-#include "tile_map.hpp"
-
-#include <exception>
 
 // !line72 - shouldn't this be a global constant ?
 static const float GRAVITY = 1500;
@@ -41,10 +37,7 @@ SpiderMine::SpiderMine(const lisp::Lisp* lisp)
     explode("explo", resources),
     explode_light("explolight", resources)
 {
-  using namespace lisp;
-  pos.z = 100;
-
-  Properties props(lisp);
+  lisp::Properties props(lisp);
   props.get("name", name);
   props.get("pos", pos);
   props.print_unused_warnings("spidermine");
@@ -88,15 +81,6 @@ SpiderMine::draw (SceneContext& gc)
   else {
     gc.color().draw(spider_mine, pos.x, pos.y, 2);
   }
-}
-
-void
-SpiderMine::collision(const CollisionData& data, CollisionObject& other)
-{
-  // !line72 - does this not get called yet ?
-
-  (void) data;
-  (void) other;
 }
 
 void
@@ -178,10 +162,10 @@ SpiderMine::search_for_player(float delta)
   }
 }
 
-bool
-SpiderMine::on_ground() const
+void
+SpiderMine::die()
 {
-  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y+16);
+  state = EXPLODE;
 }
 
 

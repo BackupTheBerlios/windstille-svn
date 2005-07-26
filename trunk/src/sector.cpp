@@ -41,7 +41,8 @@
 #include "elevator.hpp"
 #include "nightvision.hpp"
 #include "character.hpp"
-#include "spider_mine.hpp"
+#include "badguy/hedgehog.hpp"
+#include "badguy/spider_mine.hpp"
 #include "box.hpp"
 #include "useable_object.hpp"
 
@@ -50,6 +51,7 @@ Sector* Sector::current_ = 0;
 Sector::Sector(const std::string& filename)
   : player(0)
 {
+  if (debug) std::cout << "Creating new Sector" << std::endl;
   collision_engine = new CollisionEngine();
 
   current_ = this;
@@ -78,6 +80,7 @@ Sector::~Sector()
 void
 Sector::parse_file(const std::string& filename)
 {
+  if (debug) std::cout << "Parsing " << filename << std::endl;
   using namespace lisp;
   
   std::auto_ptr<Lisp> root(Parser::parse(filename));
@@ -119,6 +122,7 @@ Sector::parse_file(const std::string& filename)
   }
 
   props.print_unused_warnings("sector");
+  if (debug) std::cout << "Finished parsing" << std::endl;
 }
 
 void
@@ -143,6 +147,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new Character(lisp));
   } else if(name == "spider_mine") {
     add(new SpiderMine(lisp));
+  } else if(name == "hedgehog") {
+    add(new Hedgehog(lisp));
   } else if(name == "test-object") {
     add(new TestObject(lisp));
   } else if (name == "nightvision") {

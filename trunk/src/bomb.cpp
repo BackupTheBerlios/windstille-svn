@@ -23,9 +23,9 @@
 */
 
 #include "globals.hpp"
-#include "igel.hpp"
 #include "sector.hpp"
 #include "bomb.hpp"
+#include "badguy/badguy.hpp"
 
 Bomb::Bomb(int x, int y)
   : sprite("bomb", resources),
@@ -104,14 +104,14 @@ Bomb::explode()
       std::vector<GameObject*>* objs = Sector::current()->get_objects();
       for(std::vector<GameObject*>::iterator i = objs->begin(); i != objs->end(); ++i)
         {
-          Igel* igel = dynamic_cast<Igel*>(*i);
-          if (igel)
+          Badguy* badguy = dynamic_cast<Badguy*>(*i);
+          if (badguy)
             {
-              if (igel->get_pos().x > pos.x - 30 &&
-                  igel->get_pos().x < pos.x + 30 &&
-                  igel->get_pos().y > pos.y - 20 &&
-                  igel->get_pos().y < pos.y + 20)
-                igel->die();
+              if (badguy->get_pos().x > pos.x - 30 &&
+                  badguy->get_pos().x < pos.x + 30 &&
+                  badguy->get_pos().y > pos.y - 20 &&
+                  badguy->get_pos().y < pos.y + 20)
+                badguy->die();
             }
         }
     }

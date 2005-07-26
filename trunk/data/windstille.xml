@@ -98,34 +98,34 @@
     <image file="images/energy_bar.png" name="image1" />
   </sprite>
 
-  <sprite name="igel_light">
-    <image file="images/igel_light.png" />
+  <sprite name="hedgehog_light">
+    <image file="images/hedgehog_light.png" />
     <translation origin="center" x="0" y="0"/>
     <scale x="4.0" y="4.0"/>
   </sprite>
 
-  <sprite name="igel_highlight">
-    <image file="images/igel_highlight.png" />
+  <sprite name="hedgehog_highlight">
+    <image file="images/hedgehog_highlight.png" />
     <translation origin="center" x="0" y="0"/>
     <scale x="2.0" y="2.0"/>
   </sprite>
 
 
-  <sprite name="igel_die">
+  <sprite name="hedgehog_die">
     <animation speed="70" loop="no" />
     <translation origin="bottom_center" />
 
-    <image file="images/igel_die1.png" />
-    <image file="images/igel_die2.png" />
-    <image file="images/igel_die3.png" />
-    <image file="images/igel_die4.png" />
-    <image file="images/igel_die5.png" />
+    <image file="images/hedgehog_die1.png" />
+    <image file="images/hedgehog_die2.png" />
+    <image file="images/hedgehog_die3.png" />
+    <image file="images/hedgehog_die4.png" />
+    <image file="images/hedgehog_die5.png" />
   </sprite>
 
-  <sprite name="igel">
+  <sprite name="hedgehog">
     <animation speed="100" />
-    <image file="images/igel.png" name="image1" />
-    <image file="images/igel1.png" name="image2" />
+    <image file="images/hedgehog.png" name="image1" />
+    <image file="images/hedgehog1.png" name="image2" />
     <translation origin="bottom_center" />
   </sprite>
 
@@ -221,7 +221,7 @@
     </description>
 
     <sprite name="light">
-      <image file="images/igel_light.png" />
+      <image file="images/hedgehog_light.png" />
       <translation origin="center" x="0" y="-8"/>
       <scale x="5.0" y="5.0"/>
     </sprite>

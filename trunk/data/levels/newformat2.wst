@@ -56,8 +56,8 @@
       (name "spider1")
       (pos 500 831)
     )
-    (spider_mine
-      (name "spider3")
+    (hedgehog
+      (name "hedgehog1")
       (pos 1100 550)
     )
     (useable-object

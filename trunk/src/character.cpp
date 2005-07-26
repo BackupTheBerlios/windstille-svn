@@ -82,11 +82,4 @@ Character::use()
     }
 }
 
-void
-Character::collision(const CollisionData& data, CollisionObject& other)
-{
-  (void) data;
-  (void) other;
-}
-
 /* EOF */

@@ -1,4 +1,4 @@
-//  $Id: animation_obj.hpp,v 1.3 2003/09/12 16:31:20 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -36,10 +36,6 @@ public:
   void update(float delta);
   void draw (SceneContext& gc);
   void use();
-  
-  void collision(const CollisionData& data, CollisionObject& other);
-  bool unstuck() const {return true;}
-  bool unstuck_movable() const {return true;}
 };
 
 #endif

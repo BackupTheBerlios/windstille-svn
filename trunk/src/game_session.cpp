@@ -63,6 +63,7 @@ GameSession::GameSession(const std::string& arg_filename)
   : control_dialog("controldialog", resources),
     sector (0)
 {
+  if (debug) std::cout << "Creating new GameSession" << std::endl;
   current_ = this;
   
   slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
@@ -133,7 +134,6 @@ void
 GameSession::draw()
 {
   //std::cout << gluErrorString(glGetError()) << std::endl;
-
   draw_game();
 
   switch (fade_state)
@@ -239,6 +239,7 @@ GameSession::change_sector()
   
   if (1)
     {
+      std::cout << "Adding test objects to sector" << std::endl;
       const Texture* smoke = texture_manager->get("images/particles/smoke.png");
       const Texture* smoke2 
         = texture_manager->get("images/particles/smoke2.png");
@@ -299,6 +300,7 @@ GameSession::change_sector()
   fadeout_value = 0;
   control_state = GAME;
   target_state = RUN_GAME;
+  if (debug) std::cout << "Finished changing sector" << std::endl;
 }
 
 void

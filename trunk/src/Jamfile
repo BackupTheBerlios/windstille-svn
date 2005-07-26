@@ -1,5 +1,6 @@
 SubDir TOP src ;
 
+SubInclude TOP src badguy ;
 SubInclude TOP src display ;
 SubInclude TOP src glutil ;
 SubInclude TOP src input ;
@@ -64,8 +65,6 @@ sources =
         globals.hpp
         graphic_context_state.cpp
         graphic_context_state.hpp
-        igel.cpp
-        igel.hpp
         math.hpp
         nightvision.cpp
         nightvision.hpp
@@ -81,8 +80,6 @@ sources =
         sector.hpp
         spawnpoint.cpp
         spawnpoint.hpp
-	spider_mine.hpp
-	spider_mine.cpp
         test_object.cpp
         test_object.hpp
         text_area.hpp
@@ -121,8 +118,10 @@ sources =
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
 
-Application windstille 
-    :   $(display_objects)
+Application windstille
+    :   $(badguy_objects)
+    
+        $(display_objects)
 
         $(glutil_objects)
     
