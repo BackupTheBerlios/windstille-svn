@@ -129,7 +129,7 @@ TileMap::draw (SceneContext& sc)
                                                     sc.color().get_modelview());
             request->set_mode(GL_QUADS);
             request->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            request->set_texture(tile->texture);
+            request->set_texture(tile->texture.get_handle());
           }
             
         request->texcoord(tile->color_rect.left, tile->color_rect.top);

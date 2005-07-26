@@ -22,6 +22,7 @@
 
 #include <assert.h>
 #include <GL/gl.h>
+#include "glutil/texture.hpp"
 #include "math/rect.hpp"
 
 /** A Tile is a surface or sprite together with information for
@@ -35,8 +36,8 @@ public:
   int id; 
 
   Rect color_rect;
-  int color_packer;
-  GLuint texture;
+  int  color_packer;
+  Texture texture;
 
   /** bitmap that holds the collision attributes for this tile */
   unsigned int colmap;

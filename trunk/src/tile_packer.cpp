@@ -25,6 +25,7 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include "windstille_error.hpp"
+#include "glutil/texture.hpp"
 #include "globals.hpp"
 #include "tile_packer.hpp"
 #include "util.hpp"
@@ -37,7 +38,7 @@ public:
   int x_pos;
   int y_pos;
 
-  GLuint texture;
+  Texture texture;
   // width+height of the texture
   float width;
   float height;  
@@ -49,31 +50,16 @@ TilePacker::TilePacker(int width, int height)
   impl->x_pos = 0;
   impl->y_pos = 0;
 
-  impl->width = width;
+  impl->width  = width;
   impl->height = height;
 
-  // creates new texture (no pixel data is uploaded but opengl reserves memory
-  // for it)
-  glEnable(GL_TEXTURE_2D);
-  glGenTextures(1, &impl->texture);
-  glBindTexture(GL_TEXTURE_2D, impl->texture);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-      GL_UNSIGNED_BYTE, 0);
-
-  assert_gl("creating TilePacker texture");
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+  impl->texture = Texture(width, height);
         
   assert_gl("setting TilePacker texture parameters"); 
 }
 
 TilePacker::~TilePacker()
 {
-  glDeleteTextures(1, &impl->texture);
   delete impl;
 }
 
@@ -111,15 +97,7 @@ TilePacker::pack(SDL_Surface* image, int x, int y, int w, int h)
   SDL_BlitSurface(image, &source_rect, convert, &dest_rect);
   generate_border(convert, 1, 1, TILE_RESOLUTION, TILE_RESOLUTION);
 
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, impl->texture);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  glPixelStorei(GL_UNPACK_ROW_LENGTH,
-      convert->pitch / convert->format->BytesPerPixel);
-
-  glTexSubImage2D(GL_TEXTURE_2D, 0, impl->x_pos, impl->y_pos,
-      TILE_RESOLUTION+2, TILE_RESOLUTION+2, GL_RGBA, GL_UNSIGNED_BYTE,
-      convert->pixels);
+  impl->texture.put(convert, impl->x_pos, impl->y_pos);
   SDL_FreeSurface(convert);
 
   assert_gl("updating tilepacker texture");
@@ -148,7 +126,7 @@ TilePacker::is_full() const
   return (impl->y_pos + TILE_RESOLUTION + 2 > impl->height);
 }
 
-GLuint
+Texture
 TilePacker::get_texture() const
 {
   return impl->texture;

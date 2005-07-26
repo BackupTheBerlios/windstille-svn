@@ -36,17 +36,29 @@ class TextureImpl;
 class Texture
 {
 public:
-  Texture(GLuint handle);
-
   /**
    * Upload an SDL_Surface onto an OpenGL texture. The surface must have power
    * of 2 dimensions
    * */
   Texture(SDL_Surface* image);
+
+  /** 
+   * Create an empty Texture with the given dimensions
+   */
+  Texture(int width, int height);
   Texture();
   ~Texture();
 
+  int get_width() const;
+  int get_height() const;
+
+  /** Uploads the given image to the given coordinates */
+  void put(SDL_Surface* image, int x, int y);
+
+  void bind();
+
   GLuint get_handle() const;
+
 private:
   SharedPtr<TextureImpl> impl;
 };

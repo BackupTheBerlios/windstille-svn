@@ -21,6 +21,7 @@
 
 #include <SDL.h>
 #include <GL/gl.h>
+#include "glutil/texture.hpp"
 #include "math/rect.hpp"
 
 class TilePackerImpl;
@@ -43,7 +44,7 @@ public:
   /** Return true if the PixelBuffer is full */
   bool is_full() const;
 
-  GLuint get_texture() const;
+  Texture get_texture() const;
 
 private:
   TilePackerImpl* impl;

@@ -32,14 +32,12 @@ class TextureImpl
 {
 public:
   GLuint handle;
-
-  TextureImpl(GLuint handle_)
-    : handle(handle_)
-  {    
-  }
+  int    width;
+  int    height;
 
   TextureImpl()
   {
+    glGenTextures(1, &handle);
   }
 
   TextureImpl::~TextureImpl()
@@ -48,13 +46,25 @@ public:
   }
 };
 
-Texture::Texture()
+Texture::Texture(int width, int height)
   : impl(new TextureImpl())
 {
+  impl->width  = width;
+  impl->height = height;
+
+  glBindTexture(GL_TEXTURE_2D, impl->handle);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+               GL_UNSIGNED_BYTE, 0);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP);
 }
 
-Texture::Texture(GLuint handle_)
-  : impl(new TextureImpl(handle_))
+Texture::Texture()
+  : impl(new TextureImpl())
 {
 }
 
@@ -74,7 +84,6 @@ Texture::Texture(SDL_Surface* image)
 
   glEnable(GL_TEXTURE_2D);
 
-  glGenTextures(1, &impl->handle);
   assert_gl("creating texture handle.");
 
   try 
@@ -90,6 +99,8 @@ Texture::Texture(SDL_Surface* image)
       glTexImage2D(GL_TEXTURE_2D, 0, format->BytesPerPixel,
                    image->w, image->h, 0, GL_RGBA,
                    GL_UNSIGNED_BYTE, image->pixels);
+      impl->width  = image->w;
+      impl->height = image->h;
 
       assert_gl("creating texture");
 
@@ -104,6 +115,7 @@ Texture::Texture(SDL_Surface* image)
   catch(...)
     {
       glDeleteTextures(1, &impl->handle);
+      throw;
     }
 }
 
@@ -111,10 +123,43 @@ Texture::~Texture()
 {
 }
 
+int
+Texture::get_width() const
+{
+  return impl->width;
+}
+
+int
+Texture::get_height() const
+{
+  return impl->height;
+}
+
 GLuint
 Texture::get_handle() const
 {
   return impl->handle;
+}
+
+void
+Texture::put(SDL_Surface* image, int x, int y)
+{
+  // FIXME: Add some checks here to make sure image has the right format 
+  glBindTexture(GL_TEXTURE_2D, impl->handle);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  glPixelStorei(GL_UNPACK_ROW_LENGTH,
+                image->pitch / image->format->BytesPerPixel);
+
+  glTexSubImage2D(GL_TEXTURE_2D, 0, x, y,
+                  image->w, image->h, GL_RGBA, GL_UNSIGNED_BYTE,
+                  image->pixels);
+
+}
+
+void 
+Texture::bind()
+{
+  glBindTexture(GL_TEXTURE_2D, impl->handle);
 }
 
 /* EOF */

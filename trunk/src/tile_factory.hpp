@@ -55,7 +55,7 @@ public:
   /** Create a new tile, or loads&creates it if it is not already available */
   Tile* create(int tile_id);
 
-  GLuint get_texture(int tile_id);
+  Texture get_texture(int tile_id);
 
   /** Create the default TileFactor*/
   static void init();
