@@ -362,7 +362,7 @@ Sprite::draw(CL_GraphicContext* gc, const Vector& pos,
     const MeshVertices& vertices2 = aframe2.meshs[m];
 
     // set texture
-    glBindTexture(GL_TEXTURE_2D, mesh.texture->handle);
+    glBindTexture(GL_TEXTURE_2D, mesh.texture.get_handle());
     
     // blend between frame1 + frame2
     float* verts = new float[mesh.vertex_count * 3];

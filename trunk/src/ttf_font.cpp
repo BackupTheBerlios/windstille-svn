@@ -61,7 +61,7 @@ public:
   int size;
 
   /** OpenGL Texture which holds all the characters */
-  GLuint texture;
+  Texture texture;
 };
 
 FT_Library TTFFontImpl::library;
@@ -176,7 +176,7 @@ TTFFont::TTFFont(const std::string& filename, int size)
   state.setup_2d();
 
   try {
-    impl->texture = TextureManager::create_texture_from_surface(pixelbuffer);
+    impl->texture = Texture(pixelbuffer);
   } catch(...) {
     SDL_FreeSurface(pixelbuffer);
     throw;
@@ -186,7 +186,6 @@ TTFFont::TTFFont(const std::string& filename, int size)
 
 TTFFont::~TTFFont()
 {
-  glDeleteTextures(1, &impl->texture);
   delete impl;
 }
 
@@ -215,7 +214,7 @@ TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& col
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  glBindTexture(GL_TEXTURE_2D, impl->texture);
+  glBindTexture(GL_TEXTURE_2D, impl->texture.get_handle());
 
   // Voodoo to get non-blurry fonts
   float mx = -0.375;
@@ -256,7 +255,7 @@ TTFFont::get_width(const std::string& text) const
   return width;
 }
 
-GLuint
+Texture
 TTFFont::get_texture() const
 {
   return impl->texture;

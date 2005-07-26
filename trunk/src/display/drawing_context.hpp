@@ -65,7 +65,7 @@ public:
   void draw(const CL_Sprite&   sprite,  float x, float y, float z = 0);
   void draw(const CL_Surface&   sprite,  float x, float y, float z = 0);
   void draw(const std::string& text,    float x, float y, float z = 0);
-  void draw(const Surface* surface, float x, float y, float z = 0, float alpha = 0);
+  void draw(const Surface surface, float x, float y, float z = 0, float alpha = 0);
   /*} */
   
   /** Translate the drawing context */

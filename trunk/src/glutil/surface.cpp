@@ -27,23 +27,65 @@
 #include "surface.hpp"
 #include "surface_manager.hpp"
 
-Surface::Surface()
+class SurfaceImpl
 {
+public:
+  Texture texture;
+  float texcoords[8];
+
+  int width;
+  int height;
+};
+
+Surface::Surface()
+  : impl(new SurfaceImpl())
+{
+}
+
+Surface::Surface(Texture texture, const Rect& rect, int width, int height)
+  : impl(new SurfaceImpl())
+{
+  impl->texture = texture;
+  impl->width   = width;
+  impl->height  = height;
+  
+  impl->texcoords[0] = rect.left;
+  impl->texcoords[1] = rect.top;
+  impl->texcoords[2] = rect.right;
+  impl->texcoords[3] = rect.top;
+  impl->texcoords[4] = rect.right;
+  impl->texcoords[5] = rect.bottom;
+  impl->texcoords[6] = rect.left;
+  impl->texcoords[7] = rect.bottom;
 }
 
 Surface::~Surface()
 {
-  glDeleteTextures(1, &texture);
-  if(surface_manager == 0)
-    return;
-
-  for(SurfaceManager::Surfaces::iterator i = surface_manager->surfaces.begin();
-      i != surface_manager->surfaces.end(); ++i)
-  {
-    if(i->second == this)                                               
-    {
-      surface_manager->surfaces.erase(i);
-      return;
-    }
-  }
 }
+
+int
+Surface::get_width()  const
+{
+  return impl->width;
+}
+
+int
+Surface::get_height() const
+{ 
+  return impl->height; 
+}
+
+Texture
+Surface::get_texture() const
+{
+  return impl->texture;
+}
+
+const float*
+Surface::get_texcoords() const
+{
+  return impl->texcoords; 
+}
+
+
+/* EOF */

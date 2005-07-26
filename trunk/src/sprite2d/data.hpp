@@ -37,7 +37,7 @@ struct Action
   std::string name;
   float speed;
   Vector offset;
-  typedef std::vector< Ref<Surface> > Surfaces;
+  typedef std::vector<Surface> Surfaces;
   Surfaces surfaces;
 };
 

@@ -136,11 +136,11 @@ public:
 class SurfaceDrawingRequest : public DrawingRequest
 {
 private:
-  const Surface* surface;
+  Surface surface;
   float alpha;
 
 public:
-  SurfaceDrawingRequest(const Surface* surface, const Vector& pos,
+  SurfaceDrawingRequest(Surface surface, const Vector& pos,
                         const Matrix modelview, float alpha)
     : DrawingRequest(pos, modelview), surface(surface), alpha(alpha)
   {}
@@ -165,7 +165,7 @@ public:
     glPushMatrix();
     glMultMatrixd(modelview);
     glTranslatef(pos.x, pos.y, 0);
-    glScalef(surface->get_width(), surface->get_height(), 1.0);
+    glScalef(surface.get_width(), surface.get_height(), 1.0);
 
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -174,10 +174,10 @@ public:
     if(alpha != 0.0)
       glColor4f(1.0, 1.0, 1.0, alpha);
     
-    glBindTexture(GL_TEXTURE_2D, surface->get_texture());
+    glBindTexture(GL_TEXTURE_2D, surface.get_texture().get_handle());
     
     glVertexPointer(3, GL_FLOAT, 0, rectvertices);
-    glTexCoordPointer(2, GL_FLOAT, 0, surface->get_texcoords());
+    glTexCoordPointer(2, GL_FLOAT, 0, surface.get_texcoords());
     glDrawArrays(GL_QUADS, 0, 4);
 
     if(alpha != 0.0)
@@ -243,7 +243,7 @@ DrawingContext::draw(const CL_Sprite&   sprite,  float x, float y, float z)
 }
 
 void
-DrawingContext::draw(const Surface* surface, float x, float y, float z, float a)
+DrawingContext::draw(Surface surface, float x, float y, float z, float a)
 {
   draw(new SurfaceDrawingRequest(surface, Vector(x, y, z),
                                  modelview_stack.back(), a));

@@ -252,7 +252,7 @@ GameSession::change_sector()
       ParticleSystem* psystem3 = new ParticleSystem();
       psystem3->set_lifetime(8);
       psystem3->set_count(30);
-      Surface* smoke2 = surface_manager->get("images/particles/smoke2.png");
+      Surface smoke2 = surface_manager->get("images/particles/smoke2.png");
       SurfaceDrawer* drawer = new SurfaceDrawer(smoke2);
       drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       psystem3->set_drawer(drawer);
@@ -265,7 +265,7 @@ GameSession::change_sector()
  
       ParticleSystem* psystem = new ParticleSystem();
       psystem->set_count(100);
-      Surface* smoke = surface_manager->get("images/particles/smoke.png");
+      Surface smoke = surface_manager->get("images/particles/smoke.png");
       drawer = new SurfaceDrawer(smoke);
       drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE);
       psystem->set_drawer(drawer);

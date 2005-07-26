@@ -31,6 +31,7 @@
 #include <string>
 #include <GL/gl.h>
 #include "color.hpp"
+#include "glutil/texture.hpp"
 
 class TTFCharacter
 {
@@ -66,7 +67,7 @@ public:
       newlines into account */
   int get_width(const std::string& text) const;
 
-  GLuint get_texture() const;
+  Texture get_texture() const;
 
   const TTFCharacter& get_character(int c) const;
   void draw(float x_pos, float y_pos, const std::string& str, const Color& color = Color(1.0f, 1.0f, 1.0f));

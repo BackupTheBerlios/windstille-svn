@@ -27,7 +27,9 @@
 
 #include "math/rect.hpp"
 #include "texture.hpp"
-#include "refcounter.hpp"
+#include "sharedptr.hpp"
+
+class SurfaceImpl;
 
 /**
  * Surface class. This class basically holds a reference to an opengl texture
@@ -35,33 +37,24 @@
  * Several surface may share a single texture (but have different texture
  * coordinates then)
  */
-class Surface : public RefCounter
+class Surface
 {
-private:
-  GLuint texture;
-  float texcoords[8];
-
-  int width;
-  int height;
-  
-  friend class SurfaceManager;
-  Surface();
-
 public:
-  virtual ~Surface();
+  Surface();
+  Surface(Texture texture, const Rect& rect, int width, int height);
+  ~Surface();
   
-  int get_width()  const
-  { return width;  }
-  
-  int get_height() const
-  { return height; }
+  int get_width()  const;
+  int get_height() const;
 
-  GLuint get_texture() const
-  { return texture; }
+  Texture get_texture() const;
 
   /** Returns texture coordinates for the Surface rectangle (float[8]) */
-  const float* get_texcoords() const
-  { return texcoords; }
+  const float* get_texcoords() const;
+
+  friend class SurfaceManager;
+private:
+  SharedPtr<SurfaceImpl> impl;
 };
 
 #endif

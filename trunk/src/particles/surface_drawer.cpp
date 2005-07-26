@@ -21,7 +21,7 @@
 #include "particle_system.hpp"
 #include "surface_drawer.hpp"
 
-SurfaceDrawer::SurfaceDrawer(Surface* surface)
+SurfaceDrawer::SurfaceDrawer(Surface surface)
   : surface(surface)
 {
 }
@@ -31,7 +31,7 @@ SurfaceDrawer::~SurfaceDrawer()
 }
   
 void
-SurfaceDrawer::set_texture(Surface* surface)
+SurfaceDrawer::set_texture(Surface surface)
 {
   this->surface = surface;
 }
@@ -51,7 +51,7 @@ SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys)
                                     sc.color().get_modelview());
 
   buffer->set_mode(GL_QUADS);
-  buffer->set_texture(surface->get_texture());
+  buffer->set_texture(surface.get_texture().get_handle());
   buffer->set_blend_func(blendfunc_src, blendfunc_dest);
 
   for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
@@ -67,8 +67,8 @@ SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys)
           // scale
           float scale  = psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start);
           
-          float width  = surface->get_width()  * scale;
-          float height = surface->get_height() * scale;
+          float width  = surface.get_width()  * scale;
+          float height = surface.get_height() * scale;
               
           // rotate
           float x_rot = width/2;
@@ -82,7 +82,7 @@ SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys)
               y_rot = (width/2) * s + (height/2) * c;
             }
 
-          buffer->add_texcoords(surface->get_texcoords(), 8);
+          buffer->add_texcoords(surface.get_texcoords(), 8);
 
           buffer->color(color);
           buffer->vertex(i->x - x_rot, i->y - y_rot);

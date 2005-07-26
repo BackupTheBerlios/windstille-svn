@@ -7,6 +7,7 @@
 #include <SDL.h>
 #include <GL/gl.h>
 #include "ref.hpp"
+#include "texture.hpp"
 
 class Surface;
 
@@ -20,19 +21,20 @@ public:
   ~SurfaceManager();
 
   /** returns a surface containing the image specified with filename */
-  Surface* get(const std::string& filename);
+  Surface get(const std::string& filename);
+
   /**
    * Loads an image and splits it into several Surfaces sized width and height.
    * The created surfaces will be added to the surfaces vector.
    */
   void load_grid(const std::string& filename,
-      std::vector< Ref<Surface> >& surfaces, int width, int height);
+      std::vector<Surface>& surfaces, int width, int height);
 
   friend class Surface;
-  void create_texture(SDL_Surface* image, GLuint& handle,
-                      float& maxu, float& maxv);
+  Texture create_texture(SDL_Surface* image, 
+                         float& maxu, float& maxv);
   
-  typedef std::map<std::string, Surface*> Surfaces;
+  typedef std::map<std::string, Surface> Surfaces;
   Surfaces surfaces;
 };
 

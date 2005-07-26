@@ -65,7 +65,7 @@ struct Mesh
 {
   Mesh();
 
-  Ref<Texture> texture;
+  Texture texture;
   uint16_t triangle_count;
   uint16_t* vertex_indices;
   float* tex_coords;

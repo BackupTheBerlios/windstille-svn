@@ -115,8 +115,7 @@ Sprite::get_alpha() const
 void
 Sprite::draw(SceneContext& sc, const Vector& pos)
 {
-  const Surface* surface
-    = current_action->surfaces[ static_cast<int> (frame) ];
+  Surface surface = current_action->surfaces[ static_cast<int> (frame) ];
   sc.color().draw(surface, pos.x, pos.y, pos.z, alpha);
 }
 

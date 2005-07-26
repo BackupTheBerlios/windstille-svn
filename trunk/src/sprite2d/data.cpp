@@ -89,7 +89,7 @@ Data::parse_images(Action* action, const std::string& dir,
 {
   for(size_t n = 1; n < lisp->get_list_size(); ++n) {
     std::string file = lisp->get_list_elem(n)->get_string();
-    Surface* surface = surface_manager->get(dir + "/" + file);
+    Surface surface = surface_manager->get(dir + "/" + file);
     action->surfaces.push_back(surface);
   }
 }

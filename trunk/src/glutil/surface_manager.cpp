@@ -35,10 +35,11 @@ SurfaceManager::~SurfaceManager()
   }
 }
 
-Surface*
+Surface
 SurfaceManager::get(const std::string& filename)
 {
   Surfaces::iterator i = surfaces.find(filename);
+
   if(i != surfaces.end())
     return i->second;
 
@@ -51,10 +52,10 @@ SurfaceManager::get(const std::string& filename)
   }
 
   float maxu, maxv;
-  GLuint handle;
+  Texture texture;
   try
   {
-    create_texture(image, handle, maxu, maxv);
+    texture = create_texture(image, maxu, maxv);
   }
   catch(std::exception& e)
   {
@@ -64,29 +65,17 @@ SurfaceManager::get(const std::string& filename)
     throw std::runtime_error(msg.str());
   }
 
-  Surface* result = new Surface();
-  result->texture = handle;
-  result->width = image->w;
-  result->height = image->h;
-  float* texcoords = result->texcoords;
-  texcoords[0] = 0;
-  texcoords[1] = 0;
-  texcoords[2] = maxu;
-  texcoords[3] = 0;
-  texcoords[4] = maxu;                                                      
-  texcoords[5] = maxv;
-  texcoords[6] = 0;
-  texcoords[7] = maxv;
-
-  SDL_FreeSurface(image);
+  Surface result(texture, Rect(0, 0, maxu, maxv), image->w, image->h);
   surfaces.insert(std::make_pair(filename, result));
   
+  SDL_FreeSurface(image);
+
   return result;
 }
 
 void
 SurfaceManager::load_grid(const std::string& filename,
-                          std::vector< Ref<Surface> >& surfaces,
+                          std::vector<Surface>& surfaces,
                           int width, int height)
 {
   SDL_Surface* image = IMG_Load_RW(get_physfs_SDLRWops(filename), 1);
@@ -98,10 +87,11 @@ SurfaceManager::load_grid(const std::string& filename,
   }
 
   float maxu, maxv;
-  GLuint handle;
+
+  Texture texture;
   try
   {                                                                       
-    create_texture(image, handle, maxu, maxv);
+    texture = create_texture(image, maxu, maxv);
   }
   catch(std::exception& e)
   {
@@ -115,25 +105,12 @@ SurfaceManager::load_grid(const std::string& filename,
   {
     for(int x = 0; x <= image->w - width + 1; x += width)
     {
-      Surface* surface = new Surface();
-      surface->texture = handle;
-      surface->width = width;
-      surface->height = height;
-      
       float s_min_u = maxu * x / static_cast<float>(image->w);
       float s_max_u = (maxu * (x + width)) / static_cast<float>(image->w);
       float s_min_v = maxv * x / static_cast<float>(image->h);
       float s_max_v = (maxv * (x + height)) / static_cast<float>(image->h);
-      float* texcoords = surface->texcoords;
-      texcoords[0] = s_min_u;
-      texcoords[1] = s_min_v;
-      texcoords[2] = s_max_u;
-      texcoords[3] = s_min_v;
-      texcoords[4] = s_max_u;
-      texcoords[5] = s_max_v;
-      texcoords[6] = s_min_u;
-      texcoords[7] = s_max_v;
-      surfaces.push_back(surface);  
+
+      surfaces.push_back(Surface(texture, Rect(s_min_u, s_min_v, s_max_u, s_max_v), width, height));
     }
   }
   SDL_FreeSurface(image);
@@ -146,8 +123,8 @@ static int power_of_two(int val) {
   return result;
 }
 
-void
-SurfaceManager::create_texture(SDL_Surface* image, GLuint& handle,
+Texture
+SurfaceManager::create_texture(SDL_Surface* image,
                                float& maxu, float& maxv)
 {
   CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
@@ -173,9 +150,11 @@ SurfaceManager::create_texture(SDL_Surface* image, GLuint& handle,
   SDL_SetAlpha(image, 0, 0);
   SDL_BlitSurface(image, 0, convert, 0);
 
+  Texture texture;
+
   try 
   {
-    handle = TextureManager::create_texture_from_surface(convert);
+    texture = Texture(convert);
   }
   catch(...) 
   {
@@ -186,5 +165,7 @@ SurfaceManager::create_texture(SDL_Surface* image, GLuint& handle,
   
   maxu = static_cast<float>(image->w)/static_cast<float>(texture_w);
   maxv = static_cast<float>(image->h)/static_cast<float>(texture_h);
+
+  return texture;
 }
 

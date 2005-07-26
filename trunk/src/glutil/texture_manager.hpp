@@ -25,18 +25,12 @@ public:
    * SurfaceManager for images with other dimensions.
    * Note: Texture is a refcounted class, store it with Ref<Texture>
    */
-  Texture* get(const std::string& filename);
-
-  /**
-   * Upload an SDL_Surface onto an OpenGL texture. The surface must have power
-   * of 2 dimensions
-   * */
-  static GLuint create_texture_from_surface(SDL_Surface* surface);
+  Texture get(const std::string& filename);
 
 private:
   friend class TextureManagerTexture;
   
-  typedef std::map<std::string, Texture*> Textures;
+  typedef std::map<std::string, Texture> Textures;
   Textures textures;
 };
 

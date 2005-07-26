@@ -27,15 +27,15 @@
 class SurfaceDrawer : public Drawer
 {
 private:
-  Ref<Surface> surface;
+  Surface surface;
   GLenum blendfunc_src;
   GLenum blendfunc_dest;
   
 public:
-  SurfaceDrawer(Surface* );
+  SurfaceDrawer(Surface surface);
   virtual ~SurfaceDrawer();
   
-  void set_texture(Surface* surface);
+  void set_texture(Surface surface);
   void set_blendfuncs(GLenum blendfunc_src, GLenum blendfunc_dst);
   void draw(SceneContext& sc, ParticleSystem& psys);
 };
