@@ -294,11 +294,7 @@ Sprite::set_next_frame()
 
 void
 Sprite::update(float elapsed_time)
-{
-  //FIXME FIXME hackery to stop the game freezing on fast computers
-  if (elapsed_time == 0)
-    elapsed_time = 0.001;
-    
+{   
   float time_delta = elapsed_time * frame1.action->speed * frame1.speed;
   if(frame1.speed < 0)
     time_delta = -time_delta;
