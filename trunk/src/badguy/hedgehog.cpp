@@ -83,33 +83,34 @@ Hedgehog::update(float delta)
   else
     {
       sprite.update(delta);
-      
-      CL_Vector old_pos = pos;
+      bool was_on_ground = false;
       
       if (on_ground())
         {
+          was_on_ground = true;
+          pos.y = int(pos.y)/TILE_SIZE * TILE_SIZE;
           if (velocity.y > 0)
             {
               velocity.y = 0;
-              pos.y = int(pos.y)/TILE_SIZE * TILE_SIZE;
             }
           if (direction_left)
             velocity.x = -32;
           else
             velocity.x = 32;
-            
-          if (!on_ground() || in_wall())
-          {
-            direction_left = !direction_left;
-            pos = old_pos;
-          }
         }
       else
         {
           velocity.y += GRAVITY * delta;
         }
-        
+      
+      CL_Vector old_pos = pos;
       pos += velocity * delta;
+      
+      if ((was_on_ground && !on_ground()) || in_wall())
+        {
+          direction_left = !direction_left;
+          pos = old_pos;
+        }
     }
     
   // Check if the player got hit

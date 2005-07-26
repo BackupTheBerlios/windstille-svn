@@ -62,10 +62,10 @@ SpiderMine::update(float delta)
     search_for_player(delta);
     
     if (on_ground()) {
-      if (velocity.y > 0) {
+      pos.y = int(pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE - 1;      
+      if (velocity.y > 0)
         velocity.y = 0;
-        pos.y = int(pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE - 1;
-      }
+
     } else {
       velocity.y += GRAVITY * delta;
     }
