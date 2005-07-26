@@ -37,6 +37,7 @@ class Nightvision : public GameObject
 private:
   CL_Surface nightvision;
   CL_OpenGLSurface noise;
+
 public:
   Nightvision(const lisp::Lisp* lisp);
   ~Nightvision();

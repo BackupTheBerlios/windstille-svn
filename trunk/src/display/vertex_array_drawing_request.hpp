@@ -22,6 +22,7 @@
 
 #include <vector>
 #include <ClanLib/gl.h>
+#include "color.hpp"
 #include "drawing_request.hpp"
 
 /** */
@@ -47,7 +48,7 @@ public:
 
   void vertex(float x, float y, float z = 0.0f);
   void texcoord(float u, float v);
-  void color(const CL_Color& color);
+  void color(const Color& color);
 
   int num_vertices() const;
 

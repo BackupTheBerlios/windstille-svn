@@ -119,12 +119,12 @@ VertexArrayDrawingRequest::texcoord(float u, float v)
 }
 
 void
-VertexArrayDrawingRequest::color(const CL_Color& color)
+VertexArrayDrawingRequest::color(const Color& color)
 {
-  colors.push_back(color.get_red());
-  colors.push_back(color.get_green());
-  colors.push_back(color.get_blue());
-  colors.push_back(color.get_alpha());
+  colors.push_back(static_cast<int>(color.r * 255));
+  colors.push_back(static_cast<int>(color.g * 255));
+  colors.push_back(static_cast<int>(color.b * 255));
+  colors.push_back(static_cast<int>(color.a * 255));
 }
 
 void

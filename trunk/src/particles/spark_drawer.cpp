@@ -23,6 +23,7 @@
 #include "display/drawing_request.hpp"
 #include "display/vertex_array_drawing_request.hpp"
 #include "particle_system.hpp"
+#include "color.hpp"
 #include "spark_drawer.hpp"
 
 void
@@ -36,10 +37,10 @@ SparkDrawer::draw(SceneContext& sc, ParticleSystem& psys)
 
   for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
     {
-      buffer->color(CL_Color(255, 255, 0, 255 - int(psys.get_progress(i->t) * 255)));
+      buffer->color(Color(1.0f, 1.0f, 0, 1.0f - psys.get_progress(i->t)));
       buffer->vertex(i->x, i->y);
 
-      buffer->color(CL_Color(0, 0, 0, 0));
+      buffer->color(Color(0, 0, 0, 0));
       buffer->vertex(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f); 
     }
 

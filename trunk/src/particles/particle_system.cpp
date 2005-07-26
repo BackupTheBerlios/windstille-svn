@@ -49,8 +49,8 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   speed_start = 100.0;
   speed_stop  = 200.0f;
 
-  color_start = CL_Color(255, 255, 255, 255);
-  color_stop  = CL_Color(  0,   0,   0,   0);
+  color_start = Color(1.0f, 1.0f, 1.0f, 1.0f);
+  color_stop  = Color(   0,    0,    0,    0);
 
   set_count(70);
   
@@ -94,11 +94,11 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
 
   Color p_color;
   if (props.get("color", p_color))
-    set_color(CL_Color(CL_Colorf(p_color.r, p_color.g, p_color.b, p_color.a)));
+    set_color(Color(p_color.r, p_color.g, p_color.b, p_color.a));
 
   Color p_fade_color;
   if (props.get("fade-color", p_fade_color))
-    set_color(CL_Color(CL_Colorf(p_fade_color.r, p_fade_color.g, p_fade_color.b, p_fade_color.a)));
+    set_color(Color(p_fade_color.r, p_fade_color.g, p_fade_color.b, p_fade_color.a));
 
   Vector p_speed;
   if (props.get("speed", p_speed))
@@ -133,8 +133,8 @@ ParticleSystem::ParticleSystem()
   speed_start = 100.0;
   speed_stop  = 200.0f;
 
-  color_start = CL_Color(255, 255, 255, 255);
-  color_stop  = CL_Color(  0,   0,   0,   0);
+  color_start = Color(1.0f, 1.0f, 1.0f, 1.0f);
+  color_stop  = Color(  0,   0,   0,   0);
 
   set_count(70);
 }
@@ -308,13 +308,13 @@ ParticleSystem::set_aspect(float from, float to)
 }
 
 void
-ParticleSystem::set_color(const CL_Color& color)
+ParticleSystem::set_color(const Color& color)
 {
   color_start = color;
 }
 
 void
-ParticleSystem::set_fade_color(const CL_Color& color)
+ParticleSystem::set_fade_color(const Color& color)
 {
   color_stop = color;
 }

@@ -20,8 +20,9 @@
 #ifndef HEADER_PARTICLE_SYSTEM_HXX
 #define HEADER_PARTICLE_SYSTEM_HXX
 
-#include <ClanLib/display.h>
 #include <vector>
+
+#include "color.hpp"
 #include "drawer.hpp"
 #include "lisp/lisp.hpp"
 #include "game_object.hpp"
@@ -84,8 +85,8 @@ private:
   float speed_stop;
 
 public:
-  CL_Color color_start;
-  CL_Color color_stop;
+  Color color_start;
+  Color color_stop;
 private:
   void spawn(Particle& particle);
 public:
@@ -152,10 +153,10 @@ public:
   void set_aspect(float from, float to);
 
   /** Set the color at which the particles will start */
-  void set_color(const CL_Color& color);
+  void set_color(const Color& color);
 
   /** Set the color at which the particles will end */
-  void set_fade_color(const CL_Color& color);
+  void set_fade_color(const Color& color);
 
   /** Set the speed of the particles, it will be randomly distributed
       from \a from to \a to, direction will be taken from the cone */
