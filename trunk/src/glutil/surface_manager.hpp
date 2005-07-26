@@ -30,7 +30,6 @@ public:
   void load_grid(const std::string& filename,
       std::vector<Surface>& surfaces, int width, int height);
 
-  friend class Surface;
   Texture create_texture(SDL_Surface* image, 
                          float& maxu, float& maxv);
   

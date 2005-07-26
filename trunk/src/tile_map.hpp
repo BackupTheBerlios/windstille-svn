@@ -1,4 +1,4 @@
-//  $Id: tile_map.hpp,v 1.7 2003/09/13 18:01:17 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -41,8 +41,6 @@ private:
   float total_time;
 public:
   TileMap(const lisp::Lisp* lisp);
-  TileMap(const std::string& name, int w, int h);
-  TileMap(Field<int>* data);
   virtual ~TileMap();
 
   void update (float delta);

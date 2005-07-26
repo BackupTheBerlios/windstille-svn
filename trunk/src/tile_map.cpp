@@ -71,25 +71,6 @@ TileMap::TileMap(const lisp::Lisp* lisp)
     throw std::runtime_error("No tiles defined in tilemap");  
 }
 
-TileMap::TileMap (Field<int>* data)
-  : field(data->get_width(),
-          data->get_height())
-{
-  if (debug)
-    {
-      std::cout << "TileMap: Size: " 
-                << data->get_width() << "x" << data->get_height() << std::endl;
-    }
-
-  for (int y = 0; y < field.get_height (); ++y) 
-    {
-      for (int x = 0; x < field.get_width (); ++x)
-        {
-          field(x, y) = TileFactory::current()->create((*data)(x, y));
-        }
-    }
-}
-
 TileMap::~TileMap()
 {
 }

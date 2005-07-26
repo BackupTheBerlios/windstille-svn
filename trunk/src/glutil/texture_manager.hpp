@@ -28,8 +28,6 @@ public:
   Texture get(const std::string& filename);
 
 private:
-  friend class TextureManagerTexture;
-  
   typedef std::map<std::string, Texture> Textures;
   Textures textures;
 };

@@ -53,7 +53,11 @@ public:
   /** Returns texture coordinates for the Surface rectangle (float[8]) */
   const float* get_texcoords() const;
 
-  friend class SurfaceManager;
+  /** Returns texture coordinates for the Surface rectangle */
+  Rect get_uv() const;
+
+  /** true if the Texture is valid and usable, false if not */
+  operator bool() const;
 private:
   SharedPtr<SurfaceImpl> impl;
 };

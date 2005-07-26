@@ -46,6 +46,10 @@ public:
   }
 };
 
+Texture::Texture()
+{
+}
+
 Texture::Texture(int width, int height)
   : impl(new TextureImpl())
 {
@@ -63,10 +67,6 @@ Texture::Texture(int width, int height)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP);
 }
 
-Texture::Texture()
-{
-}
-
 static inline bool is_power_of_2(int v)
 {
   return (v & (v-1)) == 0;
@@ -75,6 +75,9 @@ static inline bool is_power_of_2(int v)
 Texture::Texture(SDL_Surface* image)
   : impl(new TextureImpl())
 {
+  impl->width  = image->w;
+  impl->height = image->h;
+
   const SDL_PixelFormat* format = image->format;
   if(!is_power_of_2(image->w) || !is_power_of_2(image->h))
     throw std::runtime_error("image has no power of 2 size");
@@ -98,8 +101,6 @@ Texture::Texture(SDL_Surface* image)
       glTexImage2D(GL_TEXTURE_2D, 0, format->BytesPerPixel,
                    image->w, image->h, 0, GL_RGBA,
                    GL_UNSIGNED_BYTE, image->pixels);
-      impl->width  = image->w;
-      impl->height = image->h;
 
       assert_gl("creating texture");
 

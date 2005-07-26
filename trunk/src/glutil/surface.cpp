@@ -32,13 +32,13 @@ class SurfaceImpl
 public:
   Texture texture;
   float texcoords[8];
+  Rect  uv;
 
   int width;
   int height;
 };
 
 Surface::Surface()
-  : impl(new SurfaceImpl())
 {
 }
 
@@ -48,7 +48,9 @@ Surface::Surface(Texture texture, const Rect& rect, int width, int height)
   impl->texture = texture;
   impl->width   = width;
   impl->height  = height;
-  
+  impl->uv      = rect;
+
+  // Keep the texcoords in array form for convenience
   impl->texcoords[0] = rect.left;
   impl->texcoords[1] = rect.top;
   impl->texcoords[2] = rect.right;
@@ -85,6 +87,17 @@ const float*
 Surface::get_texcoords() const
 {
   return impl->texcoords; 
+}
+
+Rect
+Surface::get_uv() const
+{
+  return impl->uv;
+}
+
+Surface::operator bool() const
+{
+  return !impl.is_null();
 }
 
 /* EOF */
