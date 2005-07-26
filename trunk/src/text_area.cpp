@@ -172,6 +172,10 @@ TextArea::draw()
             {
               large = true;
             }
+          else if (i->content == "sleep")
+            {
+              eat_time -= 1.0f;
+            }
           break;
 
         case TextAreaCommand::END:
@@ -222,7 +226,11 @@ TextArea::draw()
                 {
                   for(std::string::const_iterator j = i->content.begin(); j != i->content.end() && eat_time > 0; ++j)
                     {
-                      eat_time -= 0.05f;
+                      if (*j == '.' || *j == '\n')
+                        eat_time -= 0.50f;
+                      else
+                        eat_time -= 0.05f;
+
                       const TTFCharacter& character = impl->font->get_character(*j);
                       
                       if (small)

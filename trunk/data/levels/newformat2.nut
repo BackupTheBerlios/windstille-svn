@@ -4,7 +4,7 @@ wait(1.5);
 dialog(TOP, "human/portrait", 
        "Welcome to the <large>VR training program</large>. Here you " +
        "will learn the basic manoeuvering abilities of <large>your</large> " +
-       "powersuit, jumping, running, climbing and shooting. " +
+       "powersuit,<sleep> jumping,<sleep> running, <sleep> climbing<sleep> and shooting. " +
        "We will start with <small>climbing</small>. See the <i>block</i> in front " +
        "of you? Press <b>Right</b> and <b>Jump</b> to hang on the ledge.");
 
