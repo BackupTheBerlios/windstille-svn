@@ -36,6 +36,10 @@ class TextureImpl;
 class Texture
 {
 public:
+  /** Create a empty and invalid Texture object (similar to a
+      NULL-pointer) */
+  Texture();
+
   /**
    * Upload an SDL_Surface onto an OpenGL texture. The surface must have power
    * of 2 dimensions
@@ -46,7 +50,7 @@ public:
    * Create an empty Texture with the given dimensions
    */
   Texture(int width, int height);
-  Texture();
+
   ~Texture();
 
   int get_width() const;
@@ -59,6 +63,8 @@ public:
 
   GLuint get_handle() const;
 
+  /** true if the Texture is valid and usable, false if not */
+  operator bool() const;
 private:
   SharedPtr<TextureImpl> impl;
 };

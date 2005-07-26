@@ -64,7 +64,6 @@ Texture::Texture(int width, int height)
 }
 
 Texture::Texture()
-  : impl(new TextureImpl())
 {
 }
 
@@ -114,7 +113,6 @@ Texture::Texture(SDL_Surface* image)
     } 
   catch(...)
     {
-      glDeleteTextures(1, &impl->handle);
       throw;
     }
 }
@@ -160,6 +158,11 @@ void
 Texture::bind()
 {
   glBindTexture(GL_TEXTURE_2D, impl->handle);
+}
+
+Texture::operator bool() const
+{
+  return !impl.is_null();
 }
 
 /* EOF */
