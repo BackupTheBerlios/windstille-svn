@@ -40,6 +40,12 @@ VertexArrayDrawingRequest::num_vertices() const
 void
 VertexArrayDrawingRequest::draw(CL_GraphicContext* gc)
 {
+  draw(gc, 0, num_vertices());
+}
+
+void
+VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
+{
   assert(!vertices.empty());
   assert(texcoords.empty() || int(texcoords.size()/2) == num_vertices());
   assert(colors.empty() || int(colors.size()/4) == num_vertices());
@@ -88,7 +94,7 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc)
       glDisable(GL_TEXTURE_2D);
     }
 
-  glDrawArrays(mode, 0, num_vertices());
+  glDrawArrays(mode, start, end);
 
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);

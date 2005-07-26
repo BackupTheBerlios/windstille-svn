@@ -43,6 +43,7 @@ public:
   VertexArrayDrawingRequest(const CL_Vector& pos_, const CL_Matrix4x4& modelview_);
 
   void draw(CL_GraphicContext* gc);
+  void draw(CL_GraphicContext* gc, int start, int end);
 
   void vertex(float x, float y, float z = 0.0f);
   void texcoord(float u, float v);
