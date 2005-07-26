@@ -87,5 +87,4 @@ Surface::get_texcoords() const
   return impl->texcoords; 
 }
 
-
 /* EOF */

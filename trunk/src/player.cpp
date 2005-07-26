@@ -76,6 +76,7 @@ Player::~Player()
 void
 Player::draw (SceneContext& gc)
 {
+  light.set_blend_func(blend_src_alpha, blend_one);
   gc.light().draw(light, pos.x, pos.y, 100);
   sprite->draw(gc, pos);
 
