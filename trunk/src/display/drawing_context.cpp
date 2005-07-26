@@ -27,7 +27,7 @@
 #include "fonts.hpp"
 #include "drawing_context.hpp"
 
-std::ostream& operator<<(std::ostream& s, const CL_Matrix4x4& m)
+std::ostream& operator<<(std::ostream& s, const Matrix& m)
 {
   s << "[" << m[ 0] << ", " << m[ 4] << ", " << m[ 8] << ", " << m[12] << "\n";
   s << " " << m[ 1] << ", " << m[ 5] << ", " << m[ 9] << ", " << m[13] << "\n";
@@ -50,7 +50,7 @@ private:
   Color color;
 public:
   FillScreenDrawingRequest(const Color& color_) 
-    : DrawingRequest(CL_Vector(0, 0, -1000.0f)), color(color_)
+    : DrawingRequest(Vector(0, 0, -1000.0f)), color(color_)
   {
   }
   virtual ~FillScreenDrawingRequest() {}
@@ -70,7 +70,7 @@ private:
   CL_Sprite sprite;
 
 public:
-  SpriteDrawingRequest(const CL_Sprite& sprite_, const CL_Vector& pos_, const CL_Matrix4x4& modelview_)
+  SpriteDrawingRequest(const CL_Sprite& sprite_, const Vector& pos_, const Matrix& modelview_)
     : DrawingRequest(pos_, modelview_),
       sprite(sprite_)
   {}
@@ -94,7 +94,7 @@ private:
   CL_Surface sprite;
 
 public:
-  SurfaceDrawingRequest(const CL_Surface& sprite_, const CL_Vector& pos_, const CL_Matrix4x4& modelview_)
+  SurfaceDrawingRequest(const CL_Surface& sprite_, const Vector& pos_, const Matrix& modelview_)
     : DrawingRequest(pos_, modelview_),
       sprite(sprite_)
   {}
@@ -115,7 +115,7 @@ class TextDrawingRequest : public DrawingRequest
 private:
   std::string text;
 public:
-  TextDrawingRequest(const std::string& text_, const CL_Vector& pos_, const CL_Matrix4x4& modelview_)
+  TextDrawingRequest(const std::string& text_, const Vector& pos_, const Matrix& modelview_)
     : DrawingRequest(pos_, modelview_),
       text(text_)
   {}
@@ -132,7 +132,7 @@ public:
 
 DrawingContext::DrawingContext()
 {
-  modelview_stack.push_back(CL_Matrix4x4(true));
+  modelview_stack.push_back(Matrix(true));
 }
 
 DrawingContext::~DrawingContext()
@@ -176,20 +176,20 @@ void
 DrawingContext::draw(const CL_Surface&   sprite,  float x, float y, float z)
 { // FIXME: This should get flattend down to a simple texture draw
   // command for easier sorting after texture-id/alpha
-  draw(new SurfaceDrawingRequest(sprite, CL_Vector(x, y, z), modelview_stack.back()));
+  draw(new SurfaceDrawingRequest(sprite, Vector(x, y, z), modelview_stack.back()));
 }
 
 void
 DrawingContext::draw(const CL_Sprite&   sprite,  float x, float y, float z)
 { // FIXME: This should get flattend down to a simple texture draw
   // command for easier sorting after texture-id/alpha
-  draw(new SpriteDrawingRequest(sprite, CL_Vector(x, y, z), modelview_stack.back()));
+  draw(new SpriteDrawingRequest(sprite, Vector(x, y, z), modelview_stack.back()));
 }
 
 void
 DrawingContext::draw(const std::string& text,    float x, float y, float z)
 { 
-  draw(new TextDrawingRequest(text, CL_Vector(x, y, z), modelview_stack.back()));
+  draw(new TextDrawingRequest(text, Vector(x, y, z), modelview_stack.back()));
 }
 
 void
@@ -213,7 +213,7 @@ DrawingContext::rotate(float angle, float x, float y, float z)
   double c = cos(angle*3.14159265/180);
   double s = sin(angle*3.14159265/180);
 
-  CL_Matrix4x4 matrix(true);
+  Matrix matrix(true);
   matrix[0] = x*x*(1-c)+c;
   matrix[1] = y*x*(1-c)+z*s;
   matrix[2] = x*z*(1-c)-y*s;
@@ -232,7 +232,7 @@ DrawingContext::rotate(float angle, float x, float y, float z)
 void
 DrawingContext::scale(float x, float y, float z)
 {
-  CL_Matrix4x4 matrix(true);
+  Matrix matrix(true);
   matrix[0] = x;
   matrix[5] = y;
   matrix[10] = z;
@@ -243,7 +243,7 @@ DrawingContext::scale(float x, float y, float z)
 void
 DrawingContext::translate(float x, float y, float z)
 {
-  CL_Matrix4x4 matrix(true);
+  Matrix matrix(true);
   matrix[12] = x;
   matrix[13] = y;
   matrix[14] = z;
@@ -265,7 +265,7 @@ DrawingContext::pop_modelview()
 }
 
 void
-DrawingContext::set_modelview(const CL_Matrix4x4& matrix)
+DrawingContext::set_modelview(const Matrix& matrix)
 {
   modelview_stack.back() = matrix;
 }
@@ -274,16 +274,16 @@ void
 DrawingContext::reset_modelview()
 {
   modelview_stack.clear();
-  modelview_stack.push_back(CL_Matrix4x4(true));
+  modelview_stack.push_back(Matrix(true));
 }
 
-CL_Rect
+Rect
 DrawingContext::get_clip_rect()
 {
   // FIXME: Need to check the modelview matrix
-  return CL_Rect(CL_Point(int(modelview_stack.back()[12]),
-                          int(modelview_stack.back()[13])),
-                 CL_Size(800, 600));
+  return Rect(CL_Pointf(modelview_stack.back()[12],
+                        modelview_stack.back()[13]),
+               CL_Sizef(800, 600));
 }
 
 /* EOF */

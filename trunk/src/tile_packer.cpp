@@ -16,17 +16,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include <assert.h>
-#include <ClanLib/Core/Math/rect.h>
-#include <ClanLib/Core/Math/point.h>
-#include <ClanLib/Display/pixel_buffer.h>
-#include <ClanLib/Display/pixel_format.h>
-#include <ClanLib/gl.h>
+#include <ClanLib/GL/opengl_state.h>
+#include <ClanLib/Display/display.h>
+#include <ClanLib/Display/display_window.h>
 #include "windstille_error.hpp"
 #include "blitter.hpp"
 #include "globals.hpp"
 #include "tile_packer.hpp"
+#include "util.hpp"
 
 class TilePackerImpl
 {
@@ -35,8 +35,10 @@ public:
   int x_pos;
   int y_pos;
 
-  CL_PixelBuffer buffer;
-  CL_OpenGLSurface texture;
+  GLuint texture;
+  // width+height of the texture
+  float width;
+  float height;  
 };
 
 TilePacker::TilePacker(int width, int height)
@@ -45,36 +47,90 @@ TilePacker::TilePacker(int width, int height)
   impl->x_pos = 0;
   impl->y_pos = 0;
 
-  impl->buffer = CL_PixelBuffer(width, height, width*4,
-                                CL_PixelFormat::rgba8888);
+  impl->width = width;
+  impl->height = height;
+
+  // creates new texture (no pixel data is uploaded but opengl reserves memory
+  // for it)
+  glEnable(GL_TEXTURE_2D);
+  glGenTextures(1, &impl->texture);
+  glBindTexture(GL_TEXTURE_2D, impl->texture);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+      GL_UNSIGNED_BYTE, 0);
+
+  assert_gl("creating TilePacker texture");
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+        
+  assert_gl("setting TilePacker texture parameters"); 
 }
 
 TilePacker::~TilePacker()
 {
+  glDeleteTextures(1, &impl->texture);
   delete impl;
 }
 
 /** Pack a tile and return the position where it is placed in the
     pixel buffer */
 CL_Rectf
-TilePacker::pack(CL_PixelBuffer tile)
+TilePacker::pack(SDL_Surface* image, int x, int y, int w, int h)
 {
-  assert(tile.get_width() == TILE_RESOLUTION && tile.get_height() == TILE_RESOLUTION);
+  assert(w == TILE_RESOLUTION && h == TILE_RESOLUTION);
   assert(!is_full());
 
-  blit_opaque(impl->buffer, tile, impl->x_pos+1, impl->y_pos+1);
-  generate_border(impl->buffer, impl->x_pos+1, impl->y_pos+1, TILE_RESOLUTION, TILE_RESOLUTION);
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+  SDL_Surface* convert = SDL_CreateRGBSurface(SDL_SWSURFACE,
+    w+2, h+2, 32,
+    0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+#else
+  SDL_Surface* convert = SDL_CreateRGBSurface(SDL_SWSURFACE,
+    w+2, h+2, 32,
+      0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+#endif
+  if(convert == 0)
+    throw std::runtime_error("Couldn't pack texture: out of memory");
 
-  CL_Rectf rect(CL_Pointf((impl->x_pos+1)/1024.0f, 
-                          (impl->y_pos+1)/1024.0f), 
-                CL_Sizef((TILE_RESOLUTION)/1024.0f, 
-                         (TILE_RESOLUTION)/1024.0f));
+  SDL_Rect source_rect;
+  source_rect.x = x;
+  source_rect.y = y;
+  source_rect.w = w;
+  source_rect.h = h;
+  SDL_Rect dest_rect;
+  dest_rect.x = 1;
+  dest_rect.y = 1;
+  dest_rect.w = w;
+  dest_rect.h = h;
+  SDL_SetAlpha(image, 0, 0);
+  SDL_BlitSurface(image, &source_rect, convert, &dest_rect);
+  generate_border(convert, 1, 1, TILE_RESOLUTION, TILE_RESOLUTION);
+
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, impl->texture);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  glPixelStorei(GL_UNPACK_ROW_LENGTH,
+      convert->pitch / convert->format->BytesPerPixel);
+
+  glTexSubImage2D(GL_TEXTURE_2D, 0, impl->x_pos, impl->y_pos,
+      TILE_RESOLUTION+2, TILE_RESOLUTION+2, GL_RGBA, GL_UNSIGNED_BYTE,
+      convert->pixels);
+  SDL_FreeSurface(convert);
+
+  assert_gl("updating tilepacker texture");
+
+  Rect rect(CL_Pointf(static_cast<float>(impl->x_pos+1)/impl->width, 
+                      static_cast<float>(impl->y_pos+1)/impl->height), 
+            CL_Sizef(static_cast<float>(TILE_RESOLUTION)/impl->width, 
+                     static_cast<float>(TILE_RESOLUTION)/impl->height));
 
   // we move by TILE_RESOLUTION+1 to avoid tiles bleeding into each other
   // when blending
   impl->x_pos += TILE_RESOLUTION + 2; 
-
-  if (impl->x_pos + TILE_RESOLUTION > impl->buffer.get_width())
+  if (impl->x_pos + TILE_RESOLUTION > impl->width)
     {
       impl->x_pos = 0;
       impl->y_pos += TILE_RESOLUTION + 2;
@@ -87,27 +143,13 @@ TilePacker::pack(CL_PixelBuffer tile)
 bool
 TilePacker::is_full() const
 {
-  return (impl->y_pos + TILE_RESOLUTION > impl->buffer.get_height());
+  return (impl->y_pos + TILE_RESOLUTION + 2 > impl->height);
 }
 
-CL_OpenGLSurface
-TilePacker::get_texture()
+GLuint
+TilePacker::get_texture() const
 {
-  if (impl->texture)
-    {
-      return CL_Surface(impl->texture);
-    }
-  else
-    {
-      impl->texture = CL_Surface(CL_OpenGLSurface(impl->buffer));
-      return CL_Surface(impl->texture);
-    }
-}
-
-CL_PixelBuffer
-TilePacker::get_pixelbuffer() const
-{
-  return impl->buffer;
+  return impl->texture;
 }
 
 /* EOF */

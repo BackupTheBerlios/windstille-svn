@@ -1,4 +1,4 @@
-//  $Id: tile.hpp,v 1.6 2003/09/22 18:37:05 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -21,8 +21,8 @@
 #define HEADER_TILE_HXX
 
 #include <assert.h>
-#include <ClanLib/Display/sprite.h>
-#include <ClanLib/GL/opengl_surface.h>
+#include <GL/gl.h>
+#include "math/rect.hpp"
 
 /** A Tile is a surface or sprite together with information for
  *  collision detection (aka colmap). The collision map is at a
@@ -34,8 +34,9 @@ public:
   /** The id of the Tile by which the tilemap refers to it */
   int id; 
 
-  CL_Rectf         color_rect;
-  int              color_packer;
+  Rect color_rect;
+  int color_packer;
+  GLuint texture;
 
   /** bitmap that holds the collision attributes for this tile */
   unsigned int colmap;

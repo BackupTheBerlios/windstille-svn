@@ -6,10 +6,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <SDL_image.h>
-#include <ClanLib/Display/Providers/provider_factory.h>
-#include <ClanLib/Display/surface.h>
-#include <ClanLib/Display/pixel_buffer.h>
-#include <ClanLib/Display/pixel_format.h>
 #include <ClanLib/GL/opengl_state.h>
 #include <ClanLib/Display/display.h>
 #include <ClanLib/Display/display_window.h>
@@ -109,8 +105,9 @@ TextureManager::create(SDL_Surface* image)
   SDL_PixelFormat* format = convert->format;
 
   glBindTexture(GL_TEXTURE_2D, handle);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glPixelStorei(GL_UNPACK_ROW_LENGTH, convert->pitch/format->BytesPerPixel);
-  glTexImage2D(GL_TEXTURE_2D, 0, format->BytesPerPixel,
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
       convert->w, convert->h, 0, GL_RGBA,
       GL_UNSIGNED_BYTE, convert->pixels);
 

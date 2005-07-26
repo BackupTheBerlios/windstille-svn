@@ -20,8 +20,9 @@
 #ifndef HEADER_DRAWING_CONTEXT_HXX
 #define HEADER_DRAWING_CONTEXT_HXX
 
-#include <ClanLib/Core/Math/rect.h>
-#include <ClanLib/Core/Math/matrix4x4.h>
+#include "math/vector.hpp"
+#include "math/matrix.hpp"
+#include "math/rect.hpp"
 #include <vector>
 #include "color.hpp"
 #include "drawing_request.hpp"
@@ -41,7 +42,7 @@ private:
   typedef std::vector<DrawingRequest*> DrawingRequests;
   DrawingRequests drawingrequests;
 
-  std::vector<CL_Matrix4x4> modelview_stack;
+  std::vector<Matrix> modelview_stack;
 
 public:
   DrawingContext();
@@ -77,11 +78,11 @@ public:
   void push_modelview();
   void pop_modelview();
   void reset_modelview();
-  void set_modelview(const CL_Matrix4x4& matrix); 
-  CL_Matrix4x4 get_modelview() const { return modelview_stack.back(); }
+  void set_modelview(const Matrix& matrix); 
+  Matrix get_modelview() const { return modelview_stack.back(); }
 
   /** Return the area of the screen that will be visible*/
-  CL_Rect get_clip_rect();
+  Rect get_clip_rect();
 private:
   DrawingContext (const DrawingContext&);
   DrawingContext& operator= (const DrawingContext&);

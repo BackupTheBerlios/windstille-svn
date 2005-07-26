@@ -16,11 +16,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 #ifndef HEADER_TILE_PACKER_HXX
 #define HEADER_TILE_PACKER_HXX
 
-#include <ClanLib/GL/texture.h>
+#include <SDL.h>
+#include <GL/gl.h>
+#include "math/rect.hpp"
 
 class TilePackerImpl;
 
@@ -37,14 +38,12 @@ public:
 
   /** Pack a tile and return the position where it is placed in the
       pixel buffer */
-  CL_Rectf pack(CL_PixelBuffer buffer);
+  Rect pack(SDL_Surface* image, int x, int y, int w, int h);
 
   /** Return true if the PixelBuffer is full */
   bool is_full() const;
 
-  CL_OpenGLSurface get_texture();
-
-  CL_PixelBuffer get_pixelbuffer() const;
+  GLuint get_texture() const;
 
 private:
   TilePackerImpl* impl;

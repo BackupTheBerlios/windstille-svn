@@ -20,8 +20,8 @@
 #ifndef HEADER_DRAWING_REQUEST_HXX
 #define HEADER_DRAWING_REQUEST_HXX
 
-#include <ClanLib/Core/Math/cl_vector.h>
-#include <ClanLib/Core/Math/matrix4x4.h>
+#include "math/vector.hpp"
+#include "math/matrix.hpp"
 
 class CL_GraphicContext;
 
@@ -30,10 +30,10 @@ class CL_GraphicContext;
 class DrawingRequest
 {
 protected:
-  CL_Vector pos;
-  CL_Matrix4x4 modelview;
+  Vector pos;
+  Matrix modelview;
 public:
-  DrawingRequest(const CL_Vector& pos_, const CL_Matrix4x4& modelview_ = CL_Matrix4x4(true))
+  DrawingRequest(const Vector& pos_, const Matrix& modelview_ = Matrix(true))
     : pos(pos_), modelview(modelview_) {}
   virtual ~DrawingRequest() {}
   
@@ -43,7 +43,7 @@ public:
   float get_z_pos() const
   { return pos.z; }
 
-  CL_Matrix4x4 get_modelview() const
+  Matrix get_modelview() const
   { return modelview; }
 private:
   DrawingRequest (const DrawingRequest&);

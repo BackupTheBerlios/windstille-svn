@@ -1,4 +1,4 @@
-//  $Id: tile_map.cxx,v 1.18 2003/11/05 11:09:36 grumbel Exp $
+//  $Id$
 //
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -115,34 +115,34 @@ TileMap::draw (SceneContext& sc)
     for (int x = rect.left; x < rect.right; ++x)
       {
         Tile* tile = field(x, y);
-        if (tile && tile->color_packer != -1)
+        if(tile == 0 || tile->color_packer < 0)
+          continue;                                    
+
+        int packer = tile->color_packer; 
+        if(packer >= int(requests.size()))
+          requests.resize(packer+1);
+
+        VertexArrayDrawingRequest*& request = requests[packer];
+        if (!request)
           {
-            if (tile->color_packer >= int(requests.size()))
-              requests.resize(tile->color_packer+1);
-
-            if (!requests[tile->color_packer])
-              {
-                requests[tile->color_packer] = new VertexArrayDrawingRequest(CL_Vector(0, 0, z_pos),
-                                                                             sc.color().get_modelview());
-                requests[tile->color_packer]->set_mode(GL_QUADS);
-                requests[tile->color_packer]->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-                requests[tile->color_packer]->set_surface(TileFactory::current()->get_texture(tile->color_packer));
-              }
-              
-            VertexArrayDrawingRequest& pack = *requests[tile->color_packer];
-
-            pack.texcoord(tile->color_rect.left, tile->color_rect.top);
-            pack.vertex(x * TILE_SIZE, y * TILE_SIZE);
-
-            pack.texcoord(tile->color_rect.right, tile->color_rect.top);
-            pack.vertex(x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE);
-
-            pack.texcoord(tile->color_rect.right, tile->color_rect.bottom);
-            pack.vertex(x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE + TILE_SIZE);
-              
-            pack.texcoord(tile->color_rect.left, tile->color_rect.bottom);
-            pack.vertex(x * TILE_SIZE, y * TILE_SIZE + TILE_SIZE); 
+            request = new VertexArrayDrawingRequest(CL_Vector(0, 0, z_pos),
+                                                    sc.color().get_modelview());
+            request->set_mode(GL_QUADS);
+            request->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            request->set_texture(tile->texture);
           }
+            
+        request->texcoord(tile->color_rect.left, tile->color_rect.top);
+        request->vertex(x * TILE_SIZE, y * TILE_SIZE);
+
+        request->texcoord(tile->color_rect.right, tile->color_rect.top);
+        request->vertex(x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE);
+
+        request->texcoord(tile->color_rect.right, tile->color_rect.bottom);
+        request->vertex(x * TILE_SIZE + TILE_SIZE, y * TILE_SIZE + TILE_SIZE);
+            
+        request->texcoord(tile->color_rect.left, tile->color_rect.bottom);
+        request->vertex(x * TILE_SIZE, y * TILE_SIZE + TILE_SIZE); 
       }
 
   for(std::vector<VertexArrayDrawingRequest*>::iterator i = requests.begin(); i != requests.end(); ++i)

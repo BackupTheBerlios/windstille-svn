@@ -27,13 +27,17 @@
 class SurfaceDrawer : public Drawer
 {
 private:
-  CL_OpenGLSurface surface;
+  GLuint texture;
+  float width, height;
+  GLenum blendfunc_src;
+  GLenum blendfunc_dest;
   
 public:
-  SurfaceDrawer(const CL_Surface& sur);
+  SurfaceDrawer(GLuint texture, float width, float height);
   virtual ~SurfaceDrawer();
   
-  void set_surface(const CL_Surface& sur);
+  void set_texture(GLuint texture, float width, float height);
+  void set_blendfuncs(GLenum blendfunc_src, GLenum blendfunc_dst);
   void draw(SceneContext& sc, ParticleSystem& psys);
 };
 

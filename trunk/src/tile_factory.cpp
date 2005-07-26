@@ -20,16 +20,15 @@
 
 #include <string>
 #include <sstream>
-#include <ClanLib/gl.h>
-#include <ClanLib/Core/System/system.h>
-#include <ClanLib/Display/pixel_buffer.h>
-#include <ClanLib/Display/pixel_format.h>
-#include <ClanLib/Display/Providers/provider_factory.h>
-#include <ClanLib/Display/Providers/provider_factory.h>
+#include <SDL.h>
+#include <SDL_image.h>
 #include <assert.h>
 #include <sstream>
 #include <iostream>
 #include <memory>
+#include <ClanLib/GL/opengl_state.h>
+#include <ClanLib/Display/display.h>
+#include <ClanLib/Display/display_window.h>
 #include "globals.hpp"
 #include "tile.hpp"
 #include "tile_packer.hpp"
@@ -37,6 +36,9 @@
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
 #include "lisp/properties.hpp"
+#include "glutil/texture_manager.hpp"
+#include "glutil/texture.hpp"
+#include "physfs/physfs_sdl.hpp"
 
 extern CL_ResourceManager* resources;
 
@@ -47,6 +49,10 @@ std::string TileFactory::tile_def_file = "tiles.scm";
 TileFactory::TileFactory (const std::string& filename)
 {
   using namespace lisp;
+
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active();                                                
+  state.setup_2d();                                                  
 
   packers.push_back(new TilePacker(1024, 1024));
   packers.push_back(new TilePacker(1024, 1024));
@@ -80,6 +86,26 @@ TileFactory::~TileFactory()
   tiles.clear();
 }
 
+static bool surface_empty(SDL_Surface* image, int sx, int sy, int w, int h)
+{
+  SDL_LockSurface(image);
+  
+  unsigned char* data = static_cast<unsigned char*>(image->pixels);
+  
+  for(int y = sy; y < sy + h; ++y)
+    for(int x = sx; x < sx + w; ++x)
+      {
+        if (data[y * image->pitch + 4*x + 3] != 0)
+          { 
+            SDL_UnlockSurface(image);
+            return false;
+          }
+      }
+
+  SDL_UnlockSurface(image);
+  return true;
+}
+
 void
 TileFactory::parse_tiles(const lisp::Lisp* data)
 {
@@ -99,128 +125,84 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
 
   if(filename == "")
     throw std::runtime_error("Missing color-image");
-  
-  CL_PixelBuffer image = CL_ProviderFactory::load(datadir + filename);
-  CL_PixelBuffer hl_image;
-  
-  int num_tiles = (image.get_width()/TILE_RESOLUTION) * (image.get_height()/TILE_RESOLUTION);
-  if (int(colmap.size()) != num_tiles)
+ 
+  SDL_Surface* image = IMG_Load_RW(get_physfs_SDLRWops(filename), 1);
+  if(!image) 
     {
-      std::ostringstream str;
-      str << "'colmap' information and num_tiles mismatch (" 
-          << colmap.size() << " != " << num_tiles << ") for image '" << filename << "'";
-      throw std::runtime_error(str.str());
+      std::ostringstream msg;
+      msg << "Couldn't load image '" << filename << "': " << SDL_GetError();
+      throw std::runtime_error(msg.str());
     }
-
-  if (int(ids.size()) != num_tiles)
-    {
-      std::ostringstream str;
-      str << "'ids' information and num_tiles mismatch (" 
-          << ids.size() << " != " << num_tiles << ") for image '" << filename << "'";
-      throw std::runtime_error(str.str());
-    }
-  
-  int i = 0;
-  for (int y = 0; y < image.get_height(); y += TILE_RESOLUTION)
-    {
-      for (int x = 0; x < image.get_width(); x += TILE_RESOLUTION)
-        {
-          if (ids[i] == -1)
-            {
-              // ignore the given section of the image 
-            }
-          else if (ids[i] < (int) tiles.size() && tiles[ids[i]] != NULL)
-            {
-              std::ostringstream os;
-              os << ids[i];
-              throw std::runtime_error("Duplicate tile id: " + os.str());
-            }
-          else
-            {
-              CL_PixelBuffer chopped_image(TILE_RESOLUTION, TILE_RESOLUTION,
-                                           image.get_format().get_depth()*TILE_RESOLUTION,
-                                           image.get_format(), NULL);
-              chopped_image.lock();
-              image.convert(chopped_image.get_data(), 
-                            chopped_image.get_format(), 
-                            image.get_format().get_depth()*TILE_RESOLUTION, 
-                            CL_Rect(CL_Point(0, 0), CL_Size(TILE_RESOLUTION, TILE_RESOLUTION)),
-                            CL_Rect(CL_Point(x, y), CL_Size(TILE_RESOLUTION, TILE_RESOLUTION)));
-              chopped_image.unlock();
-
-              pack(ids[i], colmap[y/TILE_RESOLUTION * image.get_width()/TILE_RESOLUTION + x/TILE_RESOLUTION],
-                   chopped_image);
-            }
-          i += 1;
-        }
-    }
-}
-
-static bool buffer_empty(CL_PixelBuffer buffer)
-{
-  buffer.lock();
-  unsigned char* data = static_cast<unsigned char*>(buffer.get_data());
-  int width  = buffer.get_width();
-  int height = buffer.get_height();
-  int pitch  = buffer.get_pitch();
-
-  for(int y = 0; y < height; ++y)
-    for(int x = 0; x < width; ++x)
+ 
+  try {
+    int num_tiles = (image->w/TILE_RESOLUTION) * (image->h/TILE_RESOLUTION);
+    if (int(colmap.size()) != num_tiles)
       {
-        if (data[y * pitch + 4*x])
-          {
-            buffer.unlock();
-            return false;
-          }
+        std::ostringstream str;
+        str << "'colmap' information and num_tiles mismatch (" 
+            << colmap.size() << " != " << num_tiles << ") for image '" << filename << "'";
+        throw std::runtime_error(str.str());
       }
 
-  return true;
+    if (int(ids.size()) != num_tiles)
+      {
+        std::ostringstream str;
+        str << "'ids' information and num_tiles mismatch (" 
+            << ids.size() << " != " << num_tiles << ") for image '" << filename << "'";
+        throw std::runtime_error(str.str());
+      }
+    
+    int i = 0;
+    for (int y = 0; y < image->h; y += TILE_RESOLUTION)
+      {
+        for (int x = 0; x < image->w; x += TILE_RESOLUTION)
+          {
+            int id = ids[i];
+            int collider = colmap[i];
+            i++;
+            if(id == -1)
+              continue;
+            if(id < (int) tiles.size() && tiles[id] != 0)
+              {
+                std::ostringstream msg;
+                msg << "Dusplicate tile id: " << id;
+                throw std::runtime_error(msg.str());
+              } 
+            if (id >= int(tiles.size()))
+              tiles.resize(id + 1, 0);
+
+            tiles[id] = new Tile(collider); 
+            Tile& tile = *(tiles[id]);
+            tile.id = id;
+
+            if (surface_empty(image, x, y, TILE_RESOLUTION, TILE_RESOLUTION))
+              continue;
+            
+            if(packers[color_packer]->is_full())
+              {
+                packers.push_back(new TilePacker(1024, 1024));
+                color_packer = packers.size() - 1;
+              }
+            Rect rect = packers[color_packer]->pack(
+                image, x, y, TILE_RESOLUTION, TILE_RESOLUTION);
+            tile.color_rect     = rect;
+            tile.color_packer = color_packer;
+            tile.texture = packers[color_packer]->get_texture();
+          }
+      }
+  } catch(...) {
+    SDL_FreeSurface(image);
+    throw;
+  }
+  SDL_FreeSurface(image);
 }
 
-void
-TileFactory::pack(int id, int colmap, CL_PixelBuffer color)
+Tile*
+TileFactory::create(int id)
 {
-  if (id >= int(tiles.size()))
-    tiles.resize(id + 1);
-
-  tiles[id] = new Tile(colmap);
-          
-  tiles[id]->id = id;
-
-  if (!buffer_empty(color))
-    {
-      tiles[id]->color_rect     = packers[color_packer]->pack(color);
-      tiles[id]->color_packer   = color_packer;
-    }
-
-  if (packers[color_packer]->is_full())
-    {
-      packers.push_back(new TilePacker(1024, 1024));
-      color_packer = packers.size() - 1;
-    }
-}
-
-Tile* 
-TileFactory::create (int id)
-{
-  // id 0 is always the empty tile
-  if (id == 0)
-    { 
-      return 0;
-    }
-  else
-    {
-      if (id > 0 && id < int(tiles.size()))
-        return tiles[id];
-      else
-        return 0;
-    }
-}
-
-CL_OpenGLSurface
-TileFactory::get_texture(int id)
-{
-  return packers[id]->get_texture();
+  if(id < 0 || id >= (int) tiles.size())
+    return 0;
+  return tiles[id];
 }
 
 void

@@ -33,7 +33,8 @@ private:
   GLenum blend_sfactor;
   GLenum blend_dfactor;
 
-  CL_OpenGLSurface   texture;
+  bool use_texture;
+  GLuint texture;
   std::vector<unsigned char> colors;
   std::vector<float> texcoords;
   std::vector<float> vertices;
@@ -50,7 +51,7 @@ public:
   int num_vertices() const;
 
   void set_mode(GLenum mode_);
-  void set_surface(CL_Surface surface);
+  void set_texture(GLuint texture);
   void set_blend_func(GLenum sfactor, GLenum dfactor);
 };
 

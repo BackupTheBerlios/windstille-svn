@@ -21,8 +21,8 @@
 #include "particle_system.hpp"
 #include "surface_drawer.hpp"
 
-SurfaceDrawer::SurfaceDrawer(const CL_Surface& sur)
-  : surface(sur)
+SurfaceDrawer::SurfaceDrawer(GLuint texture, float width, float height)
+  : texture(texture), width(width), height(height)
 {
 }
 
@@ -31,48 +31,18 @@ SurfaceDrawer::~SurfaceDrawer()
 }
   
 void
-SurfaceDrawer::set_surface(const CL_Surface& sur)
+SurfaceDrawer::set_texture(GLuint texture, float width, float height)
 {
-  surface = sur;
-  surface.set_alignment(origin_center);
+  this->texture = texture;
+  this->width = width;
+  this->height = height;
 }
 
-static GLenum blendfunc2opengl(CL_BlendFunc blend)
+void
+SurfaceDrawer::set_blendfuncs(GLenum blendfunc_src, GLenum blendfunc_dest)
 {
-  switch (blend)
-    {
-    case blend_zero:
-      return GL_ZERO;
-    case blend_one:
-      return GL_ONE;
-    case blend_dest_color:
-      return GL_DST_COLOR;
-    case blend_src_color:
-      return GL_SRC_COLOR;
-    case blend_one_minus_dest_color:
-      return GL_ONE_MINUS_DST_COLOR;
-    case blend_one_minus_src_color:
-      return GL_ONE_MINUS_SRC_COLOR;
-    case blend_src_alpha:
-      return GL_SRC_ALPHA;
-    case blend_one_minus_src_alpha:
-      return GL_ONE_MINUS_SRC_ALPHA;
-    case blend_dst_alpha:
-      return GL_DST_ALPHA;
-    case blend_one_minus_dest_alpha:
-      return GL_ONE_MINUS_DST_ALPHA;
-    case blend_src_alpha_saturate:
-      return GL_SRC_ALPHA_SATURATE;
-    case blend_constant_color:
-      return GL_CONSTANT_COLOR;
-    case blend_constant_alpha:
-      return GL_CONSTANT_ALPHA;
-    case blend_one_minus_constant_color:
-      return GL_ONE_MINUS_CONSTANT_COLOR;
-    case blend_one_minus_constant_alpha:
-      return GL_ONE_MINUS_CONSTANT_ALPHA;
-    }
-  return GL_ONE;
+  this->blendfunc_src = blendfunc_src;
+  this->blendfunc_dest = blendfunc_dest;
 }
 
 void
@@ -82,14 +52,9 @@ SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys)
                                                                     sc.color().get_modelview());
 
   buffer->set_mode(GL_QUADS);
-  buffer->set_surface(surface);
-  CL_BlendFunc src, dest;
-  surface.get_blend_func(src, dest);
+  buffer->set_texture(texture);
+  buffer->set_blend_func(blendfunc_src, blendfunc_dest);
 
-  buffer->set_blend_func(blendfunc2opengl(src), blendfunc2opengl(dest));
-
-  int s_width  = surface.get_width();
-  int s_height = surface.get_height();
   for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
     {
       if (i->t != -1.0f)
@@ -102,8 +67,8 @@ SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys)
 
           // scale
           float scale  = psys.size_start + psys.get_progress(i->t)*(psys.size_stop - psys.size_start);
-          float width  = s_width  * scale;
-          float height = s_height * scale;
+          float width  = this->width  * scale;
+          float height = this->height * scale;
               
           // rotate
           float x_rot = width/2;

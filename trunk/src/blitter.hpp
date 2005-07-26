@@ -20,6 +20,7 @@
 #ifndef HEADER_BLITTER_HXX
 #define HEADER_BLITTER_HXX
 
+#include <SDL.h>
 #include <ClanLib/Display/pixel_buffer.h>
 
 /** Duplicate all the edge pixel of the given rectangle to the outside
@@ -33,6 +34,7 @@
     X X X X X    4 4 5 6 6
 */
 void generate_border(CL_PixelBuffer buffer, int x_pos, int y_pos, int width, int height);
+void generate_border(SDL_Surface* surface, int x_pos, int y_pos, int width, int height);
 
 void blit_opaque(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos);
 void blit(CL_PixelBuffer target, CL_PixelBuffer brush, int x_pos, int y_pos);

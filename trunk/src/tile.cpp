@@ -1,4 +1,4 @@
-//  $Id: tile.cxx,v 1.4 2003/09/22 18:37:05 grumbel Exp $
+//  $Id$
 //
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>

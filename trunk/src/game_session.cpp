@@ -1,4 +1,4 @@
-//  $Id: windstille_game.cxx,v 1.33 2003/11/13 12:59:42 grumbel Exp $
+//  $Id$
 //
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -50,6 +50,8 @@
 #include "conversation.hpp"
 #include "collision/collision_engine.hpp"
 #include "test_object.hpp"
+#include "glutil/texture_manager.hpp"
+#include "glutil/texture.hpp"
 
 #include "game_session.hpp"
 
@@ -237,9 +239,10 @@ GameSession::change_sector()
   
   if (1)
     {
-      CL_Surface surface1("particles/smoke", resources);
-      CL_Surface surface2("particles/smoke2", resources);
-
+      const Texture* smoke = texture_manager->get("images/particles/smoke.png");
+      const Texture* smoke2 
+        = texture_manager->get("images/particles/smoke2.png");
+      
       ParticleSystem* psystem2 = new ParticleSystem();
       psystem2->set_drawer(new SparkDrawer());
       psystem2->set_pos(0,0);
@@ -251,9 +254,10 @@ GameSession::change_sector()
       ParticleSystem* psystem3 = new ParticleSystem();
       psystem3->set_lifetime(8);
       psystem3->set_count(30);
-      surface2.set_blend_func(blend_src_alpha, blend_one_minus_src_alpha);
-      surface2.set_alignment(origin_center);
-      psystem3->set_drawer(new SurfaceDrawer(surface2));
+      SurfaceDrawer* drawer = new SurfaceDrawer(
+          smoke2->handle, smoke2->orig_width, smoke2->orig_height);
+      drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      psystem3->set_drawer(drawer);
       psystem3->set_pos(0,0);
       psystem3->set_speed(70, 100);
       psystem3->set_cone(-25-90, 25-90);
@@ -263,9 +267,10 @@ GameSession::change_sector()
  
       ParticleSystem* psystem = new ParticleSystem();
       psystem->set_count(100);
-      surface1.set_blend_func(blend_src_alpha, blend_one);
-      surface1.set_alignment(origin_center);
-      psystem->set_drawer(new SurfaceDrawer(surface1));
+      drawer = new SurfaceDrawer(
+          smoke->handle, smoke->orig_height, smoke->orig_height);
+      drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE);
+      psystem->set_drawer(drawer);
       psystem->set_pos(0,0);
       psystem->set_speed(200, 300);
       psystem->set_cone(-5-90, 5-90);

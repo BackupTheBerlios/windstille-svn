@@ -18,7 +18,7 @@
          281  282  283  284  285  286
          287  288  289  290  291  292
              ))
- (tiles (image "../data/images/tiles/virtualreality-foreground.png")
+ (tiles (image "/images/tiles/virtualreality-foreground.png")
         (colmap
          0    0    0    0    0    0    1    1    1    1    0    0    0    0    0    0
          0    1    1    1    1    0    1    0    0    1    0    0    0    0    0    0
@@ -57,7 +57,7 @@
          )
         )
 
- (tiles (image "../data/images/tiles/virtualreality-background.png")
+ (tiles (image "/images/tiles/virtualreality-background.png")
         (colmap
          0 0 0 0 0 0
          0 0 0 0 0 0

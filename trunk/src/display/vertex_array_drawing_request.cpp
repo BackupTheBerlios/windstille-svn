@@ -28,6 +28,7 @@ VertexArrayDrawingRequest::VertexArrayDrawingRequest(const CL_Vector& pos_, cons
   blend_sfactor = GL_SRC_ALPHA;
   blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
   mode = GL_QUADS;
+  use_texture = false;
 }
 
 int
@@ -77,10 +78,10 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc)
   glEnable(GL_BLEND);
   glBlendFunc(blend_sfactor, blend_dfactor);
 
-  if (texture)
+  if (use_texture)
     {
       glEnable(GL_TEXTURE_2D);
-      texture.bind();
+      glBindTexture(GL_TEXTURE_2D, texture);
     }
   else
     {
@@ -121,9 +122,10 @@ VertexArrayDrawingRequest::color(const CL_Color& color)
 }
 
 void
-VertexArrayDrawingRequest::set_surface(CL_Surface surface)
+VertexArrayDrawingRequest::set_texture(GLuint texture)
 {
-  texture = CL_OpenGLSurface(surface);
+  this->texture = texture;
+  use_texture = true;
 }
 
 void

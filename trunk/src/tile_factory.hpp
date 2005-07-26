@@ -1,4 +1,4 @@
-//  $Id: tile_factory.hpp,v 1.8 2003/09/22 18:37:05 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -52,15 +52,10 @@ public:
   TileFactory(const std::string& filename);
   ~TileFactory();
 
-  CL_OpenGLSurface get_texture(int id);
+  /** Create a new tile, or loads&creates it if it is not already available */
+  Tile* create(int tile_id);
 
-  /** Check if the tile is already loaded and return it. If it is not
-   *  already loaded, load it 
-   *
-   *  @param id The id of the tile to create as defined in the def. file
-   *
-   *  @return on success the tile is returned, on failure 0 */
-  Tile* create(int id);
+  GLuint get_texture(int tile_id);
 
   /** Create the default TileFactor*/
   static void init();
@@ -73,7 +68,6 @@ public:
 
 private:
   void parse_tiles(const lisp::Lisp* data);
-  void pack(int id, int colmap, CL_PixelBuffer color);
 };
 
 #endif
