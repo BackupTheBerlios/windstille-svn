@@ -29,9 +29,6 @@
 #include "windstille_getters.hpp"
 #include "player.hpp"
 
-// !line72 - shouldn't this be a global constant ?
-static const float GRAVITY = 1500;
-
 SpiderMine::SpiderMine(const lisp::Lisp* lisp)
   : spider_mine("spider_mine", resources),
     explode("explo", resources),
@@ -57,12 +54,23 @@ SpiderMine::~SpiderMine()
 void
 SpiderMine::update(float delta)
 {   
-  search_for_player(delta);
-
   if (state == EXPLODE) {
     explode.update(delta);
     if (explode.is_finished())
       remove();
+  } else {
+    search_for_player(delta);
+    
+    if (on_ground()) {
+      if (velocity.y > 0) {
+        velocity.y = 0;
+        pos.y = int(pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE - 1;
+      }
+    } else {
+      velocity.y += GRAVITY * delta;
+    }
+  
+    pos += velocity * delta;
   }
 }
 
@@ -86,79 +94,60 @@ SpiderMine::draw (SceneContext& gc)
 void
 SpiderMine::search_for_player(float delta)
 {
-  Player *player = Player::current();
-  if (!player)
-    return;
+  Player* player = Player::current();
 
   jump_time += delta;
 
   // !line72 - I should be using the real collision stuff for this
-  CL_Vector position = player->get_pos();
-  if (state != EXPLODE) { // if we are in explode we are done
-    if (state == JUMP && jump_time > 0.3) { // check for explosion
-      state = EXPLODE;
-      velocity.x = 0;
-      velocity.y = 0;
-      // if close enough to the player hit them
-      if ((fabs(position.x - get_pos().x) < 15) &&
-	  ((get_pos().y - 32 - 15 < position.y) &&
-	   (get_pos().y > position.y - 135 + 15))) {
-	player->hit(1); // lower the players energy
-      }
-    }
-    else if (state != JUMP &&
-	     (fabs(position.x - get_pos().x) <= 45) && // check to see if we should jump
-	     ((get_pos().y - 32 < position.y) &&
-	      (get_pos().y > position.y - 135))) {
-      if (state != JUMP || on_ground()) {
-	state = JUMP;
-	velocity.y = -400;
-	jump_time = 0.0;
-      }
-    }
-    else if (state != JUMP &&
-	     fabs(position.x - get_pos().x) < 200 && // check to see if we should attack the player
-	     fabs(position.x - get_pos().x) > 45) {
-      state = ATTACK;
-      if (position.x < get_pos().x) {
-	if (on_ground())
-	  velocity.x = -walk_speed;
-      }
-      else {
-	if (on_ground())
-	  velocity.x = walk_speed;
-      }
-    }
-    else if (state != JUMP &&
-	     fabs(position.x - get_pos().x) >= 200 && // check to see if we should go back to starting position (ignores y)
-	     fabs(get_pos().x - initial_position.x) > 15) {
-      // go back to start position
-      state = RETURN;
-      if (initial_position.x < get_pos().x) {
-	if (on_ground())
-	  velocity.x = -walk_speed;
-      }
-      else {
-	if (on_ground())
-	  velocity.x = walk_speed;
-      }
-    } // wait
-    else if (state != JUMP) {
-      state = WAIT;
-      velocity = 0;
+  CL_Vector player_pos = player->get_pos();
+  
+  // check for explosion
+  if (state == JUMP && jump_time > 0.3) {
+    state = EXPLODE;
+    velocity.x = 0;
+    velocity.y = 0;
+    // if close enough to the player hit them
+    if ((fabs(player_pos.x - pos.x) < 15) &&
+      ((pos.y - 32 - 15 < player_pos.y) &&
+      (pos.y > player_pos.y - 135 + 15))) {
+        player->hit(1);
     }
   }
-
-  if (state != EXPLODE) { // move if we haven't exploded
-    if(on_ground()) {
-      if(velocity.y > 0) {
-	velocity.y = 0;
-	pos.y = int(pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE - 1;
-      }
-    } else {
-      velocity.y += GRAVITY * delta;
+  // check to see if we should jump
+  else if (state != JUMP && (fabs(player_pos.x - pos.x) <= 45)
+            && ((pos.y - 32 < player_pos.y) && (pos.y > player_pos.y - 135))
+            && on_ground()) {
+    state = JUMP;
+    velocity.y = -400;
+    jump_time = 0.0;
+  }
+  // check to see if we should attack the player
+  else if (state != JUMP
+           && fabs(player_pos.x - pos.x) < 200
+           && fabs(player_pos.x - pos.x) > 45) {
+    state = ATTACK;
+    if (on_ground()) {
+      if (player_pos.x < get_pos().x)
+        velocity.x = -walk_speed;
+      else
+        velocity.x = walk_speed;
     }
-    pos += velocity * delta;
+  }
+  // check to see if we should go back to starting position (ignores y)
+  else if (state != JUMP &&
+       fabs(player_pos.x - pos.x) >= 200
+       && fabs(pos.x - initial_position.x) > 15) {
+    state = RETURN;
+    if (on_ground()) {
+      if (initial_position.x < pos.x)
+        velocity.x = -walk_speed;
+      else
+        velocity.x = walk_speed;
+    }
+  // else wait
+  } else if (state != JUMP) {
+    state = WAIT;
+    velocity.x = 0;
   }
 }
 

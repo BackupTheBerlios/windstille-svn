@@ -1,4 +1,4 @@
-//  $Id: player.hpp,v 1.11 2003/11/05 13:36:17 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -36,8 +36,6 @@ class Player : public Entity
 {
 private:
   Controller controller;
-
-  Vector velocity;
  
   CL_Sprite light;
   sprite3d::Sprite* sprite;

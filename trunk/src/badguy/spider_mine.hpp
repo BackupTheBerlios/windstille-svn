@@ -37,7 +37,6 @@ private:
   CL_Vector initial_position;
   float walk_speed;
   float jump_time;
-  CL_Vector velocity;
   enum { WAIT, ATTACK, RETURN, JUMP, EXPLODE } state;
   bool exploded;
     

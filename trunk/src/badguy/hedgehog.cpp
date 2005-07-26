@@ -73,7 +73,7 @@ Hedgehog::draw(SceneContext& gc)
 
 void
 Hedgehog::update(float delta)
-{
+{      
   if (state == DYING)
     {
       if (die_sprite.is_finished())
@@ -88,33 +88,38 @@ Hedgehog::update(float delta)
       
       if (on_ground())
         {
-          pos.y = int(pos.y)/TILE_SIZE * TILE_SIZE;
-          
-          if (direction_left)
-            pos.x -= 32 * delta;
-          else
-            pos.x += 32 * delta;      
-          
-          if (!on_ground() || in_wall())
+          if (velocity.y > 0)
             {
-              direction_left = !direction_left;
-              pos = old_pos;
+              velocity.y = 0;
+              pos.y = int(pos.y)/TILE_SIZE * TILE_SIZE;
             }
+          if (direction_left)
+            velocity.x = -32;
+          else
+            velocity.x = 32;
+            
+          if (!on_ground() || in_wall())
+          {
+            direction_left = !direction_left;
+            pos = old_pos;
+          }
         }
       else
-        { // Fall
-          pos.y += 450 * delta;
+        {
+          velocity.y += GRAVITY * delta;
         }
-
-      // Check if the player got hit
-      // FIXME: Insert pixel perfect collision detection here
-      CL_Vector player_pos = Player::current()->get_pos();
-      if (pos.x - 20 < player_pos.x
-          && pos.x + 20 > player_pos.x
-          && pos.y - 20 < player_pos.y
-          && pos.y + 5  > player_pos.y)
-        Player::current()->hit(5);
+        
+      pos += velocity * delta;
     }
+    
+  // Check if the player got hit
+  // FIXME: Insert pixel perfect collision detection here
+  CL_Vector player_pos = Player::current()->get_pos();
+  if (pos.x - 20 < player_pos.x
+        && pos.x + 20 > player_pos.x
+        && pos.y - 20 < player_pos.y
+        && pos.y + 5  > player_pos.y)
+    Player::current()->hit(5);
 }
 
 void

@@ -29,7 +29,7 @@
 
 Badguy::Badguy()
 {
-    pos.z = 100;
+  pos.z = 100;
 }
 
 Badguy::~Badguy()

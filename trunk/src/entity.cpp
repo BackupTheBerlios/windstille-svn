@@ -29,8 +29,10 @@
 #include "entity.hpp"
 
 Entity::Entity()
-  : useable(false)
+  : velocity(0, 0),
+    useable(false)
 {
+  
 }
 
 Entity::~Entity()

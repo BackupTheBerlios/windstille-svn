@@ -40,6 +40,7 @@ private:
 
 protected:
   Vector pos;
+  Vector velocity;
   bool useable;
   
 public:

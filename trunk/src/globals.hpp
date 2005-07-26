@@ -1,4 +1,4 @@
-//  $Id: globals.hpp,v 1.11 2003/11/07 13:00:39 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -27,6 +27,8 @@ typedef enum { WEST, EAST} Direction;
 
 extern int TILE_SIZE;
 extern int TILE_RESOLUTION;
+
+const float GRAVITY = 1500;
 
 /** datadir => /usr/local/share/games/windstille/ */
 extern std::string datadir;

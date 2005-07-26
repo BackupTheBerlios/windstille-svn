@@ -1,4 +1,4 @@
-//  $Id: player.cxx,v 1.19 2003/11/05 13:36:17 grumbel Exp $
+//  $Id$
 //
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -32,12 +32,10 @@
 static const int MAX_ENERGY = 16;
 static const float WALK_SPEED = 128.0;
 static const float RUN_SPEED = 256.0;
-static const float GRAVITY = 1500;
 
 Player* Player::current_ = 0;
 
 Player::Player () :
-  velocity (0, 0),
   light    ("hero/light", resources),
   state (STAND)
 {
@@ -110,7 +108,7 @@ Player::stop_listening()
 }
 
 void 
-Player::update (float elapsed_time)
+Player::update (float delta)
 {
   controller = InputManager::get_controller();
 
@@ -158,12 +156,12 @@ Player::update (float elapsed_time)
       pos.y = int(pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE - 1;
     }
   } else {
-    velocity.y += GRAVITY * elapsed_time;
+    velocity.y += GRAVITY * delta;
   }
 
-  pos += velocity * elapsed_time;
-  sprite->update(elapsed_time);
-  grenade->update(elapsed_time);
+  pos += velocity * delta;
+  sprite->update(delta);
+  grenade->update(delta);
 
   // FIXME: actually movement should be done through CollisionObject
   //        and this->pos should be set by getting value from the current CollisionObject
