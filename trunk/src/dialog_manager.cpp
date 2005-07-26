@@ -33,16 +33,68 @@ DialogManager* DialogManager::current_ = 0;
 DialogManager::DialogManager()
 {
   current_ = this;
+  text_area = 0;
 }
 
 void
 DialogManager::add_dialog(int alignment_, const std::string& portrait_, const std::string& text_)
 {
-  progress = 0;
-  delay = 0.0;
+  progress  = 0;
+  delay     = 0.0;
   alignment = alignment_;
   portrait  = CL_Sprite(portrait_, resources);
   text      = text_;
+
+
+  static const int dialog_width = 600;
+  static const int outer_border_x = 20;
+  static const int outer_border_y = 20;
+  static const int portrait_border_x = 10;
+  static const int portrait_border_y = 10;
+  static const int text_border_x = 10;
+  static const int text_border_y = 10;
+  static const int portrait_width = 180;
+  static const int portrait_height = 192;
+
+  CL_Point pos(0,0);
+  if(alignment & LEFT) {
+    pos.x = outer_border_x;
+  } else if(alignment & RIGHT) {
+    pos.x = config->screen_width - dialog_width - outer_border_x;
+  } else {
+    pos.x = (config->screen_width - dialog_width) / 2;
+  }
+      
+  int text_width
+    = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
+  CL_Rect text_rect = Fonts::dialog.bounding_rect(CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
+                                                          CL_Size(text_width, 600)), text);
+
+  text_rect.bottom = text_rect.top + text_rect.get_height();
+  text_rect.top    = pos.y + text_border_y;
+
+  int dialog_height = std::max(portrait_height + portrait_border_y*2,
+                               text_rect.get_height() + text_border_y*2);
+
+  if(alignment & TOP) {
+    pos.y = outer_border_y;
+  } else if(alignment & BOTTOM) {
+    pos.y = config->screen_height - dialog_height - outer_border_y;
+  } else {
+    pos.y = (config->screen_height - dialog_height) / 2;
+  }
+
+  text_rect.bottom = text_rect.top + text_rect.get_height();
+  text_rect.top = pos.y + text_border_y;
+
+  CL_Size dialog_size(dialog_width, dialog_height);
+
+
+  delete text_area;
+  text_area = new TextArea(CL_Rect(CL_Point(text_rect.left, text_rect.top + Fonts::ttfdialog->get_height()),
+                                   CL_Size(text_width, 600)));
+  text_area->set_font(Fonts::ttfdialog);
+  text_area->set_text(text);
 }
 
 void
@@ -58,7 +110,7 @@ DialogManager::draw()
   static const int portrait_width = 180;
   static const int portrait_height = 192;
 
-  CL_Point pos;
+  CL_Point pos(0,0);
   if(alignment & LEFT) {
     pos.x = outer_border_x;
   } else if(alignment & RIGHT) {
@@ -69,9 +121,11 @@ DialogManager::draw()
       
   int text_width
     = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
-  CL_Rect text_rect = Fonts::dialog.bounding_rect(
-                                                  CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
+  CL_Rect text_rect = Fonts::dialog.bounding_rect(CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
                                                           CL_Size(text_width, 600)), text);
+
+  text_rect.bottom = text_rect.top + text_rect.get_height();
+  text_rect.top = pos.y + text_border_y;
 
   int dialog_height = std::max(portrait_height + portrait_border_y*2,
                                text_rect.get_height() + text_border_y*2);
@@ -116,17 +170,15 @@ DialogManager::draw()
     }
   else
     {
-      TextArea area(CL_Rect(CL_Point(text_rect.left, text_rect.top + Fonts::ttfdialog->get_height()),
-                            CL_Size(text_width, 600)));
-      area.set_font(Fonts::ttfdialog);
-      area.set_text(text);
-      area.draw();
+      text_area->draw();
     }
 }
 
 void
 DialogManager::update(float delta)
 {
+  text_area->update(delta);
+
   delay += delta;
   if (InputManager::get_controller().get_button_state(FIRE_BUTTON) && delay > 0.2 && progress * text_speed < text.size())
     progress = int(text.size()) / text_speed;

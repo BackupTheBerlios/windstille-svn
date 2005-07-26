@@ -46,6 +46,7 @@ class TextAreaImpl
 public:
   TTFFont* font;
   CL_Rectf rect;
+  float passed_time;
 
   int v_space;
   std::vector<TextAreaCommand> commands;
@@ -57,6 +58,8 @@ TextArea::TextArea(const CL_Rectf& rect)
   impl->rect    = rect;
   // FIXME: freetype might provide info for vspacing, not sure
   impl->v_space = 2;
+
+  impl->passed_time = 0;
 }
 
 TextArea::~TextArea()
@@ -144,6 +147,8 @@ TextArea::draw()
   Color top_color    = Color(1.0f, 1.0f, 1.0f);
   Color bottom_color = Color(1.0f, 1.0f, 1.0f);
   bool small = false;
+  bool large = false;
+  float eat_time = impl->passed_time;
   for(std::vector<TextAreaCommand>::const_iterator i = impl->commands.begin(); i != impl->commands.end(); ++i)
     {
       switch (i->type)
@@ -163,6 +168,10 @@ TextArea::draw()
             {
               small = true;
             }
+          else if (i->content == "large")
+            {
+              large = true;
+            }
           break;
 
         case TextAreaCommand::END:
@@ -175,11 +184,23 @@ TextArea::draw()
             {
               small = false;
             }
+          else if (i->content == "large")
+            {
+              large = false;
+            }
           break;
           
         case TextAreaCommand::WORD:
         retry:
-          int word_width = impl->font->get_width(i->content);
+          int word_width;
+
+          if (small)
+            word_width = static_cast<int>(impl->font->get_width(i->content) * 0.6f);
+          else if (large)
+            word_width = static_cast<int>(impl->font->get_width(i->content) * 2.0f);
+          else
+            word_width = impl->font->get_width(i->content);
+          
           if (i->content == "\n")
             {
               x_pos = 0;
@@ -199,8 +220,9 @@ TextArea::draw()
                 }
               else
                 {
-                  for(std::string::const_iterator j = i->content.begin(); j != i->content.end(); ++j)
+                  for(std::string::const_iterator j = i->content.begin(); j != i->content.end() && eat_time > 0; ++j)
                     {
+                      eat_time -= 0.05f;
                       const TTFCharacter& character = impl->font->get_character(*j);
                       
                       if (small)
@@ -223,7 +245,29 @@ TextArea::draw()
                           glTexCoord2f(character.uv.left, character.uv.bottom);
                           glVertex2f(x_pos + scale * character.pos.left   + mx, 
                                      y_pos + scale * (character.pos.bottom) + my);
-                          x_pos += scale * character.advance;
+                          x_pos += static_cast<int>(scale * character.advance);
+                        }
+                      else if (large)
+                        {
+                          float scale = 2.0f;
+                          glColor4f(top_color.r, top_color.g, top_color.b, top_color.a);
+                          glTexCoord2f(character.uv.left, character.uv.top);
+                          glVertex2f(x_pos + scale * character.pos.left + mx,
+                                     y_pos + (character.pos.top  + my));
+
+                          glTexCoord2f(character.uv.right, character.uv.top);
+                          glVertex2f(x_pos + scale * character.pos.right + mx, 
+                                     y_pos + (character.pos.top) + my);
+
+                          glColor4f(bottom_color.r, bottom_color.g, bottom_color.b, bottom_color.a);
+                          glTexCoord2f(character.uv.right, character.uv.bottom);
+                          glVertex2f(x_pos + scale * character.pos.right  + mx, 
+                                     y_pos + (character.pos.bottom) + my);
+
+                          glTexCoord2f(character.uv.left, character.uv.bottom);
+                          glVertex2f(x_pos + scale * character.pos.left   + mx, 
+                                     y_pos + (character.pos.bottom) + my);
+                          x_pos += static_cast<int>(scale * character.advance);
                         }
                       else   
                         {
@@ -254,6 +298,12 @@ TextArea::draw()
     }
   glEnd();
   glPopMatrix();
+}
+
+void
+TextArea::update(float delta)
+{
+  impl->passed_time += delta;
 }
 
 /* EOF */

@@ -49,6 +49,7 @@ public:
       with special tags */
   void set_font(TTFFont* font);
 
+  void update(float delta);
   void draw();
 
 private:

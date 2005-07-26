@@ -1,4 +1,4 @@
-//  $Id: dialog_manager.hpp,v 1.2 2003/09/29 19:29:17 grumbel Exp $
+//  $Id$
 // 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -25,6 +25,8 @@
 #include <ClanLib/Display/sprite.h>
 #include "globals.hpp"
 
+class TextArea;
+
 /** */
 class DialogManager
 {
@@ -33,6 +35,7 @@ private:
   std::string text;
   float progress;
   float delay;
+  TextArea* text_area;
 
   enum Alignment {
     VCENTER = 0x00,
