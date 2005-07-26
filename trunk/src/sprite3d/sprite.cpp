@@ -304,6 +304,8 @@ Sprite::update(float elapsed_time)
     set_next_frame();
 
     time_delta = elapsed_time * frame1.action->speed * frame1.speed;
+    if(frame1.speed < 0)
+      time_delta = -time_delta;
     blend_time = 0.0;
   }
   blend_time += time_delta;
