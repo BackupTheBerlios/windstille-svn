@@ -9,14 +9,12 @@
 #include <ClanLib/GL/opengl_state.h>
 #include <ClanLib/Display/display.h>
 #include <ClanLib/Display/display_window.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
 #include "util.hpp"
 #include "globals.hpp"
 #include "texture.hpp"
 #include "physfs/physfs_sdl.hpp"
-//for some reason additions to OpenGL in versions 1.2 and onwards are treated as extensions in windows
-#ifdef WIN32
-#include <GL/glext.h>
-#endif
 
 TextureManager::TextureManager* texture_manager = 0;
 

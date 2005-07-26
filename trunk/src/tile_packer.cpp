@@ -22,15 +22,13 @@
 #include <ClanLib/GL/opengl_state.h>
 #include <ClanLib/Display/display.h>
 #include <ClanLib/Display/display_window.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
 #include "windstille_error.hpp"
 #include "blitter.hpp"
 #include "globals.hpp"
 #include "tile_packer.hpp"
 #include "util.hpp"
-//for some reason additions to OpenGL in versions 1.2 and onwards are treated as extensions in windows
-#ifdef WIN32
-#include <GL/glext.h>
-#endif
 
 class TilePackerImpl
 {
