@@ -177,7 +177,7 @@ TextArea::draw()
             {
               eat_time -= 1.0f;
             }
-          else if (i->content == "sinus")
+          else if (i->content == "sin")
             {
               sinus = true;
             }
@@ -197,7 +197,7 @@ TextArea::draw()
             {
               large = false;
             }
-          else if (i->content == "sinus")
+          else if (i->content == "sin")
             {
               sinus = false;
             }
@@ -238,8 +238,8 @@ TextArea::draw()
                       int x = x_pos;
                       int y = y_pos;
 
-                      if (sinus)
-                        y += static_cast<int>(sin(impl->passed_time * 3.0f) * 10.0f);
+                      if (sinus) // FIXME: this could actually work per vertex
+                        y += static_cast<int>(sin(impl->passed_time * 10.0f + x_pos / 15.0f) * 5.0f);
 
                       if (*j == '.' || *j == '\n')
                         eat_time -= 0.50f;
@@ -275,42 +275,42 @@ TextArea::draw()
                           float scale = 2.0f;
                           glColor4f(top_color.r, top_color.g, top_color.b, top_color.a);
                           glTexCoord2f(character.uv.left, character.uv.top);
-                          glVertex2f(x_pos + scale * character.pos.left + mx,
-                                     y_pos + (character.pos.top  + my));
+                          glVertex2f(x + scale * character.pos.left + mx,
+                                     y + (character.pos.top  + my));
 
                           glTexCoord2f(character.uv.right, character.uv.top);
-                          glVertex2f(x_pos + scale * character.pos.right + mx, 
-                                     y_pos + (character.pos.top) + my);
+                          glVertex2f(x + scale * character.pos.right + mx, 
+                                     y + (character.pos.top) + my);
 
                           glColor4f(bottom_color.r, bottom_color.g, bottom_color.b, bottom_color.a);
                           glTexCoord2f(character.uv.right, character.uv.bottom);
-                          glVertex2f(x_pos + scale * character.pos.right  + mx, 
-                                     y_pos + (character.pos.bottom) + my);
+                          glVertex2f(x + scale * character.pos.right  + mx, 
+                                     y + (character.pos.bottom) + my);
 
                           glTexCoord2f(character.uv.left, character.uv.bottom);
-                          glVertex2f(x_pos + scale * character.pos.left   + mx, 
-                                     y_pos + (character.pos.bottom) + my);
+                          glVertex2f(x + scale * character.pos.left   + mx, 
+                                     y + (character.pos.bottom) + my);
                           x_pos += static_cast<int>(scale * character.advance);
                         }
                       else   
                         {
                           glColor4f(top_color.r, top_color.g, top_color.b, top_color.a);
                           glTexCoord2f(character.uv.left, character.uv.top);
-                          glVertex2f(x_pos + character.pos.left + mx,
-                                     y_pos + character.pos.top  + my);
+                          glVertex2f(x + character.pos.left + mx,
+                                     y + character.pos.top  + my);
 
                           glTexCoord2f(character.uv.right, character.uv.top);
-                          glVertex2f(x_pos + character.pos.right + mx, 
-                                     y_pos + character.pos.top   + my);
+                          glVertex2f(x + character.pos.right + mx, 
+                                     y + character.pos.top   + my);
 
                           glColor4f(bottom_color.r, bottom_color.g, bottom_color.b, bottom_color.a);
                           glTexCoord2f(character.uv.right, character.uv.bottom);
-                          glVertex2f(x_pos + character.pos.right  + mx, 
-                                     y_pos + character.pos.bottom + my);
+                          glVertex2f(x + character.pos.right  + mx, 
+                                     y + character.pos.bottom + my);
 
                           glTexCoord2f(character.uv.left, character.uv.bottom);
-                          glVertex2f(x_pos + character.pos.left   + mx, 
-                                     y_pos + character.pos.bottom + my);
+                          glVertex2f(x + character.pos.left   + mx, 
+                                     y + character.pos.bottom + my);
                           x_pos += character.advance;
                         }
                     }
