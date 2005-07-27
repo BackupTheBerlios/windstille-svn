@@ -19,11 +19,50 @@
 
 #include "display/vertex_array_drawing_request.hpp"
 #include "particle_system.hpp"
+#include "../console.hpp" 
+#include "lisp/properties.hpp"
+#include "glutil/surface_manager.hpp"
 #include "surface_drawer.hpp"
 
-SurfaceDrawer::SurfaceDrawer(Surface surface)
-  : surface(surface)
+SurfaceDrawer::SurfaceDrawer(Surface surface_)
+  :surface(surface_)
 {
+  
+}
+
+static GLenum string2blendfunc(const std::string& str)
+{
+  if (str == "src_alpha") {
+    return GL_SRC_ALPHA;
+  } else if (str == "one_minus_src_alpha") {
+    return GL_ONE_MINUS_SRC_ALPHA;
+  } else if (str == "one") {
+    return GL_ONE;
+  } else if (str == "zero") {
+    return GL_ZERO;
+  }
+  // FIXME: Implement the rest blendfunc here
+  else {
+    console << "Unknown blendfunc: '" << str << "'" << std::endl;
+    return GL_ONE;
+  }
+}
+
+SurfaceDrawer::SurfaceDrawer(const lisp::Lisp* lisp)
+{
+  std::string blendfunc_src_str = "src_alpha";
+  std::string blendfunc_dst_str = "one_minus_src_alpha";
+  std::string surface_file;
+
+  lisp::Properties props(lisp);
+  props.get("image", surface_file);
+  props.get("blendfunc-src", blendfunc_src_str);
+  props.get("blendfunc-dst", blendfunc_dst_str);
+
+  surface = surface_manager->get(surface_file);
+
+  blendfunc_src  = string2blendfunc(blendfunc_src_str);
+  blendfunc_dest = string2blendfunc(blendfunc_dst_str);
 }
 
 SurfaceDrawer::~SurfaceDrawer() 

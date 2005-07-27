@@ -32,6 +32,7 @@ private:
   GLenum blendfunc_dest;
   
 public:
+  SurfaceDrawer(const lisp::Lisp* lisp);
   SurfaceDrawer(Surface surface);
   virtual ~SurfaceDrawer();
   
