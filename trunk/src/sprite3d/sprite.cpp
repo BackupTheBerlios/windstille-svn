@@ -302,6 +302,7 @@ Sprite::update(float elapsed_time)
   int i = 0;
   
   while(blend_time + time_delta >= 1.0) {
+    //FIXME hack to stop game from freezing on fast computers
     if (i > 20)
       break;
     elapsed_time -= (1.0 - blend_time) / (frame1.action->speed * frame1.speed);
