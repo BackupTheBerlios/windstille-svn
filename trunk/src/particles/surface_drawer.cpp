@@ -36,6 +36,10 @@ static GLenum string2blendfunc(const std::string& str)
     return GL_SRC_ALPHA;
   } else if (str == "one_minus_src_alpha") {
     return GL_ONE_MINUS_SRC_ALPHA;
+  } else if (str == "dst_alpha") {
+    return GL_DST_ALPHA;
+  } else if (str == "one_minus_dst_alpha") {
+    return GL_ONE_MINUS_SRC_ALPHA;
   } else if (str == "one") {
     return GL_ONE;
   } else if (str == "zero") {

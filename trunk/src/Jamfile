@@ -102,10 +102,6 @@ sources =
         util.hpp
         view.cpp
         view.hpp
-        water_map.cpp
-        water_map.hpp
-        water_splash.cpp
-        water_splash.hpp
         windstille_error.cpp
         windstille_error.hpp
         windstille_getters.hpp
