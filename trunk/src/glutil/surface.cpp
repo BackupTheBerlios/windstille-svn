@@ -32,7 +32,7 @@ class SurfaceImpl
 public:
   Texture texture;
   float texcoords[8];
-  Rect  uv;
+  Rectf  uv;
 
   int width;
   int height;
@@ -42,7 +42,7 @@ Surface::Surface()
 {
 }
 
-Surface::Surface(Texture texture, const Rect& rect, int width, int height)
+Surface::Surface(Texture texture, const Rectf& rect, int width, int height)
   : impl(new SurfaceImpl())
 {
   impl->texture = texture;
@@ -89,7 +89,7 @@ Surface::get_texcoords() const
   return impl->texcoords; 
 }
 
-Rect
+Rectf
 Surface::get_uv() const
 {
   return impl->uv;

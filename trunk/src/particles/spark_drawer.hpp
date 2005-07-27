@@ -27,7 +27,11 @@ class ParticleSystem;
 
 class SparkDrawer : public Drawer
 {
+private:
+  Color color;
+  float width;
 public:
+  SparkDrawer(const lisp::Lisp* lisp);
   void draw(SceneContext& sc, ParticleSystem& psys);
 };
 

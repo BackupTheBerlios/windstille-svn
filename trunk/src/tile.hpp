@@ -35,8 +35,8 @@ public:
   /** The id of the Tile by which the tilemap refers to it */
   int id; 
 
-  Rect color_rect;
-  int  color_packer;
+  Rectf color_rect;
+  int   color_packer;
   Texture texture;
 
   /** bitmap that holds the collision attributes for this tile */

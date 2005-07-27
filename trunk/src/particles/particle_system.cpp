@@ -24,6 +24,7 @@
 #include "math/vector.hpp"
 #include "color.hpp"
 #include "lisp/properties.hpp"
+#include "lisp/property_iterator.hpp"
 #include "windstille_getters.hpp"
 #include "spark_drawer.hpp"
 #include "randomizer.hpp"
@@ -103,13 +104,27 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   Vector p_speed;
   if (props.get("speed", p_speed))
     set_speed(p_speed.x, p_speed.y);
+
+  const lisp::Lisp* drawer_lisp = 0;
+  if (props.get("drawer", drawer_lisp))
+    {
+      lisp::Properties drawer_props(drawer_lisp);
+      lisp::PropertyIterator<const lisp::Lisp*> iter = drawer_props.get_iter();
+      while(iter.next()) {
+        if (iter.item() == "surface-drawer") {
+          
+        } else if (iter.item() == "spark-drawer") {
+          set_drawer(new SparkDrawer(*iter));
+        } else {
+          std::cout << "Unknown item: " << iter.item() << std::endl;
+        }
+      }
+    }
   
   //props.get("point-distribution",   ); // void
   //props.get("line-distribution",   ); // 2xvector2
   //props.get("circle", ); // float
   //props.get("rect-distribution", ); // vector2
-
-  set_drawer(new SparkDrawer());
   props.print_unused_warnings("ParticleSystem");
 }
 

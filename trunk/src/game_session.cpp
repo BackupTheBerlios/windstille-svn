@@ -242,7 +242,7 @@ GameSession::change_sector()
       std::cout << "Adding test objects to sector" << std::endl;
       
       ParticleSystem* psystem2 = new ParticleSystem();
-      psystem2->set_drawer(new SparkDrawer());
+      psystem2->set_drawer(new SparkDrawer(0));
       psystem2->set_pos(0,0);
       psystem2->set_speed(300, 550);
       psystem2->set_cone(-25-90, 25-90);

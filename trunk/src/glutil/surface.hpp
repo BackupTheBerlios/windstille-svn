@@ -42,7 +42,7 @@ class Surface
 {
 public:
   Surface();
-  Surface(Texture texture, const Rect& rect, int width, int height);
+  Surface(Texture texture, const Rectf& rect, int width, int height);
   ~Surface();
   
   int get_width()  const;
@@ -54,7 +54,7 @@ public:
   const float* get_texcoords() const;
 
   /** Returns texture coordinates for the Surface rectangle */
-  Rect get_uv() const;
+  Rectf get_uv() const;
 
   /** true if the Texture is valid and usable, false if not */
   operator bool() const;

@@ -183,8 +183,7 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
                 packers.push_back(new TilePacker(1024, 1024));
                 color_packer = packers.size() - 1;
               }
-            Rect rect = packers[color_packer]->pack(
-                image, x, y, TILE_RESOLUTION, TILE_RESOLUTION);
+            Rectf rect = packers[color_packer]->pack(image, x, y, TILE_RESOLUTION, TILE_RESOLUTION);
             tile.color_rect     = rect;
             tile.color_packer = color_packer;
             tile.texture = packers[color_packer]->get_texture();

@@ -340,12 +340,12 @@ DrawingContext::reset_modelview()
   modelview_stack.push_back(Matrix(true));
 }
 
-Rect
+Rectf
 DrawingContext::get_clip_rect()
 {
   // FIXME: Need to check the modelview matrix
-  return Rect(CL_Pointf(modelview_stack.back()[12],
-                        modelview_stack.back()[13]),
+  return Rectf(CL_Pointf(modelview_stack.back()[12],
+                         modelview_stack.back()[13]),
                CL_Sizef(800, 600));
 }
 

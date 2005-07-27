@@ -3,7 +3,7 @@
 
 #include <ClanLib/Core/Math/rect.h>
 
-typedef CL_Rectf Rect;
+typedef CL_Rectf Rectf;
 
 #endif
 

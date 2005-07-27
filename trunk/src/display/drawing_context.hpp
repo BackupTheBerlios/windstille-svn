@@ -84,7 +84,7 @@ public:
   Matrix get_modelview() const { return modelview_stack.back(); }
 
   /** Return the area of the screen that will be visible*/
-  Rect get_clip_rect();
+  Rectf get_clip_rect();
 private:
   DrawingContext (const DrawingContext&);
   DrawingContext& operator= (const DrawingContext&);

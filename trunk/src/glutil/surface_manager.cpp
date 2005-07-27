@@ -65,7 +65,7 @@ SurfaceManager::get(const std::string& filename)
     throw std::runtime_error(msg.str());
   }
 
-  Surface result(texture, Rect(0, 0, maxu, maxv), image->w, image->h);
+  Surface result(texture, Rectf(0, 0, maxu, maxv), image->w, image->h);
   surfaces.insert(std::make_pair(filename, result));
   
   SDL_FreeSurface(image);
@@ -110,7 +110,7 @@ SurfaceManager::load_grid(const std::string& filename,
       float s_min_v = maxv * x / static_cast<float>(image->h);
       float s_max_v = (maxv * (x + height)) / static_cast<float>(image->h);
 
-      surfaces.push_back(Surface(texture, Rect(s_min_u, s_min_v, s_max_u, s_max_v), width, height));
+      surfaces.push_back(Surface(texture, Rectf(s_min_u, s_min_v, s_max_u, s_max_v), width, height));
     }
   }
   SDL_FreeSurface(image);

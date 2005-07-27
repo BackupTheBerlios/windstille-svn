@@ -23,25 +23,60 @@
 #include "display/drawing_request.hpp"
 #include "display/vertex_array_drawing_request.hpp"
 #include "particle_system.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 #include "color.hpp"
 #include "spark_drawer.hpp"
+
+SparkDrawer::SparkDrawer(const lisp::Lisp* lisp)
+{
+  width = 1.0f;
+  color = Color(1.0f, 1.0f, 1.0f);
+  lisp::Properties props(lisp);
+  props.get("color", color);
+  props.get("width", width);
+}
 
 void
 SparkDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {
   VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(CL_Vector(0, 0, 100.0f),
                                                                     sc.color().get_modelview());
-
-  buffer->set_mode(GL_LINES);
-  buffer->set_blend_func(GL_SRC_ALPHA, GL_ONE);
-
-  for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
+  if (width == 1.0f)
     {
-      buffer->color(Color(1.0f, 1.0f, 0, 1.0f - psys.get_progress(i->t)));
-      buffer->vertex(i->x, i->y);
+      buffer->set_mode(GL_LINES);
+      buffer->set_blend_func(GL_SRC_ALPHA, GL_ONE);
+      for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
+        {
+          buffer->color(Color(color.r, color.g, color.b, color.a - (color.a * psys.get_progress(i->t))));
+          buffer->vertex(i->x, i->y);
 
-      buffer->color(Color(0, 0, 0, 0));
-      buffer->vertex(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f); 
+          buffer->color(Color(0, 0, 0, 0));
+          buffer->vertex(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f); 
+        }
+    }
+  else
+    {
+      buffer->set_mode(GL_QUADS);
+      buffer->set_blend_func(GL_SRC_ALPHA, GL_ONE);
+      for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
+        {
+          float len = sqrt(i->v_x * i->v_x + i->v_y * i->v_y);
+          float o_x = i->v_x/len * width;
+          float o_y = i->v_y/len * width;
+
+          buffer->color(Color(color.r, color.g, color.b, color.a - (color.a * psys.get_progress(i->t))));
+          buffer->vertex(i->x - o_y, i->y - o_x);
+
+          buffer->color(Color(color.r, color.g, color.b, color.a - (color.a * psys.get_progress(i->t))));
+          buffer->vertex(i->x + o_y, i->y - o_x);
+
+          buffer->color(Color(0, 0, 0, 0));
+          buffer->vertex(i->x - i->v_x/10.0f - o_y, i->y - i->v_y/10.0f - o_x); 
+
+          buffer->color(Color(0, 0, 0, 0));
+          buffer->vertex(i->x + i->v_x/10.0f + o_y, i->y - i->v_y/10.0f - o_x); 
+        }
     }
 
   sc.color().draw(buffer);
