@@ -292,6 +292,8 @@ Sprite::set_next_frame()
   frame2.rot = frame1.rot;
 }
 
+static const float EPSILON = .00001;
+
 void
 Sprite::update(float elapsed_time)
 {   
@@ -303,6 +305,8 @@ Sprite::update(float elapsed_time)
     elapsed_time -= (1.0 - blend_time) / (frame1.action->speed * frame1.speed);
     set_next_frame();
 
+    if(elapsed_time < EPSILON)
+      break;
     time_delta = elapsed_time * frame1.action->speed * frame1.speed;
     if(frame1.speed < 0)
       time_delta = -time_delta;
