@@ -25,16 +25,17 @@
 #include "game_object.hpp"
 #include "lisp/lisp.hpp"
 #include "script_manager.hpp"
+#include "sprite2d/sprite.hpp"
 
 class UseableObject : public Entity
 {
 private:
-  CL_Sprite highlight;
-  CL_Sprite color;
+  sprite2d::Sprite* sprite;
+  sprite2d::Sprite* highlight;
   std::string use_script;
 public:
   UseableObject(const lisp::Lisp* lisp);
-  virtual ~UseableObject() {}
+  virtual ~UseableObject();
 
   void draw (SceneContext& sc);
   void update (float);

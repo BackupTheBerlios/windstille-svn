@@ -150,15 +150,14 @@
       (name "hedgehog1")
       (pos 1100 550)
     )
-    (useable-object
-      (pos 768 192)
-      (script "")
+    (elevator
+      (name "elevator1")
+      (sprite "images/objects/box.sprite")
+      (pos 1100 750)
     )
     (useable-object
-      (pos 1024 448)
-      (script "")
-    )
-    (useable-object
+      (sprite "images/objects/vrdoor-color.sprite")
+      (highlight "images/objects/vrdoor-highlight.sprite")
       (pos 256 704)
       (script "set_sector(\"levels/newformat2.wst\")")
     )

@@ -27,6 +27,7 @@
 
 #include "lisp/lisp.hpp"
 #include "entity.hpp"
+#include "sprite2d/sprite.hpp"
 
 /** */
 class Elevator : public Entity
@@ -34,6 +35,7 @@ class Elevator : public Entity
 private:
   CL_Sizef size;
   CollisionObject* colobject;
+  sprite2d::Sprite* sprite;
 public:
   Elevator(const lisp::Lisp* lisp);
   ~Elevator();

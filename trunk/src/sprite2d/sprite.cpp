@@ -119,4 +119,11 @@ Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos)
   sc.color().draw(surface, pos.x, pos.y, z_pos, alpha);
 }
 
+void
+Sprite::draw_light(SceneContext& sc, const Vector& pos, float z_pos)
+{
+  Surface surface = current_action->surfaces[ static_cast<int> (frame) ];
+  sc.light().draw(surface, pos.x, pos.y, z_pos, alpha);
+}
+
 }

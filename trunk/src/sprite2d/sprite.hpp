@@ -21,6 +21,7 @@ public:
 
   void update(float elapsed_time);
   void draw(SceneContext& sc, const Vector& pos, float z_pos);
+  void draw_light(SceneContext& sc, const Vector& pos, float z_pos);
 
   void set_action(const std::string& name);
   const std::string& get_action() const;

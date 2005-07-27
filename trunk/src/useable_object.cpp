@@ -22,30 +22,56 @@
 #include "useable_object.hpp"
 #include "lisp/properties.hpp"
 #include "windstille_getters.hpp"
+#include "sprite2d/manager.hpp"
 
 UseableObject::UseableObject(const lisp::Lisp* lisp)
-  : highlight("vrdoor/highlight", resources),
-    color("vrdoor/color", resources)
+  : sprite(0),
+    highlight(0)
 {
-  set_useable(true);
-
+  set_useable(true);  
+  std::string spritename;
+  std::string highlightname;
+  
   lisp::Properties props(lisp);
+  props.get("sprite", spritename);
+  props.get("highlight", highlightname);
   props.get("pos", pos);
   props.get("script", use_script);
   props.print_unused_warnings("usableobject");
+  
+  if(spritename == "")
+    throw std::runtime_error("No sprite name specified in PictureEntity");
+  sprite = sprite2d_manager->create(spritename);
+  
+  if (highlightname != "")
+    highlight = sprite2d_manager->create(highlightname);
+}
+
+UseableObject::~UseableObject()
+{
+  if (sprite)
+    delete sprite;
+  if (highlight)
+    delete highlight;
 }
 
 void
 UseableObject::draw (SceneContext& sc)
 {
-  sc.color().draw(color, pos.x, pos.y, 1);
-  sc.color().draw(highlight, pos.x, pos.y, 2);
-  sc.light().draw(highlight, pos.x, pos.y, 1);
+  sprite->draw(sc, pos, 1);
+  
+  if (highlight) {
+    highlight->draw(sc, pos, 2);
+    highlight->draw_light(sc, pos, 1);
+  }
 }
 
 void
-UseableObject::update (float)
+UseableObject::update(float delta)
 {
+  sprite->update(delta);
+  if (highlight)
+    highlight->update(delta);
 }
 
 /* EOF */

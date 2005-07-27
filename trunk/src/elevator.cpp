@@ -23,16 +23,27 @@
 */
 #include <config.h>
 
+#include "elevator.hpp"
 #include "sector.hpp"
 #include "collision/collision_engine.hpp"
-#include "elevator.hpp"
+#include "sprite2d/manager.hpp"
+#include "lisp/properties.hpp"
+#include "windstille_getters.hpp"
 
-Elevator::Elevator(const lisp::Lisp* )
+Elevator::Elevator(const lisp::Lisp* lisp)
 {
-  pos.x = 1312;
-  pos.y =  832;
-  size  = CL_Size(128, 64);
+  std::string spritename;
 
+  lisp::Properties props(lisp);
+  props.get("sprite", spritename);
+  props.get("pos", pos);
+  props.get("name", name);
+  props.print_unused_warnings("elevator");
+
+  if(spritename == "")
+    throw std::runtime_error("No sprite name specified in Elevator");
+  sprite = sprite2d_manager->create(spritename);
+  size  = CL_Size(128, 64);
   colobject = new CollisionObject(Rectf(CL_Pointf(0,0), size));
   Sector::current()->get_collision_engine()->add(colobject);
   colobject->set_pos(pos);
@@ -42,18 +53,20 @@ Elevator::~Elevator()
 {
   Sector::current()->get_collision_engine()->remove(colobject);
   delete colobject;
+  delete sprite;
 }
 
 void
-Elevator::draw(SceneContext& )
+Elevator::draw(SceneContext& sc)
 {
-  
+  sprite->draw(sc, pos, 10.0f);
 }
 
 void
-Elevator::update(float )
+Elevator::update(float delta)
 {
-  
+  sprite->update(delta);
+  pos = colobject->get_pos();
 }
 
 /* EOF */
