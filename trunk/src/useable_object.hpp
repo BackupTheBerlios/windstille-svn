@@ -39,7 +39,7 @@ public:
 
   void draw (SceneContext& sc);
   void update (float);
-  void use() {script_manager->run_script(use_script, "UseableItem");}
+  void use() {script_manager->run_script(use_script, "UseableObject");}
 };
 
 #endif
