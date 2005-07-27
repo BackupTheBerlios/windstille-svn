@@ -31,6 +31,7 @@
 #define HEADER_MATH_MATRIX_HPP
 
 #include <ClanLib/Core/Math/matrix4x4.h>
+#include <iosfwd>
 
 //: 4x4 Matrix.
 class Matrix
@@ -54,12 +55,6 @@ public:
 	double matrix[16];
 
 	operator CL_Matrix4x4() const { return CL_Matrix4x4(matrix); }
-
-	//: Operator that returns the matrix as a double[16] array.
-	operator double const*() const { return matrix; }
-
-	//: Operator that returns the matrix as a double[16] array.
-	operator double *() { return matrix; }
 
 	//: Operator that returns the matrix cell at the given index.
 	double &operator[](int i) { return matrix[i]; }
@@ -99,6 +94,8 @@ public:
 //! Implementation:
 private:
 };
+
+std::ostream& operator<<(std::ostream& s, const Matrix& m);
 
 #endif
 

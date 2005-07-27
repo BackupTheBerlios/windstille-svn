@@ -336,11 +336,11 @@ Sprite::draw(CL_GraphicContext* gc, const Vector& pos,
   state.setup_2d();
 
   glPushMatrix();
-  glMultMatrixd(modelview);
+  glMultMatrixd(modelview.matrix);
   glTranslatef(pos.x, pos.y, 0);
   if(frame1.rot) {
     glRotatef(180, 0, 1.0, 0);
-  }                           
+  }
 
   glClear(GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);

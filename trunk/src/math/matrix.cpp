@@ -28,6 +28,7 @@
 */
 
 #include <string.h>
+#include <iostream>
 #include "matrix.hpp"
 
 /////////////////////////////////////////////////////////////////////////////
@@ -126,6 +127,16 @@ Matrix Matrix::multiply(const Matrix &mult) const
 		}
 	}
 	return result;
+}
+
+std::ostream& operator<<(std::ostream& s, const Matrix& m)
+{
+  s << "[" << m[ 0] << ", " << m[ 4] << ", " << m[ 8] << ", " << m[12] << "\n";
+  s << " " << m[ 1] << ", " << m[ 5] << ", " << m[ 9] << ", " << m[13] << "\n";
+  s << " " << m[ 2] << ", " << m[ 6] << ", " << m[10] << ", " << m[14] << "\n";
+  s << " " << m[ 3] << ", " << m[ 7] << ", " << m[11] << ", " << m[15] << "]\n";
+
+  return s;
 }
 
 /* EOF */

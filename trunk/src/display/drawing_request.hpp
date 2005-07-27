@@ -30,12 +30,13 @@ class CL_GraphicContext;
 class DrawingRequest
 {
 protected:
-  Vector   pos;
-  float    z_pos;
+  Vector pos;
+  float  z_pos;
   Matrix modelview;
+
 public:
   DrawingRequest(const Vector& pos_, float z_pos = 0,  const Matrix& modelview_ = Matrix::identity())
-    : pos(pos_), modelview(modelview_)
+    : pos(pos_), z_pos(z_pos), modelview(modelview_)
   {}
   virtual ~DrawingRequest() {}
   

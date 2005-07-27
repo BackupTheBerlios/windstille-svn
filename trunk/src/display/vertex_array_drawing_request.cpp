@@ -52,12 +52,12 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
   assert(texcoords.empty() || int(texcoords.size()/2) == num_vertices());
   assert(colors.empty() || int(colors.size()/4) == num_vertices());
 
-  gc->push_modelview();
-  gc->add_modelview(modelview);
-
   CL_OpenGLState state(gc);
   state.set_active();
   state.setup_2d();
+
+  glPushMatrix();
+  glMultMatrixd(modelview.matrix);
 
   if (!colors.empty())
     {
@@ -102,7 +102,7 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
   glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
 
-  gc->pop_modelview();
+  glPopMatrix();
 }
 
 void

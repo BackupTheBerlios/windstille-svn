@@ -39,6 +39,7 @@ private:
   typedef Field<Tile*>::iterator FieldIter;
   float z_pos; 
   float total_time;
+
 public:
   TileMap(const lisp::Lisp* lisp);
   virtual ~TileMap();

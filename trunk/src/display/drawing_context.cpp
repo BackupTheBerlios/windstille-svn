@@ -30,16 +30,6 @@
 #include "drawing_context.hpp"
 #include "glutil/surface.hpp"
 
-std::ostream& operator<<(std::ostream& s, const Matrix& m)
-{
-  s << "[" << m[ 0] << ", " << m[ 4] << ", " << m[ 8] << ", " << m[12] << "\n";
-  s << " " << m[ 1] << ", " << m[ 5] << ", " << m[ 9] << ", " << m[13] << "\n";
-  s << " " << m[ 2] << ", " << m[ 6] << ", " << m[10] << ", " << m[14] << "\n";
-  s << " " << m[ 3] << ", " << m[ 7] << ", " << m[11] << ", " << m[15] << "]\n";
-
-  return s;
-}
-
 struct DrawingRequestsSorter
 {
   bool operator()(DrawingRequest* a, DrawingRequest* b) {
@@ -164,7 +154,7 @@ public:
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glPushMatrix();
-    glMultMatrixd(modelview);
+    glMultMatrixd(modelview.matrix);
     glTranslatef(pos.x, pos.y, 0);
     glScalef(surface.get_width(), surface.get_height(), 1.0);
 

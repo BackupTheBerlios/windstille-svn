@@ -107,13 +107,13 @@ GraphicContextState::pop(CL_GraphicContext* gc)
   gc->pop_modelview();
 }
 
-CL_Rectf
+Rectf
 GraphicContextState::get_clip_rect()
 {
-  return CL_Rectf(CL_Pointf(-impl->offset.x,
-                            -impl->offset.y),
-                  CL_Sizef(get_width()  / impl->zoom,
-                           get_height() / impl->zoom));
+  return Rectf(CL_Pointf(-impl->offset.x,
+                         -impl->offset.y),
+               CL_Sizef(get_width()  / impl->zoom,
+                        get_height() / impl->zoom));
 }
 
 void
