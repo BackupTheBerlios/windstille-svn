@@ -74,7 +74,7 @@ public:
     //          static_cast<int>(pos.y + modelview[13]), gc);
 
     gc->push_modelview();
-    gc->add_modelview(modelview);
+    gc->add_modelview(modelview.matrix);
     sprite.draw(static_cast<int>(pos.x),
                 static_cast<int>(pos.y), gc);
     gc->pop_modelview();
@@ -97,7 +97,7 @@ public:
   void draw(CL_GraphicContext* gc) {
     // FIXME: frequent push/pops might be slow
     gc->push_modelview();
-    gc->add_modelview(modelview);
+    gc->add_modelview(modelview.matrix);
     sprite.draw(static_cast<int>(pos.x),
                 static_cast<int>(pos.y), gc);
     gc->pop_modelview();
@@ -117,7 +117,7 @@ public:
 
   void draw(CL_GraphicContext* gc) {
     gc->push_modelview();
-    gc->add_modelview(modelview);
+    gc->add_modelview(modelview.matrix);
     Fonts::dialog_h.set_alignment(origin_center);
     Fonts::dialog_h.draw(int(pos.x), int(pos.y), text);
     gc->pop_modelview();

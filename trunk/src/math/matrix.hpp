@@ -54,8 +54,6 @@ public:
 public:
 	double matrix[16];
 
-	operator CL_Matrix4x4() const { return CL_Matrix4x4(matrix); }
-
 	//: Operator that returns the matrix cell at the given index.
 	double &operator[](int i) { return matrix[i]; }
 
