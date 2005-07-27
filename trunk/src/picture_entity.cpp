@@ -103,26 +103,26 @@ PictureEntity::move(float delta)
   }
   
   float propx = 0;
-	float propy = 0;
-
-	float adx = fabs(dx);
-	float ady = fabs(dy);
-
-	//we can't divide by 0 because we return above if !dx and !dy
-	if (dx < 0)
-		propx = -(adx / (adx + ady));
-	else
-		propx = adx / (adx + ady);
-
-	if (dy < 0)
-		propy = -(ady / (adx + ady));
-	else
-		propy = ady / (adx + ady);
-	
-	float distx = target_speed * delta * propx;
-	float disty = target_speed * delta * propy;
-	
-	if (adx - fabs(distx) < 0)
+  float propy = 0;
+  
+  float adx = fabs(dx);
+  float ady = fabs(dy);
+  
+  //we can't divide by 0 because we return above if !dx and !dy
+  if (dx < 0)
+    propx = -(adx / (adx + ady));
+  else
+    propx = adx / (adx + ady);
+  
+  if (dy < 0)
+    propy = -(ady / (adx + ady));
+  else
+    propy = ady / (adx + ady);
+  
+  float distx = target_speed * delta * propx;
+  float disty = target_speed * delta * propy;
+  
+  if (adx - fabs(distx) < 0)
     distx = dx;
   if (ady - fabs(disty) < 0)
     disty = dy;
