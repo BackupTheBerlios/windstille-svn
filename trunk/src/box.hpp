@@ -1,4 +1,4 @@
-//  $Id: box.hpp,v 1.11 2005/07/11 14:05:47 godrin Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2005 David Kamphausen <david.kamphausen@web.de>
@@ -24,17 +24,19 @@
 #include "lisp/lisp.hpp"
 #include "collision/collision_object.hpp"
 #include "sector.hpp"
+#include "sprite2d/sprite.hpp"
 
 class Box : public Entity
 {
 private:
-  CL_Sprite sprite;
+  sprite2d::Sprite* sprite;
   CollisionObject* colobj;
   CL_Slot slot;
   float gravity;
 
 public:
   Box(const lisp::Lisp* lisp);
+  virtual ~Box();
 
   void collision(const CollisionData& data, CollisionObject& other); 
 

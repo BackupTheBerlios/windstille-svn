@@ -1,7 +1,7 @@
 function intro()
 {
 	bob_seen_before = true;
-	dialog(0, "human/portrait", "Hey, my name's bob.  Are you new around here?"); 
+	dialog(0, "portrait", "Hey, my name's bob.  Are you new around here?"); 
 	conversation_add("Yes, I am.");
 	conversation_add("Go away"); 
 	if (!conversation_get())
@@ -16,7 +16,7 @@ function intro()
 
 function hello_again()
 {
-	dialog(0, "human/portrait", "Hello again");
+	dialog(0, "portrait", "Hello again");
 	conversation_add("Hey.");
 	conversation_add("Bye");
 	if (!conversation_get())
@@ -27,7 +27,7 @@ function hello_again()
 
 function ask_questions()
 {
-	dialog(0, "human/portrait", "So what are you doing here?");
+	dialog(0, "portrait", "So what are you doing here?");
 	conversation_add("I work as a mercenary.");
 	conversation_add("Not much");
 	if (!conversation_get())
@@ -41,7 +41,7 @@ function ask_questions()
 
 function offer_job()
 {
-	dialog(0, "human/portrait", "Are you looking for some work?");
+	dialog(0, "portrait", "Are you looking for some work?");
 	conversation_add("I might be, if the offer is good enough.");
 	conversation_add("No thanks.");
 	if (!conversation_get())
@@ -55,15 +55,15 @@ function offer_job()
 
 function explain_job()
 {
-	dialog(0, "human/portrait", "Your job is to kill the spider at the end of the level ;)");
+	dialog(0, "portrait", "Your job is to kill the spider at the end of the level ;)");
 }
 
 function bye()
 {
 	if (bob_knows_job)
-		dialog(0, "human/portrait", "Feel free to come back if you need a job");
+		dialog(0, "portrait", "Feel free to come back if you need a job");
 	else
-		dialog(0, "human/portrait", "See you again some time");
+		dialog(0, "portrait", "See you again some time");
 }
 
 //sintro();

@@ -28,18 +28,19 @@
 #include "lisp/properties.hpp"
 #include "windstille_getters.hpp"
 #include "player.hpp"
+#include "sprite2d/manager.hpp"
 
 SpiderMine::SpiderMine(const lisp::Lisp* lisp)
-  : spider_mine("spider_mine", resources),
-    explode("explo", resources),
+  : explode("explo", resources),
     explode_light("explolight", resources)
 {
   lisp::Properties props(lisp);
   props.get("name", name);
   props.get("pos", pos);
   props.print_unused_warnings("spidermine");
-
-  spider_mine.set_scale(.5, .5);
+  
+  sprite = sprite2d_manager->create("images/spider_mine.sprite");
+  //sprite.set_scale(.5, .5);
   initial_position = pos;
   walk_speed = 160;
   exploded = false;
@@ -49,6 +50,7 @@ SpiderMine::SpiderMine(const lisp::Lisp* lisp)
 
 SpiderMine::~SpiderMine()
 {
+  delete sprite;
 }
 
 void
@@ -73,22 +75,24 @@ SpiderMine::update(float delta)
   
     pos += velocity * delta;
   }
+  
+  sprite->update(delta);
 }
 
 void
-SpiderMine::draw (SceneContext& gc)
+SpiderMine::draw (SceneContext& sc)
 {
   if (state == EXPLODE) {
     explode.draw(pos.x, pos.y);
-    gc.light().draw(explode_light, pos.y, pos.y, 0);
+    sc.light().draw(explode_light, pos.y, pos.y, 0);
     explode_light.set_alpha(0.5);
     explode_light.set_scale(.5, .5);
-    gc.highlight().draw(explode_light, pos.x, pos.y, 0);
+    sc.highlight().draw(explode_light, pos.x, pos.y, 0);
     explode_light.set_alpha(1.0);
     explode_light.set_scale(1.0, 1.0);
   }
   else {
-    gc.color().draw(spider_mine, pos.x, pos.y, 2);
+    sprite->draw(sc, pos, 10.0f);
   }
 }
 

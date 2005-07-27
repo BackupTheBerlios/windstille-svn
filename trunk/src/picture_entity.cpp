@@ -25,8 +25,8 @@
 #include "picture_entity.hpp"
 #include "lisp/properties.hpp"
 #include "windstille_getters.hpp"
-#include "sprite2d/manager.hpp"
 #include "timer.hpp"
+#include "sprite2d/manager.hpp"
 
 PictureEntity::PictureEntity(const lisp::Lisp* lisp)
   : visible(true), target_speed(0), flash_speed(0)
@@ -43,8 +43,8 @@ PictureEntity::PictureEntity(const lisp::Lisp* lisp)
 
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in PictureEntity");
-  
   sprite = sprite2d_manager->create(spritename);
+  
   flash_delta = game_time;
   target_x = pos.x;
   target_y = pos.y;

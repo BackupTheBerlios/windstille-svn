@@ -27,16 +27,14 @@
 #include "math/vector.hpp"
 #include "tile_map.hpp"
 #include "random.hpp"
-
-#define BOX_HEIGHT 16
+#include "sprite2d/manager.hpp"
 
 Box::Box(const lisp::Lisp* lisp)
-  : sprite("box", resources)
 {
   gravity = 0.0f;
   float width  = 64.0f;
   float height = 64.0f;
-  std::string spritename = "box";
+  std::string spritename;
   Vector vel;
 
   lisp::Properties props(lisp);
@@ -48,10 +46,11 @@ Box::Box(const lisp::Lisp* lisp)
   props.get("name", name);
   props.get("gravity", gravity);
   props.print_unused_warnings("box object");
-
-  if (!spritename.empty())
-    sprite = CL_Sprite(spritename, resources);
-
+  
+  if(spritename == "")
+    throw std::runtime_error("No sprite name specified in Box");
+  sprite = sprite2d_manager->create(spritename);
+  
   colobj = new CollisionObject(Rectf(0, 0, width, height));
   colobj->set_velocity(vel);
   colobj->set_pos(Vector(pos.x, pos.y));
@@ -59,6 +58,11 @@ Box::Box(const lisp::Lisp* lisp)
   Sector::current()->get_collision_engine()->add(colobj);
 
   slot = colobj->sig_collision().connect(this, &Box::collision);
+}
+
+Box::~Box()
+{
+  delete sprite;
 }
 
 void 
@@ -86,15 +90,14 @@ Box::update(float delta)
   colobj->set_velocity(Vector(colobj->get_velocity().x, 
                               colobj->get_velocity().y + gravity * delta));
 
-  sprite.update(delta);
+  sprite->update(delta);
   pos = colobj->get_pos();
 }
 
 void 
 Box::draw(SceneContext& sc)
 {
-  if (sprite)
-    sc.color().draw(sprite, colobj->get_pos().x, colobj->get_pos().y, 10);
+  sprite->draw(sc, pos, 10.0f);
 }
 
 /* EOF */

@@ -1,7 +1,7 @@
 
 wait(1.5);
 /* play_sound("sounds/speech/vr_intro.ogg"); */
-dialog(TOP, "human/portrait", 
+dialog(TOP, "portrait", 
        "<sin>Welcome</sin> to the <large>VR training program</large>. Here you " +
        "will learn the <sin>basic manoeuvering</sin> abilities of <large>your</large> " +
        "powersuit,<sleep> jumping,<sleep> running, <sleep> climbing<sleep> and shooting. " +

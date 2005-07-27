@@ -91,7 +91,6 @@ public:
   int get_height () const;
 
   void add(GameObject*);
-  void add_entity(Entity *);
   void add_object(const std::string& name, const lisp::Lisp* lisp);
 
   CollisionEngine* get_collision_engine() const { return collision_engine; }

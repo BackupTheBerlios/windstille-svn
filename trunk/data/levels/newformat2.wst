@@ -50,15 +50,17 @@
 
     (box
       (name "Box0")
+      (sprite "images/objects/box.sprite")
       (pos 350 700)
       (vel 10 0)
-        (gravity 50)
+      (gravity 50)
     )
     (box
       (name "Box1")
+      (sprite "images/objects/box.sprite")
       (pos 555 700)
       (vel -10 0)
-        (gravity 50)
+      (gravity 50)
     )
     (character
       (name "bob")
@@ -68,7 +70,7 @@
       (name "frank")
       (pos 200 831)
     )
-    (spider_mine
+    (spider-mine
       (name "spider2")
       (pos 550 550)
     )

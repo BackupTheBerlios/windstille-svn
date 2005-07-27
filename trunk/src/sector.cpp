@@ -138,12 +138,12 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
   } else if(name == "trigger") {
     add(new Trigger(lisp));
   } else if(name == "box") {
-    add_entity(new Box(lisp));
+    add(new Box(lisp));
   } else if(name == "elevator") {
-    add_entity(new Elevator(lisp));
+    add(new Elevator(lisp));
   } else if(name == "character") {    
     add(new Character(lisp));
-  } else if(name == "spider_mine") {
+  } else if(name == "spider-mine") {
     add(new SpiderMine(lisp));
   } else if(name == "hedgehog") {
     add(new Hedgehog(lisp));
@@ -266,13 +266,6 @@ Sector::add(GameObject* obj)
     expose_object_to_squirrel(obj);
   }
 }
-
-void 
-Sector::add_entity(Entity* ent)
-{
-  add(ent);
-}
-
 
 void
 Sector::remove_object_from_squirrel(GameObject* object)

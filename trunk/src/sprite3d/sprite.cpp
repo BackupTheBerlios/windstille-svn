@@ -292,8 +292,6 @@ Sprite::set_next_frame()
   frame2.rot = frame1.rot;
 }
 
-static const float EPSILON = .00001;
-
 void
 Sprite::update(float elapsed_time)
 {   
@@ -301,16 +299,19 @@ Sprite::update(float elapsed_time)
   if(frame1.speed < 0)
     time_delta = -time_delta;
 
+  int i = 0;
+  
   while(blend_time + time_delta >= 1.0) {
+    if (i > 20)
+      break;
     elapsed_time -= (1.0 - blend_time) / (frame1.action->speed * frame1.speed);
     set_next_frame();
 
-    if(elapsed_time < EPSILON)
-      break;
     time_delta = elapsed_time * frame1.action->speed * frame1.speed;
     if(frame1.speed < 0)
       time_delta = -time_delta;
     blend_time = 0.0;
+    ++i;
   }
   blend_time += time_delta;
 }

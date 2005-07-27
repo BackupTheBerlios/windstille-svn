@@ -27,11 +27,12 @@
 
 #include "badguy.hpp"
 #include "lisp/lisp.hpp"
+#include "sprite2d/sprite.hpp"
 
 class SpiderMine : public Badguy
 {
 private:
-  CL_Sprite spider_mine;
+  sprite2d::Sprite* sprite;
   CL_Sprite explode;
   CL_Sprite explode_light;
   Vector initial_position;
@@ -48,7 +49,7 @@ public:
   ~SpiderMine();
   
   void update(float delta);
-  void draw (SceneContext& gc);
+  void draw (SceneContext& sc);
   void die();
 };
 

@@ -37,7 +37,7 @@ static const float RUN_SPEED = 256.0;
 Player* Player::current_ = 0;
 
 Player::Player () :
-  light("hero/light", resources),
+  light("light", resources),
   state (STAND)
 {
   pos.x = 320;

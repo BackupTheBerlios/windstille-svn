@@ -18,7 +18,7 @@ TestObject::TestObject(const lisp::Lisp* lisp)
   props.print_unused_warnings("testobject");
 
   if(spritename == "")
-    throw std::runtime_error("No sprite name specified in Box");
+    throw std::runtime_error("No sprite name specified in TestObject");
   sprite = sprite3d_manager->create(spritename);
 }
 
