@@ -74,23 +74,23 @@ CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
   add = 50;
   //  grace=0;
 
-  CL_Vector dir;
+  Vector dir;
 
   if (left < right && left < top && left < bottom)
     {
-      dir = CL_Vector(std::min(left/2 + grace, add), 0, 0);
+      dir = Vector(std::min(left/2 + grace, add), 0);
     }
   else if (right < left && right < top && right < bottom)
     {
-      dir = CL_Vector(-std::min(right/2 + grace, add), 0, 0);
+      dir = Vector(-std::min(right/2 + grace, add), 0);
     }
   else if (top < left && top < right && top < bottom)
     {
-      dir = CL_Vector( 0, std::min(top/2 + grace, add), 0);
+      dir = Vector( 0, std::min(top/2 + grace, add));
     }
   else // (bottom < left && bottom < right && bottom < top)
     {
-      dir = CL_Vector( 0, -std::min(bottom/2 + grace, add), 0);
+      dir = Vector( 0, -std::min(bottom/2 + grace, add));
     }
 
   if (a.unstuck_movable())
@@ -186,8 +186,8 @@ CollisionEngine::remove(CollisionObject *obj)
 
 // LEFT means b1 is left of b2
 CollisionData
-CollisionEngine::collide(const CL_Rectf& b1, const CL_Rectf& b2,
-                         const CL_Vector& b1_v, const CL_Vector& b2_v,
+CollisionEngine::collide(const Rectf& b1, const Rectf& b2,
+                         const Vector& b1_v, const Vector& b2_v,
                          float delta)
 {
   SweepResult result0 = simple_sweep_1d(b1.left, b1.get_width(),  b1_v.x,
@@ -210,12 +210,12 @@ CollisionEngine::collide(const CL_Rectf& b1, const CL_Rectf& b2,
 	      if(b1.left < b2.left)
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector(-1, 0);
+		  result.direction=Vector(-1, 0);
 		}
 	      else
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector(1, 0);
+		  result.direction=Vector(1, 0);
 		}
 	      result.col_time=result0.t0;
 	    }
@@ -225,12 +225,12 @@ CollisionEngine::collide(const CL_Rectf& b1, const CL_Rectf& b2,
 	      if(b1.top < b2.top)
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector(0, -1);
+		  result.direction=Vector(0, -1);
 		}
 	      else
 		{
 		  result.state=CollisionData::COLLISION;
-		  result.direction=CL_Vector(0, 1);
+		  result.direction=Vector(0, 1);
 		}
 	      result.col_time=result1.t0;
 	    }
@@ -244,8 +244,8 @@ CollisionEngine::collide(CollisionObject& a, CollisionObject& b, float delta)
 {
   if (a.object_type == CollisionObject::RECTANGLE && b.object_type == CollisionObject::RECTANGLE)
     {
-      CL_Rectf ra = a.primitive;
-      CL_Rectf rb = b.primitive;
+      Rectf ra = a.primitive;
+      Rectf rb = b.primitive;
       
       ra.left   += a.get_pos().x;
       ra.right  += a.get_pos().x;
@@ -289,7 +289,7 @@ int get_next_integer(float f, float direction)
   return result;
 }
 
-bool tilemap_collision(TileMap *tilemap, const CL_Rectf &r)
+bool tilemap_collision(TileMap *tilemap, const Rectf &r)
 {
   int minx, maxx;
   int miny, maxy;
@@ -321,7 +321,7 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
   assert(a.object_type == CollisionObject::TILEMAP);
   assert(b.object_type == CollisionObject::RECTANGLE);
 
-  CL_Vector vel = b.get_velocity() - a.get_velocity();
+  Vector vel = b.get_velocity() - a.get_velocity();
 
   if (vel.x == 0.0f && vel.y == 0.0f)
     return result;
@@ -331,7 +331,7 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
   // Then for the given frame delta, for each new grid collision is checked,
   // if a collision takes place.
 
-  CL_Rectf r = b.primitive;
+  Rectf r = b.primitive;
 
   r.left   += b.get_pos().x;
   r.right  += b.get_pos().x;
@@ -412,7 +412,7 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
 	  time += ct;
 
 	  // now shift one more pixel and check for collision with tilemap
-	  CL_Rectf tmp(r);
+	  Rectf tmp(r);
 	  
 	  if (tx < ty)
 	    {
@@ -433,9 +433,9 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
 	      result.col_time = time;
 	      
 	      if (tx < ty)
-		result.direction=CL_Vector(c_sign (vel.x), 0);
+		result.direction=Vector(c_sign (vel.x), 0);
 	      else
-		result.direction=CL_Vector(0, c_sign (vel.y));
+		result.direction=Vector(0, c_sign (vel.y));
 	      return result;
 	    }
 	}

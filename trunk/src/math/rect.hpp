@@ -27,11 +27,12 @@
 **    (if your name is missing here, please add it)
 */
 
-#ifndef __RECT_HPP__
-#define __RECT_HPP__
+#ifndef __MATH_RECT_HPP__
+#define __MATH_RECT_HPP__
 
 #include <ClanLib/Core/Math/point.h>
 #include <ClanLib/Core/Math/size.h>
+#include <ClanLib/Core/Math/rect.h>
 #include <ClanLib/Core/Math/origin.h>
 
 class Rectf;
@@ -229,7 +230,9 @@ public:
 	Rectf(const Rectf &rect)
 	{ left = rect.left; top = rect.top; right = rect.right; bottom = rect.bottom; }
 
-	//: Rect += Rect operator.
+	operator CL_Rectf() { return CL_Rectf(left, top, right, bottom); }
+	
+   //: Rect += Rect operator.
 	Rectf &operator+=(const Rectf &r)
 	{ left += r.left; top += r.top; right += r.right; bottom += r.bottom; return *this; }
 

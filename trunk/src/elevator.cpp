@@ -33,7 +33,7 @@ Elevator::Elevator(const lisp::Lisp* )
   pos.y =  832;
   size  = CL_Size(128, 64);
 
-  colobject = new CollisionObject(CL_Rectf(CL_Pointf(0,0), size));
+  colobject = new CollisionObject(Rectf(CL_Pointf(0,0), size));
   Sector::current()->get_collision_engine()->add(colobject);
   colobject->set_pos(pos);
 }

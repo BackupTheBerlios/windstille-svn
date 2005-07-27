@@ -40,7 +40,7 @@ SparkDrawer::SparkDrawer(const lisp::Lisp* lisp)
 void
 SparkDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {
-  VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(CL_Vector(0, 0, 100.0f),
+  VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(Vector(0, 0), 100.0f,
                                                                     sc.color().get_modelview());
   if (width == 1.0f)
     {

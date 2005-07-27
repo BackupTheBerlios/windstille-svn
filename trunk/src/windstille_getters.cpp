@@ -33,10 +33,6 @@ bool property_get(const lisp::Lisp* lisp, Vector& vec)
     return false;
   if(get(lisp->get_list_elem(2), vec.y) == false)
     return false;
-  if(size == 4) {
-    if(get(lisp->get_list_elem(3), vec.z) == false)
-      return false;
-  }
   return true;
 }
 

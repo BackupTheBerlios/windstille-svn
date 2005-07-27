@@ -58,7 +58,7 @@ Data::parse_action(const std::string& dir, const lisp::Lisp* lisp)
 {
   std::auto_ptr<Action> action (new Action);
   action->speed = 1.0;
-  action->offset = Vector(0, 0, 0);
+  action->offset = Vector(0, 0);
  
   lisp::Properties props(lisp);
   props.get("name", action->name);

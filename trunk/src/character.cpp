@@ -37,8 +37,6 @@ Character::Character(const lisp::Lisp* lisp)
 {
   set_useable(true);
 
-  pos.z = 100;
-
   lisp::Properties props(lisp);
   props.get("name", name);
   props.get("pos", pos);
@@ -62,7 +60,7 @@ Character::update(float delta)
 void
 Character::draw (SceneContext& gc)
 {
-  sprite->draw(gc, pos);
+  sprite->draw(gc, pos, 100);
 }
 
 void

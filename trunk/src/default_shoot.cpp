@@ -1,4 +1,4 @@
-//  $Id: default_shoot.cxx,v 1.3 2003/09/12 16:31:20 grumbel Exp $
+//  $Id$
 //
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -19,11 +19,10 @@
 
 #include "globals.hpp"
 #include "sector.hpp"
-#include "animation_obj.hpp"
 #include "tile_map.hpp"
 #include "default_shoot.hpp"
 
-DefaultShoot::DefaultShoot (const CL_Vector& arg_pos,
+DefaultShoot::DefaultShoot (const Vector& arg_pos,
 			    DefaultShoot::DirectionState dir)
   : pos (arg_pos),
     sprite ("shoot/default", resources),
@@ -63,7 +62,7 @@ void
 DefaultShoot::explode ()
 {
   remove ();
-  get_world ()->add(new AnimationObj ("shoot/explosion", pos));
+  //get_world ()->add(new AnimationObj ("shoot/explosion", pos));
 }
 
 /* EOF */

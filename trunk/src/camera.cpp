@@ -35,7 +35,7 @@ Camera::update(float )
   int hscroll_threshold = 100;
   int vscroll_threshold = 150;
 
-  CL_Vector tpos = Player::current()->get_pos();
+  Vector tpos = Player::current()->get_pos();
 
   float dist = tpos.x - pos.x;
   if (dist > hscroll_threshold)

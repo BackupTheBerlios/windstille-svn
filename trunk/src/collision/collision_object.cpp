@@ -29,7 +29,7 @@
  * CollisionObject
  ***********************************************************************/
 
-CollisionObject::CollisionObject(const CL_Rectf& rect_)
+CollisionObject::CollisionObject(const Rectf& rect_)
   : primitive(rect_)
 {
   object_type        = RECTANGLE;
@@ -37,8 +37,8 @@ CollisionObject::CollisionObject(const CL_Rectf& rect_)
   coll_engine        = 0;
   is_unstuckable     = true;
   is_unstuck_movable = true;
-  velocity           = CL_Vector(0,0,0);
-  pos                = CL_Vector(0,0,0);
+  velocity           = Vector(0,0);
+  pos                = Vector(0,0);
 }
 
 CollisionObject::CollisionObject(TileMap* tilemap_)
@@ -49,8 +49,8 @@ CollisionObject::CollisionObject(TileMap* tilemap_)
   coll_engine        = 0;
   is_unstuckable     = true;
   is_unstuck_movable = false;
-  velocity           = CL_Vector(0,0,0);
-  pos                = CL_Vector(0,0,0);
+  velocity           = Vector(0,0);
+  pos                = Vector(0,0);
 }
 
 CollisionObject::~CollisionObject()
@@ -60,8 +60,8 @@ CollisionObject::~CollisionObject()
 void
 CollisionObject::drawCollision()
 {
-  CL_Vector v = get_pos ();
-  CL_Rectf  r = primitive;
+  Vector v = get_pos ();
+  Rectf  r = primitive;
 
   r += CL_Pointf (v.x, v.y);
 
@@ -85,12 +85,12 @@ void CollisionObject::update(float delta)
 }
 
 void 
-CollisionObject::set_velocity(const CL_Vector &m)
+CollisionObject::set_velocity(const Vector &m)
 {
   velocity=m;
 }
 
-CL_Vector
+Vector
 CollisionObject::get_pos() const
 {
   if(parent != 0)
@@ -99,7 +99,7 @@ CollisionObject::get_pos() const
   return pos;
 }
 
-CL_Vector
+Vector
 CollisionObject::get_velocity() const
 {
   if (parent != 0)
@@ -109,7 +109,7 @@ CollisionObject::get_velocity() const
 }
 
 void
-CollisionObject::set_pos(const CL_Vector& p)
+CollisionObject::set_pos(const Vector& p)
 {
   // FIXME: Do this somewhat more clever to avoid stuck issues
   pos = p;

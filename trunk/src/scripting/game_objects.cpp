@@ -43,7 +43,7 @@ TestObject::set_action(const std::string& animation)
 void
 TestObject::set_pos(float x, float y)
 {
-  obj()->set_pos(Vector(x, y, 100));
+  obj()->set_pos(Vector(x, y));
 }
 
 void

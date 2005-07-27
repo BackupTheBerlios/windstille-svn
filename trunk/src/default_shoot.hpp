@@ -1,4 +1,4 @@
-//  $Id: default_shoot.hpp,v 1.2 2003/08/12 08:24:41 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -28,8 +28,8 @@
 class DefaultShoot : public GameObject
 {
 private:
-  CL_Vector pos;
-  CL_Vector velocity;
+  Vector pos;
+  Vector velocity;
   CL_Sprite sprite;
 
 public:
@@ -38,7 +38,7 @@ public:
 private:
   DirectionState direction;
 public:
-  DefaultShoot (const CL_Vector& arg_pos,
+  DefaultShoot (const Vector& arg_pos,
 		DefaultShoot::DirectionState);
   virtual ~DefaultShoot () {}
   void draw (SceneContext& gc);

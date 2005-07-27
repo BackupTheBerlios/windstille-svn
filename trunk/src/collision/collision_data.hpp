@@ -22,7 +22,8 @@
 #ifndef HEADER_COLLISION_DATA_HXX
 #define HEADER_COLLISION_DATA_HXX
 
-#include <ClanLib/core.h>
+#include <iostream>
+#include "math/vector.hpp"
 
 struct CollisionData
 {
@@ -33,7 +34,7 @@ struct CollisionData
    * It's the normal vector of the side/face that we collided with. The vector
    * points away from the object we collided with.
    */
-  CL_Vector direction;
+  Vector direction;
   
   // size of time frame
   float delta; 

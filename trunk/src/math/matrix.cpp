@@ -33,16 +33,22 @@
 /////////////////////////////////////////////////////////////////////////////
 // CL_Matrix construction:
 
-Matrix::Matrix(bool identity)
+Matrix::Matrix()
 {
 	memset(matrix, 0, sizeof(double[16]));
-	if (identity)
-	{
-		matrix[0] = 1.0;
-		matrix[5] = 1.0;
-		matrix[10] = 1.0;
-		matrix[15] = 1.0;
-	}
+}
+
+Matrix
+Matrix::identity()
+{
+	Matrix matrix;
+
+	matrix.matrix[0] = 1.0;
+	matrix.matrix[5] = 1.0;
+	matrix.matrix[10] = 1.0;
+	matrix.matrix[15] = 1.0;
+	
+	return matrix;
 }
 
 Matrix::Matrix(const Matrix &copy)

@@ -34,7 +34,7 @@ private:
   CL_Sprite spider_mine;
   CL_Sprite explode;
   CL_Sprite explode_light;
-  CL_Vector initial_position;
+  Vector initial_position;
   float walk_speed;
   float jump_time;
   enum { WAIT, ATTACK, RETURN, JUMP, EXPLODE } state;

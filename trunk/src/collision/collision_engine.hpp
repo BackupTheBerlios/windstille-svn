@@ -46,8 +46,8 @@ public:
 private:
   void unstuck(CollisionObject& a, CollisionObject& b, float delta);
   CollisionData collide(CollisionObject& a, CollisionObject& b, float delta);
-  CollisionData collide(const CL_Rectf& b1, const CL_Rectf& b2,
-                        const CL_Vector& b1_v, const CL_Vector& b2_v,
+  CollisionData collide(const Rectf& b1, const Rectf& b2,
+                        const Vector& b1_v, const Vector& b2_v,
                         float delta);
   CollisionData collide_tilemap(CollisionObject& a, CollisionObject& b, float delta);
 };

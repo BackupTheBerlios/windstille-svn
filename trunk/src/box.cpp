@@ -1,4 +1,4 @@
-//  $Id: box.cpp,v 1.11 2005/07/11 14:06:01 godrin Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2005 David Kamphausen <david.kamphausen@web.de>
@@ -52,7 +52,7 @@ Box::Box(const lisp::Lisp* lisp)
   if (!spritename.empty())
     sprite = CL_Sprite(spritename, resources);
 
-  colobj = new CollisionObject(CL_Rectf(0, 0, width, height));
+  colobj = new CollisionObject(Rectf(0, 0, width, height));
   colobj->set_velocity(vel);
   colobj->set_pos(Vector(pos.x, pos.y));
 

@@ -1,4 +1,4 @@
-//  $Id: view.cxx,v 1.1 2003/09/21 18:05:21 grumbel Exp $
+//  $Id$
 //
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -25,7 +25,7 @@ View* View::current_ = 0;
 
 View::View()
   : state(CL_Display::get_width(), CL_Display::get_height()),
-  zoom(1), transform(0, 0, 0)
+  zoom(1), transform(0, 0)
 {
   current_ = this;
 }
@@ -61,7 +61,7 @@ View::update (float delta)
   if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD6))
     transform.x += delta * 200 / zoom;
   if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD5)) {
-    transform = Vector(0, 0, 0);
+    transform = Vector(0, 0);
     zoom = 1.0;
   }
 }

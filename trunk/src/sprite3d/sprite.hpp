@@ -50,7 +50,7 @@ public:
    * You should call this every frame
    */
   void update(float elapsed_time);
-  void draw(SceneContext& sc, const Vector& pos);
+  void draw(SceneContext& sc, const Vector& pos, float z_pos);
   void draw(SceneContext& sc, const Matrix& matrix);
   
   /**

@@ -185,7 +185,7 @@ Sector::spawn_player(const std::string& spawnpoint)
     }
   }
 
-  Vector spawnpos(320, 200, 0);
+  Vector spawnpos(320, 200);
   if(result == 0) {
     if(spawnpoint != "default") {
       std::cerr << "SpawnPoint '" << spawnpoint << "' not found.\n";

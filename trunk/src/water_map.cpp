@@ -1,4 +1,4 @@
-//  $Id: water_map.cxx,v 1.4 2003/09/27 08:29:12 grumbel Exp $
+//  $Id$
 //
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -95,7 +95,7 @@ WaterMap::draw(SceneContext& )
 void
 WaterMap::update(float )
 {
-  CL_Vector pos = Player::current()->get_pos();
+  Vector pos = Player::current()->get_pos();
 
   for (Waters::iterator i = waters.begin(); i != waters.end(); ++i)
     {

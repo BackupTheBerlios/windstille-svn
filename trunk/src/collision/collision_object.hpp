@@ -23,7 +23,8 @@
 #define HEADER_COLLISION_OBJECT_HPP
 
 #include <ClanLib/core.h>
-#include <ClanLib/Core/Math/cl_vector.h>
+#include "math/vector.hpp"
+#include "math/rect.hpp"
 #include "collision_data.hpp"
 
 class TileMap;
@@ -37,16 +38,16 @@ private:
   ObjectType object_type;
 
   /// position of the object
-  CL_Vector pos;
+  Vector pos;
 
   /// velocity of the object
-  CL_Vector velocity;
+  Vector velocity;
 
   CollisionObject* parent;
 
   CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
 
-  CL_Rectf primitive;
+  Rectf primitive;
   TileMap* tilemap;
 
   CollisionEngine* coll_engine;
@@ -55,22 +56,22 @@ private:
   bool is_unstuck_movable;
 
 public:
-  CollisionObject(const CL_Rectf& rect_);
+  CollisionObject(const Rectf& rect_);
   CollisionObject(TileMap* tilemap_);
 
   virtual ~CollisionObject();
 
   /** Sets the velocity of this object */
-  void set_velocity(const CL_Vector &v);
-  CL_Vector get_velocity() const;
+  void set_velocity(const Vector &v);
+  Vector get_velocity() const;
 
   /** Sets the CollisionObject to the given pos FIXME: unstucking is
       currently not handled special here, but simply in the next run
       of the collision engine, this should probally be changed so that
       the object is unstuck here without affecting other objects and
       then the real placement position is returned */
-  void set_pos(const CL_Vector& p);
-  CL_Vector get_pos() const;
+  void set_pos(const Vector& p);
+  Vector get_pos() const;
 
   void update(float delta);
 

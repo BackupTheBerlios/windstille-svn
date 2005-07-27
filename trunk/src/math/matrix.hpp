@@ -38,15 +38,16 @@ class Matrix
 //! Construction:
 public:
 	//: Constructs a 4x4 matrix.
-	//param identity: When true, initial matrix will be the identity matrix. If false, initial will be null matrix.
-	//param matrix[16]: Initial matrix.
-	Matrix(bool identity = false);
+	Matrix();
 
 	Matrix(const Matrix &copy);
 
 	Matrix(double *matrix);
 
 	Matrix(float *matrix);
+
+	/** Returns identity matrix */
+	static Matrix identity();
 
 //! Attributes:
 public:

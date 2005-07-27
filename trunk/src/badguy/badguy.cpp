@@ -29,7 +29,6 @@
 
 Badguy::Badguy()
 {
-  pos.z = 100;
 }
 
 Badguy::~Badguy()

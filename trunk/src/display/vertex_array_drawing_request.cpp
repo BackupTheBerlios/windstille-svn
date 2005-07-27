@@ -23,8 +23,9 @@
 #include <ClanLib/Display/graphic_context.h>
 #include "vertex_array_drawing_request.hpp"
 
-VertexArrayDrawingRequest::VertexArrayDrawingRequest(const CL_Vector& pos_, const Matrix& modelview_)
-  : DrawingRequest(pos_, modelview_)
+VertexArrayDrawingRequest::VertexArrayDrawingRequest(const Vector& pos_, float z_pos_, 
+                                                     const Matrix& modelview_)
+  : DrawingRequest(pos_, z_pos_, modelview_)
 {
   blend_sfactor = GL_SRC_ALPHA;
   blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
@@ -109,7 +110,7 @@ VertexArrayDrawingRequest::vertex(float x, float y, float z)
 {
   vertices.push_back(x + pos.x);
   vertices.push_back(y + pos.y);
-  vertices.push_back(z + pos.z);
+  vertices.push_back(z + z_pos);
 }
 
 void

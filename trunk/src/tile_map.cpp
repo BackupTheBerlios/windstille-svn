@@ -106,7 +106,7 @@ TileMap::draw (SceneContext& sc)
         VertexArrayDrawingRequest*& request = requests[packer];
         if (!request)
           {
-            request = new VertexArrayDrawingRequest(CL_Vector(0, 0, z_pos),
+            request = new VertexArrayDrawingRequest(Vector(0, 0), z_pos,
                                                     sc.color().get_modelview());
             request->set_mode(GL_QUADS);
             request->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

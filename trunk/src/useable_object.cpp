@@ -29,7 +29,6 @@ UseableObject::UseableObject(const lisp::Lisp* lisp)
 {
   using namespace lisp;
   set_useable(true);
-  pos.z = 0;
 
   Properties props(lisp);
   props.get("pos", pos);

@@ -1,7 +1,7 @@
-//  $Id: animation_obj.cxx,v 1.3 2003/08/12 08:24:41 grumbel Exp $
+//  $Id: vector.cpp 2642 2005-06-26 13:38:53Z matzebraun $
 //
-//  Windstille - A Jump'n Shoot Game
-//  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
+//  SuperTux -  A Jump'n Run
+//  Copyright (C) 2004 Matthias Braun <matze@braunis.de
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -16,31 +16,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
-#include <ClanLib/display.h>
-#include "globals.hpp"
-#include "animation_obj.hpp"
+#include <cmath>
 
-extern CL_ResourceManager* resources;
+#include "math/vector.hpp"
 
-AnimationObj::AnimationObj (const std::string& str, const CL_Vector& arg_pos)
-  : sprite(CL_Sprite (str, resources)), 
-    pos(arg_pos)
+Vector Vector::unit() const
 {
+  return *this / norm();
 }
 
-void
-AnimationObj::draw (SceneContext& )
+float Vector::norm() const
 {
-  sprite.draw (int (pos.x), int (pos.y));
+  return sqrt(x*x + y*y);
 }
-
-void
-AnimationObj::update (float delta)
-{
-  if (sprite.is_finished ())
-    remove ();
-  sprite.update (delta);
-}
-
-/* EOF */

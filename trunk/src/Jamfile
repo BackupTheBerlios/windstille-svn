@@ -17,8 +17,6 @@ SubInclude TOP src particles ;
 SubInclude TOP src math ;
 
 sources = 
-        animation_obj.cpp
-        animation_obj.hpp
         baby_xml.cpp
         baby_xml.hpp
         blitter.cpp

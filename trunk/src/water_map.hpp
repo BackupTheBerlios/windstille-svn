@@ -1,4 +1,4 @@
-//  $Id: water_map.hpp,v 1.2 2003/09/12 20:17:06 grumbel Exp $
+//  $Id$
 // 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -21,7 +21,7 @@
 #define HEADER_WATER_MAP_HXX
 
 #include <vector>
-#include <ClanLib/Core/Math/cl_vector.h>
+#include "math/vector.hpp"
 
 /** */
 class WaterMap
@@ -38,7 +38,7 @@ private:
 
   typedef std::vector<Water> Waters;
   Waters waters;
-  CL_Vector old_pos;
+  Vector old_pos;
 public:
   WaterMap();
   ~WaterMap();

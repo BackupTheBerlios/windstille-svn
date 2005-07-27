@@ -27,7 +27,7 @@
 class Camera
 {
 private:
-  CL_Vector pos;
+  Vector pos;
 
   static Camera* current_;
 public:

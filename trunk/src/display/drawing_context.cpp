@@ -53,7 +53,7 @@ private:
   Color color;
 public:
   FillScreenDrawingRequest(const Color& color_) 
-    : DrawingRequest(Vector(0, 0, -1000.0f)), color(color_)
+    : DrawingRequest(Vector(0, 0), -1000.0f), color(color_)
   {
   }
   virtual ~FillScreenDrawingRequest() {}
@@ -73,8 +73,8 @@ private:
   CL_Sprite sprite;
 
 public:
-  SpriteDrawingRequest(const CL_Sprite& sprite_, const Vector& pos_, const Matrix& modelview_)
-    : DrawingRequest(pos_, modelview_),
+  SpriteDrawingRequest(const CL_Sprite& sprite_, const Vector& pos_, float z_pos_, const Matrix& modelview_)
+    : DrawingRequest(pos_, z_pos_, modelview_),
       sprite(sprite_)
   {}
   virtual ~SpriteDrawingRequest() {}
@@ -97,8 +97,9 @@ private:
   CL_Surface sprite;
 
 public:
-  CLSurfaceDrawingRequest(const CL_Surface& sprite_, const Vector& pos_, const Matrix& modelview_)
-    : DrawingRequest(pos_, modelview_),
+  CLSurfaceDrawingRequest(const CL_Surface& sprite_, const Vector& pos_, float z_pos_,
+                          const Matrix& modelview_)
+    : DrawingRequest(pos_, z_pos_, modelview_),
       sprite(sprite_)
   {}
   virtual ~CLSurfaceDrawingRequest() {}
@@ -118,8 +119,8 @@ class TextDrawingRequest : public DrawingRequest
 private:
   std::string text;
 public:
-  TextDrawingRequest(const std::string& text_, const Vector& pos_, const Matrix& modelview_)
-    : DrawingRequest(pos_, modelview_),
+  TextDrawingRequest(const std::string& text_, const Vector& pos_, float z_pos_, const Matrix& modelview_)
+    : DrawingRequest(pos_, z_pos_, modelview_),
       text(text_)
   {}
   virtual ~TextDrawingRequest() {}
@@ -140,9 +141,9 @@ private:
   float alpha;
 
 public:
-  SurfaceDrawingRequest(Surface surface, const Vector& pos,
+  SurfaceDrawingRequest(Surface surface, const Vector& pos, float z_pos_,
                         const Matrix modelview, float alpha)
-    : DrawingRequest(pos, modelview), surface(surface), alpha(alpha)
+    : DrawingRequest(pos, z_pos_, modelview), surface(surface), alpha(alpha)
   {}
   virtual ~SurfaceDrawingRequest()
   {}
@@ -188,7 +189,7 @@ public:
 
 DrawingContext::DrawingContext()
 {
-  modelview_stack.push_back(Matrix(true));
+  modelview_stack.push_back(Matrix::identity());
 }
 
 DrawingContext::~DrawingContext()
@@ -232,27 +233,27 @@ void
 DrawingContext::draw(const CL_Surface&   sprite,  float x, float y, float z)
 { // FIXME: This should get flattend down to a simple texture draw
   // command for easier sorting after texture-id/alpha
-  draw(new CLSurfaceDrawingRequest(sprite, Vector(x, y, z), modelview_stack.back()));
+  draw(new CLSurfaceDrawingRequest(sprite, Vector(x, y), z, modelview_stack.back()));
 }
 
 void
 DrawingContext::draw(const CL_Sprite&   sprite,  float x, float y, float z)
 { // FIXME: This should get flattend down to a simple texture draw
   // command for easier sorting after texture-id/alpha
-  draw(new SpriteDrawingRequest(sprite, Vector(x, y, z), modelview_stack.back()));
+  draw(new SpriteDrawingRequest(sprite, Vector(x, y), z, modelview_stack.back()));
 }
 
 void
 DrawingContext::draw(Surface surface, float x, float y, float z, float a)
 {
-  draw(new SurfaceDrawingRequest(surface, Vector(x, y, z),
+  draw(new SurfaceDrawingRequest(surface, Vector(x, y), z,
                                  modelview_stack.back(), a));
 }
 
 void
-DrawingContext::draw(const std::string& text,    float x, float y, float z)
+DrawingContext::draw(const std::string& text, float x, float y, float z)
 { 
-  draw(new TextDrawingRequest(text, Vector(x, y, z), modelview_stack.back()));
+  draw(new TextDrawingRequest(text, Vector(x, y), z, modelview_stack.back()));
 }
 
 void
@@ -276,7 +277,7 @@ DrawingContext::rotate(float angle, float x, float y, float z)
   double c = cos(angle*3.14159265/180);
   double s = sin(angle*3.14159265/180);
 
-  Matrix matrix(true);
+  Matrix matrix = Matrix::identity();
   matrix[0] = x*x*(1-c)+c;
   matrix[1] = y*x*(1-c)+z*s;
   matrix[2] = x*z*(1-c)-y*s;
@@ -295,7 +296,7 @@ DrawingContext::rotate(float angle, float x, float y, float z)
 void
 DrawingContext::scale(float x, float y, float z)
 {
-  Matrix matrix(true);
+  Matrix matrix = Matrix::identity();
   matrix[0] = x;
   matrix[5] = y;
   matrix[10] = z;
@@ -306,7 +307,7 @@ DrawingContext::scale(float x, float y, float z)
 void
 DrawingContext::translate(float x, float y, float z)
 {
-  Matrix matrix(true);
+  Matrix matrix = Matrix::identity();
   matrix[12] = x;
   matrix[13] = y;
   matrix[14] = z;
@@ -337,7 +338,7 @@ void
 DrawingContext::reset_modelview()
 {
   modelview_stack.clear();
-  modelview_stack.push_back(Matrix(true));
+  modelview_stack.push_back(Matrix::identity());
 }
 
 Rectf

@@ -8,7 +8,7 @@
 TestObject::TestObject(const lisp::Lisp* lisp)
 {
   using namespace lisp;
-  pos = Vector(0, 0, 100);
+  pos = Vector(0, 0);
   std::string spritename;
 
   Properties props(lisp);
@@ -30,7 +30,7 @@ TestObject::~TestObject()
 void
 TestObject::draw(SceneContext& context)
 {
-  sprite->draw(context, pos);
+  sprite->draw(context, pos, 100);
 }
 
 void

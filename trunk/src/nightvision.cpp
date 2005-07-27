@@ -25,6 +25,7 @@
 
 #include "globals.hpp"
 #include "random.hpp"
+#include "math/matrix.hpp"
 #include "nightvision.hpp"
 
 Nightvision::Nightvision(const lisp::Lisp* lisp)
@@ -45,7 +46,7 @@ Nightvision::draw(SceneContext& sc)
 {
   // reset the modelview, so we can draw in screen coordinates
   sc.light().push_modelview();
-  sc.light().set_modelview(Matrix(true));
+  sc.light().set_modelview(Matrix::identity());
 
   // try to stay above everything else with large z value
   nightvision.set_alpha(1.0f);
@@ -60,7 +61,7 @@ Nightvision::draw(SceneContext& sc)
   sc.light().pop_modelview();
 
   sc.highlight().push_modelview();
-  sc.highlight().set_modelview(Matrix(true));
+  sc.highlight().set_modelview(Matrix::identity());
   nightvision.set_alpha(0.5f);
   nightvision.set_blend_func(blend_src_alpha, blend_one);
   sc.highlight().draw(nightvision, 0, 0, 10000);

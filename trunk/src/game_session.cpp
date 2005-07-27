@@ -31,7 +31,6 @@
 #include "console.hpp"
 #include "game_object.hpp"
 #include "player.hpp"
-#include "animation_obj.hpp"
 #include "tile_map.hpp"
 #include "view.hpp"
 #include "timer.hpp"

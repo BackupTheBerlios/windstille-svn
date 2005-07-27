@@ -42,7 +42,7 @@ private:
   std::vector<float> vertices;
 
 public:
-  VertexArrayDrawingRequest(const CL_Vector& pos_, const Matrix& modelview_);
+  VertexArrayDrawingRequest(const Vector& pos_, float z_pos_, const Matrix& modelview_);
 
   void draw(CL_GraphicContext* gc);
   void draw(CL_GraphicContext* gc, int start, int end);

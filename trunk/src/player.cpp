@@ -42,7 +42,6 @@ Player::Player () :
 {
   pos.x = 320;
   pos.y = 200;
-  pos.z = 100;
   name = "player";
   sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
   grenade = sprite3d_manager->create("3dsprites/grenade.wsprite");
@@ -57,7 +56,7 @@ Player::Player () :
   // collision detection init
   CollisionObject* c_object;
 
-  col_objects.push_back(c_object = new CollisionObject ( CL_Rectf ( -15, -120, 15, 0 )));
+  col_objects.push_back(c_object = new CollisionObject(Rectf(-15, -120, 15, 0)));
 
   c_object->set_pos(pos);
   c_object->set_velocity(velocity);
@@ -78,7 +77,7 @@ Player::draw (SceneContext& gc)
 {
   light.set_blend_func(blend_src_alpha, blend_one);
   gc.light().draw(light, pos.x, pos.y, 100);
-  sprite->draw(gc, pos);
+  sprite->draw(gc, pos, 100);
 
   Entity* obj = find_useable_entity();
   if (obj)
@@ -173,7 +172,7 @@ void
 Player::set_stand()
 {
   try_set_action("Stand");
-  velocity = Vector(0, 0, 0);
+  velocity = Vector(0, 0);
   state = STAND;
   printf("stand.\n");
 }
@@ -362,7 +361,7 @@ Player::set_stand_to_listen(bool backwards)
   try_set_action("StandtoListen", backwards ? -1.0 : 1.0);
   if(!backwards) {
     sprite->set_next_action("Listen");
-    velocity = Vector(0, 0, 0);
+    velocity = Vector(0, 0);
   } else {
     sprite->set_next_action("Stand");
   }

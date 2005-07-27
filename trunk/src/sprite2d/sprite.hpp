@@ -20,7 +20,7 @@ public:
   ~Sprite();
 
   void update(float elapsed_time);
-  void draw(SceneContext& sc, const Vector& pos);
+  void draw(SceneContext& sc, const Vector& pos, float z_pos);
 
   void set_action(const std::string& name);
   const std::string& get_action() const;

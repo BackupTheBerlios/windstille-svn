@@ -47,7 +47,7 @@ void
 SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {          
   VertexArrayDrawingRequest* buffer 
-    = new VertexArrayDrawingRequest(Vector(psys.get_x_pos(), psys.get_y_pos(), 0), // FIXME: add zpos
+    = new VertexArrayDrawingRequest(Vector(psys.get_x_pos(), psys.get_y_pos()), 0, // FIXME: add zpos
                                     sc.color().get_modelview());
 
   buffer->set_mode(GL_QUADS);

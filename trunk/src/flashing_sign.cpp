@@ -10,7 +10,7 @@
 #include "sprite2d/manager.hpp"
 
 FlashingSign::FlashingSign(const lisp::Lisp* lisp)
-  : pos(0, 0, 10.0), enabled(false)
+  : pos(0, 0), enabled(false)
 {
   std::string spritename;
   flashspeed = 5;
@@ -52,7 +52,7 @@ FlashingSign::draw(SceneContext& sc)
     // fade off
     sprite->set_alpha(alpha);
   }
-  sprite->draw(sc, pos);
+  sprite->draw(sc, pos, 10.0f);
 }
 
 void

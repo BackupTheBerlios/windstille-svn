@@ -235,9 +235,9 @@ Sprite::get_bone_matrix(BoneID id) const
       quat[i] += bone2.quat[i] * blend_time;
   }
 
-  Matrix m(true);
-  m.matrix[3] += pos[0];
-  m.matrix[7] += pos[1];
+  Matrix m      = Matrix::identity();
+  m.matrix[3]  += pos[0];
+  m.matrix[7]  += pos[1];
   m.matrix[11] += pos[2];
 
   return m;
@@ -249,9 +249,9 @@ private:
   Sprite* sprite;
 
 public:
-  SpriteDrawingRequest(Sprite* sprite, const Vector& pos,
-                         const Matrix& modelview)
-      : DrawingRequest(pos, modelview), sprite(sprite)
+  SpriteDrawingRequest(Sprite* sprite, const Vector& pos, float z_pos,
+                       const Matrix& modelview)
+      : DrawingRequest(pos, z_pos, modelview), sprite(sprite)
   {
   }
 
@@ -312,10 +312,10 @@ Sprite::update(float elapsed_time)
 }
 
 void
-Sprite::draw(SceneContext& sc, const Vector& pos)
+Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos)
 {
   sc.color().draw(
-    new SpriteDrawingRequest(this, pos, sc.color().get_modelview()));
+    new SpriteDrawingRequest(this, pos, z_pos, sc.color().get_modelview()));
 }
 
 void
@@ -324,7 +324,7 @@ Sprite::draw(SceneContext& sc, const Matrix& matrix)
   Matrix mmatrix 
     = matrix.multiply(sc.color().get_modelview());
   sc.color().draw(
-    new SpriteDrawingRequest(this, Vector(0, 0, 0), mmatrix));
+    new SpriteDrawingRequest(this, Vector(0, 0), 0, mmatrix));
 }
 
 void

@@ -103,7 +103,7 @@ Hedgehog::update(float delta)
           velocity.y += GRAVITY * delta;
         }
       
-      CL_Vector old_pos = pos;
+      Vector old_pos = pos;
       pos += velocity * delta;
       
       if ((was_on_ground && !on_ground()) || in_wall())
@@ -115,7 +115,7 @@ Hedgehog::update(float delta)
     
   // Check if the player got hit
   // FIXME: Insert pixel perfect collision detection here
-  CL_Vector player_pos = Player::current()->get_pos();
+  Vector player_pos = Player::current()->get_pos();
   if (pos.x - 20 < player_pos.x
         && pos.x + 20 > player_pos.x
         && pos.y - 20 < player_pos.y
