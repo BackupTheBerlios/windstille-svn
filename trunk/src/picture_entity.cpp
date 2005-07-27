@@ -73,7 +73,7 @@ PictureEntity::update(float delta)
   sprite->update(delta);
   
   if (target_speed > 0)
-    move();
+    move(delta);
 }
 
 void
@@ -92,13 +92,15 @@ PictureEntity::show(bool arg_visible)
 }
 
 void
-PictureEntity::move()
+PictureEntity::move(float delta)
 {
   float dx = target_x - pos.x;
   float dy = target_y - pos.y;
   
-  //and here we should check to see if we should stop moving and set target_speed to 0 and return
-  //also need to make sure we don't move past the target
+  if (!dx && !dy) {
+    target_speed = 0;
+    return;
+  }
   
   float propx = 0;
 	float propy = 0;
@@ -106,21 +108,27 @@ PictureEntity::move()
 	float adx = fabs(dx);
 	float ady = fabs(dy);
 
-	//don't divide by 0!
-	if (adx + ady) {
-		if (dx < 0)
-			propx = -(adx / (adx + ady));
-		else
-			propx = adx / (adx + ady);
+	//we can't divide by 0 because we return above if !dx and !dy
+	if (dx < 0)
+		propx = -(adx / (adx + ady));
+	else
+		propx = adx / (adx + ady);
 
-		if (dy < 0)
-			propy = -(ady / (adx + ady));
-		else
-			propy = ady / (adx + ady);
-	}
+	if (dy < 0)
+		propy = -(ady / (adx + ady));
+	else
+		propy = ady / (adx + ady);
 	
-	pos.x += target_speed * propx;
-	pos.y += target_speed * propy;
+	float distx = target_speed * delta * propx;
+	float disty = target_speed * delta * propy;
+	
+	if (adx - fabs(distx) < 0)
+    distx = dx;
+  if (ady - fabs(disty) < 0)
+    disty = dy;
+    
+  pos.x += distx;
+  pos.y += disty;
 }
 
 void

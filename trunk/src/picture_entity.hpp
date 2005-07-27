@@ -45,7 +45,7 @@ private:
   float flash_delta;
   
 protected:
-  void move();
+  void move(float delta);
   void flash();
     
 public:
