@@ -65,7 +65,7 @@ TilePacker::~TilePacker()
 
 /** Pack a tile and return the position where it is placed in the
     pixel buffer */
-CL_Rectf
+Rectf
 TilePacker::pack(SDL_Surface* image, int x, int y, int w, int h)
 {
   assert(w == TILE_RESOLUTION && h == TILE_RESOLUTION);

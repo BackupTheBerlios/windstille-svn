@@ -1,0 +1,11 @@
+SubDir TOP src math ;
+
+sources = matrix.hpp
+          matrix.cpp
+          rect.hpp
+          rect.cpp
+          vector.hpp
+;
+
+TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;
+math_objects = [ CompileObjects $(sources) ] ;

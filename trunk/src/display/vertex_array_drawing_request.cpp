@@ -23,7 +23,7 @@
 #include <ClanLib/Display/graphic_context.h>
 #include "vertex_array_drawing_request.hpp"
 
-VertexArrayDrawingRequest::VertexArrayDrawingRequest(const CL_Vector& pos_, const CL_Matrix4x4& modelview_)
+VertexArrayDrawingRequest::VertexArrayDrawingRequest(const CL_Vector& pos_, const Matrix& modelview_)
   : DrawingRequest(pos_, modelview_)
 {
   blend_sfactor = GL_SRC_ALPHA;

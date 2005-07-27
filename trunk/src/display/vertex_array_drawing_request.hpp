@@ -23,6 +23,7 @@
 #include <vector>
 #include <ClanLib/gl.h>
 #include "color.hpp"
+#include "math/matrix.hpp"
 #include "drawing_request.hpp"
 
 /** */
@@ -41,7 +42,7 @@ private:
   std::vector<float> vertices;
 
 public:
-  VertexArrayDrawingRequest(const CL_Vector& pos_, const CL_Matrix4x4& modelview_);
+  VertexArrayDrawingRequest(const CL_Vector& pos_, const Matrix& modelview_);
 
   void draw(CL_GraphicContext* gc);
   void draw(CL_GraphicContext* gc, int start, int end);

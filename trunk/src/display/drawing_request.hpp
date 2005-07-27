@@ -30,7 +30,7 @@ class CL_GraphicContext;
 class DrawingRequest
 {
 protected:
-  Vector pos;
+  Vector    pos;
   Matrix modelview;
 public:
   DrawingRequest(const Vector& pos_, const Matrix& modelview_ = Matrix(true))

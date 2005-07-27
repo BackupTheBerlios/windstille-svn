@@ -45,7 +45,7 @@ Nightvision::draw(SceneContext& sc)
 {
   // reset the modelview, so we can draw in screen coordinates
   sc.light().push_modelview();
-  sc.light().set_modelview(CL_Matrix4x4(true));
+  sc.light().set_modelview(Matrix(true));
 
   // try to stay above everything else with large z value
   nightvision.set_alpha(1.0f);
@@ -60,7 +60,7 @@ Nightvision::draw(SceneContext& sc)
   sc.light().pop_modelview();
 
   sc.highlight().push_modelview();
-  sc.highlight().set_modelview(CL_Matrix4x4(true));
+  sc.highlight().set_modelview(Matrix(true));
   nightvision.set_alpha(0.5f);
   nightvision.set_blend_func(blend_src_alpha, blend_one);
   sc.highlight().draw(nightvision, 0, 0, 10000);
