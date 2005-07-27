@@ -15,9 +15,9 @@ namespace SquirrelWrapper
 void register_windstille_wrapper(HSQUIRRELVM v);
 
 void create_squirrel_instance(HSQUIRRELVM v, Scripting::GameObject* object, bool setup_releasehook = false);
-void create_squirrel_instance(HSQUIRRELVM v, Scripting::FlashingSign* object, bool setup_releasehook = false);
 void create_squirrel_instance(HSQUIRRELVM v, Scripting::TestObject* object, bool setup_releasehook = false);
 void create_squirrel_instance(HSQUIRRELVM v, Scripting::Player* object, bool setup_releasehook = false);
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::PictureEntity* object, bool setup_releasehook = false);
 
 }
 

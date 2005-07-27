@@ -10,12 +10,12 @@
     (pos 300 650)
   )
   (objects
-    (flashing-sign
+    (picture-entity
       (name "Block0Sign")
       (pos 550 370)
       (flashspeed 0.7)
       (sprite "images/arrow.sprite")
-      (enabled #f)
+      (visible #f)
     )
 
     ;; Water
@@ -71,10 +71,6 @@
     (spider_mine
       (name "spider2")
       (pos 550 550)
-    )
-    (spider_mine
-      (name "spider1")
-      (pos 500 831)
     )
     (hedgehog
       (name "hedgehog1")

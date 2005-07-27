@@ -27,10 +27,9 @@ UseableObject::UseableObject(const lisp::Lisp* lisp)
   : highlight("vrdoor/highlight", resources),
     color("vrdoor/color", resources)
 {
-  using namespace lisp;
   set_useable(true);
 
-  Properties props(lisp);
+  lisp::Properties props(lisp);
   props.get("pos", pos);
   props.get("script", use_script);
   props.print_unused_warnings("usableobject");
@@ -47,13 +46,6 @@ UseableObject::draw (SceneContext& sc)
 void
 UseableObject::update (float)
 {
-}
-
-void
-UseableObject::collision(const CollisionData& data, CollisionObject& other)
-{
-  (void) data;
-  (void) other;
 }
 
 /* EOF */

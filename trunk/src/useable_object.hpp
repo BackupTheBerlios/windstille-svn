@@ -39,10 +39,6 @@ public:
   void draw (SceneContext& sc);
   void update (float);
   void use() {script_manager->run_script(use_script, "UseableItem");}
-  
-  void collision(const CollisionData& data, CollisionObject& other);
-  bool unstuck() const {return true;}
-  bool unstuck_movable() const {return true;}
 };
 
 #endif

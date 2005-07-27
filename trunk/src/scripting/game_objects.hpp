@@ -3,15 +3,15 @@
 
 #ifndef SCRIPTING_API
 #include "game_object.hpp"
-#include "flashing_sign.hpp"
 #include "test_object.hpp"
 #include "player.hpp"
+#include "picture_entity.hpp"
 #include "ref.hpp"
 
 typedef GameObject _GameObject;
-typedef FlashingSign _FlashingSign;
 typedef TestObject _TestObject;
 typedef Player _Player;
+typedef PictureEntity _PictureEntity;
 #endif
 
 namespace Scripting
@@ -34,27 +34,6 @@ public:
 public:
   const std::string& get_name() const;
   void remove();
-};
-
-class FlashingSign : public GameObject
-{
-#ifndef SCRIPTING_API
-public:
-  FlashingSign(_FlashingSign* _object)
-    : GameObject(_object)
-  {}
-  virtual ~FlashingSign()
-  {}  
-
-  _FlashingSign* obj() const
-  {
-    return reinterpret_cast<_FlashingSign*> (object.get());
-  }
-#endif
-
-public:
-  void enable();
-  void disable();
 };
 
 class TestObject : public GameObject
@@ -99,6 +78,27 @@ public:
 public:
   void start_listening();
   void stop_listening();
+};
+
+class PictureEntity : public GameObject
+{
+#ifndef SCRIPTING_API
+public:
+  PictureEntity(_PictureEntity* _object)
+    : GameObject(_object)
+  {}
+  virtual ~PictureEntity()
+  {}
+
+  _PictureEntity* obj() const
+  {
+    return reinterpret_cast<_PictureEntity*> (object.get());
+  }
+#endif
+
+public:
+  void move_to(float x, float y, float speed);
+  void show(bool visible);
 };
  
 }

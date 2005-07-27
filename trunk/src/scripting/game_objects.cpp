@@ -17,18 +17,6 @@ GameObject::remove()
 }
 
 void
-FlashingSign::enable()
-{
-  obj()->enable();
-}
-
-void
-FlashingSign::disable()
-{
-  obj()->disable();
-}
-
-void
 TestObject::set_sprite(const std::string& filename)
 {
   obj()->set_sprite(filename);
@@ -62,6 +50,18 @@ void
 Player::stop_listening()
 {
   obj()->stop_listening();
+}
+
+void
+PictureEntity::move_to(float x, float y, float speed)
+{
+  obj()->move_to(x, y, speed);
+}
+
+void
+PictureEntity::show(bool visible)
+{
+  obj()->show(visible);
 }
 
 }

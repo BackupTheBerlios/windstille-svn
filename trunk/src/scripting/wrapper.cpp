@@ -64,54 +64,6 @@ static int GameObject_remove_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int FlashingSign_release_hook(SQUserPointer ptr, int )
-{
-  Scripting::FlashingSign* _this = reinterpret_cast<Scripting::FlashingSign*> (ptr);
-  delete _this;
-  return 0;
-}
-
-void create_squirrel_instance(HSQUIRRELVM v, Scripting::FlashingSign* object, bool setup_releasehook)
-{
-  sq_pushstring(v, "FlashingSign", -1);
-  if(sq_get(v, -2) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't resolved squirrel type 'FlashingSign'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't setup squirrel instance for object of type 'FlashingSign'";
-    throw SquirrelError(v, msg.str());
-  }
-  sq_remove(v, -2);
-
-  if(setup_releasehook) {
-    sq_setreleasehook(v, -1, FlashingSign_release_hook);
-  }
-}
-
-static int FlashingSign_enable_wrapper(HSQUIRRELVM v)
-{
-  Scripting::FlashingSign* _this;
-  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
-  
-  _this->enable();
-  
-  return 0;
-}
-
-static int FlashingSign_disable_wrapper(HSQUIRRELVM v)
-{
-  Scripting::FlashingSign* _this;
-  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
-  
-  _this->disable();
-  
-  return 0;
-}
-
 static int TestObject_release_hook(SQUserPointer ptr, int )
 {
   Scripting::TestObject* _this = reinterpret_cast<Scripting::TestObject*> (ptr);
@@ -234,6 +186,62 @@ static int Player_stop_listening_wrapper(HSQUIRRELVM v)
   sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
   
   _this->stop_listening();
+  
+  return 0;
+}
+
+static int PictureEntity_release_hook(SQUserPointer ptr, int )
+{
+  Scripting::PictureEntity* _this = reinterpret_cast<Scripting::PictureEntity*> (ptr);
+  delete _this;
+  return 0;
+}
+
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::PictureEntity* object, bool setup_releasehook)
+{
+  sq_pushstring(v, "PictureEntity", -1);
+  if(sq_get(v, -2) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't resolved squirrel type 'PictureEntity'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't setup squirrel instance for object of type 'PictureEntity'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_remove(v, -2);
+
+  if(setup_releasehook) {
+    sq_setreleasehook(v, -1, PictureEntity_release_hook);
+  }
+}
+
+static int PictureEntity_move_to_wrapper(HSQUIRRELVM v)
+{
+  Scripting::PictureEntity* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  float arg0;
+  sq_getfloat(v, 2, &arg0);
+  float arg1;
+  sq_getfloat(v, 3, &arg1);
+  float arg2;
+  sq_getfloat(v, 4, &arg2);
+  
+  _this->move_to(arg0, arg1, arg2);
+  
+  return 0;
+}
+
+static int PictureEntity_show_wrapper(HSQUIRRELVM v)
+{
+  Scripting::PictureEntity* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  SQBool arg0;
+  sq_getbool(v, 2, &arg0);
+  
+  _this->show(arg0);
   
   return 0;
 }
@@ -774,37 +782,6 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
-  // Register class FlashingSign
-  sq_pushstring(v, "FlashingSign", -1);
-  sq_pushstring(v, "GameObject", -1);
-  sq_get(v, -3);
-  if(sq_newclass(v, SQTrue) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't create new class 'FlashingSign'";
-    throw SquirrelError(v, msg.str());
-  }
-  sq_pushstring(v, "enable", -1);
-  sq_newclosure(v, &FlashingSign_enable_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't register function'enable'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  sq_pushstring(v, "disable", -1);
-  sq_newclosure(v, &FlashingSign_disable_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't register function'disable'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  if(sq_createslot(v, -3) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't register class'FlashingSign'";
-    throw SquirrelError(v, msg.str());
-  }
-
   // Register class TestObject
   sq_pushstring(v, "TestObject", -1);
   sq_pushstring(v, "GameObject", -1);
@@ -880,6 +857,37 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register class'Player'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  // Register class PictureEntity
+  sq_pushstring(v, "PictureEntity", -1);
+  sq_pushstring(v, "GameObject", -1);
+  sq_get(v, -3);
+  if(sq_newclass(v, SQTrue) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't create new class 'PictureEntity'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_pushstring(v, "move_to", -1);
+  sq_newclosure(v, &PictureEntity_move_to_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'move_to'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "show", -1);
+  sq_newclosure(v, &PictureEntity_show_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'show'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register class'PictureEntity'";
     throw SquirrelError(v, msg.str());
   }
 

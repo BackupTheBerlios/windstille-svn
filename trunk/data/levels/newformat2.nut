@@ -8,6 +8,6 @@ dialog(TOP, "human/portrait",
        "We will start with <small>climbing</small>. See the <i>block</i> in front " +
        "of you? Press <b>Right</b> and <b>Jump</b> to hang on the ledge.");
 
-Block0Sign.enable();
+Block0Sign.show(true);
 
 /* EOF */
