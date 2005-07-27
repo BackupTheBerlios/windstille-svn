@@ -18,12 +18,42 @@
       (visible #f)
     )
 
+    ;; Smoke
+    (particle-system
+     (lifetime   1.0)
+     (count      15)
+     (pos       0 0)
+     (z-pos  1000)
+     (spawn-point 128 800)
+     (speed    150 200)
+     (cone   -10 10)
+     (gravity -0.5 -1.5)
+     (size   0.05 1.0)
+     (drawer (surface-drawer (image "images/particles/smoke2.png")))
+     (distribution (point-distribution))
+     )
+
+    ;; Smoke
+    (particle-system
+     (lifetime  0.8)
+     (count      25)
+     (pos       0 0)
+     (z-pos    1000)
+     (spawn-point 336 640)
+     (speed    70 100)
+     (cone   90 90)
+     (gravity 0 10)
+     (size   1.0 1.0)
+     (drawer (surface-drawer (image "images/particles/smoke2.png")))
+     (distribution (line-distribution (x1 -64) (y1 0) (x2 64) (y2 0)))
+     )
+
     ;; Water
     (particle-system
      (lifetime   .6)
      (count      250)
      (pos       0 0)
-     (z-pos  100)
+     (z-pos  1000)
      (spawn-point 532 640)
      (speed    150 200)
      (cone   70 110)
@@ -33,11 +63,12 @@
      (distribution (line-distribution (x1 -5) (y1 0) (x2 5) (y2 0)))
      )
 
+    ;; Water bounce
     (particle-system
      (lifetime   .2)
      (count      50)
      (pos       0 0)
-     (z-pos  100)
+     (z-pos  1000)
      (spawn-point 532 836)
      (speed    50 100)
      (cone   -110 -70)
@@ -46,6 +77,47 @@
      (drawer (spark-drawer (color 0.7 0.8 1.0)))
      (distribution (line-distribution (x1 -40) (y1 0) (x2 40) (y2 0)))
      )
+
+    ;; Fire sparks
+    (particle-system
+     (drawer (spark-drawer (color 1.0 0.5 0.5)))
+     (pos 0 0)
+     (z-pos 900)
+     (spawn-point 768 832)
+     (speed 300 550)
+     (cone -115 -65)
+     (gravity 0  5)
+     (distribution (line-distribution (x1 -50)  (y1 0) (x2 50) (y2 0))))
+    
+    ;; Fire smoke
+    (particle-system
+     (spawn-point 768 832)
+     (lifetime 8)
+     (count 30)
+     (z-pos 1000)
+     (drawer (surface-drawer (image "images/particles/smoke2.png")
+                             (blendfunc-src "src_alpha")
+                             (blendfunc-dst "one_minus_src_alpha")))
+     (pos 0 0)
+     (speed 70 100)
+     (cone -115 -65)
+     (gravity 0 -1)
+     (size 1.0 3.0)
+     (distribution (line-distribution (x1 -50) (y1 0) (x2 50) (y2 0))))
+    
+    ;; Fire itself
+    (particle-system
+     (spawn-point 768 832)
+     (count 100)
+     (z-pos 1000)
+     (pos 0 0)
+     (speed 200 300)
+     (cone -95 -85)
+     (gravity 0 0)
+     (distribution (line-distribution (x1 -50) (y1 0) (x2 50) (y2 0)))
+     (drawer (surface-drawer (image "images/particles/smoke.png")
+                             (blendfunc-src "src_alpha")
+                             (blendfunc-dst "one"))))
 
 
     (box
@@ -124,7 +196,7 @@
       281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 281 282 283 284 285 286 283 284 285 286 
       287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 287 288 289 290 291 292 289 290 291 292 
      ))
-  (tilemap (name "interactive") (width 100) (height 30)
+  (tilemap (name "interactive") (width 100) (height 30) (z-pos 1000)
     (data
       0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 7 8 9 10 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
       0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 23 24 25 26 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 

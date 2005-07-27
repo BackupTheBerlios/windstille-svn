@@ -62,7 +62,8 @@ SurfaceDrawer::SurfaceDrawer(const lisp::Lisp* lisp)
   props.get("image", surface_file);
   props.get("blendfunc-src", blendfunc_src_str);
   props.get("blendfunc-dst", blendfunc_dst_str);
-
+  props.print_unused_warnings("SurfaceDrawer");
+  
   surface = surface_manager->get(surface_file);
 
   blendfunc_src  = string2blendfunc(blendfunc_src_str);

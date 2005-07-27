@@ -238,50 +238,6 @@ GameSession::change_sector()
   
   if (1)
     {
-      std::cout << "Adding test objects to sector" << std::endl;
-      
-      ParticleSystem* psystem2 = new ParticleSystem();
-      psystem2->set_drawer(new SparkDrawer(0));
-      psystem2->set_pos(0,0);
-      psystem2->set_speed(300, 550);
-      psystem2->set_cone(-25-90, 25-90);
-      psystem2->set_gravity(0, 5);
-      psystem2->set_line_distribution(-50, 0, 50, 0);
-
-      ParticleSystem* psystem3 = new ParticleSystem();
-      psystem3->set_lifetime(8);
-      psystem3->set_count(30);
-      Surface smoke2 = surface_manager->get("images/particles/smoke2.png");
-      SurfaceDrawer* drawer = new SurfaceDrawer(smoke2);
-      drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      psystem3->set_drawer(drawer);
-      psystem3->set_pos(0,0);
-      psystem3->set_speed(70, 100);
-      psystem3->set_cone(-25-90, 25-90);
-      psystem3->set_gravity(0, -1);
-      psystem3->set_size(1.0f, 3.0f);
-      psystem3->set_line_distribution(-50, 0, 50, 0);
- 
-      ParticleSystem* psystem = new ParticleSystem();
-      psystem->set_count(100);
-      Surface smoke = surface_manager->get("images/particles/smoke.png");
-      drawer = new SurfaceDrawer(smoke);
-      drawer->set_blendfuncs(GL_SRC_ALPHA, GL_ONE);
-      psystem->set_drawer(drawer);
-      psystem->set_pos(0,0);
-      psystem->set_speed(200, 300);
-      psystem->set_cone(-5-90, 5-90);
-      psystem->set_gravity(0, 0);
-      psystem->set_line_distribution(-50, 0, 50, 0);
-
-      psystem->set_spawn_point (768, 832);
-      psystem2->set_spawn_point(768, 832);
-      psystem3->set_spawn_point(768, 832);
-      
-      sector->add(psystem3);
-      sector->add(psystem2);
-      sector->add(psystem);
-      
       script_manager->run_script_file("scripts/init_script_vars.nut");
     }
 
