@@ -25,6 +25,8 @@
 */
 
 #include <stdexcept>
+#include <GL/gl.h>
+#include <GL/glext.h>
 #include "texture.hpp"
 #include "util.hpp"
 
