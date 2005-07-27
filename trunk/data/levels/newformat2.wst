@@ -17,16 +17,36 @@
       (sprite "images/arrow.sprite")
       (enabled #f)
     )
+
+    ;; Water
     (particle-system
-     (lifetime    0.8)
+     (lifetime   .6)
      (count      250)
      (pos       0 0)
-     (spawn-point 532 826)
-     (speed    70 300)
-     (cone   -115 -65)
-     (gravity 0 10)
+     (z-pos  100)
+     (spawn-point 532 640)
+     (speed    150 200)
+     (cone   70 110)
+     (gravity 0 5)
      (size   1.0 3.0)
+     (drawer (spark-drawer (color 0.7 0.8 1.0)))
+     (distribution (line-distribution (x1 -5) (y1 0) (x2 5) (y2 0)))
      )
+
+    (particle-system
+     (lifetime   .2)
+     (count      50)
+     (pos       0 0)
+     (z-pos  100)
+     (spawn-point 532 836)
+     (speed    50 100)
+     (cone   -110 -70)
+     (gravity 0 5)
+     (size   1.0 3.0)
+     (drawer (spark-drawer (color 0.7 0.8 1.0)))
+     (distribution (line-distribution (x1 -40) (y1 0) (x2 40) (y2 0)))
+     )
+
 
     (box
       (name "Box0")

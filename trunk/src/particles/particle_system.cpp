@@ -36,6 +36,7 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   drawer     = 0;
   x_pos      = 320.0f;
   y_pos      = 240.0f;
+  z_pos      = 0;
   life_time  = 1.0f;
 
   gravity_x = 0.0f;
@@ -64,6 +65,8 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   int p_count;
   if (props.get("count", p_count))
     set_count(p_count);
+
+  props.get("count", z_pos);
 
   Vector p_gravity;
   if (props.get("gravity", p_gravity))
@@ -105,22 +108,48 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   if (props.get("speed", p_speed))
     set_speed(p_speed.x, p_speed.y);
 
-  const lisp::Lisp* drawer_lisp = 0;
-  if (props.get("drawer", drawer_lisp))
-    {
-      lisp::Properties drawer_props(drawer_lisp);
-      lisp::PropertyIterator<const lisp::Lisp*> iter = drawer_props.get_iter();
-      while(iter.next()) {
-        if (iter.item() == "surface-drawer") {
+  {
+    const lisp::Lisp* drawer_lisp = 0;
+    if (props.get("drawer", drawer_lisp))
+      {
+        lisp::Properties drawer_props(drawer_lisp);
+        lisp::PropertyIterator<const lisp::Lisp*> iter = drawer_props.get_iter();
+        while(iter.next()) {
+          if (iter.item() == "surface-drawer") {
           
-        } else if (iter.item() == "spark-drawer") {
-          set_drawer(new SparkDrawer(*iter));
+          } else if (iter.item() == "spark-drawer") {
+            set_drawer(new SparkDrawer(*iter));
+          } else {
+            std::cout << "Unknown item: " << iter.item() << std::endl;
+          }
+        }
+      }
+  }
+
+  const lisp::Lisp* distribution_lisp = 0;
+  if (props.get("distribution", distribution_lisp))
+    {
+      lisp::Properties distribution_props(distribution_lisp);
+      lisp::PropertyIterator<const lisp::Lisp*> iter = distribution_props.get_iter();
+      if (iter.next()) {
+        lisp::Properties prop(*iter);
+
+        if (iter.item() == "point-distribution") {
+          set_point_distribution();
+        } else if (iter.item() == "line-distribution") {
+          float x1, y1, x2, y2;
+          prop.get("x1", x1);
+          prop.get("y1", y1);
+          prop.get("x2", x2);
+          prop.get("y2", y2);
+          
+          set_line_distribution(x1, y1, x2, y2);
         } else {
-          std::cout << "Unknown item: " << iter.item() << std::endl;
+          std::cout << "Unknown distribution: " << iter.item() << std::endl;
         }
       }
     }
-  
+
   //props.get("point-distribution",   ); // void
   //props.get("line-distribution",   ); // 2xvector2
   //props.get("circle", ); // float
@@ -134,6 +163,7 @@ ParticleSystem::ParticleSystem()
   drawer     = 0;
   x_pos      = 320.0f;
   y_pos      = 240.0f;
+  z_pos      = 0;
   life_time  = 1.0f;
 
   gravity_x = 0.0f;

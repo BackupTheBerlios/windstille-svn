@@ -67,6 +67,7 @@ private:
 
   float x_pos;
   float y_pos;
+  float z_pos;
 
   float spawn_x_pos;
   float spawn_y_pos;
@@ -167,6 +168,7 @@ public:
 
   float get_x_pos() { return x_pos; }
   float get_y_pos() { return y_pos; } 
+  float get_z_pos() { return z_pos; } 
 
   /** Returns the how much a particle has progressed, this is
       particle.life_time with fade_in/fade_out applied  */

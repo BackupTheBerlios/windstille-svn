@@ -40,7 +40,7 @@ SparkDrawer::SparkDrawer(const lisp::Lisp* lisp)
 void
 SparkDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
 {
-  VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(Vector(0, 0), 100.0f,
+  VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(Vector(0, 0), psys.get_z_pos(),
                                                                     sc.color().get_modelview());
   if (width == 1.0f)
     {
@@ -49,10 +49,10 @@ SparkDrawer::draw(SceneContext& sc, ParticleSystem& psys)
       for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)
         {
           buffer->color(Color(color.r, color.g, color.b, color.a - (color.a * psys.get_progress(i->t))));
-          buffer->vertex(i->x, i->y);
+          buffer->vertex(i->x + i->v_x/10.0f, i->y + i->v_y/10.0f); 
 
           buffer->color(Color(0, 0, 0, 0));
-          buffer->vertex(i->x - i->v_x/10.0f, i->y - i->v_y/10.0f); 
+          buffer->vertex(i->x, i->y);
         }
     }
   else
