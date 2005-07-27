@@ -88,10 +88,10 @@ Hedgehog::update(float delta)
       if (on_ground())
         {
           was_on_ground = true;
-          pos.y = int(pos.y)/TILE_SIZE * TILE_SIZE;
           if (velocity.y > 0)
             {
               velocity.y = 0;
+              pos.y = int(pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE - 1;
             }
           if (direction_left)
             velocity.x = -32;

@@ -27,6 +27,8 @@
 #include <assert.h>
 #include "globals.hpp"
 #include "entity.hpp"
+#include "sector.hpp"
+#include "tile_map.hpp"
 
 Entity::Entity()
   : velocity(0, 0),
@@ -43,6 +45,18 @@ void
 Entity::set_pos(Vector pos)
 {
   this->pos = pos;
+}
+
+bool
+Entity::on_ground() const
+{
+  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y+16);
+}
+
+bool 
+Entity::in_wall() const
+{
+  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y);
 }
 
 /* EOF */

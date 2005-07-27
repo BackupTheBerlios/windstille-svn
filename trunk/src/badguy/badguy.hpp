@@ -30,10 +30,6 @@
 
 class Badguy : public Entity
 {
-protected:
-  bool on_ground();
-  bool in_wall();
-
 public:
   Badguy();
   virtual ~Badguy();

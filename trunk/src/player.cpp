@@ -501,18 +501,6 @@ Player::try_set_action(const std::string& name, float speed)
   sprite->set_action(name, speed);
 }
 
-bool 
-Player::stuck () const
-{
-  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y);
-}
-
-bool
-Player::on_ground() const
-{
-  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y+16);
-}
-
 int
 Player::get_energy() const
 {

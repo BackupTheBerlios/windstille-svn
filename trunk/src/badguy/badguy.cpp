@@ -23,9 +23,6 @@
 */
 
 #include "badguy.hpp"
-#include "sector.hpp"
-#include "globals.hpp"
-#include "tile_map.hpp"
 
 Badguy::Badguy()
 {
@@ -34,34 +31,3 @@ Badguy::Badguy()
 Badguy::~Badguy()
 {
 }
-
-bool
-Badguy::on_ground()
-{
-  return get_world()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE)*TILE_SIZE,
-                                                        (int(pos.y)/TILE_SIZE)*TILE_SIZE)
-    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE+1)*TILE_SIZE,
-                                                      (int(pos.y)/TILE_SIZE)*TILE_SIZE)
-    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE+2)*TILE_SIZE,
-                                                      (int(pos.y)/TILE_SIZE)*TILE_SIZE)
-    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE - 1)*TILE_SIZE,
-                                                      (int(pos.y)/TILE_SIZE)*TILE_SIZE)
-    && Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE - 2)*TILE_SIZE,
-                                                      (int(pos.y)/TILE_SIZE)*TILE_SIZE);
-}
-
-bool
-Badguy::in_wall()
-{
-  return get_world()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE)*TILE_SIZE,
-                                                        (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE)
-    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE - 1)*TILE_SIZE,
-                                                        (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE)
-    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE - 2)*TILE_SIZE,
-                                                        (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE)
-    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE + 1)*TILE_SIZE,
-                                                        (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE)
-    || Sector::current()->get_tilemap()->is_ground((int(pos.x)/TILE_SIZE + 2)*TILE_SIZE,
-                                                      (int(pos.y)/TILE_SIZE - 1)*TILE_SIZE);
-}
-  

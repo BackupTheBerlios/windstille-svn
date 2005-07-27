@@ -39,6 +39,9 @@ private:
   CL_Signal_v0 done; 
 
 protected:
+  bool on_ground() const;
+  bool in_wall() const;
+  
   Vector pos;
   Vector velocity;
   bool useable;

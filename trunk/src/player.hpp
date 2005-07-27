@@ -136,10 +136,6 @@ private:
   void try_set_action(const std::string& name, float speed = 1.0);
 
   Direction get_direction() const;
-  
-  // true if Player is inside a ground tile
-  bool stuck () const;
-  bool on_ground() const;
 };
 
 #endif
