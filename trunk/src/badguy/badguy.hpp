@@ -1,4 +1,4 @@
-/*  $Id: bomb.cpp 752 2005-07-25 10:00:44Z grumbel $
+/*  $Id$
 **   __      __ __             ___        __   __ __   __
 **  /  \    /  \__| ____    __| _/_______/  |_|__|  | |  |   ____
 **  \   \/\/   /  |/    \  / __ |/  ___/\   __\  |  | |  | _/ __ \
@@ -26,7 +26,6 @@
 #define HEADER_BADGUY_HXX
 
 #include "entity.hpp"
-#include "lisp/lisp.hpp"
 
 class Badguy : public Entity
 {
