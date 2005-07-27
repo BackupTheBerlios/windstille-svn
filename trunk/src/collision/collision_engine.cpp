@@ -24,6 +24,8 @@
 #include "globals.hpp"
 #include "tile_map.hpp"
 
+std::vector<Rectf> tilemap_collision_list(TileMap *tilemap, const Rectf &r);
+
 /***********************************************************************
  * Collision
  ***********************************************************************/
@@ -60,11 +62,27 @@ CollisionEngine::collision(CollisionObject& a, CollisionObject& b, const Collisi
 void
 CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
 {
+  if (a.object_type == CollisionObject::RECTANGLE && b.object_type == CollisionObject::RECTANGLE)
+    {
+      unstuck_rect_rect (a, b, delta);
+    }
+  else
+    {
+      if (a.object_type == CollisionObject::RECTANGLE)
+	unstuck_tilemap (b, a, delta);
+      else
+	unstuck_tilemap (a, b, delta);
+
+    }
+}
+
+Vector unstuck_direction(const Rectf &a, const Rectf &b, float delta, float unstuck_velocity)
+{
   // The distance A needs to unstuck from B in the given direction
-  float left   = fabsf(a.get_pos().x + a.primitive.get_width() - b.get_pos().x);
-  float right  = fabsf(b.get_pos().x + b.primitive.get_width() - a.get_pos().x);
-  float top    = fabsf(a.get_pos().y + a.primitive.get_height() - b.get_pos().y);
-  float bottom = fabsf(b.get_pos().y + b.primitive.get_height() - a.get_pos().y);
+  float left   = fabsf(a.right - b.left);
+  float right  = fabsf(b.right - a.left);
+  float top    = fabsf(a.bottom - b.top);
+  float bottom = fabsf(b.bottom - a.top);
 
   float grace =  0.05f;
 
@@ -92,6 +110,54 @@ CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
     {
       dir = Vector( 0, -std::min(bottom/2 + grace, add));
     }
+  return dir;
+}
+
+void
+CollisionEngine::unstuck_tilemap(CollisionObject& a, CollisionObject& b, float delta)
+{
+  Rectf rb = b.primitive;
+
+  rb.left   += b.get_pos().x;
+  rb.right  += b.get_pos().x;
+  rb.top    += b.get_pos().y;
+  rb.bottom += b.get_pos().y;
+
+  // assume, that only one tile is penetrated
+  std::vector<Rectf> rect_list= tilemap_collision_list (a.tilemap, rb);
+  
+  assert (b.object_type == CollisionObject::RECTANGLE);
+  assert (a.object_type == CollisionObject::TILEMAP);
+	
+  if (rect_list.size() == 0)
+    return;
+  assert (rect_list.size()>=1);
+
+  Vector dir = unstuck_direction (rect_list[0], rb, delta, unstuck_velocity);
+  
+  assert (b.unstuck_movable());
+  b.pos += dir;
+
+}
+
+void
+CollisionEngine::unstuck_rect_rect(CollisionObject& a, CollisionObject& b, float delta)
+{
+  Rectf ra = a.primitive;
+
+  ra.left   += a.get_pos().x;
+  ra.right  += a.get_pos().x;
+  ra.top    += a.get_pos().y;
+  ra.bottom += a.get_pos().y;
+
+  Rectf rb = b.primitive;
+
+  rb.left   += b.get_pos().x;
+  rb.right  += b.get_pos().x;
+  rb.top    += b.get_pos().y;
+  rb.bottom += b.get_pos().y;
+
+  Vector dir = unstuck_direction (ra, rb, delta, unstuck_velocity);
 
   if (a.unstuck_movable())
     a.pos -= dir;
@@ -309,6 +375,29 @@ bool tilemap_collision(TileMap *tilemap, const Rectf &r)
 	  }
       }
   return false;
+}
+
+std::vector<Rectf> tilemap_collision_list(TileMap *tilemap, const Rectf &r)
+{
+  std::vector<Rectf> rect_list;
+  int minx, maxx;
+  int miny, maxy;
+  int x, y;
+
+  minx = (int)r.left   / TILE_SIZE;
+  maxx = (int)r.right  / TILE_SIZE;
+  miny = (int)r.top    / TILE_SIZE;
+  maxy = (int)r.bottom / TILE_SIZE;
+
+  for (y = miny; y <= maxy; ++y)
+    for (x = minx; x <= maxx; ++x)
+      {
+	if(tilemap->is_ground (x * TILE_SIZE, y * TILE_SIZE ))
+	  {
+	    rect_list.push_back (Rectf (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
+	  }
+      }
+  return rect_list;
 }
 
 #define c_sign(x) ((x)<0?-1:((x)>0?1:0))

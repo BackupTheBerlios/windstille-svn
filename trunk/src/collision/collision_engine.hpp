@@ -50,6 +50,9 @@ private:
                         const Vector& b1_v, const Vector& b2_v,
                         float delta);
   CollisionData collide_tilemap(CollisionObject& a, CollisionObject& b, float delta);
+
+  void unstuck_tilemap(CollisionObject& a, CollisionObject& b, float delta);
+  void unstuck_rect_rect(CollisionObject& a, CollisionObject& b, float delta);
 };
 
 #endif
