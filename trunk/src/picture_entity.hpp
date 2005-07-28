@@ -35,14 +35,7 @@ private:
   sprite2d::Sprite* sprite;
   bool visible;
   
-  //movement stuff
-  float target_x;
-  float target_y;
-  float target_speed;
-  
-  //flashing stuff
-  float flash_speed;
-  float flash_delta;
+
   
 protected:
   void move(float delta);
@@ -54,8 +47,8 @@ public:
   
   void draw(SceneContext& gc);
   void update(float delta);
-  void move_to(float x, float y, float speed);
-  void show(bool arg_visible);
+  
+  
 };
 
 #endif

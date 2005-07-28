@@ -10,12 +10,11 @@
     (pos 300 650)
   )
   (objects
-    (picture-entity
+    (scriptable-object
       (name "Block0Sign")
       (pos 550 370)
-      (flashspeed 0.7)
       (sprite "images/arrow.sprite")
-      (visible #f)
+      (active #f)
     )
 
     ;; Smoke
@@ -155,7 +154,7 @@
       (sprite "images/objects/box.sprite")
       (pos 1100 750)
     )
-    (useable-object
+    (scriptable-object
       (sprite "images/objects/vrdoor-color.sprite")
       (highlight "images/objects/vrdoor-highlight.sprite")
       (pos 256 704)

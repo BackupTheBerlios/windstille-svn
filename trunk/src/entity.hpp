@@ -71,7 +71,7 @@ public:
   std::string get_use_verb() const { return use_verb; }
 
   /** Makes the objects (un)usable for the player */
-  void set_useable(bool t) { useable = t; } 
+  void set_useable(bool t) { useable = t; }
 
   CL_Signal_v0& sig_done() { return done; }
 

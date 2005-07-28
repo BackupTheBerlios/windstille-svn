@@ -23,40 +23,49 @@
 **  02111-1307, USA.
 */
 
-#include <ClanLib/Display/display.h>
-#include <assert.h>
-#include "globals.hpp"
+
+#ifndef HEADER_SCRIPTABLEOBJECT_HXX
+#define HEADER_SCRIPTABLEOBJECT_HXX
+
+#include <string>
 #include "entity.hpp"
-#include "sector.hpp"
-#include "tile_map.hpp"
+#include "lisp/lisp.hpp"
+#include "sprite2d/sprite.hpp"
 
-Entity::Entity()
-  : velocity(0, 0),
-    useable(false)
+class ScriptableObject : public Entity
 {
+private:
+  sprite2d::Sprite* sprite;
+  sprite2d::Sprite* highlight;
   
-}
+  //useable stuff
+  std::string use_script;
+  
+  //movement stuff
+  float target_x;
+  float target_y;
+  float target_speed;
+  float acceleration;
+  
+  //flashing stuff
+  float flash_speed;
+  float flash_delta;
+  
+protected:
+  void move(float delta);
+  void flash();
 
-Entity::~Entity()
-{
-}
+public:
+  ScriptableObject(const lisp::Lisp* lisp);
+  virtual ~ScriptableObject();
 
-void
-Entity::set_pos(Vector pos)
-{
-  this->pos = pos;
-}
+  void draw (SceneContext& sc);
+  void update (float delta);
+  void use();
+  void move_to(float x, float y, float arg_target_speed, float arg_acceleration);
+  void start_flash(float speed);
+};
 
-bool
-Entity::on_ground() const
-{
-  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y+16);
-}
-
-bool 
-Entity::in_wall() const
-{
-  return get_world ()->get_tilemap()->is_ground(pos.x, pos.y);
-}
+#endif
 
 /* EOF */

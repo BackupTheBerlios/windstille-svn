@@ -99,8 +99,6 @@ public:
   void hit(int points);
   
   void collision(const CollisionData& data, CollisionObject& other);
-  bool unstuck() const {return true;}
-  bool unstuck_movable() const {return true;}
 
   Entity* find_useable_entity();
 

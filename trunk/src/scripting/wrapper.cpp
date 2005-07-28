@@ -64,6 +64,18 @@ static int GameObject_remove_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int GameObject_set_active_wrapper(HSQUIRRELVM v)
+{
+  Scripting::GameObject* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  SQBool arg0;
+  sq_getbool(v, 2, &arg0);
+  
+  _this->set_active(arg0);
+  
+  return 0;
+}
+
 static int TestObject_release_hook(SQUserPointer ptr, int )
 {
   Scripting::TestObject* _this = reinterpret_cast<Scripting::TestObject*> (ptr);
@@ -190,37 +202,37 @@ static int Player_stop_listening_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int PictureEntity_release_hook(SQUserPointer ptr, int )
+static int ScriptableObject_release_hook(SQUserPointer ptr, int )
 {
-  Scripting::PictureEntity* _this = reinterpret_cast<Scripting::PictureEntity*> (ptr);
+  Scripting::ScriptableObject* _this = reinterpret_cast<Scripting::ScriptableObject*> (ptr);
   delete _this;
   return 0;
 }
 
-void create_squirrel_instance(HSQUIRRELVM v, Scripting::PictureEntity* object, bool setup_releasehook)
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::ScriptableObject* object, bool setup_releasehook)
 {
-  sq_pushstring(v, "PictureEntity", -1);
+  sq_pushstring(v, "ScriptableObject", -1);
   if(sq_get(v, -2) < 0) {
     std::ostringstream msg;
-    msg << "Couldn't resolved squirrel type 'PictureEntity'";
+    msg << "Couldn't resolved squirrel type 'ScriptableObject'";
     throw SquirrelError(v, msg.str());
   }
 
   if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object) < 0) {
     std::ostringstream msg;
-    msg << "Couldn't setup squirrel instance for object of type 'PictureEntity'";
+    msg << "Couldn't setup squirrel instance for object of type 'ScriptableObject'";
     throw SquirrelError(v, msg.str());
   }
   sq_remove(v, -2);
 
   if(setup_releasehook) {
-    sq_setreleasehook(v, -1, PictureEntity_release_hook);
+    sq_setreleasehook(v, -1, ScriptableObject_release_hook);
   }
 }
 
-static int PictureEntity_move_to_wrapper(HSQUIRRELVM v)
+static int ScriptableObject_move_to_wrapper(HSQUIRRELVM v)
 {
-  Scripting::PictureEntity* _this;
+  Scripting::ScriptableObject* _this;
   sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
   float arg0;
   sq_getfloat(v, 2, &arg0);
@@ -228,20 +240,22 @@ static int PictureEntity_move_to_wrapper(HSQUIRRELVM v)
   sq_getfloat(v, 3, &arg1);
   float arg2;
   sq_getfloat(v, 4, &arg2);
+  float arg3;
+  sq_getfloat(v, 5, &arg3);
   
-  _this->move_to(arg0, arg1, arg2);
+  _this->move_to(arg0, arg1, arg2, arg3);
   
   return 0;
 }
 
-static int PictureEntity_show_wrapper(HSQUIRRELVM v)
+static int ScriptableObject_start_flash_wrapper(HSQUIRRELVM v)
 {
-  Scripting::PictureEntity* _this;
+  Scripting::ScriptableObject* _this;
   sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
-  SQBool arg0;
-  sq_getbool(v, 2, &arg0);
+  float arg0;
+  sq_getfloat(v, 2, &arg0);
   
-  _this->show(arg0);
+  _this->start_flash(arg0);
   
   return 0;
 }
@@ -374,18 +388,6 @@ static int load_state_wrapper(HSQUIRRELVM v)
   sq_getstring(v, 2, &arg1);
   
   Scripting::load_state(arg0, arg1);
-  
-  return 0;
-}
-
-static int activate_object_wrapper(HSQUIRRELVM v)
-{
-  const char* arg0;
-  sq_getstring(v, 2, &arg0);
-  SQBool arg1;
-  sq_getbool(v, 3, &arg1);
-  
-  Scripting::activate_object(arg0, arg1);
   
   return 0;
 }
@@ -649,14 +651,6 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
-  sq_pushstring(v, "activate_object", -1);
-  sq_newclosure(v, &activate_object_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't register function'activate_object'";
-    throw SquirrelError(v, msg.str());
-  }
-
   sq_pushstring(v, "list_objects", -1);
   sq_newclosure(v, &list_objects_wrapper, 0);
   if(sq_createslot(v, -3) < 0) {
@@ -776,6 +770,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
+  sq_pushstring(v, "set_active", -1);
+  sq_newclosure(v, &GameObject_set_active_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'set_active'";
+    throw SquirrelError(v, msg.str());
+  }
+
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register class'GameObject'";
@@ -860,34 +862,34 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
-  // Register class PictureEntity
-  sq_pushstring(v, "PictureEntity", -1);
+  // Register class ScriptableObject
+  sq_pushstring(v, "ScriptableObject", -1);
   sq_pushstring(v, "GameObject", -1);
   sq_get(v, -3);
   if(sq_newclass(v, SQTrue) < 0) {
     std::ostringstream msg;
-    msg << "Couldn't create new class 'PictureEntity'";
+    msg << "Couldn't create new class 'ScriptableObject'";
     throw SquirrelError(v, msg.str());
   }
   sq_pushstring(v, "move_to", -1);
-  sq_newclosure(v, &PictureEntity_move_to_wrapper, 0);
+  sq_newclosure(v, &ScriptableObject_move_to_wrapper, 0);
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'move_to'";
     throw SquirrelError(v, msg.str());
   }
 
-  sq_pushstring(v, "show", -1);
-  sq_newclosure(v, &PictureEntity_show_wrapper, 0);
+  sq_pushstring(v, "start_flash", -1);
+  sq_newclosure(v, &ScriptableObject_start_flash_wrapper, 0);
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
-    msg << "Couldn't register function'show'";
+    msg << "Couldn't register function'start_flash'";
     throw SquirrelError(v, msg.str());
   }
 
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
-    msg << "Couldn't register class'PictureEntity'";
+    msg << "Couldn't register class'ScriptableObject'";
     throw SquirrelError(v, msg.str());
   }
 

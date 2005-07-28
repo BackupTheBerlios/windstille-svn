@@ -17,6 +17,12 @@ GameObject::remove()
 }
 
 void
+GameObject::set_active(bool active)
+{
+  object->set_active(active);
+}
+
+void
 TestObject::set_sprite(const std::string& filename)
 {
   obj()->set_sprite(filename);
@@ -53,15 +59,15 @@ Player::stop_listening()
 }
 
 void
-PictureEntity::move_to(float x, float y, float speed)
+ScriptableObject::move_to(float x, float y, float target_speed, float acceleration)
 {
-  obj()->move_to(x, y, speed);
+  obj()->move_to(x, y, target_speed, acceleration);
 }
 
 void
-PictureEntity::show(bool visible)
+ScriptableObject::start_flash(float speed)
 {
-  obj()->show(visible);
+  obj()->start_flash(speed);
 }
 
 }

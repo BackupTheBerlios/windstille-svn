@@ -8,6 +8,7 @@ dialog(TOP, "portrait",
        "We will start with <small>climbing</small>. See the <i>block</i> in front " +
        "of you? Press <b>Right</b> and <b>Jump</b> to hang on the ledge.");
 
-Block0Sign.show(true);
+Block0Sign.start_flash(0.7);
+Block0Sign.move_to(100, 370, 100, 2);
 
 /* EOF */

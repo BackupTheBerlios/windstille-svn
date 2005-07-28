@@ -43,8 +43,7 @@
 #include "badguy/hedgehog.hpp"
 #include "badguy/spider_mine.hpp"
 #include "box.hpp"
-#include "useable_object.hpp"
-#include "picture_entity.hpp"
+#include "scriptable_object.hpp"
 
 Sector* Sector::current_ = 0;
 
@@ -153,10 +152,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new Nightvision(lisp));
   } else if (name == "particle-system") {
     add(new ParticleSystem(lisp));
-  } else if(name == "useable-object") {    
-    add(new UseableObject(lisp));
-  } else if(name == "picture-entity") {    
-    add(new PictureEntity(lisp));
+  } else if(name == "scriptable-object") {    
+    add(new ScriptableObject(lisp));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }
@@ -279,9 +276,9 @@ Sector::expose_object_to_squirrel(GameObject* object)
   // FIXME: Grumbel: I don't consider this brute-force exposing a good
   // idea, should be up to the scripter if we ones to keep a refrence
   // to an object or not
-  PictureEntity* picture = dynamic_cast<PictureEntity*> (object);
-  if(picture) {
-    script_manager->expose_object(new Scripting::PictureEntity(picture),
+  ScriptableObject* script_obj = dynamic_cast<ScriptableObject*> (object);
+  if(script_obj) {
+    script_manager->expose_object(new Scripting::ScriptableObject(script_obj),
                                   object->get_name(), true);
     return;
   }

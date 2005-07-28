@@ -5,13 +5,14 @@
 #include "game_object.hpp"
 #include "test_object.hpp"
 #include "player.hpp"
-#include "picture_entity.hpp"
+#include "scriptable_object.hpp"
 #include "ref.hpp"
 
 typedef GameObject _GameObject;
 typedef TestObject _TestObject;
 typedef Player _Player;
-typedef PictureEntity _PictureEntity;
+typedef ScriptableObject _ScriptableObject;
+typedef Entity _Entity;
 #endif
 
 namespace Scripting
@@ -34,6 +35,7 @@ public:
 public:
   const std::string& get_name() const;
   void remove();
+  void set_active(bool active);
 };
 
 class TestObject : public GameObject
@@ -80,25 +82,25 @@ public:
   void stop_listening();
 };
 
-class PictureEntity : public GameObject
+class ScriptableObject : public GameObject
 {
 #ifndef SCRIPTING_API
 public:
-  PictureEntity(_PictureEntity* _object)
+  ScriptableObject(_ScriptableObject* _object)
     : GameObject(_object)
   {}
-  virtual ~PictureEntity()
+  virtual ~ScriptableObject()
   {}
 
-  _PictureEntity* obj() const
+  _ScriptableObject* obj() const
   {
-    return reinterpret_cast<_PictureEntity*> (object.get());
+    return reinterpret_cast<_ScriptableObject*> (object.get());
   }
 #endif
 
 public:
-  void move_to(float x, float y, float speed);
-  void show(bool visible);
+  void move_to(float x, float y, float target_speed, float acceleration);
+  void start_flash(float speed);
 };
  
 }

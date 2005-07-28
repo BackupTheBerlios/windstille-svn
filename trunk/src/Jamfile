@@ -63,8 +63,6 @@ sources =
         math.hpp
         nightvision.cpp
         nightvision.hpp
-        picture_entity.cpp
-        picture_entity.hpp
         player.cpp
         player.hpp
         random.cpp
@@ -73,6 +71,8 @@ sources =
         screen.hpp
         script_manager.hpp
         script_manager.cpp
+        scriptable_object.hpp
+        scriptable_object.cpp
         sector.cpp
         sector.hpp
         spawnpoint.cpp
@@ -94,8 +94,6 @@ sources =
         timer.cpp
         trigger.cpp
         trigger.hpp
-        useable_object.cpp
-        useable_object.hpp
         util.cpp
         util.hpp
         view.cpp
