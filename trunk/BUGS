@@ -21,8 +21,6 @@ Windstille Bugs
 
 - sometimes (very rarly) the game freezes at startup
 
-- windstille: collision/collision_engine.cpp:386: Assertion `tx >= 0.0f' failed.
-
 - can't Ctrl-c the game
 
 # EOF #
