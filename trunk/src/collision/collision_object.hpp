@@ -40,9 +40,9 @@ class GameObject;
     collision() callback he can then handle the collision reaction. */
 class CollisionObject
 {
-private:
+public:
   enum ObjectType { RECTANGLE, TILEMAP };
-
+private:
   ObjectType object_type;
 
   /// position of the object
@@ -66,6 +66,8 @@ public:
   CollisionObject(TileMap* tilemap_);
 
   virtual ~CollisionObject();
+
+  ObjectType get_type() const { return object_type; }
 
   /** Sets the velocity of this object, this is the primary way how
       you move a CollisionObject. Velocity simply means the difference
@@ -108,7 +110,6 @@ public:
   CL_Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
 
   friend class CollisionEngine;
-  friend CollisionData collide(CollisionObject& a, CollisionObject& b, float delta);
 };
 
 #endif

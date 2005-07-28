@@ -55,20 +55,20 @@ CollisionEngine::collision(CollisionObject& a, CollisionObject& b, const Collisi
 
   CollisionData inv=result.invert();
 
-  a.collision(result, b);
-  b.collision(inv, a);
+  a.sig_collision()(result, b);
+  b.sig_collision()(inv, a);
 }
 
 void
 CollisionEngine::unstuck(CollisionObject& a, CollisionObject& b, float delta)
 {
-  if (a.object_type == CollisionObject::RECTANGLE && b.object_type == CollisionObject::RECTANGLE)
+  if (a.get_type() == CollisionObject::RECTANGLE && b.get_type() == CollisionObject::RECTANGLE)
     {
       unstuck_rect_rect (a, b, delta);
     }
   else
     {
-      if (a.object_type == CollisionObject::RECTANGLE)
+      if (a.get_type() == CollisionObject::RECTANGLE)
 	unstuck_tilemap (b, a, delta);
       else
 	unstuck_tilemap (a, b, delta);
@@ -126,8 +126,8 @@ CollisionEngine::unstuck_tilemap(CollisionObject& a, CollisionObject& b, float d
   // assume, that only one tile is penetrated
   std::vector<Rectf> rect_list= tilemap_collision_list (a.tilemap, rb);
   
-  assert (b.object_type == CollisionObject::RECTANGLE);
-  assert (a.object_type == CollisionObject::TILEMAP);
+  assert (b.get_type() == CollisionObject::RECTANGLE);
+  assert (a.get_type() == CollisionObject::TILEMAP);
 	
   if (rect_list.size() == 0)
     return;
@@ -348,7 +348,7 @@ CollisionEngine::collide(const Rectf& b1, const Rectf& b2,
 CollisionData
 CollisionEngine::collide(CollisionObject& a, CollisionObject& b, float delta)
 {
-  if (a.object_type == CollisionObject::RECTANGLE && b.object_type == CollisionObject::RECTANGLE)
+  if (a.get_type() == CollisionObject::RECTANGLE && b.get_type() == CollisionObject::RECTANGLE)
     {
       Rectf ra = a.primitive;
       Rectf rb = b.primitive;
@@ -369,7 +369,7 @@ CollisionEngine::collide(CollisionObject& a, CollisionObject& b, float delta)
     }
   else
     {
-      if (a.object_type == CollisionObject::RECTANGLE)
+      if (a.get_type() == CollisionObject::RECTANGLE)
 	return collide_tilemap (b, a, delta).invert();
       else
 	return collide_tilemap (a, b, delta);
@@ -464,8 +464,8 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
 {
   CollisionData result;
 
-  assert(a.object_type == CollisionObject::TILEMAP);
-  assert(b.object_type == CollisionObject::RECTANGLE);
+  assert(a.get_type() == CollisionObject::TILEMAP);
+  assert(b.get_type() == CollisionObject::RECTANGLE);
 
   Vector vel = b.get_velocity() - a.get_velocity();
 
