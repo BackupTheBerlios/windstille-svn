@@ -69,10 +69,8 @@ ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
 
 ScriptableObject::~ScriptableObject()
 {
-  if (sprite)
-    delete sprite;
-  if (highlight)
-    delete highlight;
+  delete sprite;
+  delete highlight;
 }
 
 void
