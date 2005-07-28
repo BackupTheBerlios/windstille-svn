@@ -38,22 +38,22 @@ namespace sprite3d
 {
 
 Sprite::Sprite()
-  : data(0)
+  : data(0), actions_switched(false)
 {
-  
 }
 
 Sprite::Sprite(const std::string& filename)
-  : data(sprite3d_manager->create_data(filename))
+  : data(sprite3d_manager->create_data(filename)), actions_switched(false)
 {
   frame1.action = &data->actions[0];
   frame1.frame = 0;
-  frame1.rot = false;
+  frame1.rot   = false;
   frame1.speed = 1.0;
-  frame2 = frame1;
+  frame2       = frame1;
   abort_at_frame.action = 0;
-  next_frame.action = 0;
+  next_frame.action  = 0;
   next_action.action = 0;
+  blend_time = 0.0;
 
   bone_positions.resize(data->bone_count);
 }
@@ -63,12 +63,13 @@ Sprite::Sprite(const Data* data)
 {
   frame1.action = &data->actions[0];
   frame1.frame = 0;
-  frame1.rot = false;
+  frame1.rot   = false;
   frame1.speed = 1.0;
-  frame2 = frame1;
+  frame2       = frame1;
   abort_at_frame.action = 0;
-  next_frame.action = 0;
+  next_frame.action  = 0;
   next_action.action = 0;
+  blend_time = 0.0;
 
   bone_positions.resize(data->bone_count);
 }
@@ -267,10 +268,10 @@ Sprite::get_bone_matrix(BoneID id) const
 class SpriteDrawingRequest : public DrawingRequest
 {
 private:
-  Sprite* sprite;
+  Sprite sprite;
 
 public:
-  SpriteDrawingRequest(Sprite* sprite, const Vector& pos, float z_pos,
+  SpriteDrawingRequest(Sprite sprite, const Vector& pos, float z_pos,
                        const Matrix& modelview)
       : DrawingRequest(pos, z_pos, modelview), sprite(sprite)
   {
@@ -278,7 +279,7 @@ public:
 
   void draw(CL_GraphicContext* gc)
   {
-    sprite->draw(gc, pos, modelview);
+    sprite.draw(gc, pos, modelview);
   }
 };
 
@@ -342,7 +343,7 @@ void
 Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos)
 {
   sc.color().draw(
-    new SpriteDrawingRequest(this, pos, z_pos, sc.color().get_modelview()));
+    new SpriteDrawingRequest(*this, pos, z_pos, sc.color().get_modelview()));
 }
 
 void
@@ -351,7 +352,7 @@ Sprite::draw(SceneContext& sc, const Matrix& matrix)
   Matrix mmatrix 
     = matrix.multiply(sc.color().get_modelview());
   sc.color().draw(
-    new SpriteDrawingRequest(this, Vector(0, 0), 0, mmatrix));
+    new SpriteDrawingRequest(*this, Vector(0, 0), 0, mmatrix));
 }
 
 void

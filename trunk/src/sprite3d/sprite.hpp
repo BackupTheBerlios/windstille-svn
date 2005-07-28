@@ -113,9 +113,9 @@ public:
 private:  
   struct Frame {
     const Action* action;
-    int frame;
+    int   frame;
     float speed;
-    bool rot;
+    bool  rot;
 
     bool operator==(const Frame& o) const
     {
