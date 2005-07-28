@@ -24,6 +24,7 @@
 #include "lisp/lisp.hpp"
 #include "collision/collision_object.hpp"
 #include "sector.hpp"
+#include "particles/particle_system.hpp"
 #include "sprite2d/sprite.hpp"
 
 class Box : public Entity

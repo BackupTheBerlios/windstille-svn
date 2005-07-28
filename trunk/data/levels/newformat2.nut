@@ -1,5 +1,23 @@
+player_flames2.set_active(false);
+player_flames.set_active(false);      
 
-wait(1.5);
+/* Some fun with fire */
+function startfire()
+{
+  // Need to parent here because at top level "player" isn't yet created
+  player_flames2.set_parent("player");
+  player_flames.set_parent("player");      
+
+  player_flames2.set_active(true);
+  player_flames.set_active(true);
+}
+
+function stopfire()
+{
+  player_flames2.set_active(false);
+  player_flames.set_active(false);
+}
+
 /* play_sound("sounds/speech/vr_intro.ogg"); */
 dialog(TOP, "portrait", 
        "<sin>Welcome</sin> to the <large>VR training program</large>. Here you " +

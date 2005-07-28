@@ -18,6 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <math.h>
+#include <iostream>
 #include <ClanLib/gl.h>
 #include "particle_system.hpp"
 #include "display/scene_context.hpp"
@@ -59,6 +60,9 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   
   // Set stuff from Lisp
   lisp::Properties props(lisp);
+
+  props.get("name", name);
+    
   float p_lifetime;
   if (props.get("lifetime", p_lifetime))
     set_lifetime(p_lifetime);
@@ -97,17 +101,12 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   if (props.get("aspect", p_aspect))
     set_aspect(p_aspect.x, p_aspect.y);
 
-  Color p_color;
-  if (props.get("color", p_color))
-    set_color(Color(p_color.r, p_color.g, p_color.b, p_color.a));
-
-  Color p_fade_color;
-  if (props.get("fade-color", p_fade_color))
-    set_color(Color(p_fade_color.r, p_fade_color.g, p_fade_color.b, p_fade_color.a));
-
+  props.get("color-begin", color_start);
+  props.get("color-end",   color_stop);
+  
   Vector p_speed;
-  if (props.get("speed", p_speed))
-    set_speed(p_speed.x, p_speed.y);
+  if (props.get("velocity", p_speed))
+    set_velocity(p_speed.x, p_speed.y);
 
   {
     const lisp::Lisp* drawer_lisp = 0;
@@ -151,6 +150,15 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
             prop.get("y2", y2);
           
             set_line_distribution(x1, y1, x2, y2);
+          } else if (iter.item() == "rect-distribution") {
+            Rectf rect;
+            prop.get("x1", rect.left);
+            prop.get("y1", rect.top);
+            prop.get("x2", rect.right);
+            prop.get("y2", rect.bottom);
+          
+            set_rect_distribution(rect);
+
           } else {
             std::cout << "Unknown distribution: " << iter.item() << std::endl;
           }
@@ -223,8 +231,8 @@ ParticleSystem::spawn(Particle& particle)
 {
   randomizer->set_pos(particle);
 
-  particle.x   += spawn_x_pos;
-  particle.y   += spawn_y_pos;
+  particle.x   += (parent ? parent->get_pos().x : 0) + spawn_x_pos;
+  particle.y   += (parent ? parent->get_pos().y : 0) + spawn_y_pos;
 
   float direction = rnd.drand(cone_start, cone_stop);
   float speed     = rnd.drand(speed_start, speed_stop);
@@ -320,10 +328,10 @@ ParticleSystem::set_circle_distribution(float radius)
 }
 
 void
-ParticleSystem::set_rect_distribution(float width, float height)
+ParticleSystem::set_rect_distribution(const Rectf& rect)
 {
   delete randomizer;
-  randomizer = new RectRandomizer(width,  height);
+  randomizer = new RectRandomizer(rect);
 }
 
 void
@@ -361,9 +369,10 @@ ParticleSystem::set_aspect(float from, float to)
 }
 
 void
-ParticleSystem::set_color(const Color& color)
+ParticleSystem::set_color(const Color& start, const Color& end)
 {
-  color_start = color;
+  color_start = start;
+  color_stop  = end;
 }
 
 void
@@ -373,7 +382,7 @@ ParticleSystem::set_fade_color(const Color& color)
 }
 
 void
-ParticleSystem::set_speed(float from, float to)
+ParticleSystem::set_velocity(float from, float to)
 {
   speed_start = from;
   speed_stop  = to;

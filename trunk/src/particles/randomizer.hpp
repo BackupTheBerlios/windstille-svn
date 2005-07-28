@@ -39,15 +39,14 @@ public:
 
 class RectRandomizer : public Randomizer {
 public:
-  float width;
-  float height;
+  Rectf rect;
 
-  RectRandomizer(float width_, float height_) 
-    : width(width_), height(height_) {}
+  RectRandomizer(const Rectf& rect_)
+    : rect(rect_) {}
  
   void set_pos(Particle& p) {
-    p.x = rnd.drand(-width/2, width/2);
-    p.y = rnd.drand(-height/2, height/2);
+    p.x = rnd.drand(rect.left, rect.right);
+    p.y = rnd.drand(rect.top,  rect.bottom);
   }
 };
 

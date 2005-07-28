@@ -28,6 +28,7 @@
 #include "globals.hpp"
 #include "sprite3d/manager.hpp"
 #include "glutil/surface_manager.hpp"
+#include "particles/particle_system.hpp"
 #include "collision/collision_engine.hpp"
 
 static const int MAX_ENERGY = 16;
@@ -149,7 +150,6 @@ Player::update (float delta)
   // fall down
   velocity.y += GRAVITY * delta;
 
-  pos += velocity * delta;
   sprite.update(delta);
   grenade.update(delta);
 

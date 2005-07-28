@@ -1,4 +1,4 @@
-//  $Id: trigger.cxx,v 1.3 2003/09/21 17:34:00 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -40,7 +40,7 @@ Trigger::Trigger(const lisp::Lisp* lisp)
   props.get("width", width);
   props.get("height", height);
   props.get("script", script);
-  props.get("one_time_trigger", one_time_trigger);
+  props.get("one-time-trigger", one_time_trigger);
   props.print_unused_warnings("trigger");
 
   if(x < 0 || y < 0 || width < 0 || height < 0)

@@ -36,6 +36,7 @@ public:
   const std::string& get_name() const;
   void remove();
   void set_active(bool active);
+  void set_parent(const std::string& name);
 };
 
 class TestObject : public GameObject

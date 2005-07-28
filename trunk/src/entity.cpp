@@ -34,7 +34,7 @@ Entity::Entity()
   : velocity(0, 0),
     useable(false)
 {
-  
+  parent = 0;
 }
 
 Entity::~Entity()
@@ -57,6 +57,15 @@ bool
 Entity::in_wall() const
 {
   return get_world ()->get_tilemap()->is_ground(pos.x, pos.y);
+}
+
+void
+Entity::set_parent(Entity* parent_)
+{
+  if (parent_ != this)
+    {
+      parent = parent_;
+    }
 }
 
 /* EOF */

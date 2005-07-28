@@ -25,7 +25,7 @@
 #include "color.hpp"
 #include "drawer.hpp"
 #include "lisp/lisp.hpp"
-#include "game_object.hpp"
+#include "entity.hpp"
 
 class SceneContext;
 class Randomizer;
@@ -51,7 +51,7 @@ struct Particle {
 
 
 /** */
-class ParticleSystem : public GameObject
+class ParticleSystem : public Entity
 {
 public:
   typedef std::vector<Particle> Particles;
@@ -134,7 +134,7 @@ public:
 
   /** Causes particles to not be spawned at a single point, but inside
       the given rectangle */
-  void set_rect_distribution(float width, float height);
+  void set_rect_distribution(const Rectf& rect);
 
   /** Limit the direction into which the new particles spawn by the
       given angles, angles are given in degrees */
@@ -154,14 +154,14 @@ public:
   void set_aspect(float from, float to);
 
   /** Set the color at which the particles will start */
-  void set_color(const Color& color);
+  void set_color(const Color& start, const Color& end);
 
   /** Set the color at which the particles will end */
   void set_fade_color(const Color& color);
 
-  /** Set the speed of the particles, it will be randomly distributed
+  /** Set the velocity of the particles, it will be randomly distributed
       from \a from to \a to, direction will be taken from the cone */
-  void set_speed(float from, float to);
+  void set_velocity(float from, float to);
 
   iterator begin() { return particles.begin(); }
   iterator end()   { return particles.end(); }

@@ -47,6 +47,7 @@ protected:
   bool useable;
   std::string use_verb;
   
+  Entity* parent;
 public:
   Entity();
   virtual ~Entity();
@@ -72,6 +73,8 @@ public:
 
   /** Makes the objects (un)usable for the player */
   void set_useable(bool t) { useable = t; }
+
+  void set_parent(Entity* parent_);
 
   CL_Signal_v0& sig_done() { return done; }
 

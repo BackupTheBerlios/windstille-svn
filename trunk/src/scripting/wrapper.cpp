@@ -76,6 +76,18 @@ static int GameObject_set_active_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int GameObject_set_parent_wrapper(HSQUIRRELVM v)
+{
+  Scripting::GameObject* _this;
+  sq_getinstanceup(v, 1, (SQUserPointer*) &_this, 0);
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  _this->set_parent(arg0);
+  
+  return 0;
+}
+
 static int TestObject_release_hook(SQUserPointer ptr, int )
 {
   Scripting::TestObject* _this = reinterpret_cast<Scripting::TestObject*> (ptr);
@@ -775,6 +787,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(sq_createslot(v, -3) < 0) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_active'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "set_parent", -1);
+  sq_newclosure(v, &GameObject_set_parent_wrapper, 0);
+  if(sq_createslot(v, -3) < 0) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'set_parent'";
     throw SquirrelError(v, msg.str());
   }
 
