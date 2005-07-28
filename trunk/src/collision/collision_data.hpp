@@ -25,6 +25,8 @@
 #include <iostream>
 #include "math/vector.hpp"
 
+class CollisionObject;
+
 struct CollisionData
 {
   enum State { NONE, STUCK, COLLISION } state;
@@ -41,6 +43,8 @@ struct CollisionData
 
   // time of collision
   float col_time;
+
+  CollisionObject *a,*b;
 
   CollisionData()
   {

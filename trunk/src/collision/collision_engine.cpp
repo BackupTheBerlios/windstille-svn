@@ -171,25 +171,66 @@ CollisionEngine::update(float delta)
 {
   if (objects.empty())
     return; 
-  
-  for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
-    {
-      for(Objects::iterator j = i + 1; j != objects.end(); ++j)
-        {
-          if (i != j)
-            {
-	      CollisionData r = collide(**i, **j, delta);
-	      if(r.state!=CollisionData::NONE)
-		{
-		  collision(**i, **j, r, delta);
-		}
-            }
-        }
-      
-      update(**i, delta);
-    }
 
-  //  return;
+  CollisionData col_data;
+  float frame=delta;
+  float min_time=frame;
+  int max_tries=20;
+
+  do
+    {
+      min_time=frame;
+      
+      for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
+	{
+	  for(Objects::iterator j = i + 1; j != objects.end(); ++j)
+	    {
+	      if (i != j)
+		{
+		  CollisionData r = collide(**i, **j, frame);
+		  if(r.state!=CollisionData::NONE)
+		    {
+		      if (min_time > r.col_time && r.col_time>=0)
+			{
+			  r.a=*i;
+			  r.b=*j;
+			  col_data = r;
+			  min_time = r.col_time;
+			  if (min_time > 0.0005)
+			    min_time -= 0.0005;
+			}
+		    }
+		}
+	    }
+	}
+
+      // move till first collision (or till end, when no collision occured)
+      if(min_time>0)
+	{
+	  for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
+	    {
+	      update(**i,min_time);
+	    }
+	}
+      // report collision
+      if (min_time < frame)
+	{
+	  collision (*col_data.a, *col_data.b, col_data, min_time);
+	}
+
+      frame-=min_time;
+      min_time=0;
+
+
+      // check tries
+      --max_tries;
+      if (max_tries == 0)
+	std::cerr<<"Too much tries in collision detection"<<std::endl;
+
+    }while (min_time < frame  && max_tries>0);
+
+  //return; // uncomment, if you want no unstucking
+
   // check penetration and resolve
   bool penetration = true;
   int maxtries=15;
@@ -336,6 +377,7 @@ CollisionEngine::collide(CollisionObject& a, CollisionObject& b, float delta)
     }
 }
 
+
 int get_next_integer(float f, float direction)
 {
   int result;
@@ -445,6 +487,9 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
   float tx, ty;         // next time, when grid is hit
   float ct=1.0f;        // collision_time
 
+  // also check at time==0
+  bool first_time=true;
+
   if (vel.x < 0)
     x = &r.left;
   else
@@ -459,8 +504,17 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
     {
       ct = -1.0f;
 
-      next_x = get_next_integer ((*x / TILE_SIZE), vel.x) * TILE_SIZE;
-      next_y = get_next_integer ((*y / TILE_SIZE), vel.y) * TILE_SIZE;
+      if(first_time)
+	{
+	  next_x = ((int)(*x / TILE_SIZE)) * TILE_SIZE;
+	  next_y = ((int)(*y / TILE_SIZE)) * TILE_SIZE;
+	  first_time = false;
+	}
+      else
+	{
+	  next_x = get_next_integer ((*x / TILE_SIZE), vel.x) * TILE_SIZE;
+	  next_y = get_next_integer ((*y / TILE_SIZE), vel.y) * TILE_SIZE;
+	}
 
       if (vel.x != 0.0f)
 	tx = (next_x - *x) / vel.x;
@@ -472,8 +526,10 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
       else
 	ty = 10000.0f;
 
-      assert (tx >= 0.0f);
-      assert (ty >= 0.0f);
+      if(tx<0)
+	tx=0;
+      if(ty<0)
+	ty=0;
 
       if (tx < ty)
 	{

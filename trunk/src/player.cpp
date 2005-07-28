@@ -149,22 +149,14 @@ Player::update (float delta)
   }
 
   // fall down
-  if(on_ground()) {
-    if(velocity.y > 0) {
-      velocity.y = 0;
-      pos.y = int(pos.y / TILE_SIZE) * TILE_SIZE + TILE_SIZE - 1;
-    }
-  } else {
-    velocity.y += GRAVITY * delta;
-  }
+  velocity.y += GRAVITY * delta;
 
   pos += velocity * delta;
   sprite.update(delta);
   grenade.update(delta);
 
-  // FIXME: actually movement should be done through CollisionObject
-  //        and this->pos should be set by getting value from the current CollisionObject
-  (*col_objects.begin ())->set_pos (pos);
+  (*col_objects.begin ())->set_velocity (velocity);
+  pos=(*col_objects.begin ())->get_pos();
 }
 
 void
@@ -531,8 +523,27 @@ Player::hit(int points)
 void
 Player::collision(const CollisionData& data, CollisionObject& other)
 {
-  (void) data;
+  Vector cur_vel = (*col_objects.begin ())->get_velocity(); // copy velocity, as "velocity" is the wanted velocity, whereas cur_vel is the velocity in the current delta-frame
   (void) other;
+  if (data.direction.y != 0)
+    {
+      cur_vel.y = 0;
+      velocity.y = 0; // also reset vertical velocity
+    }
+  else
+    {
+      // do not reset horizontal velocity, as it's only set, when starting to go/run
+      cur_vel.x = 0;
+    }
+  (*col_objects.begin ())->set_velocity (cur_vel);
+  
+}
+
+void 
+Player::set_pos(Vector pos)
+{
+  Entity::set_pos(pos);
+  (*col_objects.begin ())->set_pos (pos);
 }
 
 /* EOF */

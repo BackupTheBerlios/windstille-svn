@@ -102,6 +102,8 @@ public:
 
   Entity* find_useable_entity();
 
+  virtual void set_pos(Vector pos);
+
 private:
   void update_walk_stand();
   void set_stand();

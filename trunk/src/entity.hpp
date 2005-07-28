@@ -54,7 +54,7 @@ public:
   virtual Vector get_pos() const
   { return pos; }
 
-  void set_pos(Vector pos);
+  virtual void set_pos(Vector pos);
 
   /** Called once per frame to allow the object to draw itself */
   virtual void draw(SceneContext& gc) = 0;
