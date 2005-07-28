@@ -29,6 +29,7 @@
 
 class TileMap;
 class CollisionEngine;
+class GameObject;
 
 /** The CollisionObject provides way to handle collisions in a nice
     and predictable way. To use it a GameObject/Entity simply
@@ -50,15 +51,13 @@ private:
   /// velocity of the object
   Vector velocity;
 
-  CollisionObject* parent;
+  GameObject* game_object;
 
   CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
 
   Rectf primitive;
   TileMap* tilemap;
 
-  CollisionEngine* coll_engine;
-  
   bool is_unstuckable;
   bool is_unstuck_movable;
 
@@ -88,6 +87,9 @@ public:
       returned */
   void set_pos(const Vector& p);
   Vector get_pos() const;
+
+  void set_game_object(GameObject* game_object);
+  GameObject* get_game_object() const;
 
   void update(float delta);
 

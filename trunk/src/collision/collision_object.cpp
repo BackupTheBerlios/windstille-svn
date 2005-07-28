@@ -33,24 +33,22 @@ CollisionObject::CollisionObject(const Rectf& rect_)
   : primitive(rect_)
 {
   object_type        = RECTANGLE;
-  parent             = 0;
-  coll_engine        = 0;
   is_unstuckable     = true;
   is_unstuck_movable = true;
   velocity           = Vector(0,0);
   pos                = Vector(0,0);
+  game_object        = 0;
 }
 
 CollisionObject::CollisionObject(TileMap* tilemap_)
   : tilemap(tilemap_)
 {
   object_type        = TILEMAP;
-  parent             = 0;
-  coll_engine        = 0;
   is_unstuckable     = true;
   is_unstuck_movable = false;
   velocity           = Vector(0,0);
   pos                = Vector(0,0);
+  game_object        = 0;
 }
 
 CollisionObject::~CollisionObject()
@@ -79,8 +77,6 @@ CollisionObject::drawCollision()
 
 void CollisionObject::update(float delta)
 {
-  assert(coll_engine);
-
   pos += velocity * delta;
 }
 
@@ -93,18 +89,12 @@ CollisionObject::set_velocity(const Vector &m)
 Vector
 CollisionObject::get_pos() const
 {
-  if(parent != 0)
-    return parent->get_pos() + pos;
-  
   return pos;
 }
 
 Vector
 CollisionObject::get_velocity() const
 {
-  if (parent != 0)
-    return parent->get_velocity() + velocity;
-  
   return velocity;
 }
 
@@ -113,6 +103,18 @@ CollisionObject::set_pos(const Vector& p)
 {
   // FIXME: Do this somewhat more clever to avoid stuck issues
   pos = p;
+}
+
+void
+CollisionObject::set_game_object(GameObject* object)
+{
+  game_object = object;
+}
+
+GameObject*
+CollisionObject::get_game_object() const
+{
+  return game_object;
 }
 
 /* EOF */

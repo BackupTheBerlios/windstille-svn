@@ -277,7 +277,6 @@ CollisionEngine::add(CollisionObject *obj)
 {
   // FIXME: This might need commit_add/commit_remove stuff like in sector
   objects.push_back(obj);
-  obj->coll_engine=this;
 
   return objects.back();
 }
