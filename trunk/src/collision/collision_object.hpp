@@ -30,6 +30,13 @@
 class TileMap;
 class CollisionEngine;
 
+/** The CollisionObject provides way to handle collisions in a nice
+    and predictable way. To use it a GameObject/Entity simply
+    registeres a CollisionObject in the CollisionEngine and updates
+    its position via set_velocity(). As soon as the CollisionEngine
+    registers a collision the CollisionObject::collision() signal is
+    called to which the user can register a callback function. In the
+    collision() callback he can then handle the collision reaction. */
 class CollisionObject
 {
 private:
@@ -61,15 +68,24 @@ public:
 
   virtual ~CollisionObject();
 
-  /** Sets the velocity of this object */
+  /** Sets the velocity of this object, this is the primary way how
+      you move a CollisionObject. Velocity simply means the difference
+      between the old position and the new position, no acceleration
+      or deceleration is involved, so the velocity stays constant for
+      the CollisionObject unless you change it with a new call to
+      set_velocity */
   void set_velocity(const Vector &v);
   Vector get_velocity() const;
 
-  /** Sets the CollisionObject to the given pos FIXME: unstucking is
-      currently not handled special here, but simply in the next run
-      of the collision engine, this should probally be changed so that
-      the object is unstuck here without affecting other objects and
-      then the real placement position is returned */
+  /** Sets the CollisionObject to the given pos, it should only be
+      called to set the initial position and *not* to update the
+      position each update(), see \a set_velocity()
+      
+      FIXME: unstucking is currently not handled special here, but
+      simply in the next run of the collision engine, this should
+      probally be changed so that the object is unstuck here without
+      affecting other objects and then the real placement position is
+      returned */
   void set_pos(const Vector& p);
   Vector get_pos() const;
 
