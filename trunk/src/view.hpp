@@ -1,4 +1,4 @@
-//  $Id: view.hpp,v 1.2 2003/10/11 12:15:59 grumbel Exp $
+//  $Id$
 // 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -26,8 +26,6 @@
 #include "graphic_context_state.hpp"
 #include "math/vector.hpp"
 
-class Player;
-class Sector;
 class SceneContext;
 
 /** This class is the gui component which renders the world to the

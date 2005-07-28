@@ -52,15 +52,12 @@ public:
   static DialogManager* current() { return current_; }
 
   DialogManager();
+  ~DialogManager();
 
   void draw();
   void update(float delta);
 
   void add_dialog(int alignment, const std::string& portrait, const std::string& text);
-
-private:
-  DialogManager (const DialogManager&);
-  DialogManager& operator= (const DialogManager&);
 };
 
 #endif

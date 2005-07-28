@@ -36,6 +36,11 @@ DialogManager::DialogManager()
   text_area = 0;
 }
 
+DialogManager::~DialogManager()
+{
+  delete text_area;
+}
+
 void
 DialogManager::add_dialog(int alignment_, const std::string& portrait_, const std::string& text_)
 {

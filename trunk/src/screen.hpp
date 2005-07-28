@@ -1,4 +1,4 @@
-//  $Id: screen.hpp,v 1.3 2003/10/10 21:06:22 grumbel Exp $
+//  $Id$
 // 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -48,10 +48,6 @@ public:
   virtual void update(float delta) =0;
 
   void display();
-
-private:
-  Screen (const Screen&);
-  Screen& operator= (const Screen&);
 };
 
 } // namespace Windstille
