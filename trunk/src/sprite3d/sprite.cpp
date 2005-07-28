@@ -320,13 +320,8 @@ Sprite::update(float elapsed_time)
   float time_delta = elapsed_time * frame1.action->speed * frame1.speed;
   if(frame1.speed < 0)
     time_delta = -time_delta;
-
-  int i = 0;
   
   while(blend_time + time_delta >= 1.0) {
-    //FIXME hack to stop game from freezing on fast computers
-    if (i > 20)
-      break;
     elapsed_time -= (1.0 - blend_time) / (frame1.action->speed * frame1.speed);
     set_next_frame();
 
@@ -334,7 +329,6 @@ Sprite::update(float elapsed_time)
     if(frame1.speed < 0)
       time_delta = -time_delta;
     blend_time = 0.0;
-    ++i;
   }
   blend_time += time_delta;
 }
