@@ -54,9 +54,7 @@ Player::Player () :
   sprite.set_action("Stand");
 
   // collision detection init
-  CollisionObject* c_object;
-
-  col_objects.push_back(c_object = new CollisionObject(Rectf(-15, -120, 15, 0)));
+  c_object = new CollisionObject(Rectf(-15, -120, 15, 0));
 
   c_object->set_pos(pos);
   c_object->set_velocity(velocity);
@@ -155,8 +153,9 @@ Player::update (float delta)
   sprite.update(delta);
   grenade.update(delta);
 
-  (*col_objects.begin ())->set_velocity (velocity);
-  pos=(*col_objects.begin ())->get_pos();
+  c_object->set_velocity (velocity);
+
+  pos = c_object->get_pos();
 }
 
 void
@@ -523,7 +522,9 @@ Player::hit(int points)
 void
 Player::collision(const CollisionData& data, CollisionObject& other)
 {
-  Vector cur_vel = (*col_objects.begin ())->get_velocity(); // copy velocity, as "velocity" is the wanted velocity, whereas cur_vel is the velocity in the current delta-frame
+  // copy velocity, as "velocity" is the wanted velocity, whereas
+  // cur_vel is the velocity in the current delta-frame
+  Vector cur_vel = c_object->get_velocity(); 
   (void) other;
   if (data.direction.y != 0)
     {
@@ -535,7 +536,7 @@ Player::collision(const CollisionData& data, CollisionObject& other)
       // do not reset horizontal velocity, as it's only set, when starting to go/run
       cur_vel.x = 0;
     }
-  (*col_objects.begin ())->set_velocity (cur_vel);
+  c_object->set_velocity (cur_vel);
   
 }
 
@@ -543,7 +544,7 @@ void
 Player::set_pos(Vector pos)
 {
   Entity::set_pos(pos);
-  (*col_objects.begin ())->set_pos (pos);
+  c_object->set_pos(pos);
 }
 
 /* EOF */

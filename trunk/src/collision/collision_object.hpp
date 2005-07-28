@@ -40,7 +40,7 @@ class CollisionEngine;
 class CollisionObject
 {
 private:
-  enum ObjectType {RECTANGLE, TILEMAP };
+  enum ObjectType { RECTANGLE, TILEMAP };
 
   ObjectType object_type;
 
