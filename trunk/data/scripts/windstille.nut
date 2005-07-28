@@ -46,9 +46,8 @@ function dialog(align, portrait, text)
 function testo(spritename)
 {
   spawn_object("test-object", {
-      name="Test",
-      x = 435,
-      y = 709,
+      name = "Test",
+      pos = [435, 709],
       sprite = spritename
       });
 }

@@ -11,12 +11,48 @@ namespace Scripting
 
 using namespace lisp;
 
-lisp::Lisp* table_to_lisp(HSQUIRRELVM v, int table_idx,
-                          std::vector<lisp::Lisp*>& entries)
-{
-  using namespace lisp;
-  Lisp* lisp = 0;
+void table_to_lisp(HSQUIRRELVM v, int table_idx, std::vector<Lisp*>& entries);
 
+void sq_to_lisp(HSQUIRRELVM v, std::vector<Lisp*>& entries)
+{
+  switch(sq_gettype(v, -1)) {
+    case OT_INTEGER: {
+      int val;
+      sq_getinteger(v, -1, &val);
+      entries.push_back(new Lisp(val));
+      break;
+    }
+    case OT_FLOAT: {
+      float val;
+      sq_getfloat(v, -1, &val);
+      entries.push_back(new Lisp(val));
+      break;
+    }
+    case OT_STRING: {
+      const char* str;
+      sq_getstring(v, -1, &str);
+      entries.push_back(new Lisp(Lisp::TYPE_STRING, str));
+      break;
+    }                                                    
+    case OT_BOOL: {
+      SQBool boolean;
+      sq_getbool(v, -1, &boolean);
+      entries.push_back(new Lisp((bool) boolean));
+      break;
+    }
+    case OT_ARRAY:
+    case OT_TABLE: {
+      table_to_lisp(v, -1, entries);
+      break;
+    }
+    default:
+      std::cerr << "Unsupported value type in table\n";
+      break;
+  }
+}
+
+void table_to_lisp(HSQUIRRELVM v, int table_idx, std::vector<Lisp*>& entries)
+{
   // offset because of sq_pushnull
   if(table_idx < 0)
     table_idx--;
@@ -25,62 +61,28 @@ lisp::Lisp* table_to_lisp(HSQUIRRELVM v, int table_idx,
   sq_pushnull(v);
   while(SQ_SUCCEEDED(sq_next(v, table_idx))) {
     // key is -2, value -1 now
-    if(sq_gettype(v, -2) != OT_STRING) {
-      std::cerr << "Table contains a non string key\n";
-      continue;
+    if(sq_gettype(v, table_idx) == OT_TABLE) {
+      if(sq_gettype(v, -2) != OT_STRING) {
+        std::cerr << "Table contains a non string key\n";
+        continue;
+      }
+
+      const char* key;
+      sq_getstring(v, -2, &key);
+
+      std::vector<Lisp*> childs;
+      childs.push_back(new Lisp(Lisp::TYPE_SYMBOL, key));
+      sq_to_lisp(v, childs);
+      entries.push_back(new Lisp(childs));
+    } else {
+      sq_to_lisp(v, entries);
     }
-    const char* key;
-    sq_getstring(v, -2, &key);
-
-    std::vector<Lisp*> childs;
-    childs.push_back(new Lisp(Lisp::TYPE_SYMBOL, key));
-
-    Lisp* val = 0;
-    switch(sq_gettype(v, -1)) {
-      case OT_INTEGER: {
-        int val;
-        sq_getinteger(v, -1, &val);
-        childs.push_back(new Lisp(val));
-        break;
-      }
-      case OT_FLOAT: {
-        float val;
-        sq_getfloat(v, -1, &val);
-        childs.push_back(new Lisp(val));
-        break;
-      }
-      case OT_STRING: {
-        const char* str;
-        sq_getstring(v, -1, &str);
-        val = new Lisp(Lisp::TYPE_STRING, str);
-        break;
-      }
-      case OT_BOOL: {
-        SQBool boolean;
-        sq_getbool(v, -1, &boolean);
-        val = new Lisp((bool) boolean);
-        break;
-      }
-      case OT_TABLE: {
-        table_to_lisp(v, -1, childs);
-        break;
-      }
-      case OT_ARRAY:
-        // TODO...
-      default:
-        std::cerr << "Unsupported value type in table\n";
-        break;
-    }
-
+    
     // pop table key and value
     sq_pop(v, 2);
-
-    entries.push_back(new Lisp(childs));
   }
   // pop iterator
   sq_pop(v, 1);
-
-  return lisp;
 }
 
 int spawn_object(HSQUIRRELVM v)
