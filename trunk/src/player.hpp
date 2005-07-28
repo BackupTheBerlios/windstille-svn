@@ -40,8 +40,8 @@ private:
   Controller controller;
 
   CL_Sprite light;
-  sprite3d::Sprite* sprite;
-  sprite3d::Sprite* grenade;
+  sprite3d::Sprite sprite;
+  sprite3d::Sprite grenade;
 
   bool jumping;
   bool bomb_placed;

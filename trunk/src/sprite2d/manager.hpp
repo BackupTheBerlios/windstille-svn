@@ -6,8 +6,6 @@
 
 namespace sprite2d
 {
-
-class Sprite;
 class Data;
 
 class Manager
@@ -16,8 +14,8 @@ public:
   Manager();
   ~Manager();
 
-  Sprite* create(const std::string& filename);
-
+  const Data* create_data(const std::string& filename);
+  
 private:
   typedef std::map<std::string, Data*> Datas;
   Datas datas;

@@ -32,7 +32,7 @@
 class SpiderMine : public Badguy
 {
 private:
-  sprite2d::Sprite* sprite;
+  Sprite sprite;
   CL_Sprite explode;
   CL_Sprite explode_light;
   Vector initial_position;

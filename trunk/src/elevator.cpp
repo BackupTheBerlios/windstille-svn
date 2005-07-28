@@ -42,7 +42,7 @@ Elevator::Elevator(const lisp::Lisp* lisp)
 
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in Elevator");
-  sprite = sprite2d_manager->create(spritename);
+  sprite = Sprite(spritename);
   size  = CL_Size(128, 64);
   colobject = new CollisionObject(Rectf(CL_Pointf(0,0), size));
   Sector::current()->get_collision_engine()->add(colobject);
@@ -52,20 +52,18 @@ Elevator::Elevator(const lisp::Lisp* lisp)
 Elevator::~Elevator()
 {
   Sector::current()->get_collision_engine()->remove(colobject);
-  delete colobject;
-  delete sprite;
 }
 
 void
 Elevator::draw(SceneContext& sc)
 {
-  sprite->draw(sc, pos, 10.0f);
+  sprite.draw(sc, pos, 10.0f);
 }
 
 void
 Elevator::update(float delta)
 {
-  sprite->update(delta);
+  sprite.update(delta);
   pos = colobject->get_pos();
 }
 

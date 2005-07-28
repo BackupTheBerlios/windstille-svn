@@ -29,7 +29,7 @@
 class Box : public Entity
 {
 private:
-  sprite2d::Sprite* sprite;
+  Sprite sprite;
   CollisionObject* colobj;
   CL_Slot slot;
   float gravity;

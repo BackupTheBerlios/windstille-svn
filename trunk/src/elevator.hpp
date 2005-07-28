@@ -35,7 +35,7 @@ class Elevator : public Entity
 private:
   CL_Sizef size;
   CollisionObject* colobject;
-  sprite2d::Sprite* sprite;
+  Sprite sprite;
 public:
   Elevator(const lisp::Lisp* lisp);
   ~Elevator();

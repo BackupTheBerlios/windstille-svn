@@ -49,7 +49,7 @@ Box::Box(const lisp::Lisp* lisp)
   
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in Box");
-  sprite = sprite2d_manager->create(spritename);
+  sprite = Sprite(spritename);
   
   colobj = new CollisionObject(Rectf(0, 0, width, height));
   colobj->set_velocity(vel);
@@ -62,7 +62,6 @@ Box::Box(const lisp::Lisp* lisp)
 
 Box::~Box()
 {
-  delete sprite;
 }
 
 void 
@@ -90,14 +89,14 @@ Box::update(float delta)
   colobj->set_velocity(Vector(colobj->get_velocity().x, 
                               colobj->get_velocity().y + gravity * delta));
 
-  sprite->update(delta);
+  sprite.update(delta);
   pos = colobj->get_pos();
 }
 
 void 
 Box::draw(SceneContext& sc)
 {
-  sprite->draw(sc, pos, 10.0f);
+  sprite.draw(sc, pos, 10.0f);
 }
 
 /* EOF */

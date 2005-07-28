@@ -35,8 +35,8 @@
 class ScriptableObject : public Entity
 {
 private:
-  sprite2d::Sprite* sprite;
-  sprite2d::Sprite* highlight;
+  Sprite sprite;
+  Sprite highlight;
   
   //useable stuff
   std::string use_script;

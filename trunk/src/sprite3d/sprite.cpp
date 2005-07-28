@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#include <config.h>
 
+#include <config.h>
 #include "sprite3d/sprite.hpp"
 
 #include <vector>
@@ -31,10 +31,32 @@
 #include "globals.hpp"
 #include "util.hpp"
 #include "timer.hpp"
+#include "sprite3d/manager.hpp"
 #include "sprite3d/data.hpp"
 
 namespace sprite3d
 {
+
+Sprite::Sprite()
+  : data(0)
+{
+  
+}
+
+Sprite::Sprite(const std::string& filename)
+  : data(sprite3d_manager->create_data(filename))
+{
+  frame1.action = &data->actions[0];
+  frame1.frame = 0;
+  frame1.rot = false;
+  frame1.speed = 1.0;
+  frame2 = frame1;
+  abort_at_frame.action = 0;
+  next_frame.action = 0;
+  next_action.action = 0;
+
+  bone_positions.resize(data->bone_count);
+}
 
 Sprite::Sprite(const Data* data)
   : data(data), actions_switched(false)
@@ -48,12 +70,11 @@ Sprite::Sprite(const Data* data)
   next_frame.action = 0;
   next_action.action = 0;
 
-  bone_positions = new BonePosition[data->bone_count];
+  bone_positions.resize(data->bone_count);
 }
 
 Sprite::~Sprite()
 {
-  delete[] bone_positions;
 }
 
 void
@@ -407,5 +428,11 @@ Sprite::draw(CL_GraphicContext* gc, const Vector& pos,
   glPopMatrix();
 }
 
+Sprite::operator bool() const
+{
+  return data != 0;
 }
 
+}
+
+/* EOF */

@@ -33,9 +33,7 @@
 #include "script_manager.hpp"
 
 ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
-  : sprite(0),
-    highlight(0),
-    target_speed(0),
+  : target_speed(0),
     acceleration(0),
     flash_speed(0)
 { 
@@ -57,10 +55,10 @@ ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
   
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in ScriptableObject");
-  sprite = sprite2d_manager->create(spritename);
+  sprite = Sprite(spritename);
   
   if (highlightname != "")
-    highlight = sprite2d_manager->create(highlightname);
+    highlight = Sprite(highlightname);
     
   flash_delta = game_time;
   target_x = pos.x;
@@ -69,8 +67,6 @@ ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
 
 ScriptableObject::~ScriptableObject()
 {
-  delete sprite;
-  delete highlight;
 }
 
 void
@@ -79,20 +75,20 @@ ScriptableObject::draw(SceneContext& sc)
   if (flash_speed != 0)
     flash();
  
-  sprite->draw(sc, pos, 1);
+  sprite.draw(sc, pos, 1);
   
   if (highlight) {
-    highlight->draw(sc, pos, 2);
-    highlight->draw_light(sc, pos, 1);
+    highlight.draw(sc, pos, 2);
+    highlight.draw_light(sc, pos, 1);
   }
 }
 
 void
 ScriptableObject::update(float delta)
 {
-  sprite->update(delta);
+  sprite.update(delta);
   if (highlight)
-    highlight->update(delta);
+    highlight.update(delta);
     
   if (target_speed > 0)
     move(delta);
@@ -190,11 +186,11 @@ ScriptableObject::flash()
   if(static_cast<int>(time/flash_speed) % 2 == 0) {    
     float alpha = fmodf(time, flash_speed) / flash_speed;
     // fade on
-    sprite->set_alpha(alpha);
+    sprite.set_alpha(alpha);
   } else {
     float alpha = 1.0 - (fmodf(time, flash_speed) / flash_speed);
     // fade off
-    sprite->set_alpha(alpha);
+    sprite.set_alpha(alpha);
   }
 }
 

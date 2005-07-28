@@ -27,7 +27,7 @@
 class Character : public Entity
 {
 private:
-  sprite3d::Sprite* sprite;
+  sprite3d::Sprite sprite;
     
 public:
   Character(const lisp::Lisp* lisp);

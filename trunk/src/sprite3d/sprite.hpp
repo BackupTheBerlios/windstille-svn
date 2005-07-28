@@ -24,6 +24,7 @@
 #include "display/scene_context.hpp"
 #include "math/vector.hpp"
 #include "math/matrix.hpp"
+#include "sprite3d/data.hpp"
 
 class SceneContext;
 
@@ -44,6 +45,9 @@ typedef uint16_t BoneID;
 class Sprite
 {
 public:
+  Sprite();
+  Sprite(const std::string& filename);
+  Sprite(const Data* data);
   ~Sprite();
 
   /**
@@ -102,14 +106,11 @@ public:
   BoneID get_bone_id(const std::string& name) const;
   Matrix get_bone_matrix(BoneID id) const;
 
-private:
-  friend class SpriteDrawingRequest;
-  friend class Manager;
-  Sprite(const Data* data);
-  
-  Sprite (const Sprite&);
-  Sprite& operator= (const Sprite&);
+  void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
 
+  /** true if the Sprite is valid and usable, false if not */
+  operator bool() const;
+private:  
   struct Frame {
     const Action* action;
     int frame;
@@ -124,12 +125,11 @@ private:
   };
 
   void set_next_frame();
-  void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
 
   const Data* data;
   bool actions_switched;
 
-  BonePosition* bone_positions;
+  std::vector<BonePosition> bone_positions;
 
   Frame frame1;
   Frame frame2;

@@ -38,20 +38,20 @@ Player* Player::current_ = 0;
 
 Player::Player () :
   light("light", resources),
-  state (STAND)
+  state(STAND)
 {
   pos.x = 320;
   pos.y = 200;
   name = "player";
-  sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
-  grenade = sprite3d_manager->create("3dsprites/grenade.wsprite");
+  sprite  = sprite3d::Sprite("3dsprites/heroken.wsprite");
+  grenade = sprite3d::Sprite("3dsprites/grenade.wsprite");
 
   jumping = false;
   energy = MAX_ENERGY;
   current_ = this;
 
   hit_count = 0.0f;
-  sprite->set_action("Stand");
+  sprite.set_action("Stand");
 
   // collision detection init
   CollisionObject* c_object;
@@ -68,8 +68,6 @@ Player::Player () :
 
 Player::~Player()
 {
-  delete sprite;
-  delete grenade;
 }
 
 void
@@ -77,7 +75,7 @@ Player::draw (SceneContext& gc)
 {
   light.set_blend_func(blend_src_alpha, blend_one);
   gc.light().draw(light, pos.x, pos.y, 100);
-  sprite->draw(gc, pos, 100);
+  sprite.draw(gc, pos, 100);
 
   Entity* obj = find_useable_entity();
   if (obj)
@@ -86,8 +84,8 @@ Player::draw (SceneContext& gc)
       gc.highlight().draw(use_str, obj->get_pos().x, obj->get_pos().y - 150, 1000);
     }
   
-  //BoneID id = sprite->get_bone_id("Hand.R");
-  //grenade->draw(gc, sprite->get_bone_matrix(id));
+  //BoneID id = sprite.get_bone_id("Hand.R");
+  //grenade->draw(gc, sprite.get_bone_matrix(id));
 }
 
 void
@@ -161,8 +159,8 @@ Player::update (float delta)
   }
 
   pos += velocity * delta;
-  sprite->update(delta);
-  grenade->update(delta);
+  sprite.update(delta);
+  grenade.update(delta);
 
   // FIXME: actually movement should be done through CollisionObject
   //        and this->pos should be set by getting value from the current CollisionObject
@@ -242,7 +240,7 @@ void
 Player::set_walk(Direction direction)
 {
   try_set_action("Walk");
-  sprite->set_rot(direction == EAST);
+  sprite.set_rot(direction == EAST);
   state = WALK;
   if(direction == EAST)
     velocity.x = WALK_SPEED;
@@ -276,7 +274,7 @@ void
 Player::set_ducking()
 {
   try_set_action("StandToDuck");
-  sprite->set_next_action("Ducking");
+  sprite.set_next_action("Ducking");
   state = DUCKING;
   velocity.x = 0;
   printf("ducking.\n");
@@ -286,32 +284,32 @@ void
 Player::update_ducking()
 {
   // ducking
-  if(sprite->switched_actions()) {
+  if(sprite.switched_actions()) {
     printf("finished.\n");
-    if(sprite->get_action() == "Ducking")
+    if(sprite.get_action() == "Ducking")
       set_ducked();
     else
       set_stand();
     return;
   }
   
-  if(!controller.get_button_state(DOWN_BUTTON) && sprite->get_speed() > 0) {
+  if(!controller.get_button_state(DOWN_BUTTON) && sprite.get_speed() > 0) {
     printf("Changespeed1.\n");
-    sprite->set_speed(-1.0);
-    sprite->set_next_action("Stand");
+    sprite.set_speed(-1.0);
+    sprite.set_next_action("Stand");
     state = STAND;
   } else if(controller.get_button_state(DOWN_BUTTON) 
-      && sprite->get_speed() < 0) {
+      && sprite.get_speed() < 0) {
     printf("Changespeed2.\n");
-    sprite->set_speed(1.0);
-    sprite->set_next_action("Ducking");
+    sprite.set_speed(1.0);
+    sprite.set_next_action("Ducking");
   }
 }
 
 void
 Player::set_ducked()
 {
-  assert(sprite->get_action() == "Ducking");
+  assert(sprite.get_action() == "Ducking");
   printf("ducked.\n");
   state = DUCKED;
 }
@@ -322,8 +320,8 @@ Player::update_ducked()
   if(!controller.get_button_state(DOWN_BUTTON)) {
     printf("ducking.\n");
     state = DUCKING;
-    sprite->set_action("StandToDuck", -1.0);
-    sprite->set_next_action("Stand");
+    sprite.set_action("StandToDuck", -1.0);
+    sprite.set_next_action("Stand");
   }  
 }
 
@@ -332,8 +330,8 @@ Player::set_turnaround()
 {
   velocity.x = 0;
   try_set_action("Turn");
-  sprite->set_next_action("Walk");
-  sprite->set_next_rot(! sprite->get_rot());
+  sprite.set_next_action("Walk");
+  sprite.set_next_rot(! sprite.get_rot());
   state = TURNAROUND;
   printf("turn.\n");
 }
@@ -341,17 +339,17 @@ Player::set_turnaround()
 void
 Player::update_turnaround()
 {
-  if(sprite->switched_actions()) {
-    if(sprite->get_rot()) {
+  if(sprite.switched_actions()) {
+    if(sprite.get_rot()) {
       set_walk(EAST);
     } else {
       set_walk(WEST);
     }
   } 
-  if(sprite->get_rot() && controller.button_pressed(RIGHT_BUTTON)
-     || !sprite->get_rot() && controller.button_pressed(LEFT_BUTTON)) {
-    sprite->set_speed(-1.0);
-    sprite->set_next_action("Walk");
+  if(sprite.get_rot() && controller.button_pressed(RIGHT_BUTTON)
+     || !sprite.get_rot() && controller.button_pressed(LEFT_BUTTON)) {
+    sprite.set_speed(-1.0);
+    sprite.set_next_action("Walk");
     state = WALK;
   }
 }
@@ -361,10 +359,10 @@ Player::set_stand_to_listen(bool backwards)
 {
   try_set_action("StandtoListen", backwards ? -1.0 : 1.0);
   if(!backwards) {
-    sprite->set_next_action("Listen");
+    sprite.set_next_action("Listen");
     velocity = Vector(0, 0);
   } else {
-    sprite->set_next_action("Stand");
+    sprite.set_next_action("Stand");
   }
   state = STAND_TO_LISTEN;
 }
@@ -372,8 +370,8 @@ Player::set_stand_to_listen(bool backwards)
 void
 Player::update_stand_to_listen()
 {
-  if(sprite->switched_actions()) {
-    if(sprite->get_action() == "Stand")
+  if(sprite.switched_actions()) {
+    if(sprite.get_action() == "Stand")
       set_stand();
     else
       set_listen();
@@ -420,19 +418,19 @@ Player::update_run()
 void
 Player::set_jump_begin()
 {
-  if(sprite->before_marker("RightFoot")) {
-    sprite->set_next_action("JumpRightFoot");
-    sprite->abort_at_marker("RightFoot");
+  if(sprite.before_marker("RightFoot")) {
+    sprite.set_next_action("JumpRightFoot");
+    sprite.abort_at_marker("RightFoot");
     printf("jumpright.\n");
     jump_foot = LEFT_FOOT;
-  } else if(sprite->before_marker("LeftFoot")) {
-    sprite->set_next_action("JumpLeftFoot");
-    sprite->abort_at_marker("LeftFoot");
+  } else if(sprite.before_marker("LeftFoot")) {
+    sprite.set_next_action("JumpLeftFoot");
+    sprite.abort_at_marker("LeftFoot");
     printf("jumpleft.\n");
     jump_foot = RIGHT_FOOT;
   } else {
-    sprite->set_next_action("JumpRightFoot");
-    sprite->abort_at_marker("RightFoot");
+    sprite.set_next_action("JumpRightFoot");
+    sprite.abort_at_marker("RightFoot");
     printf("jumpright.\n");
     jump_foot = LEFT_FOOT;
   }
@@ -442,11 +440,11 @@ Player::set_jump_begin()
 void
 Player::update_jump_begin()
 {
-  if(sprite->switched_actions()) {
-    if(sprite->get_action() == "JumpLeftFoot") {
-      sprite->set_next_action("JumpLeftFootAir");
-    } else if(sprite->get_action() == "JumpRightFoot") {
-      sprite->set_next_action("JumpRightFootAir");
+  if(sprite.switched_actions()) {
+    if(sprite.get_action() == "JumpLeftFoot") {
+      sprite.set_next_action("JumpLeftFootAir");
+    } else if(sprite.get_action() == "JumpRightFoot") {
+      sprite.set_next_action("JumpRightFootAir");
     } else {
       set_jump_air();
       return;
@@ -458,14 +456,14 @@ void
 Player::set_jump_air()
 {
   velocity.y = -400;
-  sprite->set_next_action("JumpLandSofttoRun");
+  sprite.set_next_action("JumpLandSofttoRun");
   state = JUMP_AIR;
 }
 
 void
 Player::update_jump_air()
 {
-  if(sprite->switched_actions()) {
+  if(sprite.switched_actions()) {
     set_jump_land();
     return;
   }
@@ -474,14 +472,14 @@ Player::update_jump_air()
 void
 Player::set_jump_land()
 {
-  sprite->set_next_action("Run");
+  sprite.set_next_action("Run");
   state = JUMP_LAND;
 }
 
 void
 Player::update_jump_land()
 {
-  if(sprite->switched_actions()) {
+  if(sprite.switched_actions()) {
     set_run();
     return;
   }
@@ -490,16 +488,16 @@ Player::update_jump_land()
 Direction
 Player::get_direction() const
 {
-  return sprite->get_rot() ? EAST : WEST;
+  return sprite.get_rot() ? EAST : WEST;
 }
 
 void
 Player::try_set_action(const std::string& name, float speed)
 {
-  if(sprite->get_action() == name)
+  if(sprite.get_action() == name)
     return;
   
-  sprite->set_action(name, speed);
+  sprite.set_action(name, speed);
 }
 
 int

@@ -43,25 +43,24 @@ Character::Character(const lisp::Lisp* lisp)
   props.get("pos", pos);
   props.print_unused_warnings("character");
   
-  sprite = sprite3d_manager->create("3dsprites/heroken.wsprite");
-  sprite->set_action("Stand");
+  sprite = sprite3d::Sprite("3dsprites/heroken.wsprite");
+  sprite.set_action("Stand");
 }
 
 Character::~Character()
 {
-  delete sprite;
 }
 
 void
 Character::update(float delta)
 {   
-  sprite->update(delta);
+  sprite.update(delta);
 }
 
 void
 Character::draw (SceneContext& gc)
 {
-  sprite->draw(gc, pos, 100);
+  sprite.draw(gc, pos, 100);
 }
 
 void

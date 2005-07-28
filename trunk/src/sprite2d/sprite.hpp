@@ -8,15 +8,17 @@
 class CL_GraphicContext;
 class SceneContext;
 
-namespace sprite2d
-{
-
+namespace sprite2d {
 class Data;
 struct Action;
+} 
 
 class Sprite
 {
 public:
+  Sprite();
+  Sprite(const std::string& filename);
+  Sprite(const sprite2d::Data* data);
   ~Sprite();
 
   void update(float elapsed_time);
@@ -38,17 +40,17 @@ public:
   void set_alpha(float alpha);
   float get_alpha() const;
 
-private:
-  friend class SpriteDrawingRequest;
-  friend class Manager;
-  Sprite(const Data* data);
-  Sprite(const Sprite& );
-  Sprite& operator= (const Sprite& );
-
   void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
 
-  const Data* data;
-  const Action* current_action;
+  /** true if the Sprite is valid and usable, false if not */
+  operator bool() const;
+private:
+  /** Pointer to the Sprites data which is shared among all sprites
+      with are loaded from the same file */
+  const sprite2d::Data* data;
+
+  const sprite2d::Action* current_action;
+
   float frame;
   float speed;
   float alpha;
@@ -57,8 +59,6 @@ private:
   bool reverse;
   bool vflip;
 };
-
-}
 
 #endif
 

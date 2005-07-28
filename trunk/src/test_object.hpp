@@ -21,7 +21,7 @@ public:
   void set_pos(const Vector& pos);
 
 private:
-  sprite3d::Sprite* sprite;
+  sprite3d::Sprite sprite;
   Vector pos;
 };
 

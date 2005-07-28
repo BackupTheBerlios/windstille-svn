@@ -9,12 +9,27 @@
 #include "display/drawing_request.hpp"
 #include "display/scene_context.hpp"
 #include "sprite2d/data.hpp"
+#include "sprite2d/manager.hpp"
 #include "util.hpp"
 
-namespace sprite2d
-{
+Sprite::Sprite()
+  : data(0)
+{  
+}
 
-Sprite::Sprite(const Data* data)
+Sprite::Sprite(const std::string& filename)
+  : data(sprite2d_manager->create_data(filename))
+{
+  current_action = data->actions[0];
+  vflip    = false;
+  frame    = 0;
+  speed    = 1.0;
+  pingpong = false;
+  reverse  = false;
+  alpha    = 0.0;
+}
+
+Sprite::Sprite(const sprite2d::Data* data)
   : data(data)
 {
   current_action = data->actions[0];
@@ -44,9 +59,9 @@ Sprite::update(float elapsed_time)
 void
 Sprite::set_action(const std::string& name)
 {
-  for(Data::Actions::const_iterator i = data->actions.begin();
+  for(sprite2d::Data::Actions::const_iterator i = data->actions.begin();
       i != data->actions.end(); ++i) {
-    const Action* action = *i;
+    const sprite2d::Action* action = *i;
     if(action->name == name) {
       current_action = action;
       pingpong = false;
@@ -119,6 +134,11 @@ Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos)
   sc.color().draw(surface, pos.x, pos.y, z_pos, alpha);
 }
 
+Sprite::operator bool() const
+{
+  return data != 0;
+}
+
 void
 Sprite::draw_light(SceneContext& sc, const Vector& pos, float z_pos)
 {
@@ -126,4 +146,4 @@ Sprite::draw_light(SceneContext& sc, const Vector& pos, float z_pos)
   sc.light().draw(surface, pos.x, pos.y, z_pos, alpha);
 }
 
-}
+/* EOF */

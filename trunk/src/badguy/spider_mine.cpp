@@ -39,7 +39,7 @@ SpiderMine::SpiderMine(const lisp::Lisp* lisp)
   props.get("pos", pos);
   props.print_unused_warnings("spidermine");
   
-  sprite = sprite2d_manager->create("images/spider_mine.sprite");
+  sprite = Sprite("images/spider_mine.sprite");
   //sprite.set_scale(.5, .5);
   initial_position = pos;
   walk_speed = 160;
@@ -50,7 +50,6 @@ SpiderMine::SpiderMine(const lisp::Lisp* lisp)
 
 SpiderMine::~SpiderMine()
 {
-  delete sprite;
 }
 
 void
@@ -76,7 +75,7 @@ SpiderMine::update(float delta)
     pos += velocity * delta;
   }
   
-  sprite->update(delta);
+  sprite.update(delta);
 }
 
 void
@@ -92,7 +91,7 @@ SpiderMine::draw (SceneContext& sc)
     explode_light.set_scale(1.0, 1.0);
   }
   else {
-    sprite->draw(sc, pos, 10.0f);
+    sprite.draw(sc, pos, 10.0f);
   }
 }
 
