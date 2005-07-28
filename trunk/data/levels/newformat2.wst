@@ -160,6 +160,7 @@
       (highlight "images/objects/vrdoor-highlight.sprite")
       (pos 256 704)
       (script "set_sector(\"levels/newformat2.wst\")")
+      (use-verb "Enter")
     )
 
   (tilemap (name "background") (width 100) (height 30)

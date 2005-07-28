@@ -45,6 +45,7 @@ protected:
   Vector pos;
   Vector velocity;
   bool useable;
+  std::string use_verb;
   
 public:
   Entity();
@@ -67,6 +68,7 @@ public:
 
   /** Returns true if the entity is useable by the player */
   virtual bool is_useable() const { return useable; }
+  std::string get_use_verb() const { return use_verb; }
 
   /** Makes the objects (un)usable for the player */
   void set_useable(bool t) { useable = t; } 

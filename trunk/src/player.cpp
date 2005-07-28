@@ -82,7 +82,8 @@ Player::draw (SceneContext& gc)
   Entity* obj = find_useable_entity();
   if (obj)
     {
-      gc.highlight().draw("[Talk]", obj->get_pos().x, obj->get_pos().y - 150, 1000);
+      std::string use_str = "[" + obj->get_use_verb() + "]";
+      gc.highlight().draw(use_str, obj->get_pos().x, obj->get_pos().y - 150, 1000);
     }
   
   //BoneID id = sprite->get_bone_id("Hand.R");

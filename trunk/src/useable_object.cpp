@@ -37,6 +37,7 @@ UseableObject::UseableObject(const lisp::Lisp* lisp)
   props.get("highlight", highlightname);
   props.get("pos", pos);
   props.get("script", use_script);
+  props.get("use-verb", use_verb);
   props.print_unused_warnings("usableobject");
   
   if(spritename == "")

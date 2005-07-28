@@ -36,6 +36,7 @@
 Character::Character(const lisp::Lisp* lisp)
 {
   set_useable(true);
+  use_verb = "Talk";
 
   lisp::Properties props(lisp);
   props.get("name", name);

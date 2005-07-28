@@ -32,7 +32,8 @@
 
 Entity::Entity()
   : velocity(0, 0),
-    useable(false)
+    useable(false),
+    use_verb("Use")
 {
   
 }
