@@ -175,7 +175,7 @@ CollisionEngine::update(float delta)
   CollisionData col_data;
   float frame=delta;
   float min_time=frame;
-  int max_tries=20;
+  int max_tries=200;
 
   do
     {
