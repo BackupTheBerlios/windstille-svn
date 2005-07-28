@@ -384,7 +384,7 @@ int get_next_integer(float f, float direction)
   if(direction < 0)
     {
       result = int (f);
-      if (result == f)
+      if (result >= f)
 	--result;
     }
   else
@@ -396,19 +396,35 @@ int get_next_integer(float f, float direction)
   return result;
 }
 
+int get_integer(float f, float direction)
+{
+  int result=(int)f;
+
+  if(direction < 0)
+    {
+      result = int (f);
+      if (result > f)
+	--result;
+    }
+  return result;
+}
+
 bool tilemap_collision(TileMap *tilemap, const Rectf &r)
 {
   int minx, maxx;
   int miny, maxy;
   int x, y;
 
-  minx = (int)r.left   / TILE_SIZE;
-  maxx = (int)r.right  / TILE_SIZE;
-  miny = (int)r.top    / TILE_SIZE;
-  maxy = (int)r.bottom / TILE_SIZE;
+  minx = (int)(r.left   / TILE_SIZE);
+  maxx = (int)(r.right  / TILE_SIZE);
+  miny = (int)(r.top    / TILE_SIZE);
+  maxy = (int)(r.bottom / TILE_SIZE);
 
-  for (y = miny; y <= maxy; ++y)
-    for (x = minx; x <= maxx; ++x)
+  assert(maxy>=miny);
+  assert(maxx>=minx);
+
+  for (y = std::max (0, miny); y <= std::min (maxy, tilemap->get_height() - 1); ++y)
+    for (x = std::max (0, minx); x <= std::min (maxx, tilemap->get_width() - 1); ++x)
       {
 	if(tilemap->is_ground (x * TILE_SIZE, y * TILE_SIZE ))
 	  {
@@ -430,8 +446,8 @@ std::vector<Rectf> tilemap_collision_list(TileMap *tilemap, const Rectf &r)
   miny = (int)r.top    / TILE_SIZE;
   maxy = (int)r.bottom / TILE_SIZE;
 
-  for (y = miny; y <= maxy; ++y)
-    for (x = minx; x <= maxx; ++x)
+  for (y = std::max (0, miny); y <= std::min (maxy, tilemap->get_height() - 1); ++y)
+    for (x = std::max (0, minx); x <= std::min (maxx, tilemap->get_width() - 1); ++x)
       {
 	if(tilemap->is_ground (x * TILE_SIZE, y * TILE_SIZE ))
 	  {
@@ -499,20 +515,28 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
   else
     y = &r.bottom;
 
-  while (time < delta && ct >= 0.0f)
+  bool last_zero=false;
+
+  int maxtries=20; // prevent loops
+
+  while (time < delta && ct >= 0.0f && maxtries>0)
     {
       ct = -1.0f;
 
       if(first_time)
 	{
-	  next_x = ((int)(*x / TILE_SIZE)) * TILE_SIZE;
-	  next_y = ((int)(*y / TILE_SIZE)) * TILE_SIZE;
+	  next_x = get_integer(*x / TILE_SIZE,vel.x) * TILE_SIZE;
+	  next_y = get_integer(*y / TILE_SIZE,vel.y) * TILE_SIZE;
 	  first_time = false;
 	}
       else
 	{
 	  next_x = get_next_integer ((*x / TILE_SIZE), vel.x) * TILE_SIZE;
 	  next_y = get_next_integer ((*y / TILE_SIZE), vel.y) * TILE_SIZE;
+
+	 
+	  assert ( next_x * c_sign(vel.x) > *x * c_sign(vel.x) || vel.x == 0.0f);
+	  assert ( next_y * c_sign(vel.y) > *y * c_sign(vel.y) || vel.y == 0.0f);
 	}
 
       if (vel.x != 0.0f)
@@ -553,7 +577,12 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
 	  r.right  += dx;
 	  r.top    += dy;
 	  r.bottom += dy;
-	  time += ct;
+
+	  if(last_zero && ct==0.0f)
+	    time += 0.0005;
+	  else
+	    time += ct;
+	  last_zero=(ct==0.0f);
 
 	  // now shift one more pixel and check for collision with tilemap
 	  Rectf tmp(r);
@@ -583,7 +612,10 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
 	      return result;
 	    }
 	}
+      maxtries--;
     }
+  if(maxtries==0)
+    std::cerr<<"MAXTRIES reached"<<std::endl;
 
   return result;
 }

@@ -51,7 +51,8 @@ Elevator::Elevator(const lisp::Lisp* lisp)
 
 Elevator::~Elevator()
 {
-  Sector::current()->get_collision_engine()->remove(colobject);
+  if(Sector::current()->get_collision_engine())
+    Sector::current()->get_collision_engine()->remove(colobject);
 }
 
 void
