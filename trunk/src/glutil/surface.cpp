@@ -42,6 +42,12 @@ Surface::Surface()
 {
 }
 
+Surface::Surface(const std::string& filename)
+{
+  // FIXME: a bit ugly, should move some of the surface_manager code over here
+  *this = surface_manager->get(filename);
+}
+
 Surface::Surface(Texture texture, const Rectf& rect, int width, int height)
   : impl(new SurfaceImpl())
 {

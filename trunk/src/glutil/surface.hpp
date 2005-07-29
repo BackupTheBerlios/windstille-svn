@@ -26,6 +26,7 @@
 #ifndef HEADER_SURFACE_HPP
 #define HEADER_SURFACE_HPP
 
+#include <string>
 #include "math/rect.hpp"
 #include "texture.hpp"
 #include "sharedptr.hpp"
@@ -42,6 +43,7 @@ class Surface
 {
 public:
   Surface();
+  Surface(const std::string& filename);
   Surface(Texture texture, const Rectf& rect, int width, int height);
   ~Surface();
   
