@@ -30,35 +30,23 @@ class CL_GraphicContext;
 class DrawingRequest
 {
 protected:
+  Vector pos;
   float  z_pos;
   Matrix modelview;
 
 public:
-  DrawingRequest(const Vector& pos, float z_pos = 0,  const Matrix& modelview_ = Matrix::identity())
-    : z_pos(z_pos), modelview(modelview_)
-  {
-    modelview[12] += pos.x;
-    modelview[13] += pos.y;
-  }
-  DrawingRequest(const Matrix& modelview, float z_pos = 0)
-    : z_pos(z_pos), modelview(modelview)
+  DrawingRequest(const Vector& pos_, float z_pos = 0,  const Matrix& modelview_ = Matrix::identity())
+    : pos(pos_), z_pos(z_pos), modelview(modelview_)
   {}
-  virtual ~DrawingRequest() 
-  {}
+  virtual ~DrawingRequest() {}
   
   virtual void draw(CL_GraphicContext* gc) = 0;
   
   /** Returns the position at which the request should be drawn */
   float get_z_pos() const { return z_pos; }
 
-  const Matrix& get_modelview() const
+  Matrix get_modelview() const
   { return modelview; }
-
-  Vector get_pos() const
-  {
-    return Vector(modelview[12], modelview[13]);
-  }
-
 private:
   DrawingRequest (const DrawingRequest&);
   DrawingRequest& operator= (const DrawingRequest&);

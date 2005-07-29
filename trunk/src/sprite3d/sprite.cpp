@@ -269,15 +269,14 @@ private:
   const Sprite* sprite;
 
 public:
-  SpriteDrawingRequest(const Sprite* sprite,
-                       const Matrix& modelview, float z_pos)
-      : DrawingRequest(modelview, z_pos), sprite(sprite)
-  {
-  }
+  SpriteDrawingRequest(const Sprite* sprite, const Vector& pos, float z_pos,
+                       const Matrix& modelview)
+    : DrawingRequest(pos, z_pos, modelview), sprite(sprite)
+  {}
 
   void draw(CL_GraphicContext* gc)
   {
-    sprite->draw(gc, modelview);
+    sprite->draw(gc, pos, modelview);
   }
 };
 
@@ -334,35 +333,26 @@ Sprite::update(float elapsed_time)
 void
 Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos) const
 {
-  Matrix matrix = sc.color().get_modelview();
-  matrix[12] += pos.x;
-  matrix[13] += pos.y;
-  sc.color().draw(new SpriteDrawingRequest(this, matrix, z_pos));
+  sc.color().draw(new SpriteDrawingRequest(this, pos, z_pos, sc.color().get_modelview()));
 }
 
 void
 Sprite::draw(SceneContext& sc, const Matrix& matrix, float z_pos) const
 {
-#if 0
-  Matrix mmatrix 
-    = matrix.multiply(sc.color().get_modelview());
-#else
-  Matrix mmatrix
-    = sc.color().get_modelview().multiply(matrix);
-#endif
-  sc.color().draw(new SpriteDrawingRequest(this, mmatrix, z_pos));
+  sc.color().draw(new SpriteDrawingRequest(this, Vector(0, 0), 0.0f, sc.color().get_modelview()));
 }
 
 void
-Sprite::draw(CL_GraphicContext* gc, const Matrix& modelview) const
+Sprite::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview) const
 {
   CL_OpenGLState state(gc);
   state.set_active();
   state.setup_2d();
 
   glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
+  glPushMatrix(); 
   glMultMatrixf(modelview.matrix);
+  glTranslatef(pos.x, pos.y, 0);
   if(frame1.rot) {
     glRotatef(180, 0, 1.0, 0);
   } 

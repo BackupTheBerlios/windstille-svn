@@ -110,7 +110,7 @@ public:
   
 private:  
   friend class SpriteDrawingRequest;
-  void draw(CL_GraphicContext* gc, const Matrix& modelview) const;
+  void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview) const;
   
   struct Frame {
     const Action* action;

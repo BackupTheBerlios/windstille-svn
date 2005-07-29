@@ -32,8 +32,7 @@
 
 struct DrawingRequestsSorter
 {
-  bool operator() (const DrawingRequest* a, const DrawingRequest* b) const
-  {
+  bool operator()(DrawingRequest* a, DrawingRequest* b) {
     return a->get_z_pos() < b->get_z_pos();
   }
 };
@@ -76,7 +75,8 @@ public:
 
     gc->push_modelview();
     gc->add_modelview(modelview.matrix);
-    sprite.draw(0, 0, gc);
+    sprite.draw(static_cast<int>(pos.x),
+                static_cast<int>(pos.y), gc);
     gc->pop_modelview();
   }
 };
@@ -98,7 +98,8 @@ public:
     // FIXME: frequent push/pops might be slow
     gc->push_modelview();
     gc->add_modelview(modelview.matrix);
-    sprite.draw(0, 0, gc);
+    sprite.draw(static_cast<int>(pos.x),
+                static_cast<int>(pos.y), gc);
     gc->pop_modelview();
   }
 };
@@ -118,7 +119,7 @@ public:
     gc->push_modelview();
     gc->add_modelview(modelview.matrix);
     Fonts::dialog_h.set_alignment(origin_center);
-    Fonts::dialog_h.draw(0, 0, text);
+    Fonts::dialog_h.draw(int(pos.x), int(pos.y), text);
     gc->pop_modelview();
   }
 };
@@ -152,9 +153,9 @@ public:
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glMultMatrixf(modelview.matrix);
+    glTranslatef(pos.x, pos.y, 0);
     glScalef(surface.get_width(), surface.get_height(), 1.0);
 
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -220,13 +221,15 @@ DrawingContext::draw(DrawingRequest* request)
 
 void
 DrawingContext::draw(const CL_Surface&   sprite,  float x, float y, float z)
-{ 
+{ // FIXME: This should get flattend down to a simple texture draw
+  // command for easier sorting after texture-id/alpha
   draw(new CLSurfaceDrawingRequest(sprite, Vector(x, y), z, modelview_stack.back()));
 }
 
 void
 DrawingContext::draw(const CL_Sprite&   sprite,  float x, float y, float z)
-{
+{ // FIXME: This should get flattend down to a simple texture draw
+  // command for easier sorting after texture-id/alpha
   draw(new SpriteDrawingRequest(sprite, Vector(x, y), z, modelview_stack.back()));
 }
 
