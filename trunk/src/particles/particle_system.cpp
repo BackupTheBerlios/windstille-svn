@@ -41,6 +41,8 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   z_pos      = 0;
   life_time  = 1.0f;
 
+  bunching = 1.0f;
+
   gravity_x = 0.0f;
   gravity_y = -10.0f;
 
@@ -56,20 +58,22 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   color_start = Color(1.0f, 1.0f, 1.0f, 1.0f);
   color_stop  = Color(   0,    0,    0,    0);
 
-  set_count(70);
-  
   // Set stuff from Lisp
   lisp::Properties props(lisp);
+
+  float p_bunching = 1.0; 
+  props.get("bunching", p_bunching);
+  set_bunching(p_bunching);
 
   props.get("name", name);
     
   float p_lifetime;
   if (props.get("lifetime", p_lifetime))
     set_lifetime(p_lifetime);
-  
-  int p_count;
-  if (props.get("count", p_count))
-    set_count(p_count);
+ 
+  int p_count = 70;
+  props.get("count", p_count);
+  set_count(p_count);
 
   props.get("z-pos", z_pos);
 
@@ -182,6 +186,8 @@ ParticleSystem::ParticleSystem()
   z_pos      = 0;
   life_time  = 1.0f;
 
+  bunching = 1.0f;
+
   gravity_x = 0.0f;
   gravity_y = -10.0f;
 
@@ -275,14 +281,15 @@ ParticleSystem::set_count(int num)
     {
       //i->t = -1.0f;
       spawn(*i);
-      i->t = (life_time * (float(i - particles.begin())/particles.size()));
+      i->t = (life_time * bunching * (float(i - particles.begin())/particles.size()));
     }
+  std::cout << "bunching: " << bunching << std::endl;
 }
   
 void
 ParticleSystem::set_bunching(float factor)
 {
-  (void) factor; 
+  bunching = std::max(0.0f, std::min(factor, 1.0f));
 }
 
 void

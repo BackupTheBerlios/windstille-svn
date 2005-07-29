@@ -78,6 +78,8 @@ private:
   float cone_start;
   float cone_stop;
 
+  float bunching;
+
 public:
   float size_start;
   float size_stop;
