@@ -32,6 +32,14 @@
 #include "lisp/lisp.hpp"
 #include "sprite2d/sprite.hpp"
 
+/** Can represent any generic object that the player may see or interact with that
+does not require collision physics or specialized C++ code. For example doors, trains,
+signs, objects you can pick up, and animations.
+
+TODO: should this provide optional collision detection such that you can use it to make
+crates etc? Or perhaps another object should derive from this which adds collision
+detection?
+*/
 class ScriptableObject : public Entity
 {
 private:
