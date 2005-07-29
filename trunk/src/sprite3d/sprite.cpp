@@ -54,8 +54,6 @@ Sprite::Sprite(const std::string& filename)
   next_frame.action  = 0;
   next_action.action = 0;
   blend_time = 0.0;
-
-  bone_positions.resize(data->bone_count);
 }
 
 Sprite::Sprite(const Data* data)
@@ -70,8 +68,6 @@ Sprite::Sprite(const Data* data)
   next_frame.action  = 0;
   next_action.action = 0;
   blend_time = 0.0;
-
-  bone_positions.resize(data->bone_count);
 }
 
 Sprite::~Sprite()
@@ -193,10 +189,10 @@ Sprite::get_rot() const
   return frame1.rot;
 }
 
-BoneID
-Sprite::get_bone_id(const std::string& name) const
+PointID
+Sprite::get_attachement_point_id(const std::string& name) const
 {
-  return data->get_bone_id(name); 
+  return data->get_attachement_point_id(name); 
 }
 
 static inline void set_matrix_from_quat(Matrix& m, float w,
@@ -228,33 +224,35 @@ static inline void set_matrix_from_quat(Matrix& m, float w,
 }
 
 Matrix
-Sprite::get_bone_matrix(BoneID id) const
+Sprite::get_attachement_point_matrix(PointID id) const
 {
   float t_1 = 1.0 - blend_time;
-  const BonePosition& bone1 = frame1.action->frames[frame1.frame].bones[id];
-  const BonePosition& bone2 = frame2.action->frames[frame2.frame].bones[id];
+  const AttachementPointPosition& point1 
+	  = frame1.action->frames[frame1.frame].attachement_points[id];
+  const AttachementPointPosition& point2 
+	  = frame2.action->frames[frame2.frame].attachement_points[id];
 
   float pos[3];
   float quat[4];
   if(frame1.rot) {
-    pos[0] = -bone1.pos[0] * t_1;
-    pos[1] = bone1.pos[1] * t_1;
-    pos[2] = -bone1.pos[2] * t_1;   
+    pos[0] = -point1.pos[0] * t_1;
+    pos[1] = point1.pos[1] * t_1;
+    pos[2] = -point1.pos[2] * t_1;   
   } else {
     for(int i = 0; i < 3; ++i)
-      pos[i] = bone1.pos[i] * t_1;
+      pos[i] = point1.pos[i] * t_1;
     for(int i = 0; i < 4; ++i)
-      quat[i] = bone1.quat[i] * t_1;
+      quat[i] = point1.quat[i] * t_1;
   }
   if(frame2.rot) {
-    pos[0] += -bone2.pos[0] * blend_time;
-    pos[1] += bone2.pos[1] * blend_time;
-    pos[2] += -bone2.pos[2] * blend_time;
+    pos[0] += -point2.pos[0] * blend_time;
+    pos[1] += point2.pos[1] * blend_time;
+    pos[2] += -point2.pos[2] * blend_time;
   } else {
     for(int i = 0; i < 3; ++i)
-      pos[i] += bone2.pos[i] * blend_time;
+      pos[i] += point2.pos[i] * blend_time;
     for(int i = 0; i < 4; ++i)
-      quat[i] += bone2.quat[i] * blend_time;
+      quat[i] += point2.quat[i] * blend_time;
   }
 
   Matrix m      = Matrix::identity();
@@ -262,24 +260,26 @@ Sprite::get_bone_matrix(BoneID id) const
   m.matrix[7]  += pos[1];
   m.matrix[11] += pos[2];
 
+  printf("Pos: %f %f %f\n", pos[0], pos[1], pos[2]);
+  
   return m;
 }
 
 class SpriteDrawingRequest : public DrawingRequest
 {
 private:
-  Sprite sprite;
+  const Sprite* sprite;
 
 public:
-  SpriteDrawingRequest(Sprite sprite, const Vector& pos, float z_pos,
-                       const Matrix& modelview)
-      : DrawingRequest(pos, z_pos, modelview), sprite(sprite)
+  SpriteDrawingRequest(const Sprite* sprite,
+                       const Matrix& modelview, float z_pos)
+      : DrawingRequest(modelview, z_pos), sprite(sprite)
   {
   }
 
   void draw(CL_GraphicContext* gc)
   {
-    sprite.draw(gc, pos, modelview);
+    sprite->draw(gc, modelview);
   }
 };
 
@@ -334,35 +334,40 @@ Sprite::update(float elapsed_time)
 }
 
 void
-Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos)
+Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos) const
 {
-  sc.color().draw(
-    new SpriteDrawingRequest(*this, pos, z_pos, sc.color().get_modelview()));
+  Matrix matrix = sc.color().get_modelview();
+  matrix[13] += pos.x;
+  matrix[14] += pos.y;
+  sc.color().draw(new SpriteDrawingRequest(this, matrix, z_pos));
 }
 
 void
-Sprite::draw(SceneContext& sc, const Matrix& matrix)
+Sprite::draw(SceneContext& sc, const Matrix& matrix, float z_pos) const
 {
+#if 0
   Matrix mmatrix 
     = matrix.multiply(sc.color().get_modelview());
-  sc.color().draw(
-    new SpriteDrawingRequest(*this, Vector(0, 0), 0, mmatrix));
+#else
+  Matrix mmatrix
+    = sc.color().get_modelview().multiply(matrix);
+#endif
+  sc.color().draw(new SpriteDrawingRequest(this, mmatrix, z_pos));
 }
 
 void
-Sprite::draw(CL_GraphicContext* gc, const Vector& pos,
-               const Matrix& modelview)
+Sprite::draw(CL_GraphicContext* gc, const Matrix& modelview) const
 {
   CL_OpenGLState state(gc);
   state.set_active();
   state.setup_2d();
 
+  glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  glMultMatrixd(modelview.matrix);
-  glTranslatef(pos.x, pos.y, 0);
+  glMultMatrixf(modelview.matrix);
   if(frame1.rot) {
     glRotatef(180, 0, 1.0, 0);
-  }
+  } 
 
   glClear(GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
@@ -423,7 +428,8 @@ Sprite::draw(CL_GraphicContext* gc, const Vector& pos,
   glPopMatrix();
 }
 
-Sprite::operator bool() const
+bool
+Sprite::is_valid() const
 {
   return data != 0;
 }

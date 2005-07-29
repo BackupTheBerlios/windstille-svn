@@ -39,10 +39,11 @@ Player* Player::current_ = 0;
 
 Player::Player () :
   light("light", resources),
-  sprite ("3dsprites/heroken.wsprite"),
+  //sprite ("3dsprites/heroken.wsprite"),
   grenade("3dsprites/grenade.wsprite"),
   state(STAND)
 {
+  sprite = sprite3d::Sprite("3dsprites/heroken.wsprite");
   pos.x = 320;
   pos.y = 200;
   name = "player";

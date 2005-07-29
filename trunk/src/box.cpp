@@ -62,6 +62,7 @@ Box::Box(const lisp::Lisp* lisp)
 
 Box::~Box()
 {
+  Sector::current()->get_collision_engine()->remove(colobj);
 }
 
 void 

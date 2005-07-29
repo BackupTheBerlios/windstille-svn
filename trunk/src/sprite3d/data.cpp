@@ -54,8 +54,8 @@ static inline std::string read_string(PHYSFS_file* file, size_t size)
 }
 
 Data::Data(const std::string& filename)
-  : mesh_count(0), meshs(0), bone_count(0), bones(0),
-  action_count(0), actions(0)
+  : mesh_count(0), meshs(0), attachement_point_count(0), 
+  attachement_points(0), action_count(0), actions(0)
 {
   PHYSFS_file* file = PHYSFS_openRead(filename.c_str());
   if(!file) {
@@ -78,7 +78,7 @@ Data::Data(const std::string& filename)
     mesh_count = read_uint16_t(file);
     if(mesh_count == 0)
       throw std::runtime_error("Sprite contains no meshs");
-    bone_count = read_uint16_t(file);
+    attachement_point_count = read_uint16_t(file);
     action_count = read_uint16_t(file);
     if(action_count == 0)
       throw std::runtime_error("Sprite contains no actions");
@@ -112,11 +112,11 @@ Data::Data(const std::string& filename)
       }
     }
 
-    // read bones
-    bones = new Bone[bone_count];
-    for(uint16_t b = 0; b < bone_count; ++b) {
-      Bone& bone = bones[b];
-      bone.name = read_string(file, 64);
+    // read attachement points
+    attachement_points = new AttachementPoint[attachement_point_count];
+    for(uint16_t a = 0; a < attachement_point_count; ++a) {
+      AttachementPoint& point = attachement_points[a];
+      point.name = read_string(file, 64);
     }
 
     // read actions
@@ -152,13 +152,14 @@ Data::Data(const std::string& filename)
           }
         }
 
-        frame.bones = new BonePosition[bone_count];
-        for(uint16_t b = 0; b < bone_count; ++b) {
-          BonePosition& bone = frame.bones[b];
+        frame.attachement_points 
+          = new AttachementPointPosition[attachement_point_count];
+        for(uint16_t a = 0; a < attachement_point_count; ++a) {
+          AttachementPointPosition& point = frame.attachement_points[a];
           for(int i = 0; i < 3; ++i)
-            bone.pos[i] = read_float(file);
+            point.pos[i] = read_float(file);
           for(int i = 0; i < 4; ++i)
-            bone.quat[i] = read_float(file);
+            point.quat[i] = read_float(file);
         }
       }
     }
@@ -191,8 +192,8 @@ Data::clear()
     meshs = 0;
   }
   
-  delete[] bones;
-  bones = 0;
+  delete[] attachement_points;
+  attachement_points = 0;
 
   if(actions != 0) {
     for(uint16_t a = 0; a < action_count; ++a) {
@@ -210,7 +211,7 @@ Data::clear()
           delete[] vertices.vertices;
         }
         delete[] frame.meshs;
-        delete[] frame.bones;
+        delete[] frame.attachement_points;
       }
       delete[] action.frames;
     }
@@ -246,15 +247,15 @@ Data::get_marker(const Action* action, const std::string& name) const
 }
 
 uint16_t
-Data::get_bone_id(const std::string& name) const
+Data::get_attachement_point_id(const std::string& name) const
 {
-  for(uint16_t b = 0; b < bone_count; ++b) {
-    if(bones[b].name == name)
-      return b;
+  for(uint16_t a = 0; a < attachement_point_count; ++a) {
+    if(attachement_points[a].name == name)
+      return a;
   }
 
   std::ostringstream msg;
-  msg << "No bone with name '" << name << "' defined";
+  msg << "No Attachement Point with name '" << name << "' defined";
   throw std::runtime_error(msg.str());
 }
 

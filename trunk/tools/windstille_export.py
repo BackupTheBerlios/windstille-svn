@@ -97,6 +97,10 @@ def parse_actionconfig(text):
 
   actionconfig = {}
   while True:
+    token = lex.get_token()
+    if token == lex.eof:
+      break
+    lex.push_token(token)
     action_name = expect_string()
     first_frame = expect_int()
     expect_dash()
@@ -128,10 +132,6 @@ def parse_actionconfig(text):
     actionconfig[action_name] = \
         (first_frame, last_frame, speed, samplerate, markers)
     print "Config: %s - %s" % (action_name, str(actionconfig[action_name]))
-    token = lex.get_token()
-    if token == lex.eof:
-      break
-    lex.push_token(token)
 
   return actionconfig
 
@@ -156,13 +156,10 @@ def parse_config(text):
       raise Exception, "Expected float, got EOF"
     return float(res)
 
-  bones = []
   while True:
     token = lex.get_token()
     if token == lex.eof:
       break
-    elif token == "ExportBone":
-      bones.append(expect_string())
     elif token == "DefaultSpeed":
       global DEFAULT_SPEED
       DEFAULT_SPEED = expect_float()
@@ -177,7 +174,6 @@ def parse_config(text):
       DEFAULT_SAMPLERATE = expect_int()
     else:
       raise Exception, "Unexpected token '%s'" % token
-  return bones
 
 # return contents of a text in the blender scene
 def get_text(textname):
@@ -198,9 +194,8 @@ def export(filename):
   layers = scene.Layers
 
   # parse exportconfig
-  bone_names = []
   try:
-    bone_names = parse_config(get_text("exportconfig"))
+    parse_config(get_text("exportconfig"))
   except Exception, message:
     raise Exception, "Parse Error in exportconfig:" + str(message)
 
@@ -220,12 +215,16 @@ def export(filename):
     if (obj.Layers & layers) == 0:
       print "Skipping \"%s\" because it is on different layer" % obj.getName()
       continue
+    texture = data.faces[0].image
+    if not texture:
+      print "Skipping Mesh %s: no texture" % obj.getName()
+      continue
     meshes.append(obj)
 
   # search for armature object
   armatures = Blender.Armature.Get()
-  if len(armatures) != 1:
-    raise Exception, "Need to have exactly 1 armature in the scene"
+  if len(armatures) > 1:
+    raise Exception, "Need to have at most 1 armature in the scene"
 
   armatureobj = 0
   for obj in Blender.Object.Get():
@@ -235,30 +234,28 @@ def export(filename):
       armatureobj = obj
       armature = obj.getData()
       break
-  if armatureobj == 0:
-    raise Exception, "Couldn't find armature object..."
 
-  # compose list of bones to export
-  bones = []
-  for name in bone_names:
-    found = False
-    for bone in armature.getBones():
-      if bone.getName() == name:
-        bones.append(bone)
-        found = True
-        break
-    if not found:
-      raise Exception, "No bone '%s' defined in armature" % name
-
+  # compose list of objects for attachement points
+  attachement_objects = []
+  for obj in Blender.Object.Get():
+    if obj.getType() != 'Empty':
+      continue
+    if not obj.getName().startswith("A:"):
+      continue;
+    attachement_objects.append(obj)
+  
   # compose list of actions to export
   actions = []
-  for action in Blender.Armature.NLA.GetActions().iteritems():
-    actions.append(action[1])
+  if armatureobj == 0:
+    actions.append("Default")
+  else:
+    for action in Blender.Armature.NLA.GetActions().iteritems():
+      actions.append(action[1])
 
   # write file header
   file = open(filename, "wb")
   file.write(struct.pack("=4sHHHH", "W3DS", FORMAT_VERSION, \
-        len(meshes), len(bones), len(actions)))
+        len(meshes), len(attachement_objects), len(actions)))
   objvertmaps = {}
 
   # Mesh Headers + Data
@@ -268,10 +265,6 @@ def export(filename):
     print "Exporting Mesh %s" % obj.getName()
 
     texture = data.faces[0].image
-    if not texture:
-      print "Skipping Mesh %s: no texture" % obj.getName()
-      continue
-      
     texture_filename = texture.filename
     texture_filename = os.path.basename(texture_filename)
     vertexmap = []
@@ -323,13 +316,45 @@ def export(filename):
 
     objvertmaps[obj.getName()] = vertexmap
 
-  # Bone Headers
-  for bone in bones:
-    file.write(struct.pack("=64s", bone.getName()))
+  # Attachement Point Headers
+  for obj in attachement_objects:
+    file.write(struct.pack("=64s", obj.getName()[2:]))
 
   # Action Headers + actions
+  def save_frame():
+    for obj in meshes:
+      data = Blender.NMesh.GetRawFromObject(obj.getName())
+      vertexmap = objvertmaps[obj.getName()]
+      m = obj.getMatrix()
+      # action/frame/mesh/vertices
+      for nv in vertexmap:
+        v = data.verts[nv]
+        t = [0, 0, 0]
+        t[0] = m[0][0]*v[0] + m[1][0]*v[1] + m[2][0]*v[2] + m[3][0]
+        t[1] = m[0][1]*v[0] + m[1][1]*v[1] + m[2][1]*v[2] + m[3][1]        
+        t[2] = m[0][2]*v[0] + m[1][2]*v[1] + m[2][2]*v[2] + m[3][2]
+        t[0] *= ZOOM
+        t[1] *= ZOOM
+        t[2] *= ZOOM
+        file.write(struct.pack("=fff", t[1], -t[2], t[0]))
+
+    # attachement points
+    for obj in attachement_objects:
+      m = obj.matrixWorld
+      loc = (m[3][0] * ZOOM, m[3][1] * ZOOM, m[3][2] * ZOOM)
+      file.write(struct.pack("=fff", loc[0], loc[1], loc[2]))
+      quat = matrix2quaternion(m)
+      file.write(struct.pack("=ffff", quat[0], quat[1], quat[2], quat[3]))
+    
   actionnum = 0
   for action in actions:
+    # special case, no armature+animations
+    if armatureobj == 0:
+      file.write(struct.pack("=64sfHH", "Default", \
+                 DEFAULT_SPEED * SPEED_MULTIPLIER, 0, 1))
+      save_frame()
+      break
+  
     # enable action
     action.setActive(armatureobj)
  
@@ -381,34 +406,7 @@ def export(filename):
     for frame in range(first_frame, last_frame+1, samplerate):
       frs += 1
       Blender.Set("curframe", int(frame))
-      #for obj in Blender.Object.Get():
-      #  data = obj.getData()
-      #  if (type(data) is not Blender.Types.NMeshType) or not data.faces:                 continue
-      #  if (obj.Layers & layers) == 0:
-      #    continue
-      for obj in meshes:
-        data = Blender.NMesh.GetRawFromObject(obj.getName())
-        vertexmap = objvertmaps[obj.getName()]
-        m = obj.getMatrix()
-        # action/frame/mesh/vertices
-        for nv in vertexmap:
-          v = data.verts[nv]
-          t = [0, 0, 0]
-          t[0] = m[0][0]*v[0] + m[1][0]*v[1] + m[2][0]*v[2] + m[3][0]
-          t[1] = m[0][1]*v[0] + m[1][1]*v[1] + m[2][1]*v[2] + m[3][1]        
-          t[2] = m[0][2]*v[0] + m[1][2]*v[1] + m[2][2]*v[2] + m[3][2]
-          t[0] *= ZOOM
-          t[1] *= ZOOM
-          t[2] *= ZOOM
-          file.write(struct.pack("=fff", t[1], -t[2], t[0]))
-
-      # bone positions
-      for bone in bones:
-        bonemat = bone.getRestMatrix('worldspace')
-        loc = (m[3][0], m[3][1], m[3][2])
-        file.write(struct.pack("=fff", loc[0], loc[1], loc[2]))
-        quat = matrix2quaternion(bonemat)
-        file.write(struct.pack("=ffff", quat[0], quat[1], quat[2], quat[3]))
+      save_frame
       
 def fs_callback(filename):
   export(filename)

@@ -30,12 +30,21 @@ void
 TestObject::draw(SceneContext& context)
 {
   sprite.draw(context, pos, 100);
+  for(std::vector<AttachedSprite>::iterator i = attached_sprites.begin();
+      i != attached_sprites.end(); ++i) {
+    Matrix mat = sprite.get_attachement_point_matrix(i->attachpoint);
+    i->sprite.draw(context, mat, 100);
+  }                                                                        
 }
 
 void
 TestObject::update(float elapsed_time)
 {
   sprite.update(elapsed_time);
+  for(std::vector<AttachedSprite>::iterator i = attached_sprites.begin();
+      i != attached_sprites.end(); ++i) {
+    i->sprite.update(elapsed_time);
+  }
 }
 
 void
@@ -70,5 +79,15 @@ void
 TestObject::set_vflip(bool vflip)
 {
   sprite.set_rot(vflip);
+}
+
+void
+TestObject::attach(const std::string& spritename,
+                   const std::string& attachement_point)
+{
+  AttachedSprite asprite;
+  asprite.sprite = sprite3d::Sprite(spritename);
+  asprite.attachpoint = sprite.get_attachement_point_id(attachement_point);
+  attached_sprites.push_back(asprite);
 }
 

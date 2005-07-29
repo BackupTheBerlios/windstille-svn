@@ -154,7 +154,6 @@ Texture::put(SDL_Surface* image, int x, int y)
   glTexSubImage2D(GL_TEXTURE_2D, 0, x, y,
                   image->w, image->h, GL_RGBA, GL_UNSIGNED_BYTE,
                   image->pixels);
-
 }
 
 void 

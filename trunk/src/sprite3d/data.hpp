@@ -28,7 +28,7 @@ namespace sprite3d
 {
 
 struct Mesh;
-struct Bone;
+struct AttachementPoint;
 struct MeshVertices;
 struct ActionFrame;
 struct Action;
@@ -45,12 +45,12 @@ public:
 
   const Action& get_action(const std::string& name) const;
   const Marker& get_marker(const Action* action, const std::string& name) const;
-  uint16_t get_bone_id(const std::string& name) const;
+  uint16_t get_attachement_point_id(const std::string& name) const;
 
   uint16_t mesh_count;
   Mesh* meshs;
-  uint16_t bone_count;
-  Bone* bones;
+  uint16_t attachement_point_count;
+  AttachementPoint* attachement_points;
   uint16_t action_count;
   Action* actions;
 
@@ -73,7 +73,7 @@ struct Mesh
   uint16_t vertex_count;
 };
 
-struct Bone
+struct AttachementPoint
 {
   std::string name;
 };
@@ -86,10 +86,8 @@ struct MeshVertices
   float* vertices;
 };
 
-struct BonePosition
+struct AttachementPointPosition
 {
-  BonePosition()
-  { }
   float pos[3]; // x, y, z
   float quat[4]; // w, x, y, z
 };
@@ -97,10 +95,10 @@ struct BonePosition
 struct ActionFrame
 {
   ActionFrame()
-    : meshs(0), bones(0)
+    : meshs(0), attachement_points(0)
   { }
   MeshVertices* meshs;
-  BonePosition* bones;
+  AttachementPointPosition* attachement_points;
 };
 
 struct Marker

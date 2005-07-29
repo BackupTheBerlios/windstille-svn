@@ -34,9 +34,8 @@ namespace sprite3d
 class Data;
 struct Action;
 struct ActionFrame;
-struct BonePosition;
 
-typedef uint16_t BoneID;
+typedef uint16_t PointID;
 
 /**
  * This class is a 3d sprite. It's a set of textured meshs with different
@@ -54,8 +53,8 @@ public:
    * You should call this every frame
    */
   void update(float elapsed_time);
-  void draw(SceneContext& sc, const Vector& pos, float z_pos);
-  void draw(SceneContext& sc, const Matrix& matrix);
+  void draw(SceneContext& sc, const Vector& pos, float z_pos) const;
+  void draw(SceneContext& sc, const Matrix& matrix, float z_pos) const;
   
   /**
    * Changes action (after the currently shown animation frame)
@@ -103,14 +102,16 @@ public:
   void set_rot(bool rot = true);
   bool get_rot() const;
 
-  BoneID get_bone_id(const std::string& name) const;
-  Matrix get_bone_matrix(BoneID id) const;
-
-  void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
+  PointID get_attachement_point_id(const std::string& name) const;
+  Matrix get_attachement_point_matrix(PointID id) const;
 
   /** true if the Sprite is valid and usable, false if not */
-  operator bool() const;
+  bool is_valid() const;
+  
 private:  
+  friend class SpriteDrawingRequest;
+  void draw(CL_GraphicContext* gc, const Matrix& modelview) const;
+  
   struct Frame {
     const Action* action;
     int   frame;
@@ -128,8 +129,6 @@ private:
 
   const Data* data;
   bool actions_switched;
-
-  std::vector<BonePosition> bone_positions;
 
   Frame frame1;
   Frame frame2;

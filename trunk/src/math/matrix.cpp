@@ -36,7 +36,7 @@
 
 Matrix::Matrix()
 {
-	memset(matrix, 0, sizeof(double[16]));
+	memset(matrix, 0, sizeof(float[16]));
 }
 
 Matrix
@@ -58,32 +58,26 @@ Matrix::Matrix(const Matrix &copy)
 		matrix[i] = copy.matrix[i];
 }
 
-Matrix::Matrix(double *init_matrix)
+Matrix::Matrix(const float *init_matrix)
 {
 	for (int i=0; i<16; i++)
 		matrix[i] = init_matrix[i];
 }
 
-Matrix::Matrix(float *init_matrix)
-{
-	for (int i=0; i<16; i++)
-		matrix[i] = (double) init_matrix[i];
-}
-
 /////////////////////////////////////////////////////////////////////////////
 // Matrix attributes:
 
-double Matrix::get_origin_x() const
+float Matrix::get_origin_x() const
 {
 	return matrix[12];
 }
 
-double Matrix::get_origin_y() const
+float Matrix::get_origin_y() const
 {
 	return matrix[13];
 }
 
-double Matrix::get_origin_z() const
+float Matrix::get_origin_z() const
 {
 	return matrix[14];
 }

@@ -60,6 +60,8 @@ public:
   void set_action(const std::string& action);
   void set_pos(float x, float y);
   void set_vflip(bool vflip);
+  void attach(const std::string& spritename,
+		      const std::string& attachement_point);
 };
 
 class Player : public GameObject

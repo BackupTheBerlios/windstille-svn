@@ -64,6 +64,13 @@ TestObject::set_vflip(bool vflip)
 }
 
 void
+TestObject::attach(const std::string& spritename,
+		           const std::string& attachement_point)
+{
+  obj()->attach(spritename, attachement_point);
+}
+
+void
 Player::start_listening()
 {
   obj()->start_listening();

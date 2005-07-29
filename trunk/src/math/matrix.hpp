@@ -30,7 +30,6 @@
 #ifndef HEADER_MATH_MATRIX_HPP
 #define HEADER_MATH_MATRIX_HPP
 
-#include <ClanLib/Core/Math/matrix4x4.h>
 #include <iosfwd>
 
 //: 4x4 Matrix.
@@ -43,37 +42,35 @@ public:
 
 	Matrix(const Matrix &copy);
 
-	Matrix(double *matrix);
-
-	Matrix(float *matrix);
+	Matrix(const float *matrix);
 
 	/** Returns identity matrix */
 	static Matrix identity();
 
 //! Attributes:
 public:
-	double matrix[16];
+	float matrix[16];
 
 	//: Operator that returns the matrix cell at the given index.
-	double &operator[](int i) { return matrix[i]; }
+	float &operator[](int i) { return matrix[i]; }
 
 	//: Operator that returns the matrix cell at the given index.
-	const double &operator[](int i) const { return matrix[i]; }
+	const float &operator[](int i) const { return matrix[i]; }
 
 	//: Operator that returns the matrix cell at the given index.
-	double &operator[](unsigned int i) { return matrix[i]; }
+	float &operator[](unsigned int i) { return matrix[i]; }
 
 	//: Operator that returns the matrix cell at the given index.
-	const double &operator[](unsigned int i) const { return matrix[i]; }
+	const float &operator[](unsigned int i) const { return matrix[i]; }
 
 	//: Returns the x coordinate for the point (0,0,0) multiplied with this matrix.
-	double get_origin_x() const;
+	float get_origin_x() const;
 
 	//: Returns the y coordinate for the point (0,0,0) multiplied with this matrix.
-	double get_origin_y() const;
+	float get_origin_y() const;
 
 	//: Returns the z coordinate for the point (0,0,0) multiplied with this matrix.
-	double get_origin_z() const;
+	float get_origin_z() const;
 
 //! Operations:
 public:
