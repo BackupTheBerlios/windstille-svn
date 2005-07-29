@@ -43,7 +43,7 @@ Character::Character(const lisp::Lisp* lisp)
   props.get("pos", pos);
   props.print_unused_warnings("character");
   
-  sprite = sprite3d::Sprite("3dsprites/heroken.wsprite");
+  sprite = Sprite3D("3dsprites/heroken.wsprite");
   sprite.set_action("Stand");
 }
 

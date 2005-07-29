@@ -77,11 +77,11 @@ Data::Data(const std::string& filename)
 
     mesh_count = read_uint16_t(file);
     if(mesh_count == 0)
-      throw std::runtime_error("Sprite contains no meshs");
+      throw std::runtime_error("Sprite3D contains no meshs");
     attachement_point_count = read_uint16_t(file);
     action_count = read_uint16_t(file);
     if(action_count == 0)
-      throw std::runtime_error("Sprite contains no actions");
+      throw std::runtime_error("Sprite3D contains no actions");
 
     // read meshs
     meshs = new Mesh[mesh_count];

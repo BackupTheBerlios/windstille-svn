@@ -19,7 +19,7 @@ TestObject::TestObject(const lisp::Lisp* lisp)
 
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in TestObject");
-  sprite = sprite3d::Sprite(spritename);
+  sprite = Sprite3D(spritename);
 }
 
 TestObject::~TestObject()
@@ -51,7 +51,7 @@ void
 TestObject::set_sprite(const std::string& filename)
 {
   try {
-    sprite = sprite3d::Sprite(filename);
+    sprite = Sprite3D(filename);
   } catch(std::exception& e) {
     std::cerr << "Couldn't change sprite to '" << filename << "': " 
               << e.what() << "\n";
@@ -86,7 +86,7 @@ TestObject::attach(const std::string& spritename,
                    const std::string& attachement_point)
 {
   AttachedSprite asprite;
-  asprite.sprite = sprite3d::Sprite(spritename);
+  asprite.sprite = Sprite3D(spritename);
   asprite.attachpoint = sprite.get_attachement_point_id(attachement_point);
   attached_sprites.push_back(asprite);
 }

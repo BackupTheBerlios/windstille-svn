@@ -17,7 +17,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <config.h>
-#include "sprite3d/sprite.hpp"
+#include "sprite3d/sprite3d.hpp"
 
 #include <vector>
 #include <stdint.h>
@@ -34,15 +34,14 @@
 #include "sprite3d/manager.hpp"
 #include "sprite3d/data.hpp"
 
-namespace sprite3d
-{
+using namespace sprite3d;
 
-Sprite::Sprite()
+Sprite3D::Sprite3D()
   : data(0), actions_switched(false)
 {
 }
 
-Sprite::Sprite(const std::string& filename)
+Sprite3D::Sprite3D(const std::string& filename)
   : data(sprite3d_manager->create_data(filename)), actions_switched(false)
 {
   frame1.action = &data->actions[0];
@@ -56,7 +55,7 @@ Sprite::Sprite(const std::string& filename)
   blend_time = 0.0;
 }
 
-Sprite::Sprite(const Data* data)
+Sprite3D::Sprite3D(const Data* data)
   : data(data), actions_switched(false)
 {
   frame1.action = &data->actions[0];
@@ -70,12 +69,12 @@ Sprite::Sprite(const Data* data)
   blend_time = 0.0;
 }
 
-Sprite::~Sprite()
+Sprite3D::~Sprite3D()
 {
 }
 
 void
-Sprite::set_action(const std::string& actionname, float speed)
+Sprite3D::set_action(const std::string& actionname, float speed)
 {
   next_frame.action = & data->get_action(actionname);
   // set to last action so that next set_next_frame call will result in frame 0
@@ -92,7 +91,7 @@ Sprite::set_action(const std::string& actionname, float speed)
 }
 
 const std::string&
-Sprite::get_action() const
+Sprite3D::get_action() const
 {
   if(next_frame.action != 0)
     return next_frame.action->name;
@@ -101,7 +100,7 @@ Sprite::get_action() const
 }
 
 void
-Sprite::set_next_action(const std::string& name, float speed)
+Sprite3D::set_next_action(const std::string& name, float speed)
 {
   next_action.action = & data->get_action(name);
   if(speed >= 0) {
@@ -125,13 +124,13 @@ Sprite::set_next_action(const std::string& name, float speed)
 }
 
 void
-Sprite::set_next_rot(bool rot)
+Sprite3D::set_next_rot(bool rot)
 {
   next_action.rot = rot;
 }
 
 void
-Sprite::abort_at_marker(const std::string& name)
+Sprite3D::abort_at_marker(const std::string& name)
 {
   const Marker& marker = data->get_marker(frame1.action, name);
   abort_at_frame = frame1;
@@ -139,14 +138,14 @@ Sprite::abort_at_marker(const std::string& name)
 }
 
 bool
-Sprite::before_marker(const std::string& name) const
+Sprite3D::before_marker(const std::string& name) const
 {
   const Marker& marker = data->get_marker(frame1.action, name);  
   return frame1.frame < marker.frame;
 }
 
 bool
-Sprite::switched_actions()
+Sprite3D::switched_actions()
 {
   if(actions_switched) {
     actions_switched = false;
@@ -157,7 +156,7 @@ Sprite::switched_actions()
 }
 
 void
-Sprite::set_speed(float speed)
+Sprite3D::set_speed(float speed)
 {
   if(speed < 0 && frame1.speed >= 0
       || speed >= 0 && frame1.speed < 0) {
@@ -169,19 +168,19 @@ Sprite::set_speed(float speed)
 }
 
 float
-Sprite::get_speed() const
+Sprite3D::get_speed() const
 {
   return frame1.speed;
 }
 
 void
-Sprite::set_rot(bool rot)
+Sprite3D::set_rot(bool rot)
 {
   next_frame.rot = rot;
 }
 
 bool
-Sprite::get_rot() const
+Sprite3D::get_rot() const
 {
   if(next_frame.action != 0)
     return next_frame.rot;
@@ -189,8 +188,8 @@ Sprite::get_rot() const
   return frame1.rot;
 }
 
-PointID
-Sprite::get_attachement_point_id(const std::string& name) const
+Sprite3D::PointID
+Sprite3D::get_attachement_point_id(const std::string& name) const
 {
   return data->get_attachement_point_id(name); 
 }
@@ -224,7 +223,7 @@ static inline void set_matrix_from_quat(Matrix& m, float w,
 }
 
 Matrix
-Sprite::get_attachement_point_matrix(PointID id) const
+Sprite3D::get_attachement_point_matrix(PointID id) const
 {
   float t_1 = 1.0 - blend_time;
   const AttachementPointPosition& point1 
@@ -263,13 +262,13 @@ Sprite::get_attachement_point_matrix(PointID id) const
   return m;
 }
 
-class SpriteDrawingRequest : public DrawingRequest
+class Sprite3DDrawingRequest : public DrawingRequest
 {
 private:
-  const Sprite* sprite;
+  const Sprite3D* sprite;
 
 public:
-  SpriteDrawingRequest(const Sprite* sprite, const Vector& pos, float z_pos,
+  Sprite3DDrawingRequest(const Sprite3D* sprite, const Vector& pos, float z_pos,
                        const Matrix& modelview)
     : DrawingRequest(pos, z_pos, modelview), sprite(sprite)
   {}
@@ -281,7 +280,7 @@ public:
 };
 
 void
-Sprite::set_next_frame()
+Sprite3D::set_next_frame()
 {
   if(frame2.action != frame1.action && abort_at_frame.action == 0) {
     actions_switched = true;
@@ -312,7 +311,7 @@ Sprite::set_next_frame()
 }
 
 void
-Sprite::update(float elapsed_time)
+Sprite3D::update(float elapsed_time)
 {   
   float time_delta = elapsed_time * frame1.action->speed * frame1.speed;
   if(frame1.speed < 0)
@@ -331,19 +330,19 @@ Sprite::update(float elapsed_time)
 }
 
 void
-Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos) const
+Sprite3D::draw(SceneContext& sc, const Vector& pos, float z_pos) const
 {
-  sc.color().draw(new SpriteDrawingRequest(this, pos, z_pos, sc.color().get_modelview()));
+  sc.color().draw(new Sprite3DDrawingRequest(this, pos, z_pos, sc.color().get_modelview()));
 }
 
 void
-Sprite::draw(SceneContext& sc, const Matrix& matrix, float z_pos) const
+Sprite3D::draw(SceneContext& sc, const Matrix& matrix, float z_pos) const
 {
-  sc.color().draw(new SpriteDrawingRequest(this, Vector(0, 0), 0.0f, sc.color().get_modelview()));
+  sc.color().draw(new Sprite3DDrawingRequest(this, Vector(0, 0), 0.0f, sc.color().get_modelview()));
 }
 
 void
-Sprite::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview) const
+Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview) const
 {
   CL_OpenGLState state(gc);
   state.set_active();
@@ -417,11 +416,9 @@ Sprite::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview) 
 }
 
 bool
-Sprite::is_valid() const
+Sprite3D::is_valid() const
 {
   return data != 0;
-}
-
 }
 
 /* EOF */

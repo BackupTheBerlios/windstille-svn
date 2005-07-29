@@ -43,7 +43,7 @@ Player::Player () :
   grenade("3dsprites/grenade.wsprite"),
   state(STAND)
 {
-  sprite = sprite3d::Sprite("3dsprites/heroken.wsprite");
+  sprite = Sprite3D("3dsprites/heroken.wsprite");
   pos.x = 320;
   pos.y = 200;
   name = "player";

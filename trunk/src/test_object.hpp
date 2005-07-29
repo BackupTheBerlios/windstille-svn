@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "game_object.hpp"
-#include "sprite3d/sprite.hpp"
+#include "sprite3d/sprite3d.hpp"
 #include "math/vector.hpp"
 #include "lisp/lisp.hpp"
 
@@ -24,10 +24,10 @@ public:
 		      const std::string& attachement_point);
 
 private:
-  sprite3d::Sprite sprite;
+  Sprite3D sprite;
   struct AttachedSprite {
-    sprite3d::Sprite sprite;
-	sprite3d::PointID attachpoint;
+    Sprite3D sprite;
+    Sprite3D::PointID attachpoint;
   };
   std::vector<AttachedSprite> attached_sprites;
   Vector pos;

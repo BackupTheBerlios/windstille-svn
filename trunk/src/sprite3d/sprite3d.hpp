@@ -28,26 +28,27 @@
 
 class SceneContext;
 
-namespace sprite3d
-{
+namespace sprite3d {
 
 class Data;
 struct Action;
 struct ActionFrame;
 
-typedef uint16_t PointID;
+} // namespace sprite3d
 
 /**
  * This class is a 3d sprite. It's a set of textured meshs with different
  * animations (called actions) that are keyframe animated.
  */
-class Sprite
+class Sprite3D
 {
 public:
-  Sprite();
-  Sprite(const std::string& filename);
-  Sprite(const Data* data);
-  ~Sprite();
+  typedef uint16_t PointID;
+
+  Sprite3D();
+  Sprite3D(const std::string& filename);
+  Sprite3D(const sprite3d::Data* data);
+  ~Sprite3D();
 
   /**
    * You should call this every frame
@@ -105,15 +106,15 @@ public:
   PointID get_attachement_point_id(const std::string& name) const;
   Matrix get_attachement_point_matrix(PointID id) const;
 
-  /** true if the Sprite is valid and usable, false if not */
+  /** true if the Sprite3D is valid and usable, false if not */
   bool is_valid() const;
   
 private:  
-  friend class SpriteDrawingRequest;
+  friend class Sprite3DDrawingRequest;
   void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview) const;
   
   struct Frame {
-    const Action* action;
+    const sprite3d::Action* action;
     int   frame;
     float speed;
     bool  rot;
@@ -127,7 +128,7 @@ private:
 
   void set_next_frame();
 
-  const Data* data;
+  const sprite3d::Data* data;
   bool actions_switched;
 
   Frame frame1;
@@ -138,7 +139,5 @@ private:
   Frame next_action;
   Frame abort_at_frame;
 };
-
-}
 
 #endif

@@ -7,7 +7,6 @@
 namespace sprite3d
 {
 
-class Sprite;
 class Data;
 
 class Manager

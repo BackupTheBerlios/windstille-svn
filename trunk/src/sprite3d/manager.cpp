@@ -2,7 +2,7 @@
 
 #include "sprite3d/manager.hpp"
 #include "sprite3d/data.hpp"
-#include "sprite3d/sprite.hpp"
+#include "sprite3d/sprite3d.hpp"
 
 sprite3d::Manager* sprite3d_manager = 0;
 
