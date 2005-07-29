@@ -256,12 +256,10 @@ Sprite::get_attachement_point_matrix(PointID id) const
   }
 
   Matrix m      = Matrix::identity();
-  m.matrix[3]  += pos[0];
-  m.matrix[7]  += pos[1];
-  m.matrix[11] += pos[2];
+  m.matrix[12] += pos[0];
+  m.matrix[13] += pos[1];
+  m.matrix[14] += pos[2];
 
-  printf("Pos: %f %f %f\n", pos[0], pos[1], pos[2]);
-  
   return m;
 }
 
@@ -337,8 +335,8 @@ void
 Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos) const
 {
   Matrix matrix = sc.color().get_modelview();
-  matrix[13] += pos.x;
-  matrix[14] += pos.y;
+  matrix[12] += pos.x;
+  matrix[13] += pos.y;
   sc.color().draw(new SpriteDrawingRequest(this, matrix, z_pos));
 }
 
