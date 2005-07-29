@@ -283,7 +283,6 @@ ParticleSystem::set_count(int num)
       spawn(*i);
       i->t = (life_time * bunching * (float(i - particles.begin())/particles.size()));
     }
-  std::cout << "bunching: " << bunching << std::endl;
 }
   
 void

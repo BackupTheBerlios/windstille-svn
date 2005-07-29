@@ -33,7 +33,6 @@
 #include "screen.hpp"
 #include "game_session.hpp"
 #include "windstille_main.hpp"
-#include "windstille_menu.hpp"
 #include "fonts.hpp"
 #include "sector.hpp"
 #include "input/input_manager.hpp"
@@ -61,7 +60,7 @@ CL_ResourceManager* resources;
 WindstilleMain::WindstilleMain()
   : screen(0)
 {
-  game_main_state = LOAD_MENU;
+  game_main_state = LOAD_GAME_SESSION;
 }
 
 WindstilleMain::~WindstilleMain()
@@ -460,11 +459,8 @@ WindstilleMain::game_main()
       break;
 
     case LOAD_MENU:
-      delete screen;
-      screen = new WindstilleMenu();
-      game_main_state = RUN_GAME;
-      break;
-
+      // Fall through and load the game directly as long as we don't
+      // have a new menu
     case LOAD_GAME_SESSION:
       delete screen;
       screen = new GameSession("levels/newformat2.wst");
