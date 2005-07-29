@@ -75,11 +75,11 @@ ScriptableObject::draw(SceneContext& sc)
   if (flash_speed != 0)
     flash();
  
-  sprite.draw(sc, pos, 1);
+  sc.color().draw(sprite, pos, 1);
   
   if (highlight) {
-    highlight.draw(sc, pos, 2);
-    highlight.draw_light(sc, pos, 1);
+    sc.color().draw(highlight, pos, 2);
+    sc.light().draw(highlight, pos, 1);
   }
 }
 

@@ -6,7 +6,7 @@
 #include "math/matrix.hpp"
 
 class CL_GraphicContext;
-class SceneContext;
+class DrawingContext;
 
 namespace sprite2d {
 class Data;
@@ -22,8 +22,7 @@ public:
   ~Sprite();
 
   void update(float elapsed_time);
-  void draw(SceneContext& sc, const Vector& pos, float z_pos);
-  void draw_light(SceneContext& sc, const Vector& pos, float z_pos);
+  void draw(DrawingContext& sc, const Vector& pos, float z_pos) const;
 
   void set_action(const std::string& name);
   const std::string& get_action() const;
@@ -39,8 +38,6 @@ public:
 
   void set_alpha(float alpha);
   float get_alpha() const;
-
-  void draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview);
 
   /** true if the Sprite is valid and usable, false if not */
   operator bool() const;

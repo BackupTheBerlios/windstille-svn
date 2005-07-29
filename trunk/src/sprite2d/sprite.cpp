@@ -128,22 +128,15 @@ Sprite::get_alpha() const
 }
 
 void
-Sprite::draw(SceneContext& sc, const Vector& pos, float z_pos)
+Sprite::draw(DrawingContext& dc, const Vector& pos, float z_pos) const
 {
   Surface surface = current_action->surfaces[ static_cast<int> (frame) ];
-  sc.color().draw(surface, pos.x, pos.y, z_pos, alpha);
+  dc.draw(surface, pos.x, pos.y, z_pos, alpha);
 }
 
 Sprite::operator bool() const
 {
   return data != 0;
-}
-
-void
-Sprite::draw_light(SceneContext& sc, const Vector& pos, float z_pos)
-{
-  Surface surface = current_action->surfaces[ static_cast<int> (frame) ];
-  sc.light().draw(surface, pos.x, pos.y, z_pos, alpha);
 }
 
 /* EOF */

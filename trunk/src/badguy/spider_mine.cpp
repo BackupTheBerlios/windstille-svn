@@ -91,7 +91,7 @@ SpiderMine::draw (SceneContext& sc)
     explode_light.set_scale(1.0, 1.0);
   }
   else {
-    sprite.draw(sc, pos, 10.0f);
+    sc.color().draw(sprite, pos, 10.0f);
   }
 }
 

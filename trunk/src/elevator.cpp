@@ -58,7 +58,7 @@ Elevator::~Elevator()
 void
 Elevator::draw(SceneContext& sc)
 {
-  sprite.draw(sc, pos, 10.0f);
+  sc.color().draw(sprite, pos, 10.0f);
 }
 
 void

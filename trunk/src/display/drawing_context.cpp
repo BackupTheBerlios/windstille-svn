@@ -27,6 +27,7 @@
 #include <iostream>
 #include <iosfwd>
 #include "fonts.hpp"
+#include "sprite2d/sprite.hpp"
 #include "drawing_context.hpp"
 #include "glutil/surface.hpp"
 
@@ -217,6 +218,12 @@ void
 DrawingContext::draw(DrawingRequest* request)
 {
   drawingrequests.push_back(request);
+}
+
+void
+DrawingContext::draw(const Sprite& sprite,  const Vector& pos, float z)
+{
+  sprite.draw(*this, pos, z);
 }
 
 void
