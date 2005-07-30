@@ -61,6 +61,9 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
   glPushMatrix();
   glMultMatrixf(modelview.matrix);
 
+  glEnable(GL_BLEND);
+  glBlendFunc(blend_sfactor, blend_dfactor);
+
   if (!colors.empty())
     {
       glEnableClientState(GL_COLOR_ARRAY);
@@ -87,9 +90,6 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer  (3, GL_FLOAT, 0, &*vertices.begin());
   
-  glEnable(GL_BLEND);
-  glBlendFunc(blend_sfactor, blend_dfactor);
-
   if (texture)
     {
       glEnable(GL_TEXTURE_2D);

@@ -24,6 +24,8 @@
 */
 #include <config.h>
 
+#include <ClanLib/gl.h>
+#include <ClanLib/display.h>
 #include "surface.hpp"
 #include "surface_manager.hpp"
 
@@ -47,6 +49,36 @@ Surface::Surface(const std::string& filename)
   // FIXME: a bit ugly, should move some of the surface_manager code over here
   *this = surface_manager->get(filename);
 }
+
+static int power_of_two(int val) {
+  int result = 1;
+  while(result < val)
+    result *= 2;
+  return result;
+}
+
+Surface::Surface(int width, int height)
+  : impl(new SurfaceImpl())
+{
+  impl->width  = width;
+  impl->height = height;
+
+  impl->texture = Texture(power_of_two(width), power_of_two(height));
+  impl->uv      = Rectf(0, 0,
+                        float(impl->width)  / impl->texture.get_width(),
+                        float(impl->height) / impl->texture.get_height());
+
+  // Keep the texcoords in array form for convenience
+  impl->texcoords[0] = impl->uv.left;
+  impl->texcoords[1] = impl->uv.top;
+  impl->texcoords[2] = impl->uv.right;
+  impl->texcoords[3] = impl->uv.top;
+  impl->texcoords[4] = impl->uv.right;
+  impl->texcoords[5] = impl->uv.bottom;
+  impl->texcoords[6] = impl->uv.left;
+  impl->texcoords[7] = impl->uv.bottom;
+}
+
 
 Surface::Surface(Texture texture, const Rectf& rect, int width, int height)
   : impl(new SurfaceImpl())
@@ -104,6 +136,33 @@ Surface::get_uv() const
 Surface::operator bool() const
 {
   return !impl.is_null();
+}
+
+void
+Surface::draw(int x, int y) const
+{
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active(); 
+  state.setup_2d(); 
+
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, impl->texture.get_handle());
+
+  glBegin(GL_QUADS);
+
+  glTexCoord2f(impl->uv.left, impl->uv.top);
+  glVertex2f(x, y);
+
+  glTexCoord2f(impl->uv.right, impl->uv.top);
+  glVertex2f(x + impl->width, y);
+
+  glTexCoord2f(impl->uv.right, impl->uv.bottom);
+  glVertex2f(x + impl->width, y + impl->height);
+
+  glTexCoord2f(impl->uv.left, impl->uv.bottom);
+  glVertex2f(x, y + impl->height);
+
+  glEnd();
 }
 
 /* EOF */

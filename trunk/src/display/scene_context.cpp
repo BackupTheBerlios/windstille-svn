@@ -19,6 +19,7 @@
 
 #include <ClanLib/display.h>
 #include <ClanLib/gl.h>
+#include "glutil/surface.hpp"
 #include "scene_context.hpp"
 
 // The lightmap has a resolution of screen.w/LIGHTMAP, screen.h/LIGHTMAP
@@ -32,16 +33,14 @@ public:
   DrawingContext highlight; 
   unsigned int render_mask;
 
-  CL_OpenGLSurface lightmap;
+  Surface lightmap;
 
   SceneContextImpl() 
     : render_mask(SceneContext::COLORMAP |
                   SceneContext::LIGHTMAP | 
                   SceneContext::HIGHLIGHTMAP | 
                   SceneContext::LIGHTMAPSCREEN),
-      lightmap(CL_PixelBuffer(800/LIGHTMAP_DIV, 
-                              600/LIGHTMAP_DIV,
-                              800/LIGHTMAP_DIV*4, CL_PixelFormat::rgba8888))
+      lightmap(800/LIGHTMAP_DIV, 600/LIGHTMAP_DIV)
   {
   }
 };
@@ -138,12 +137,17 @@ SceneContext::render()
       impl->light.render();
       CL_Display::pop_modelview();
       
-      // Weird y-pos is needed since OpenGL is upside down when it comes to y-coordinate
-      impl->lightmap.bind();
-      glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
-                          0, 0, 
-                          0, 600 - impl->lightmap.get_height(),
-                          impl->lightmap.get_width(), impl->lightmap.get_height());
+      {
+        //CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+        //state.set_active();
+        
+        // Weird y-pos is needed since OpenGL is upside down when it comes to y-coordinate
+        impl->lightmap.get_texture().bind();
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
+                            0, 0, 
+                            0, 600 - impl->lightmap.get_height(),
+                            impl->lightmap.get_width(), impl->lightmap.get_height());
+      }
     }
 
   if (impl->render_mask & COLORMAP)
@@ -153,9 +157,35 @@ SceneContext::render()
 
   if (impl->render_mask & LIGHTMAP)
     {
-      impl->lightmap.set_blend_func(blend_dest_color, blend_zero);
-      impl->lightmap.set_scale(LIGHTMAP_DIV, -LIGHTMAP_DIV);
-      impl->lightmap.draw(0, 600);
+      CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+      state.set_active(); 
+      state.setup_2d(); 
+
+      Rectf uv = impl->lightmap.get_uv();
+
+      glEnable(GL_TEXTURE_2D);
+      glBindTexture(GL_TEXTURE_2D, impl->lightmap.get_texture().get_handle());
+
+      glEnable(GL_BLEND);
+      glBlendFunc(GL_DST_COLOR, GL_ZERO);
+      
+      glBegin(GL_QUADS);
+
+      glTexCoord2f(uv.left, uv.bottom);
+      glVertex2f(0, 0);
+
+      glTexCoord2f(uv.right, uv.bottom);
+      glVertex2f(impl->lightmap.get_width() * LIGHTMAP_DIV, 0);
+
+      glTexCoord2f(uv.right, uv.top);
+      glVertex2f(impl->lightmap.get_width()  * LIGHTMAP_DIV,
+                 impl->lightmap.get_height() * LIGHTMAP_DIV);
+
+      glTexCoord2f(uv.left, uv.top);
+      glVertex2f(0, impl->lightmap.get_height() * LIGHTMAP_DIV);
+
+      glEnd();
+
     }
 
   if (impl->render_mask & HIGHLIGHTMAP)

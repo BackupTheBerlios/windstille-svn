@@ -45,6 +45,7 @@ public:
   Surface();
   Surface(const std::string& filename);
   Surface(Texture texture, const Rectf& rect, int width, int height);
+  Surface(int width, int height);
   ~Surface();
   
   int get_width()  const;
@@ -57,6 +58,8 @@ public:
 
   /** Returns texture coordinates for the Surface rectangle */
   Rectf get_uv() const;
+
+  void draw(int x, int y) const;
 
   /** true if the Texture is valid and usable, false if not */
   operator bool() const;

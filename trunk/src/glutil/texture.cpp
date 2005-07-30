@@ -209,7 +209,7 @@ Texture::set_filter(GLenum mode)
 }
 
 void 
-Texture::bind()
+Texture::bind() const
 {
   glBindTexture(GL_TEXTURE_2D, impl->handle);
 }
