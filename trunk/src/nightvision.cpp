@@ -36,7 +36,8 @@ Nightvision::Nightvision(const lisp::Lisp* lisp)
   (void) lisp;
   name = "nightvision";
   noise = Texture("images/noise.png");
-  //noise.set_wrap(GL_REPEAT);
+  noise.set_wrap(GL_REPEAT);
+  noise.set_filter(GL_LINEAR);
 }
 
 Nightvision::~Nightvision()
@@ -61,12 +62,12 @@ Nightvision::draw(SceneContext& sc)
   if (1)
     {
       // FIXME: Use raw OpenGL here and offset the texture coordinates
-      VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), 10005,
+      VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), 10000,
                                                                        sc.light().get_modelview());
-      array->set_blend_func(GL_DST_COLOR, GL_ZERO);
+      //array->set_blend_func(GL_DST_COLOR, GL_ZERO);
       array->set_mode(GL_QUADS);
       array->set_texture(noise);
-      //array->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      array->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
       float u = rnd.drand();
       float v = rnd.drand();
@@ -82,7 +83,26 @@ Nightvision::draw(SceneContext& sc)
 
       array->texcoord(u, v + 1.0f);
       array->vertex(0, 600);
-  
+      
+      if (0) // second noise level
+        {
+          u = rnd.drand();
+          v = rnd.drand();
+          float size = 4.0f;
+
+          array->texcoord(u, v);
+          array->vertex(0, 0, 1.0f);
+
+          array->texcoord(u + size, v);
+          array->vertex(800, 0, 1.0f);
+
+          array->texcoord(u + size, v + size);
+          array->vertex(800, 600, 1.0f);
+
+          array->texcoord(u, v + size);
+          array->vertex(0, 600, 1.0f);
+        }
+
       //std::cout << "Drawing night" << std::endl;
       sc.light().draw(array);
     }

@@ -55,6 +55,9 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
   state.set_active();
   state.setup_2d();
 
+  glClear(GL_DEPTH_BUFFER_BIT);
+  glDisable(GL_DEPTH_TEST);
+
   glPushMatrix();
   glMultMatrixf(modelview.matrix);
 
@@ -111,7 +114,7 @@ VertexArrayDrawingRequest::vertex(float x, float y, float z)
 {
   vertices.push_back(x + pos.x);
   vertices.push_back(y + pos.y);
-  vertices.push_back(z + z_pos);
+  vertices.push_back(z);
 }
 
 void

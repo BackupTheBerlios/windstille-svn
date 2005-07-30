@@ -64,7 +64,7 @@ public:
   void set_wrap(GLenum mode);
 
   /** */
-  void set_interpolation(GLenum mode);
+  void set_filter(GLenum mode);
 
   /** Uploads the given image to the given coordinates */
   void put(SDL_Surface* image, int x, int y);

@@ -197,7 +197,7 @@ Texture::set_wrap(GLenum mode)
 }
 
 void
-Texture::set_interpolation(GLenum mode)
+Texture::set_filter(GLenum mode)
 {
   CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
   state.set_active(); 
