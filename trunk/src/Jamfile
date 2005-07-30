@@ -104,8 +104,6 @@ sources =
         windstille_getters.cpp
         windstille_main.cpp
         windstille_main.hpp
-        windstille_menu.cpp
-        windstille_menu.hpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
