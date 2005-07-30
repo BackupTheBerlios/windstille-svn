@@ -52,7 +52,7 @@ Nightvision::draw(SceneContext& sc)
   sc.light().set_modelview(Matrix::identity());
 
   // try to stay above everything else with large z value
-  if (0)
+  if (1)
     {
       nightvision.set_alpha(1.0f);
       nightvision.set_blend_func(blend_one, blend_zero);
@@ -64,24 +64,25 @@ Nightvision::draw(SceneContext& sc)
       // FIXME: Use raw OpenGL here and offset the texture coordinates
       VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), 10000,
                                                                        sc.light().get_modelview());
-      //array->set_blend_func(GL_DST_COLOR, GL_ZERO);
       array->set_mode(GL_QUADS);
       array->set_texture(noise);
-      array->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      array->set_blend_func(GL_DST_COLOR, GL_ZERO);
 
-      float u = rnd.drand();
-      float v = rnd.drand();
+      float u = rnd.drand()/0.5f;
+      float v = rnd.drand()/0.5f;
+      float w = 4.0f/6.0f;
+      float h = 3.0f/6.0f;
 
       array->texcoord(u, v);
       array->vertex(0, 0);
 
-      array->texcoord(u + 1.0f, v);
+      array->texcoord(u + w, v);
       array->vertex(800, 0);
 
-      array->texcoord(u + 1.0f, v + 1.0f);
+      array->texcoord(u + w, v + h);
       array->vertex(800, 600);
 
-      array->texcoord(u, v + 1.0f);
+      array->texcoord(u, v + h);
       array->vertex(0, 600);
       
       if (0) // second noise level

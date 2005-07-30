@@ -23,7 +23,7 @@
 #include "scene_context.hpp"
 
 // The lightmap has a resolution of screen.w/LIGHTMAP, screen.h/LIGHTMAP
-#define LIGHTMAP_DIV 1
+#define LIGHTMAP_DIV 4
 
 class SceneContextImpl
 {
@@ -138,8 +138,8 @@ SceneContext::render()
       CL_Display::pop_modelview();
       
       {
-        //CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-        //state.set_active();
+        CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+        state.set_active();
         
         // Weird y-pos is needed since OpenGL is upside down when it comes to y-coordinate
         impl->lightmap.get_texture().bind();
