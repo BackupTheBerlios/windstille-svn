@@ -25,9 +25,14 @@
 */
 
 #include <stdexcept>
+#include <iostream>
 #include <GL/gl.h>
 #include <GL/glext.h>
+#include <ClanLib/GL/opengl_state.h>
+#include <ClanLib/Display/display.h>
+#include <ClanLib/Display/display_window.h>
 #include "texture.hpp"
+#include "texture_manager.hpp"
 #include "util.hpp"
 
 class TextureImpl
@@ -39,11 +44,17 @@ public:
 
   TextureImpl()
   {
+    CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+    state.set_active();                                                
+
     glGenTextures(1, &handle);
   }
 
   TextureImpl::~TextureImpl()
   {
+    CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+    state.set_active();                                                
+
     glDeleteTextures(1, &handle);
   }
 };
@@ -52,12 +63,22 @@ Texture::Texture()
 {
 }
 
+Texture::Texture(const std::string& filename)
+{
+  *this = texture_manager->get(filename);
+
+  std::cout << "Filename: " << filename << " -> " << get_handle() << std::endl;
+}
+
 Texture::Texture(int width, int height)
   : impl(new TextureImpl())
 {
   impl->width  = width;
   impl->height = height;
 
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active(); 
+  
   glBindTexture(GL_TEXTURE_2D, impl->handle);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                GL_UNSIGNED_BYTE, 0);
@@ -85,6 +106,9 @@ Texture::Texture(SDL_Surface* image)
     throw std::runtime_error("image has no power of 2 size");
   if(format->BitsPerPixel != 24 && format->BitsPerPixel != 32)
     throw std::runtime_error("image has not 24 or 32 bit color depth");
+
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active(); 
 
   glEnable(GL_TEXTURE_2D);
 
@@ -145,6 +169,9 @@ Texture::get_handle() const
 void
 Texture::put(SDL_Surface* image, int x, int y)
 {
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active(); 
+
   // FIXME: Add some checks here to make sure image has the right format 
   glBindTexture(GL_TEXTURE_2D, impl->handle);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -154,6 +181,31 @@ Texture::put(SDL_Surface* image, int x, int y)
   glTexSubImage2D(GL_TEXTURE_2D, 0, x, y,
                   image->w, image->h, GL_RGBA, GL_UNSIGNED_BYTE,
                   image->pixels);
+}
+
+void
+Texture::set_wrap(GLenum mode)
+{
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active(); 
+  
+  glBindTexture(GL_TEXTURE_2D, impl->handle);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, mode); // FIXME: only good for 3d textures?!
+}
+
+void
+Texture::set_interpolation(GLenum mode)
+{
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active(); 
+  
+  glBindTexture(GL_TEXTURE_2D, impl->handle);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mode);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
 }
 
 void 

@@ -49,15 +49,12 @@ Conversation::draw()
 {
   if (visible)
     {
-      Fonts::dialog.set_alignment(origin_top_left);
-      Fonts::dialog_h.set_alignment(origin_top_left);
-
       int x = 100;
       int y = 200;
 
-      CL_Rect rect(CL_Point(x - 20, y - 20 + Fonts::dialog.get_height()/2 - 5),
+      CL_Rect rect(CL_Point(x - 20, y - 20 + Fonts::ttffont->get_height()/2 - 5),
                    CL_Size(300 + 20, // FIXME:
-                           (Fonts::dialog.get_height() + 10) * choices.size() + 20));
+                           (Fonts::ttffont->get_height() + 10) * choices.size() + 20));
     
       CL_Display::fill_rect(rect,
                             CL_Gradient(CL_Color(0,0,100,228),
@@ -69,11 +66,11 @@ Conversation::draw()
       for(int i = 0; i < int(choices.size()); ++i)
         {
           if (i == selection)
-            Fonts::dialog_h.draw(x, y, choices[i]);
+            Fonts::ttffont->draw(x, y, choices[i]);
           else
-            Fonts::dialog.draw(x, y, choices[i]);
+            Fonts::ttffont->draw(x, y, choices[i], Color(0.5f, 0.5f, 0.5f));
       
-          y += Fonts::dialog.get_height() + 10;
+          y += Fonts::ttffont->get_height() + 10;
         }
     }
 }

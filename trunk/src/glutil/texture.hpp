@@ -38,23 +38,33 @@ class Texture
 public:
   /** Create a empty and invalid Texture object (similar to a
       NULL-pointer) */
-  Texture();
+  explicit Texture();
+
+  /** Load a texture from file */
+  explicit Texture(const std::string& filename);
 
   /**
    * Upload an SDL_Surface onto an OpenGL texture. The surface must have power
    * of 2 dimensions
    * */
-  Texture(SDL_Surface* image);
+  explicit Texture(SDL_Surface* image);
 
   /** 
    * Create an empty Texture with the given dimensions
    */
-  Texture(int width, int height);
+  explicit Texture(int width, int height);
 
   ~Texture();
 
   int get_width() const;
   int get_height() const;
+
+  /** Shortcut to set the texture into a mode where uv coordinates
+      wrap around when they excede the [0,1] region */
+  void set_wrap(GLenum mode);
+
+  /** */
+  void set_interpolation(GLenum mode);
 
   /** Uploads the given image to the given coordinates */
   void put(SDL_Surface* image, int x, int y);

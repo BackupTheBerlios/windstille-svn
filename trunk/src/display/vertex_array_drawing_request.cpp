@@ -30,7 +30,6 @@ VertexArrayDrawingRequest::VertexArrayDrawingRequest(const Vector& pos_, float z
   blend_sfactor = GL_SRC_ALPHA;
   blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
   mode = GL_QUADS;
-  use_texture = false;
 }
 
 int
@@ -67,6 +66,7 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
   else
     {
       glDisableClientState(GL_COLOR_ARRAY);
+      glColor3f(1.0f, 1.0f, 1.0f);
     }
 
   if (!texcoords.empty())
@@ -78,7 +78,8 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
     {
       glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
-  
+
+  // FIXME: Might be worth to not use VertexArrays when we have a pretty small number of vertices
   glDisableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer  (3, GL_FLOAT, 0, &*vertices.begin());
@@ -86,10 +87,10 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
   glEnable(GL_BLEND);
   glBlendFunc(blend_sfactor, blend_dfactor);
 
-  if (use_texture)
+  if (texture)
     {
       glEnable(GL_TEXTURE_2D);
-      glBindTexture(GL_TEXTURE_2D, texture);
+      glBindTexture(GL_TEXTURE_2D, texture.get_handle());
     }
   else
     {
@@ -140,10 +141,9 @@ VertexArrayDrawingRequest::color(const Color& color)
 }
 
 void
-VertexArrayDrawingRequest::set_texture(GLuint texture)
+VertexArrayDrawingRequest::set_texture(Texture texture_)
 {
-  this->texture = texture;
-  use_texture = true;
+  texture = texture_;
 }
 
 void

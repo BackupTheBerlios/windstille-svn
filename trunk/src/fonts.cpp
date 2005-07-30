@@ -20,14 +20,6 @@
 #include "globals.hpp"
 #include "fonts.hpp"
 
-CL_Font Fonts::dialog;
-CL_Font Fonts::dialog_h;
-
-CL_Font Fonts::menu;
-CL_Font Fonts::menu_h;
-
-CL_Font Fonts::copyright;
-
 TTFFont* Fonts::ttffont = 0;
 
 TTFFont* Fonts::ttfdialog = 0;
@@ -35,14 +27,6 @@ TTFFont* Fonts::ttfdialog = 0;
 void
 Fonts::init()
 {
-  dialog   = CL_Font("font", resources);
-  dialog_h = CL_Font("font_h", resources);
-
-  menu   = CL_Font("menu", resources);
-  menu_h = CL_Font("menu_h", resources);
-
-  copyright = CL_Font("copyright", resources);
-
   ttffont = new TTFFont("fonts/VeraMono.ttf", 12);
   ttfdialog  = new TTFFont("fonts/Vera.ttf", 20);
 }
@@ -50,14 +34,6 @@ Fonts::init()
 void
 Fonts::deinit()
 {
-  dialog   = CL_Font();
-  dialog_h = CL_Font();
-
-  menu   = CL_Font();
-  menu_h = CL_Font();
-
-  copyright = CL_Font();
-
   delete ttffont;
   delete ttfdialog;
 }

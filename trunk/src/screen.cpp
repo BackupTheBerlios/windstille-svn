@@ -1,4 +1,4 @@
-//  $Id: screen.cxx,v 1.3 2003/10/10 21:06:22 grumbel Exp $
+//  $Id$
 //
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -103,8 +103,7 @@ Screen::draw_fps(float delta)
   char output[20];
   snprintf(output, sizeof(output), "FPS: %d", fps_save);
   
-  Fonts::copyright.set_alignment(origin_bottom_left);
-  Fonts::copyright.draw(CL_Display::get_width() - 100, 30, output);
+  Fonts::ttffont->draw(CL_Display::get_width() - 100, 30, output);
 }
 
 void

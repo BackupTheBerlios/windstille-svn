@@ -28,11 +28,6 @@ namespace Fonts {
 extern CL_Font dialog;
 extern CL_Font dialog_h;
 
-extern CL_Font menu;
-extern CL_Font menu_h;
-
-extern CL_Font copyright;
-
 extern TTFFont* ttffont;
 
 extern TTFFont* ttfdialog;

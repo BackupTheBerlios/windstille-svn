@@ -119,8 +119,7 @@ public:
   void draw(CL_GraphicContext* gc) {
     gc->push_modelview();
     gc->add_modelview(modelview.matrix);
-    Fonts::dialog_h.set_alignment(origin_center);
-    Fonts::dialog_h.draw(int(pos.x), int(pos.y), text);
+    Fonts::ttffont->draw(int(pos.x), int(pos.y), text);
     gc->pop_modelview();
   }
 };

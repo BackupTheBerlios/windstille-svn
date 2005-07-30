@@ -46,10 +46,6 @@ TextureManager::get(const std::string& filename)
     throw std::runtime_error(msg.str());
   }
 
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();                                                
-  state.setup_2d();
-
   Texture texture;
   try {
     texture = Texture(image);

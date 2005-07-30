@@ -95,7 +95,7 @@ SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys)
                                     sc.color().get_modelview());
 
   buffer->set_mode(GL_QUADS);
-  buffer->set_texture(surface.get_texture().get_handle());
+  buffer->set_texture(surface.get_texture());
   buffer->set_blend_func(blendfunc_src, blendfunc_dest);
 
   for(ParticleSystem::Particles::iterator i = psys.begin(); i != psys.end(); ++i)

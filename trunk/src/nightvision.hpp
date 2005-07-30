@@ -29,6 +29,7 @@
 #include <ClanLib/Display/surface.h>
 #include <ClanLib/GL/opengl_surface.h>
 #include "lisp/lisp.hpp"
+#include "glutil/texture.hpp"
 #include "game_object.hpp"
 
 // FIXME: shouldn't really be a game object, but makes testing easier
@@ -36,7 +37,7 @@ class Nightvision : public GameObject
 {
 private:
   CL_Surface nightvision;
-  CL_OpenGLSurface noise;
+  Texture noise;
 
 public:
   Nightvision(const lisp::Lisp* lisp);

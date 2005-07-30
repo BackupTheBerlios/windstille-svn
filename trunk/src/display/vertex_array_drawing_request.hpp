@@ -24,6 +24,7 @@
 #include <ClanLib/gl.h>
 #include "color.hpp"
 #include "math/matrix.hpp"
+#include "glutil/texture.hpp"
 #include "drawing_request.hpp"
 
 /** */
@@ -35,8 +36,7 @@ private:
   GLenum blend_sfactor;
   GLenum blend_dfactor;
 
-  bool use_texture;
-  GLuint texture;
+  Texture texture;
   std::vector<unsigned char> colors;
   std::vector<float> texcoords;
   std::vector<float> vertices;
@@ -55,7 +55,7 @@ public:
   int num_vertices() const;
 
   void set_mode(GLenum mode_);
-  void set_texture(GLuint texture);
+  void set_texture(Texture texture);
   void set_blend_func(GLenum sfactor, GLenum dfactor);
 };
 

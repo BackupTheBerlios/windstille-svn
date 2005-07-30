@@ -26,15 +26,17 @@
 #include "globals.hpp"
 #include "random.hpp"
 #include "math/matrix.hpp"
+#include "display/vertex_array_drawing_request.hpp"
+#include "glutil/texture_manager.hpp"
 #include "nightvision.hpp"
 
 Nightvision::Nightvision(const lisp::Lisp* lisp)
-  : nightvision("nightvision", resources),
-    noise("noise", resources)
+  : nightvision("nightvision", resources)
 {
   (void) lisp;
   name = "nightvision";
-  noise.set_alignment(origin_center);
+  noise = Texture("images/noise.png");
+  //noise.set_wrap(GL_REPEAT);
 }
 
 Nightvision::~Nightvision()
@@ -49,23 +51,52 @@ Nightvision::draw(SceneContext& sc)
   sc.light().set_modelview(Matrix::identity());
 
   // try to stay above everything else with large z value
-  nightvision.set_alpha(1.0f);
-  nightvision.set_blend_func(blend_src_alpha, blend_one_minus_src_alpha);
-  sc.light().draw(nightvision, 0, 0, 10000);
+  if (0)
+    {
+      nightvision.set_alpha(1.0f);
+      nightvision.set_blend_func(blend_one, blend_zero);
+      sc.light().draw(nightvision, 0, 0, 10000);
+    }
 
-  // FIXME: Use raw OpenGL here and offset the texture coordinates
-  noise.set_scale(5.0f, 5.0f);
-  noise.set_blend_func(blend_dest_color, blend_zero);
-  sc.light().draw(noise, 400 + rnd.drand(-300, 300), 300 + rnd.drand(-300, 300), 11000);
+  if (1)
+    {
+      // FIXME: Use raw OpenGL here and offset the texture coordinates
+      VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), 10005,
+                                                                       sc.light().get_modelview());
+      array->set_blend_func(GL_DST_COLOR, GL_ZERO);
+      array->set_mode(GL_QUADS);
+      array->set_texture(noise);
+      //array->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+      float u = rnd.drand();
+      float v = rnd.drand();
+
+      array->texcoord(u, v);
+      array->vertex(0, 0);
+
+      array->texcoord(u + 1.0f, v);
+      array->vertex(800, 0);
+
+      array->texcoord(u + 1.0f, v + 1.0f);
+      array->vertex(800, 600);
+
+      array->texcoord(u, v + 1.0f);
+      array->vertex(0, 600);
+  
+      //std::cout << "Drawing night" << std::endl;
+      sc.light().draw(array);
+    }
   sc.light().pop_modelview();
 
-  sc.highlight().push_modelview();
-  sc.highlight().set_modelview(Matrix::identity());
-  nightvision.set_alpha(0.5f);
-  nightvision.set_blend_func(blend_src_alpha, blend_one);
-  sc.highlight().draw(nightvision, 0, 0, 10000);
-  sc.highlight().pop_modelview();
+  if (1)
+    {
+      sc.highlight().push_modelview();
+      sc.highlight().set_modelview(Matrix::identity());
+      nightvision.set_alpha(0.5f);
+      nightvision.set_blend_func(blend_src_alpha, blend_one);
+      sc.highlight().draw(nightvision, 0, 0, 10000);
+      sc.highlight().pop_modelview();
+    }
 }
 
 void

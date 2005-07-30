@@ -72,8 +72,8 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
       
   int text_width
     = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
-  CL_Rect text_rect = Fonts::dialog.bounding_rect(CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
-                                                          CL_Size(text_width, 600)), text);
+  CL_Rect text_rect = CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
+                              CL_Size(500, 600)); // FIXME: use real bounding box calc
 
   text_rect.bottom = text_rect.top + text_rect.get_height();
   text_rect.top    = pos.y + text_border_y;
@@ -125,10 +125,10 @@ DialogManager::draw()
   }
       
   int text_width
-    = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
-  CL_Rect text_rect = Fonts::dialog.bounding_rect(CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
-                                                          CL_Size(text_width, 600)), text);
-
+  = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
+  CL_Rect text_rect = CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
+                              CL_Size(text_width, 600));
+  
   text_rect.bottom = text_rect.top + text_rect.get_height();
   text_rect.top = pos.y + text_border_y;
 
@@ -161,22 +161,7 @@ DialogManager::draw()
   portrait.draw(pos.x + portrait_border_x,
                 pos.y + portrait_border_y);
   
-  if (0)
-    {
-      Fonts::dialog.set_alignment(origin_top_left);
-      Fonts::dialog_h.set_alignment(origin_top_left);
-
-      int len = std::min(int(text.size()), int(progress*text_speed));
-      Fonts::dialog.draw(CL_Rect(CL_Point(text_rect.left, text_rect.top),
-                                 CL_Size(text_width, 600)),
-                         text.begin(), text.begin() + len);
-      Fonts::dialog.set_alignment(origin_top_center);
-      Fonts::dialog_h.set_alignment(origin_top_center);
-    }
-  else
-    {
-      text_area->draw();
-    }
+  text_area->draw();
 }
 
 void

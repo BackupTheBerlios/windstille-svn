@@ -22,7 +22,7 @@
 #include "scene_context.hpp"
 
 // The lightmap has a resolution of screen.w/LIGHTMAP, screen.h/LIGHTMAP
-#define LIGHTMAP_DIV 4
+#define LIGHTMAP_DIV 1
 
 class SceneContextImpl
 {
@@ -35,7 +35,10 @@ public:
   CL_OpenGLSurface lightmap;
 
   SceneContextImpl() 
-    : render_mask(SceneContext::COLORMAP | SceneContext::LIGHTMAP | SceneContext::HIGHLIGHTMAP ),
+    : render_mask(SceneContext::COLORMAP |
+                  SceneContext::LIGHTMAP | 
+                  SceneContext::HIGHLIGHTMAP | 
+                  SceneContext::LIGHTMAPSCREEN),
       lightmap(CL_PixelBuffer(800/LIGHTMAP_DIV, 
                               600/LIGHTMAP_DIV,
                               800/LIGHTMAP_DIV*4, CL_PixelFormat::rgba8888))
@@ -126,7 +129,7 @@ SceneContext::reset_modelview()
 void
 SceneContext::render()
 {
-  if (impl->render_mask & LIGHTMAP)
+  if (impl->render_mask & LIGHTMAPSCREEN)
     {
       CL_Display::clear();
       

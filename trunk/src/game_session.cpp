@@ -152,15 +152,6 @@ GameSession::draw()
       break;
     }
 
-#if 0
-  if (sector->get_player()->get_movement_state() == Player::DEAD)
-    {
-      Fonts::dialog.set_alignment(origin_bottom_center);
-      Fonts::dialog.draw(CL_Display::get_width()/2, 200,
-                "..:: Press Fire to restart ::..");
-    }
-#endif
-
   if (!main_app.screenshot_dir.empty())
     {
       std::stringstream filename;
@@ -312,7 +303,13 @@ GameSession::on_key_down(const CL_InputEvent& event)
         case CL_KEY_3:
           sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
           console << "Toggled HIGHLIGHTMAP: " << ((sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0) << std::endl;
-      break;      
+          break;      
+      
+        case CL_KEY_4:
+          sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAPSCREEN);
+          console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAPSCREEN) > 0) << std::endl;
+          break;
+
 
         default:
           // ignore key
