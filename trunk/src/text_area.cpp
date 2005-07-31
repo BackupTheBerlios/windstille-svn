@@ -329,4 +329,10 @@ TextArea::update(float delta)
   impl->passed_time += delta;
 }
 
+Rectf
+TextArea::get_rect() const
+{
+  return impl->rect;
+}
+
 /* EOF */

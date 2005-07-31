@@ -223,4 +223,16 @@ Sprite::get_blend_dfactor() const
   return blend_dfactor;
 }
 
+int
+Sprite::get_width() const
+{
+  return current_action->surfaces[ static_cast<int> (frame) ].get_width();
+}
+
+int
+Sprite::get_height() const
+{
+  return current_action->surfaces[ static_cast<int> (frame) ].get_height();
+}
+
 /* EOF */

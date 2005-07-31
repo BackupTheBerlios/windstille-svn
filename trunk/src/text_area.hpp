@@ -52,6 +52,7 @@ public:
   void update(float delta);
   void draw();
 
+  Rectf get_rect() const;
 private:
   TextAreaImpl* impl;
 };

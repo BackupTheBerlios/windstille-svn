@@ -148,6 +148,7 @@ VDisplay::draw_rounded_rect(const Rectf& rect, float radius, const Color& color)
   glColor4f(color.r, color.g, color.b, color.a);
 
   int n = 4;
+  glLineWidth(4.0f);
   glBegin(GL_LINE_STRIP);
   for(int i = 0; i <= n; ++i)
     {
@@ -183,6 +184,7 @@ VDisplay::draw_rounded_rect(const Rectf& rect, float radius, const Color& color)
   glVertex2f(irect.left, irect.top - radius);
 
   glEnd();
+  glLineWidth(1.0f);
 }
 
 int

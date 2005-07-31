@@ -27,6 +27,7 @@
 #include <ClanLib/gl.h>
 #include <ClanLib/display.h>
 #include "surface.hpp"
+#include "math/vector.hpp"
 #include "surface_drawing_parameters.hpp"
 #include "surface_manager.hpp"
 

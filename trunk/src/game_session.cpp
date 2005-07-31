@@ -111,7 +111,8 @@ GameSession::draw_game()
   conversation->draw();
 
   //control_dialog.set_alignment(origin_bottom_right);
-  control_dialog.draw(Vector(800-16, 600-16));
+  control_dialog.draw(Vector(800-16 - control_dialog.get_width(), 
+                             600-16 - control_dialog.get_height()));
 }
 
 void

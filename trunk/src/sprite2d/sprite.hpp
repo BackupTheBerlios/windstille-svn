@@ -63,6 +63,9 @@ public:
 
   Vector get_offset() const;
 
+  int get_width() const;
+  int get_height() const;
+
   /** true if the Sprite is valid and usable, false if not */
   operator bool() const;
 private:

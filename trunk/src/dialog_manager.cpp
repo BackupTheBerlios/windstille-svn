@@ -51,7 +51,6 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
   portrait  = Sprite(portrait_);
   text      = text_;
 
-
   static const int dialog_width = 600;
   static const int outer_border_x = 20;
   static const int outer_border_y = 20;
@@ -74,7 +73,7 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
   int text_width
     = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
   Rect text_rect = Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
-                        CL_Size(500, 600)); // FIXME: use real bounding box calc
+                        CL_Size(500, 200)); // FIXME: use real bounding box calc
   
   text_rect.bottom = text_rect.top + text_rect.get_height();
   text_rect.top    = pos.y + text_border_y;
@@ -98,7 +97,7 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
 
   delete text_area;
   text_area = new TextArea(Rect(CL_Point(text_rect.left, text_rect.top + Fonts::ttfdialog->get_height()),
-                                   CL_Size(text_width, 600)));
+                                   CL_Size(text_width, 200)));
   text_area->set_font(Fonts::ttfdialog);
   text_area->set_text(text);
 }
@@ -106,15 +105,17 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
 void
 DialogManager::draw()
 {
-  static const int dialog_width = 600;
   static const int outer_border_x = 20;
   static const int outer_border_y = 20;
   static const int portrait_border_x = 10;
   static const int portrait_border_y = 10;
-  static const int text_border_x = 10;
-  static const int text_border_y = 10;
-  static const int portrait_width = 180;
+  static const int dialog_width = 600;
   static const int portrait_height = 192;
+  static const int text_border_y = 10;
+
+  int dialog_height = std::max(portrait_height + portrait_border_y*2,
+                               int(text_area->get_rect().get_height()
+                                   + text_border_y * 2.0f));
 
   CL_Point pos(0,0);
   if(alignment & LEFT) {
@@ -124,17 +125,6 @@ DialogManager::draw()
   } else {
     pos.x = (config->screen_width - dialog_width) / 2;
   }
-      
-  int text_width
-  = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
-  Rect text_rect = Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
-                        CL_Size(text_width, 600));
-  
-  text_rect.bottom = text_rect.top + text_rect.get_height();
-  text_rect.top = pos.y + text_border_y;
-
-  int dialog_height = std::max(portrait_height + portrait_border_y*2,
-                               text_rect.get_height() + text_border_y*2);
 
   if(alignment & TOP) {
     pos.y = outer_border_y;
@@ -144,15 +134,15 @@ DialogManager::draw()
     pos.y = (config->screen_height - dialog_height) / 2;
   }
 
-  text_rect.bottom = text_rect.top + text_rect.get_height();
-  text_rect.top = pos.y + text_border_y;
+  Rectf rect(pos.x,
+             pos.y,
+             pos.x + dialog_width,
+             pos.y + 200);
 
-  CL_Size dialog_size(dialog_width, dialog_height);
-      
-  VDisplay::fill_rect(Rect(pos, dialog_size), 
-                      Color(0, 0, 0.4f, 0.9f));
-  VDisplay::draw_rect(Rect(pos, dialog_size),
-                      Color(1.0f, 1.0f, 1.0f, 0.3f));
+  VDisplay::fill_rounded_rect(rect, 32.0f,
+                              Color(0, 0, 0.4f, 0.8f));
+  VDisplay::draw_rounded_rect(rect, 32.0f,
+                              Color(0.6f, 1.0f, 1.0f, 0.8f));
 
   portrait.draw(Vector(pos.x + portrait_border_x,
                        pos.y + portrait_border_y));
