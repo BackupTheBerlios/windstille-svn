@@ -23,6 +23,8 @@
      (lifetime   1.0)
      (count      15)
      (pos       0 0)
+     (bunching 0.8)
+
      (z-pos  1000)
      (spawn-point 128 800)
      (velocity    150 200)
@@ -33,24 +35,9 @@
      (distribution (point-distribution))
      )
 
-    ;; Smoke
-    (particle-system
-     (lifetime  0.8)
-     (count      25)
-     (pos       0 0)
-     (z-pos    1000)
-     (spawn-point 336 640)
-     (velocity    70 100)
-     (cone   90 90)
-     (gravity 0 10)
-     (size   1.0 1.0)
-     (drawer (surface-drawer (image "images/particles/smoke2.png")))
-     (distribution (line-distribution (x1 -64) (y1 0) (x2 64) (y2 0)))
-     )
-
     ;; Water
     (particle-system
-     (lifetime   .6)
+     (lifetime   0.6)
      (count      250)
      (pos       0 0)
      (z-pos  1000)

@@ -14,12 +14,14 @@ function startfire()
 
 function stopfire()
 {
+  // FIXME: Don't just deactivate the GameObject, but let the particle
+  // system run out (set_cycles(1.0)) also add a bunch of white smoke
   player_flames2.set_active(false);
   player_flames.set_active(false);
 }
 
 /* play_sound("sounds/speech/vr_intro.ogg"); */
-dialog(TOP, "portrait", 
+dialog(TOP, "images/portrait.sprite", 
        "<sin>Welcome</sin> to the <large>VR training program</large>. Here you " +
        "will learn the <sin>basic manoeuvering</sin> abilities of <large>your</large> " +
        "powersuit,<sleep> jumping,<sleep> running, <sleep> climbing<sleep> and shooting. " +
