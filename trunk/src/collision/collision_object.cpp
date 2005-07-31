@@ -19,9 +19,9 @@
  * License along with this program.
  */
 
-#include <ClanLib/display.h>
 #include <assert.h>
 
+#include "display/display.hpp"
 #include "collision_object.hpp"
 #include "collision_engine.hpp"
 
@@ -63,16 +63,15 @@ CollisionObject::drawCollision()
 
   r += CL_Pointf (v.x, v.y);
 
-  CL_Display::fill_rect (r, CL_Color (255, 255, 255));
+  VDisplay::fill_rect(r, Color(1.0f, 1.0f, 1.0f));
   
-  CL_Display::draw_rect (r,
-			 CL_Color(155, 155, 155));        
+  VDisplay::draw_rect(r, Color(0.6f, 0.6f, 0.6f));
   
-  CL_Display::draw_line (r.left + r.get_width ()/2,
-			 r.top  + r.get_height ()/2,
-			 r.left + r.get_width ()/2  + get_velocity ().x,
-			 r.top  + r.get_height ()/2 + get_velocity ().y,
-			 CL_Color (255, 0, 255));
+  VDisplay::draw_line(Vector(r.left + r.get_width ()/2,
+                             r.top  + r.get_height ()/2),
+                      Vector(r.left + r.get_width ()/2  + get_velocity ().x,
+                             r.top  + r.get_height ()/2 + get_velocity ().y),
+                      Color(1.0f, 0, 1.0f));
 }
 
 void CollisionObject::update(float delta)

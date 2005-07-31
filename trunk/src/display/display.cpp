@@ -28,6 +28,23 @@
 #include "display.hpp"
 
 void
+VDisplay::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
+{
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active();
+  state.setup_2d();
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glColor4f(color.r, color.g, color.b, color.a);
+
+  glBegin(GL_LINES);
+  glVertex2f(pos1.x, pos1.y);
+  glVertex2f(pos2.x, pos2.y);
+  glEnd(); 
+}
+
+void
 VDisplay::fill_rect(const Rectf& rect, const Color& color)
 {
   CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
