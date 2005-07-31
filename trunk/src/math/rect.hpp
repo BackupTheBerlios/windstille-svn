@@ -34,6 +34,7 @@
 #include <ClanLib/Core/Math/size.h>
 #include <ClanLib/Core/Math/rect.h>
 #include <ClanLib/Core/Math/origin.h>
+#include "math/vector.hpp"
 
 class Rectf;
 
@@ -226,6 +227,9 @@ public:
 	Rectf(float new_left, float new_top, float new_right, float new_bottom)
 	{ left = new_left; top = new_top; right = new_right; bottom = new_bottom; }
 
+	Rectf(const Vector &p, const CL_Sizef &size)
+	{ left = p.x; top = p.y; right = left + size.width; bottom = top + size.height; }
+
 	Rectf(const CL_Pointf &p, const CL_Sizef &size)
 	{ left = p.x; top = p.y; right = left + size.width; bottom = top + size.height; }
 
@@ -298,7 +302,7 @@ public:
 	CL_Sizef get_size() const { return CL_Sizef(right - left, bottom - top); }
 	
 	//: Returns true if point is inside the rectangle.
-	bool is_inside(const CL_Pointf &p) const { return (p.x >= left && p.y >= top && p.x <= right && p.y <= bottom); }
+	bool is_inside(const Vector &p) const { return (p.x >= left && p.y >= top && p.x <= right && p.y <= bottom); }
 	
 	//: Returns true if rectangle passed is overlapping or inside this rectangle.
 	bool is_overlapped(const Rectf &r) const 

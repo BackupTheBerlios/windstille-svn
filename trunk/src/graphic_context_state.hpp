@@ -20,9 +20,9 @@
 #ifndef HEADER_GRAPHIC_CONTEXT_STATE_HXX
 #define HEADER_GRAPHIC_CONTEXT_STATE_HXX
 
-#include <ClanLib/Core/Math/point.h>
-#include <ClanLib/Core/Math/rect.h>
-#include <ClanLib/Core/System/sharedptr.h>
+#include "math/rect.hpp"
+#include "math/vector.hpp"
+#include "sharedptr.hpp"
 
 class SceneContext;
 class CL_GraphicContext;
@@ -60,22 +60,22 @@ public:
   float get_rotation();
 
   /** Move the center of the visible area to pos */
-  void      set_pos(const CL_Pointf& pos);
-  CL_Pointf get_pos() const;
+  void      set_pos(const Vector& pos);
+  Vector get_pos() const;
 
   /** Set zoom to z, while ensuring that the screen position \a pos
       (normaly the position of the mouse pointer) stays in the same
       position even after zoomed in/out */
-  void  set_zoom(CL_Pointf pos, float z);
+  void  set_zoom(const Vector& pos, float z);
   void  set_zoom(float z);
   float get_zoom(); 
 
   void zoom_to (const Rectf& rect);
 
-  CL_Pointf screen2world(const CL_Point& pos);
+  Vector screen2world(const Vector& pos);
 
 private:
-  CL_SharedPtr<GraphicContextStateImpl> impl;
+  SharedPtr<GraphicContextStateImpl> impl;
 };
 
 #endif

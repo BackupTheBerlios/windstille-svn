@@ -36,7 +36,7 @@ public:
   Camera();
 
   void update(float delta);
-  CL_Pointf get_pos() const { return CL_Pointf(pos.x, pos.y); }
+  Vector get_pos() const { return pos; }
 private:
   Camera (const Camera&);
   Camera& operator= (const Camera&);

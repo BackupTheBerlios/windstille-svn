@@ -258,10 +258,13 @@ GameSession::quit()
 void
 GameSession::on_mouse_down(const CL_InputEvent& event)
 {
+  Vector real_pos = view->screen2world(Vector(event.mouse_pos.x,
+                                              event.mouse_pos.y));
+
   switch(event.id)
     {
     case CL_MOUSE_LEFT:
-      console << "Click at: " << CL_Point(view->screen2world(event.mouse_pos)) << std::endl;
+      console << "Click at: " << real_pos.x << ", " << real_pos.y << std::endl;
       break;
     default:
       break;

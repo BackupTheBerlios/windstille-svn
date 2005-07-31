@@ -35,7 +35,7 @@ View::draw (SceneContext& sc)
 {
   state.set_pos(camera.get_pos());
   state.set_zoom(zoom);
-  state.set_pos(state.get_pos() + CL_Pointf(transform.x, transform.y));
+  state.set_pos(state.get_pos() + Vector(transform.x, transform.y));
 
   state.push(sc);
   Sector::current()->draw(sc);
@@ -72,10 +72,10 @@ View::get_clip_rect()
   return state.get_clip_rect();
 }
 
-CL_Pointf
-View::screen2world(CL_Pointf point)
+Vector
+View::screen2world(const Vector& point)
 {
-  return state.screen2world(CL_Point(point));
+  return state.screen2world(point);
 }
 
 /* EOF */
