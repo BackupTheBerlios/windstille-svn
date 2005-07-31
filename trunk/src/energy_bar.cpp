@@ -47,7 +47,6 @@ EnergyBar::draw()
       Sprite sprite = bar;
       sprite.set_color(Color(red, green, 0, 1.0f));
       sprite.draw(Vector(15 + (i * 10), 15));
-      CL_Display::get_current_window()->get_gc()->flush();
     }
 
   for(int i = energy; i < max_energy; ++i)

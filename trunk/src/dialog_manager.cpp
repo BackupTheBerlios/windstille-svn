@@ -153,9 +153,7 @@ DialogManager::draw()
                       Color(0, 0, 0.4f, 0.9f));
   VDisplay::draw_rect(Rect(pos, dialog_size),
                       Color(1.0f, 1.0f, 1.0f, 0.3f));
-      
-  CL_Display::flush();
-      
+
   portrait.draw(Vector(pos.x + portrait_border_x,
                        pos.y + portrait_border_y));
   
