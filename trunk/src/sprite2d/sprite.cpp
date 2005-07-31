@@ -10,6 +10,7 @@
 #include "display/scene_context.hpp"
 #include "sprite2d/data.hpp"
 #include "sprite2d/manager.hpp"
+#include "glutil/surface_drawing_parameters.hpp"
 #include "color.hpp"
 #include "util.hpp"
 
@@ -29,6 +30,10 @@ Sprite::Sprite(const std::string& filename)
   pingpong = false;
   reverse  = false;
   alpha    = 0.0;
+  scale    = 1.0f;
+  color    = Color(1.0f, 1.0f, 1.0f);
+  blend_sfactor = GL_SRC_ALPHA;
+  blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
 }
 
 Sprite::Sprite(const sprite2d::Data* data)
@@ -41,6 +46,10 @@ Sprite::Sprite(const sprite2d::Data* data)
   pingpong = false;
   reverse = false;
   alpha = 0.0;
+  scale    = 1.0f;
+  color    = Color(1.0f, 1.0f, 1.0f);
+  blend_sfactor = GL_SRC_ALPHA;
+  blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
 }
 
 Sprite::~Sprite()
@@ -65,6 +74,7 @@ Sprite::set_action(const std::string& name)
       i != data->actions.end(); ++i) {
     const sprite2d::Action* action = *i;
     if(action->name == name) {
+      // FIXME: This should be per-action and not get reset, shouldn't they?
       current_action = action;
       pingpong = false;
       reverse = false;
@@ -72,6 +82,10 @@ Sprite::set_action(const std::string& name)
       frame = 0;
       vflip = false;
       alpha = 0.0;
+      scale = 1.0f;
+      color = Color(1.0f, 1.0f, 1.0f);
+      blend_sfactor = GL_SRC_ALPHA;
+      blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
       return;
     }
   }
@@ -136,16 +150,16 @@ Sprite::get_alpha() const
   return alpha;
 }
 
-void
-Sprite::draw(DrawingContext& dc, const Vector& pos, float z_pos) const
+Surface
+Sprite::get_current_surface() const
 {
-  // FIXME: Sprite needs to get a whole list with possible parameters
-  // (color, blendfunc, ...), not just alpha
-  Surface surface = current_action->surfaces[ static_cast<int> (frame) ];
-  dc.draw(surface, 
-          pos.x + current_action->offset.x, 
-          pos.y + current_action->offset.y, 
-          z_pos, alpha);
+  return current_action->surfaces[ static_cast<int> (frame) ];
+}
+
+Vector
+Sprite::get_offset() const
+{
+  return current_action->offset;
 }
 
 void
@@ -154,7 +168,11 @@ Sprite::draw(const Vector& pos) const
   // FIXME: Sprite needs to get a whole list with possible parameters
   // (color, blendfunc, ...), not just alpha
   Surface surface = current_action->surfaces[ static_cast<int> (frame) ];
-  surface.draw(pos);
+  surface.draw(SurfaceDrawingParameters()
+               .set_pos(pos + (current_action->offset * scale))
+               .set_blend_func(blend_sfactor, blend_dfactor)
+               .set_scale(scale)
+               .set_color(color));
 }
 
 bool
@@ -167,20 +185,42 @@ Sprite::is_finished() const
 void
 Sprite::set_scale(float s)
 {
-  // FIXME: implement me
-  (void)s;
+  scale = s;
 }
 
 void
-Sprite::set_color(const Color& color)
+Sprite::set_color(const Color& c)
 {
-  // FIXME: implement me
-  (void)color;
+  color = c;
+}
+
+float
+Sprite::get_scale() const
+{
+  return scale;
+}
+
+Color
+Sprite::get_color() const
+{
+  return color;
 }
 
 Sprite::operator bool() const
 {
   return data != 0;
+}
+
+GLenum
+Sprite::get_blend_sfactor() const
+{
+  return blend_sfactor;
+}
+
+GLenum
+Sprite::get_blend_dfactor() const
+{
+  return blend_dfactor;
 }
 
 /* EOF */

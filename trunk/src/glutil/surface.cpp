@@ -27,6 +27,7 @@
 #include <ClanLib/gl.h>
 #include <ClanLib/display.h>
 #include "surface.hpp"
+#include "surface_drawing_parameters.hpp"
 #include "surface_manager.hpp"
 
 class SurfaceImpl
@@ -163,6 +164,41 @@ Surface::draw(const Vector& pos) const
   glVertex2f(pos.x, pos.y + impl->height);
 
   glEnd();
+}
+
+void
+Surface::draw(const SurfaceDrawingParameters& params) const
+{
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active(); 
+  state.setup_2d(); 
+
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_BLEND);
+  glBlendFunc(params.blendfunc_src, params.blendfunc_dst);
+  glBindTexture(GL_TEXTURE_2D, impl->texture.get_handle());
+  glColor4f(params.color.r,
+            params.color.g,
+            params.color.b,
+            params.color.a);
+
+  glBegin(GL_QUADS);
+
+  // FIXME: This is just a primitive prototype, should take things
+  // like hotspot and flip into account 
+  glTexCoord2f(impl->uv.left, impl->uv.top);
+  glVertex2f(params.pos.x, params.pos.y);
+
+  glTexCoord2f(impl->uv.right, impl->uv.top);
+  glVertex2f(params.pos.x + impl->width * params.scale, params.pos.y);
+
+  glTexCoord2f(impl->uv.right, impl->uv.bottom);
+  glVertex2f(params.pos.x + impl->width * params.scale, params.pos.y + impl->height * params.scale);
+
+  glTexCoord2f(impl->uv.left, impl->uv.bottom);
+  glVertex2f(params.pos.x, params.pos.y + impl->height * params.scale);
+
+  glEnd(); 
 }
 
 /* EOF */

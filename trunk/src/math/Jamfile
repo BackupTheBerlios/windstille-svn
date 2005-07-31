@@ -5,6 +5,7 @@ sources = matrix.hpp
           rect.hpp
           rect.cpp
           vector.hpp
+          vector.cpp
 ;
 
 TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;

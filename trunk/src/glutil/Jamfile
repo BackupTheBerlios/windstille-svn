@@ -5,6 +5,7 @@ sources =
     texture.hpp
     surface.hpp
     surface.cpp
+    surface_drawing_parameters.hpp
     surface_manager.cpp
     surface_manager.hpp
     texture_manager.cpp

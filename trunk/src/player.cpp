@@ -73,6 +73,8 @@ void
 Player::draw (SceneContext& sc)
 {
   light.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+  light.set_scale(4.0f);
+
   sc.light().draw(light, pos, 100.0f);
   sprite.draw(sc, pos, 100);
 

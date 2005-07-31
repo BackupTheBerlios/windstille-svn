@@ -3,6 +3,8 @@
 
 #include <string>
 #include <GL/gl.h>
+#include "color.hpp"
+#include "glutil/surface.hpp"
 #include "math/vector.hpp"
 #include "math/matrix.hpp"
 
@@ -28,10 +30,9 @@ public:
   ~Sprite();
 
   void update(float elapsed_time);
-  void draw(DrawingContext& dc, const Vector& pos, float z_pos) const;
   void draw(const Vector& pos) const;
 
-  void set_action(const std::string& name);
+  void  set_action(const std::string& name);
   const std::string& get_action() const;
 
   void set_vflip(bool vflip);
@@ -40,19 +41,27 @@ public:
   void set_pingpong(bool pingpong);
   bool get_pingpong() const;
 
-  void set_speed(float speed);
+  void  set_speed(float speed);
   float get_speed() const;
 
-  void set_alpha(float alpha);
+  void  set_alpha(float alpha);
   float get_alpha() const;
-
+  
   bool is_finished() const;
 
   void set_blend_func(GLenum sfactor, GLenum dfactor);
+  GLenum get_blend_sfactor() const;
+  GLenum get_blend_dfactor() const;
 
   void set_color(const Color& color);
+  Color get_color() const;
 
-  void set_scale(float s);
+  void  set_scale(float s);
+  float get_scale() const;
+
+  Surface get_current_surface() const;
+
+  Vector get_offset() const;
 
   /** true if the Sprite is valid and usable, false if not */
   operator bool() const;
@@ -72,6 +81,8 @@ private:
   bool vflip;
   GLenum blend_sfactor;
   GLenum blend_dfactor;
+  float scale;
+  Color color;
 };
 
 #endif

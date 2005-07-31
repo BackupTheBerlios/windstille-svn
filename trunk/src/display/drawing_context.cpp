@@ -28,6 +28,7 @@
 #include "fonts.hpp"
 #include "sprite2d/sprite.hpp"
 #include "drawing_context.hpp"
+#include "glutil/surface_drawing_parameters.hpp"
 #include "glutil/surface.hpp"
 
 struct DrawingRequestsSorter
@@ -80,52 +81,24 @@ class SurfaceDrawingRequest : public DrawingRequest
 {
 private:
   Surface surface;
-  float alpha;
+  SurfaceDrawingParameters params;
 
 public:
-  SurfaceDrawingRequest(Surface surface, const Vector& pos, float z_pos_,
-                        const Matrix modelview, float alpha)
-    : DrawingRequest(pos, z_pos_, modelview), surface(surface), alpha(alpha)
+  SurfaceDrawingRequest(Surface surface, const SurfaceDrawingParameters& params, float z_pos_,
+                        const Matrix modelview)
+    : DrawingRequest(pos, z_pos_, modelview), surface(surface), params(params)
   {}
   virtual ~SurfaceDrawingRequest()
   {}
 
-  void draw(CL_GraphicContext* gc) {
-    static const float rectvertices[12]
-      = { 0, 0, 0,
-          1, 0, 0,
-          1, 1, 0,
-          0, 1, 0 };
+  void draw(CL_GraphicContext* gc) 
+  {
+    gc->push_modelview();
+    gc->add_modelview(modelview.matrix);
 
-    CL_OpenGLState state(gc);
-    state.set_active();
-    state.setup_2d();
+    surface.draw(params);
 
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glPushMatrix();
-    glMultMatrixf(modelview.matrix);
-    glTranslatef(pos.x, pos.y, 0);
-    glScalef(surface.get_width(), surface.get_height(), 1.0);
-
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-
-    if(alpha != 0.0)
-      glColor4f(1.0, 1.0, 1.0, alpha);
-    
-    glBindTexture(GL_TEXTURE_2D, surface.get_texture().get_handle());
-    
-    glVertexPointer(3, GL_FLOAT, 0, rectvertices);
-    glTexCoordPointer(2, GL_FLOAT, 0, surface.get_texcoords());
-    glDrawArrays(GL_QUADS, 0, 4);
-
-    if(alpha != 0.0)
-      glColor4f(1.0, 1.0, 1.0, 0.0);
-    glPopMatrix();
+    gc->pop_modelview();
   }
 };
 
@@ -172,16 +145,30 @@ DrawingContext::draw(DrawingRequest* request)
 }
 
 void
-DrawingContext::draw(const Sprite& sprite,  const Vector& pos, float z)
+DrawingContext::draw(const Sprite& sprite,  const Vector& pos, float z_pos)
 {
-  sprite.draw(*this, pos, z);
+  draw(sprite.get_current_surface(),
+       SurfaceDrawingParameters()
+       .set_pos(pos + sprite.get_offset() * sprite.get_scale())
+       .set_blend_func(sprite.get_blend_sfactor(), sprite.get_blend_dfactor())
+       .set_color(sprite.get_color())
+       .set_scale(sprite.get_scale()),
+       z_pos);
+}
+
+void
+DrawingContext::draw(const Surface surface, const SurfaceDrawingParameters& params, float z_pos)
+{
+  draw(new SurfaceDrawingRequest(surface, params, z_pos,
+                                 modelview_stack.back()));
 }
 
 void
 DrawingContext::draw(Surface surface, float x, float y, float z, float a)
 {
-  draw(new SurfaceDrawingRequest(surface, Vector(x, y), z,
-                                 modelview_stack.back(), a));
+  draw(new SurfaceDrawingRequest(surface,
+                                 SurfaceDrawingParameters().set_pos(Vector(x, y)),
+                                 z, modelview_stack.back()));
 }
 
 void

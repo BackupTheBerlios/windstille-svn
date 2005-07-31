@@ -31,6 +31,7 @@
 #include "texture.hpp"
 #include "sharedptr.hpp"
 
+class SurfaceDrawingParameters;
 class SurfaceImpl;
 
 /**
@@ -60,6 +61,7 @@ public:
   Rectf get_uv() const;
 
   void draw(const Vector& pos) const;
+  void draw(const SurfaceDrawingParameters& params) const;
 
   /** true if the Texture is valid and usable, false if not */
   operator bool() const;

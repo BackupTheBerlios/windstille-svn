@@ -28,6 +28,7 @@
 #include "drawing_request.hpp"
 
 class Surface;
+class SurfaceDrawingParameters;
 class Sprite;
 
 /** The DrawingContext collects all DrawingRequests and allows you to
@@ -64,6 +65,7 @@ public:
   void draw(const Sprite&   sprite,  const Vector& pos, float z = 0);
   void draw(const std::string& text,    float x, float y, float z = 0);
   void draw(const Surface surface, float x, float y, float z = 0, float alpha = 0);
+  void draw(const Surface surface, const SurfaceDrawingParameters& params, float z_pos);
   /*} */
   
   /** Translate the drawing context */

@@ -20,6 +20,8 @@
 #ifndef SUPERTUX_VECTOR_H
 #define SUPERTUX_VECTOR_H
 
+#include <iosfwd>
+
 /** Simple two dimensional vector. */
 class Vector
 {
@@ -118,6 +120,8 @@ public:
   float x, y; // leave this public, get/set methods just give me headaches
   // for such simple stuff :)
 };
+
+std::ostream& operator<<(std::ostream& s, const Vector& v);
 
 #endif
 

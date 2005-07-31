@@ -16,10 +16,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
 #include <config.h>
-
 #include <cmath>
-
+#include <iostream>
 #include "math/vector.hpp"
 
 Vector Vector::unit() const
@@ -31,3 +31,11 @@ float Vector::norm() const
 {
   return sqrt(x*x + y*y);
 }
+
+std::ostream& operator<<(std::ostream& s, const Vector& v)
+{
+  s << "(" << v.x << ", " << v.y << ")";
+  return s;
+}
+
+/* EOF */
