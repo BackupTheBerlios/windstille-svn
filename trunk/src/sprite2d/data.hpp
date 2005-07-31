@@ -34,11 +34,13 @@ private:
 
 struct Action
 {
-  std::string name;
-  float speed;
-  Vector offset;
   typedef std::vector<Surface> Surfaces;
-  Surfaces surfaces;
+
+  std::string name;
+  float       speed;
+  Vector      offset;
+  float       scale;
+  Surfaces    surfaces;
 };
 
 }

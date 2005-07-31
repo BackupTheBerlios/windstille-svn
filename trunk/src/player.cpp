@@ -37,7 +37,7 @@ static const float RUN_SPEED = 256.0;
 Player* Player::current_ = 0;
 
 Player::Player () :
-  light("images/light.sprite"),
+  light("images/light3.sprite"),
   //sprite ("3dsprites/heroken.wsprite"),
   grenade("3dsprites/grenade.wsprite"),
   state(STAND)

@@ -25,9 +25,6 @@
 
 namespace Fonts {
 
-extern CL_Font dialog;
-extern CL_Font dialog_h;
-
 extern TTFFont* ttffont;
 
 extern TTFFont* ttfdialog;

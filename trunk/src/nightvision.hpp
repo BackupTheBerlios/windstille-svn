@@ -26,17 +26,16 @@
 #ifndef HEADER_NIGHTVISION_HPP
 #define HEADER_NIGHTVISION_HPP
 
-#include <ClanLib/Display/surface.h>
-#include <ClanLib/GL/opengl_surface.h>
 #include "lisp/lisp.hpp"
 #include "glutil/texture.hpp"
+#include "sprite2d/sprite.hpp"
 #include "game_object.hpp"
 
 // FIXME: shouldn't really be a game object, but makes testing easier
 class Nightvision : public GameObject
 {
 private:
-  CL_Surface nightvision;
+  Sprite  nightvision;
   Texture noise;
 
 public:

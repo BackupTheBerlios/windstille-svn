@@ -44,6 +44,7 @@ Data::Data(const std::string& filename)
           std::auto_ptr<Action> action(new Action);
           action->name   = "default";
           action->speed  = 1.0;
+          action->scale = 1.0f;
           action->offset = Vector(0, 0);
           action->surfaces.push_back(Surface(pngfile));
           actions.push_back(action.release());
@@ -85,11 +86,13 @@ Data::parse_action(const std::string& dir, const lisp::Lisp* lisp)
 {
   std::auto_ptr<Action> action (new Action);
   action->speed = 1.0;
+  action->scale = 1.0f;
   action->offset = Vector(0, 0);
  
   lisp::Properties props(lisp);
   props.get("name", action->name);
   props.get("speed", action->speed);
+  props.get("scale", action->scale);
   props.get("offset", action->offset);
   
   const lisp::Lisp* ilisp = 0;

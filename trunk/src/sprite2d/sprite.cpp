@@ -142,7 +142,10 @@ Sprite::draw(DrawingContext& dc, const Vector& pos, float z_pos) const
   // FIXME: Sprite needs to get a whole list with possible parameters
   // (color, blendfunc, ...), not just alpha
   Surface surface = current_action->surfaces[ static_cast<int> (frame) ];
-  dc.draw(surface, pos.x, pos.y, z_pos, alpha);
+  dc.draw(surface, 
+          pos.x + current_action->offset.x, 
+          pos.y + current_action->offset.y, 
+          z_pos, alpha);
 }
 
 void

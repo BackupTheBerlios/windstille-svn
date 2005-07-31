@@ -31,7 +31,7 @@
 #include "nightvision.hpp"
 
 Nightvision::Nightvision(const lisp::Lisp* lisp)
-  : nightvision("nightvision", resources)
+  : nightvision("images/nightvision.sprite")
 {
   (void) lisp;
   name = "nightvision";
@@ -56,7 +56,7 @@ Nightvision::draw(SceneContext& sc)
     {
       nightvision.set_alpha(1.0f);
       nightvision.set_blend_func(blend_one, blend_zero);
-      sc.light().draw(nightvision, 0, 0, 10000);
+      sc.light().draw(nightvision, Vector(0, 0), 10000);
     }
 
   if (1)
@@ -115,7 +115,7 @@ Nightvision::draw(SceneContext& sc)
       sc.highlight().set_modelview(Matrix::identity());
       nightvision.set_alpha(0.5f);
       nightvision.set_blend_func(blend_src_alpha, blend_one);
-      sc.highlight().draw(nightvision, 0, 0, 10000);
+      sc.highlight().draw(nightvision, Vector(0, 0), 10000);
       sc.highlight().pop_modelview();
     }
 }

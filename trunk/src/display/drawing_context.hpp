@@ -27,7 +27,6 @@
 #include "color.hpp"
 #include "drawing_request.hpp"
 
-class CL_Surface;
 class Surface;
 class Sprite;
 
@@ -62,7 +61,6 @@ public:
 
   /*{ */
   void draw(DrawingRequest* request);
-  void draw(const CL_Surface&   sprite,  float x, float y, float z = 0);
   void draw(const Sprite&   sprite,  const Vector& pos, float z = 0);
   void draw(const std::string& text,    float x, float y, float z = 0);
   void draw(const Surface surface, float x, float y, float z = 0, float alpha = 0);

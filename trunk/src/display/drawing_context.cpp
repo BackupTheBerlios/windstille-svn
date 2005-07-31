@@ -18,7 +18,6 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <assert.h>
-#include <ClanLib/Display/sprite.h>
 #include <ClanLib/Display/display.h>
 #include <ClanLib/Display/display_window.h>
 #include <ClanLib/Display/graphic_context.h>
@@ -55,29 +54,6 @@ public:
                 static_cast<unsigned int> (color.g * 255.0),
                 static_cast<unsigned int> (color.b * 255.0),
                 static_cast<unsigned int> (color.a * 255.0)));
-  }
-};
-
-class CLSurfaceDrawingRequest : public DrawingRequest
-{
-private:
-  CL_Surface sprite;
-
-public:
-  CLSurfaceDrawingRequest(const CL_Surface& sprite_, const Vector& pos_, float z_pos_,
-                          const Matrix& modelview_)
-    : DrawingRequest(pos_, z_pos_, modelview_),
-      sprite(sprite_)
-  {}
-  virtual ~CLSurfaceDrawingRequest() {}
-
-  void draw(CL_GraphicContext* gc) {
-    // FIXME: frequent push/pops might be slow
-    gc->push_modelview();
-    gc->add_modelview(modelview.matrix);
-    sprite.draw(static_cast<int>(pos.x),
-                static_cast<int>(pos.y), gc);
-    gc->pop_modelview();
   }
 };
 
@@ -202,13 +178,6 @@ DrawingContext::draw(const Sprite& sprite,  const Vector& pos, float z)
 }
 
 void
-DrawingContext::draw(const CL_Surface&   sprite,  float x, float y, float z)
-{ // FIXME: This should get flattend down to a simple texture draw
-  // command for easier sorting after texture-id/alpha
-  draw(new CLSurfaceDrawingRequest(sprite, Vector(x, y), z, modelview_stack.back()));
-}
-
-void
 DrawingContext::draw(Surface surface, float x, float y, float z, float a)
 {
   draw(new SurfaceDrawingRequest(surface, Vector(x, y), z,
@@ -310,8 +279,8 @@ Rectf
 DrawingContext::get_clip_rect()
 {
   // FIXME: Need to check the modelview matrix
-  return Rectf(CL_Pointf(modelview_stack.back()[12],
-                         modelview_stack.back()[13]),
+  return Rectf(Vector(modelview_stack.back()[12],
+                      modelview_stack.back()[13]),
                CL_Sizef(800, 600));
 }
 
