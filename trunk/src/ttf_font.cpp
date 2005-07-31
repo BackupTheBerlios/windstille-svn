@@ -39,8 +39,8 @@
 #include "ttf_font.hpp"
 #include "util.hpp"
 
-TTFCharacter::TTFCharacter(const CL_Rect& pos_,
-                           const CL_Rectf& uv_, 
+TTFCharacter::TTFCharacter(const Rect& pos_,
+                           const Rectf& uv_, 
                            int advance_)
   : pos(pos_),
     uv(uv_), 
@@ -147,13 +147,13 @@ TTFFont::TTFFont(const std::string& filename, int size)
       generate_border(pixelbuffer, x_pos, y_pos, 
                       face->glyph->bitmap.width, face->glyph->bitmap.rows);
 
-      CL_Rect pos(CL_Point(face->glyph->bitmap_left,  -face->glyph->bitmap_top), 
-                  CL_Size (face->glyph->bitmap.width, face->glyph->bitmap.rows));
+      Rect pos(CL_Point(face->glyph->bitmap_left,  -face->glyph->bitmap_top), 
+               CL_Size (face->glyph->bitmap.width, face->glyph->bitmap.rows));
 
-      CL_Rectf uv(x_pos/float(pixelbuffer->w),
-                  y_pos/float(pixelbuffer->h),
-                  (x_pos + face->glyph->bitmap.width)/float(pixelbuffer->w),
-                  (y_pos + face->glyph->bitmap.rows)/float(pixelbuffer->h));
+      Rectf uv(x_pos/float(pixelbuffer->w),
+               y_pos/float(pixelbuffer->h),
+               (x_pos + face->glyph->bitmap.width)/float(pixelbuffer->w),
+               (y_pos + face->glyph->bitmap.rows)/float(pixelbuffer->h));
       
       impl->characters.push_back(TTFCharacter(pos, uv,
                                               face->glyph->advance.x >> 6));

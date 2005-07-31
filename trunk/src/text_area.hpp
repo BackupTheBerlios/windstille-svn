@@ -26,7 +26,7 @@
 #ifndef HEADER_TEXT_AREA_HPP
 #define HEADER_TEXT_AREA_HPP
 
-#include <ClanLib/Core/Math/rect.h>
+#include "math/rect.hpp"
 #include <string>
 
 class TTFFont;
@@ -39,7 +39,7 @@ class TextArea
 {
 public:
   /** The area which the TextArea should cover */
-  TextArea(const CL_Rectf& rect);
+  TextArea(const Rectf& rect);
   ~TextArea();
 
   /** Sets the text to be displayed in the text box */

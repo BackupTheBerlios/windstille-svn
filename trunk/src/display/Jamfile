@@ -1,6 +1,8 @@
 SubDir TOP src display ;
 
-sources = drawing_context.hpp
+sources = display.hpp
+          display.cpp
+          drawing_context.hpp
           drawing_context.cpp
           scene_context.hpp
           scene_context.cpp

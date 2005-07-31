@@ -26,6 +26,7 @@
 #include "dialog_manager.hpp"
 #include "script_manager.hpp"
 #include "text_area.hpp"
+#include "display/display.hpp"
 #include "gameconfig.hpp"
 
 DialogManager* DialogManager::current_ = 0;
@@ -72,9 +73,9 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
       
   int text_width
     = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
-  CL_Rect text_rect = CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
-                              CL_Size(500, 600)); // FIXME: use real bounding box calc
-
+  Rect text_rect = Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
+                        CL_Size(500, 600)); // FIXME: use real bounding box calc
+  
   text_rect.bottom = text_rect.top + text_rect.get_height();
   text_rect.top    = pos.y + text_border_y;
 
@@ -96,7 +97,7 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
 
 
   delete text_area;
-  text_area = new TextArea(CL_Rect(CL_Point(text_rect.left, text_rect.top + Fonts::ttfdialog->get_height()),
+  text_area = new TextArea(Rect(CL_Point(text_rect.left, text_rect.top + Fonts::ttfdialog->get_height()),
                                    CL_Size(text_width, 600)));
   text_area->set_font(Fonts::ttfdialog);
   text_area->set_text(text);
@@ -126,8 +127,8 @@ DialogManager::draw()
       
   int text_width
   = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
-  CL_Rect text_rect = CL_Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
-                              CL_Size(text_width, 600));
+  Rect text_rect = Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
+                        CL_Size(text_width, 600));
   
   text_rect.bottom = text_rect.top + text_rect.get_height();
   text_rect.top = pos.y + text_border_y;
@@ -148,13 +149,10 @@ DialogManager::draw()
 
   CL_Size dialog_size(dialog_width, dialog_height);
       
-  CL_Display::fill_rect(CL_Rect(pos, dialog_size), 
-                        CL_Gradient(CL_Color(0,0,100,228),
-                                    CL_Color(0,0,100,228),
-                                    CL_Color(0,0,0,128),
-                                    CL_Color(0,0,0,128)));
-  CL_Display::draw_rect(CL_Rect(pos, dialog_size),
-                        CL_Color(255,255,255, 80));
+  VDisplay::fill_rect(Rect(pos, dialog_size), 
+                      Color(0, 0, 0.4f, 0.9f));
+  VDisplay::draw_rect(Rect(pos, dialog_size),
+                      Color(1.0f, 1.0f, 1.0f, 0.3f));
       
   CL_Display::flush();
       

@@ -23,57 +23,24 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_TTF_FONT_HXX
-#define HEADER_TTF_FONT_HXX
+#ifndef HEADER_DISPLAY_DISPLAY_HPP
+#define HEADER_DISPLAY_DISPLAY_HPP
 
-#include <ClanLib/Core/Math/rect.h>
-#include <ClanLib/GL/opengl_surface.h>
-#include <string>
-#include <GL/gl.h>
-#include "color.hpp"
 #include "math/rect.hpp"
-#include "glutil/texture.hpp"
+#include "color.hpp"
 
-class TTFCharacter
+/** FIXME: its called VDisplay instead of Display to avoid naming
+    conflict with X11 header, should be renamed as soon as we got rid
+    of ClanLib, which includes the X11 header in one of the
+    headerfiles */
+class VDisplay
 {
-public:
-  /** The position of the image, relative to the current cursor
-      position in screen coordinates */
-  Rect pos;
-
-  /** The position of the character in a OpenGL texture, given in
-      uv-coordinates */
-  Rectf uv;
-
-  int advance;
-
-  TTFCharacter(const Rect& pos, const Rectf& uv, int advance);
-};
-
-class TTFFontImpl;
-
-/** */
-class TTFFont
-{
-public:
-  static void init();
-  static void deinit();
-
-  TTFFont(const std::string& file, int size);
-  ~TTFFont();
-
-  int get_height() const;
-
-  /** Returns the width of a given piece of text, doesn't take
-      newlines into account */
-  int get_width(const std::string& text) const;
-
-  Texture get_texture() const;
-
-  const TTFCharacter& get_character(int c) const;
-  void draw(float x_pos, float y_pos, const std::string& str, const Color& color = Color(1.0f, 1.0f, 1.0f));
 private:
-  TTFFontImpl* impl;
+public:
+  static void fill_rect(const Rectf& rect, const Color& color);
+  static void draw_rect(const Rectf& rect, const Color& color);
+  static int  get_width();
+  static int  get_height();
 };
 
 #endif

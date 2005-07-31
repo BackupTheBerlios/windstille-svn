@@ -56,6 +56,8 @@ public:
 
 	explicit Rect(const Rectf& rect);
 
+	operator CL_Rectf() { return CL_Rectf(left, top, right, bottom); }
+
 	Rect(int new_left, int new_top, int new_right, int new_bottom)
 	{ left = new_left; top = new_top; right = new_right; bottom = new_bottom; }
 

@@ -66,7 +66,7 @@ View::update (float delta)
   }
 }
 
-CL_Rectf
+Rectf
 View::get_clip_rect()
 {
   return state.get_clip_rect();

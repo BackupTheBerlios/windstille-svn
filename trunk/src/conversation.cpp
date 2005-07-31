@@ -21,7 +21,9 @@
 #include "input/controller.hpp"
 #include "input/input_manager.hpp"
 #include "fonts.hpp"
+#include "math/rect.hpp"
 #include "script_manager.hpp"
+#include "display/display.hpp"
 #include "conversation.hpp"
 
 Conversation* Conversation::current_ = 0;
@@ -52,16 +54,12 @@ Conversation::draw()
       int x = 100;
       int y = 200;
 
-      CL_Rect rect(CL_Point(x - 20, y - 20 + Fonts::ttffont->get_height()/2 - 5),
-                   CL_Size(300 + 20, // FIXME:
-                           (Fonts::ttffont->get_height() + 10) * choices.size() + 20));
-    
-      CL_Display::fill_rect(rect,
-                            CL_Gradient(CL_Color(0,0,100,228),
-                                        CL_Color(0,0,100,228),
-                                        CL_Color(0,0,0,128),
-                                        CL_Color(0,0,0,128)));
-      CL_Display::draw_rect(rect, CL_Color(255,255,255, 80));
+      Rect rect(CL_Point(x - 20, y - 20 + Fonts::ttffont->get_height()/2 - 5),
+                CL_Size(300 + 20, // FIXME:
+                        (Fonts::ttffont->get_height() + 10) * choices.size() + 20));
+      
+      VDisplay::fill_rect(rect, Color(0,0,0,0.5f));
+      VDisplay::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.3f));
  
       for(int i = 0; i < int(choices.size()); ++i)
         {

@@ -51,6 +51,7 @@
 #include "test_object.hpp"
 #include "glutil/surface_manager.hpp"
 #include "glutil/surface.hpp"
+#include "display/display.hpp"
 
 #include "game_session.hpp"
 
@@ -89,22 +90,6 @@ GameSession::~GameSession()
 void
 GameSession::draw_game()
 {
-  if (0)
-    {
-      // Generic blue background
-      // FIXME: let the level decide which kind of background he wants 
-      CL_Display::fill_rect(CL_Rect(0, 0, 800, 300),
-                            CL_Gradient(CL_Color(  0,   0,  50),
-                                        CL_Color(  0,   0,  50),
-                                        CL_Color( 50,  50, 128),
-                                        CL_Color( 50,  50, 128)));
-      CL_Display::fill_rect(CL_Rect(0, 300, 800, 600),
-                            CL_Gradient(CL_Color( 50,  50, 128),
-                                        CL_Color( 50,  50, 128),
-                                        CL_Color(  0,   0,   0),
-                                        CL_Color(  0,   0,   0)));
-    }
-
   view->draw(sc);
 
   // Render the scene to the screen
@@ -138,14 +123,14 @@ GameSession::draw()
   switch (fade_state)
     {
     case FADEOUT:
-      CL_Display::fill_rect(CL_Rect(0, 0, 
-                                    CL_Display::get_width(), CL_Display::get_height()),
-                            CL_Color(0,0,0, std::min(int(fadeout_value*255), 255)));
+      VDisplay::fill_rect(Rect(0, 0, 
+                                 CL_Display::get_width(), CL_Display::get_height()),
+                          Color(0,0,0, fadeout_value));
       break;
     case FADEIN:
-      CL_Display::fill_rect(CL_Rect(0, 0, 
-                                    CL_Display::get_width(), CL_Display::get_height()),
-                            CL_Color(0,0,0, 255-std::min(int(fadeout_value*255), 255)));
+      VDisplay::fill_rect(Rect(0, 0, 
+                               CL_Display::get_width(), CL_Display::get_height()),
+                          Color(0,0,0, 1.0f - fadeout_value));
       break;
 
     default:

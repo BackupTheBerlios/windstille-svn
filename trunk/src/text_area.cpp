@@ -45,14 +45,14 @@ class TextAreaImpl
 {
 public:
   TTFFont* font;
-  CL_Rectf rect;
+  Rectf rect;
   float passed_time;
 
   int v_space;
   std::vector<TextAreaCommand> commands;
 };
 
-TextArea::TextArea(const CL_Rectf& rect)
+TextArea::TextArea(const Rectf& rect)
   : impl(new TextAreaImpl)
 {
   impl->rect    = rect;

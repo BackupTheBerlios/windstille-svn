@@ -19,6 +19,7 @@
 
 #include "player.hpp"
 #include "sector.hpp"
+#include "display/display.hpp"
 #include "camera.hpp"
 
 Camera* Camera::current_ = 0;
@@ -49,10 +50,10 @@ Camera::update(float )
   else if (dist < -vscroll_threshold)
     pos.y = tpos.y + vscroll_threshold;
 
-  int start_x = CL_Display::get_width()/2;
+  int start_x = VDisplay::get_width()/2;
   int end_x   = Sector::current()->get_width() - CL_Display::get_width()/2;
 
-  int start_y = CL_Display::get_height()/2;
+  int start_y = VDisplay::get_height()/2;
   int end_y   = Sector::current()->get_height() - CL_Display::get_height()/2;
 
   if (pos.x < start_x)

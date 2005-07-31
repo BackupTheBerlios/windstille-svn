@@ -152,7 +152,7 @@ GraphicContextState::get_zoom()
 }
 
 void
-GraphicContextState::zoom_to (const CL_Rectf& rect)
+GraphicContextState::zoom_to (const Rectf& rect)
 {
   float center_x = (rect.left + rect.right) / 2.0f;
   float center_y = (rect.top + rect.bottom) / 2.0f;

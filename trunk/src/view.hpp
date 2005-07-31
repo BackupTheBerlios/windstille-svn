@@ -47,7 +47,7 @@ public:
 
   /** @return the rectangle which represents the currently visible
       area, everything outside of it doesn't have to be drawn */
-  CL_Rectf get_clip_rect();
+  Rectf get_clip_rect();
   CL_Pointf screen2world(CL_Pointf point);
 
   void draw(SceneContext& gc);

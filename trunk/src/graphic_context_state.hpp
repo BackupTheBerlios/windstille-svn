@@ -70,7 +70,7 @@ public:
   void  set_zoom(float z);
   float get_zoom(); 
 
-  void zoom_to (const CL_Rectf& rect);
+  void zoom_to (const Rectf& rect);
 
   CL_Pointf screen2world(const CL_Point& pos);
 

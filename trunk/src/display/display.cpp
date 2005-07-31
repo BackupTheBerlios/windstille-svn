@@ -23,59 +23,59 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_TTF_FONT_HXX
-#define HEADER_TTF_FONT_HXX
+#include <ClanLib/gl.h>
+#include <ClanLib/display.h>
+#include "display.hpp"
 
-#include <ClanLib/Core/Math/rect.h>
-#include <ClanLib/GL/opengl_surface.h>
-#include <string>
-#include <GL/gl.h>
-#include "color.hpp"
-#include "math/rect.hpp"
-#include "glutil/texture.hpp"
-
-class TTFCharacter
+void
+VDisplay::fill_rect(const Rectf& rect, const Color& color)
 {
-public:
-  /** The position of the image, relative to the current cursor
-      position in screen coordinates */
-  Rect pos;
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active();
+  state.setup_2d();
 
-  /** The position of the character in a OpenGL texture, given in
-      uv-coordinates */
-  Rectf uv;
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glColor4f(color.r, color.g, color.b, color.a);
 
-  int advance;
+  glBegin(GL_QUADS);
+  glVertex2f(rect.left,  rect.top);
+  glVertex2f(rect.right, rect.top);
+  glVertex2f(rect.right, rect.bottom);
+  glVertex2f(rect.left,  rect.bottom);
+  glEnd();
+}
 
-  TTFCharacter(const Rect& pos, const Rectf& uv, int advance);
-};
-
-class TTFFontImpl;
-
-/** */
-class TTFFont
+void
+VDisplay::draw_rect(const Rectf& rect, const Color& color)
 {
-public:
-  static void init();
-  static void deinit();
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active();
+  state.setup_2d();
 
-  TTFFont(const std::string& file, int size);
-  ~TTFFont();
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glColor4f(color.r, color.g, color.b, color.a);
 
-  int get_height() const;
+  glBegin(GL_LINE_STRIP);
+  glVertex2f(rect.left,  rect.top);
+  glVertex2f(rect.right, rect.top);
+  glVertex2f(rect.right, rect.bottom);
+  glVertex2f(rect.left,  rect.bottom);
+  glVertex2f(rect.left,  rect.top);
+  glEnd();
+}
 
-  /** Returns the width of a given piece of text, doesn't take
-      newlines into account */
-  int get_width(const std::string& text) const;
+int
+VDisplay::get_width()
+{
+  return 800;
+}
 
-  Texture get_texture() const;
-
-  const TTFCharacter& get_character(int c) const;
-  void draw(float x_pos, float y_pos, const std::string& str, const Color& color = Color(1.0f, 1.0f, 1.0f));
-private:
-  TTFFontImpl* impl;
-};
-
-#endif
+int
+VDisplay::get_height()
+{
+  return 600;
+}
 
 /* EOF */

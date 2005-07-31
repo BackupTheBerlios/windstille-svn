@@ -26,10 +26,12 @@
 #include <ClanLib/Display/keys.h>
 #include <ClanLib/Display/keyboard.h>
 #include <ClanLib/core.h>
+#include "math/rect.hpp"
 #include "fonts.hpp"
 #include "game_session.hpp"
 #include "input/input_manager.hpp"
 #include "script_manager.hpp"
+#include "display/display.hpp"
 #include "scripting/wrapper_util.hpp"
 #include "console.hpp"
 
@@ -163,8 +165,8 @@ ConsoleImpl::draw()
   int num_lines = 600 / (Fonts::ttffont->get_height() + 2);
 
   if (console.is_active())
-    CL_Display::fill_rect(CL_Rect(0,0, 800, 600),
-                          CL_Color(0, 0, 0, 60));
+    VDisplay::fill_rect(Rect(0,0, 800, 600),
+                        Color(0, 0, 0, 0.25f));
 
   for(int i = buffer.size()-1 - scroll_offset; i >= 0 && i > int(buffer.size()) - num_lines - scroll_offset; --i)
     {

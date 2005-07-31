@@ -84,13 +84,13 @@ TileMap::update (float delta)
 void
 TileMap::draw (SceneContext& sc)
 {
-  CL_Rect clip_rect = CL_Rect(View::current()->get_clip_rect());
+  Rect clip_rect = Rect(View::current()->get_clip_rect());
 
-  CL_Rect rect(std::max(0, clip_rect.left/TILE_SIZE),
-               std::max(0, clip_rect.top/TILE_SIZE),
-               std::min(field.get_width(),  clip_rect.right/TILE_SIZE + 1),
-               std::min(field.get_height(), clip_rect.bottom/TILE_SIZE + 1));
-
+  Rect rect(std::max(0, clip_rect.left/TILE_SIZE),
+            std::max(0, clip_rect.top/TILE_SIZE),
+            std::min(field.get_width(),  clip_rect.right/TILE_SIZE + 1),
+            std::min(field.get_height(), clip_rect.bottom/TILE_SIZE + 1));
+  
   std::vector<VertexArrayDrawingRequest*> requests;
   for (int y = rect.top;   y < rect.bottom; ++y)
     for (int x = rect.left; x < rect.right; ++x)

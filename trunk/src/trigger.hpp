@@ -1,4 +1,4 @@
-//  $Id: trigger.hpp,v 1.2 2003/09/21 17:34:00 grumbel Exp $
+//  $Id$
 // 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -28,7 +28,7 @@
 class Trigger : public GameObject
 {
 private:
-  CL_Rectf area;
+  Rectf area;
   std::string script;
   /// has the trigger been activated at least once
   bool triggered;
