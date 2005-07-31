@@ -48,7 +48,7 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
   progress  = 0;
   delay     = 0.0;
   alignment = alignment_;
-  portrait  = CL_Sprite(portrait_, resources);
+  portrait  = Sprite(portrait_);
   text      = text_;
 
 
@@ -156,8 +156,8 @@ DialogManager::draw()
       
   CL_Display::flush();
       
-  portrait.draw(pos.x + portrait_border_x,
-                pos.y + portrait_border_y);
+  portrait.draw(Vector(pos.x + portrait_border_x,
+                       pos.y + portrait_border_y));
   
   text_area->draw();
 }

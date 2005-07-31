@@ -22,7 +22,7 @@
 
 #include <vector>
 #include <string>
-#include <ClanLib/Display/sprite.h>
+#include "sprite2d/sprite.hpp"
 #include "globals.hpp"
 
 class TextArea;
@@ -31,7 +31,7 @@ class TextArea;
 class DialogManager
 {
 private:
-  CL_Sprite portrait;
+  Sprite portrait;
   std::string text;
   float progress;
   float delay;

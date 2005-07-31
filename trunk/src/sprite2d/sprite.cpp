@@ -10,6 +10,7 @@
 #include "display/scene_context.hpp"
 #include "sprite2d/data.hpp"
 #include "sprite2d/manager.hpp"
+#include "color.hpp"
 #include "util.hpp"
 
 Sprite::Sprite()
@@ -18,8 +19,9 @@ Sprite::Sprite()
 }
 
 Sprite::Sprite(const std::string& filename)
-  : data(sprite2d_manager->create_data(filename))
 {
+  data = sprite2d_manager->create_data(filename);
+
   current_action = data->actions[0];
   vflip    = false;
   frame    = 0;
@@ -80,6 +82,13 @@ Sprite::set_action(const std::string& name)
 }
 
 void
+Sprite::set_blend_func(GLenum sfactor, GLenum dfactor)
+{
+  blend_sfactor = sfactor;
+  blend_dfactor = dfactor;
+}
+
+void
 Sprite::set_vflip(bool vflip)
 {
   this->vflip = vflip;
@@ -130,8 +139,40 @@ Sprite::get_alpha() const
 void
 Sprite::draw(DrawingContext& dc, const Vector& pos, float z_pos) const
 {
+  // FIXME: Sprite needs to get a whole list with possible parameters
+  // (color, blendfunc, ...), not just alpha
   Surface surface = current_action->surfaces[ static_cast<int> (frame) ];
   dc.draw(surface, pos.x, pos.y, z_pos, alpha);
+}
+
+void
+Sprite::draw(const Vector& pos) const
+{
+  // FIXME: Sprite needs to get a whole list with possible parameters
+  // (color, blendfunc, ...), not just alpha
+  Surface surface = current_action->surfaces[ static_cast<int> (frame) ];
+  surface.draw(pos);
+}
+
+bool
+Sprite::is_finished() const
+{
+  // FIXME: Implement me
+  return false;
+}
+
+void
+Sprite::set_scale(float s)
+{
+  // FIXME: implement me
+  (void)s;
+}
+
+void
+Sprite::set_color(const Color& color)
+{
+  // FIXME: implement me
+  (void)color;
 }
 
 Sprite::operator bool() const

@@ -21,6 +21,7 @@
 #include <ClanLib/Core/System/system.h>
 
 #include <math.h>
+#include "display/display.hpp"
 #include "windstille_main.hpp"
 #include "screen.hpp"
 #include "fonts.hpp"
@@ -103,7 +104,7 @@ Screen::draw_fps(float delta)
   char output[20];
   snprintf(output, sizeof(output), "FPS: %d", fps_save);
   
-  Fonts::ttffont->draw(CL_Display::get_width() - 100, 30, output);
+  Fonts::ttffont->draw(VDisplay::get_width() - 100, 30, output);
 }
 
 void
@@ -130,7 +131,7 @@ Screen::key_down(const CL_InputEvent& event)
       
       if (config->use_fullscreen)
         CL_Display::set_fullscreen(config->screen_width,
-                                   config->screen_height, 32);
+                                 config->screen_height, 32);
       else
         CL_Display::set_windowed();
       break;

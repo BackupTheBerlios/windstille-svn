@@ -17,6 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include "display/display.hpp"
 #include "player.hpp"
 #include "sector.hpp"
 #include "view.hpp"
@@ -24,7 +25,7 @@
 View* View::current_ = 0;
 
 View::View()
-  : state(CL_Display::get_width(), CL_Display::get_height()),
+  : state(VDisplay::get_width(), VDisplay::get_height()),
   zoom(1), transform(0, 0)
 {
   current_ = this;

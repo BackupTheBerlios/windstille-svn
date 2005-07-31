@@ -33,8 +33,8 @@ class SpiderMine : public Badguy
 {
 private:
   Sprite sprite;
-  CL_Sprite explode;
-  CL_Sprite explode_light;
+  Sprite explode;
+  Sprite explode_light;
   Vector initial_position;
   float walk_speed;
   float jump_time;

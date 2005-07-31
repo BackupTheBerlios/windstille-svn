@@ -30,10 +30,10 @@
 #include "windstille_getters.hpp"
 
 Hedgehog::Hedgehog(const lisp::Lisp* lisp)
-  : sprite("hedgehog", resources),
-    die_sprite("hedgehog_die", resources),
-    light("hedgehog_light", resources),
-    highlight("hedgehog_highlight", resources)
+  : sprite("images/hedgehog.sprite"),
+    die_sprite("images/hedgehog_die1.sprite"),
+    light("images/hedgehog_light.sprite"),
+    highlight("images/hedgehog_highlight.sprite")
 {
   lisp::Properties props(lisp);
   props.get("name", name);
@@ -53,7 +53,7 @@ Hedgehog::~Hedgehog()
 void
 Hedgehog::draw(SceneContext& gc)
 {
-  CL_Sprite* s;
+  Sprite* s;
 
   if (state == DYING)
     s = &die_sprite;
@@ -61,14 +61,14 @@ Hedgehog::draw(SceneContext& gc)
     s = &sprite;
 
   if (direction_left)
-    s->set_scale(1.0f, 1.0f);
+    s->set_vflip(true);
   else
-    s->set_scale(-1.0f, 1.0f);
+    s->set_vflip(false);
 
-  gc.color().draw(*s, pos.x, pos.y, 2);
+  gc.color().draw(*s, pos, 2);
   //s->draw(int(pos.x), int(pos.y));
-  gc.light().draw(light, pos.x, pos.y, 0);
-  gc.highlight().draw(highlight, pos.x, pos.y, 0);
+  gc.light().draw(light, pos, 0);
+  gc.highlight().draw(highlight, pos, 0);
 }
 
 void

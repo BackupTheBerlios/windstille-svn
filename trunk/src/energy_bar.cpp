@@ -1,4 +1,4 @@
-//  $Id: energiebar.cxx,v 1.3 2003/11/05 12:41:37 grumbel Exp $
+//  $Id$
 //
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -26,7 +26,7 @@
 #include "energy_bar.hpp"
 
 EnergyBar::EnergyBar()
-  : bar("energy_bar", resources)
+  : bar("images/energy_bar.sprite")
 {
 }
 
@@ -44,16 +44,16 @@ EnergyBar::draw()
     {
       float red   = 1.0f;
       float green = (i/float(max_energy));
-      CL_Sprite sprite = bar;
-      sprite.set_color(red, green, 0, 1.0f);
-      sprite.draw(15 + (i * 10), 15);
+      Sprite sprite = bar;
+      sprite.set_color(Color(red, green, 0, 1.0f));
+      sprite.draw(Vector(15 + (i * 10), 15));
       CL_Display::get_current_window()->get_gc()->flush();
     }
 
   for(int i = energy; i < max_energy; ++i)
     {
-      bar.set_color(.5f, .5f, .5f, .5f);
-      bar.draw(15 + (i * 10), 15);
+      bar.set_color(Color(.5f, .5f, .5f, .5f));
+      bar.draw(Vector(15 + (i * 10), 15));
     }
 }
 

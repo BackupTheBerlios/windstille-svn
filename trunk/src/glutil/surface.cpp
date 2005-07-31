@@ -139,7 +139,7 @@ Surface::operator bool() const
 }
 
 void
-Surface::draw(int x, int y) const
+Surface::draw(const Vector& pos) const
 {
   CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
   state.set_active(); 
@@ -151,16 +151,16 @@ Surface::draw(int x, int y) const
   glBegin(GL_QUADS);
 
   glTexCoord2f(impl->uv.left, impl->uv.top);
-  glVertex2f(x, y);
+  glVertex2f(pos.x, pos.y);
 
   glTexCoord2f(impl->uv.right, impl->uv.top);
-  glVertex2f(x + impl->width, y);
+  glVertex2f(pos.x + impl->width, pos.y);
 
   glTexCoord2f(impl->uv.right, impl->uv.bottom);
-  glVertex2f(x + impl->width, y + impl->height);
+  glVertex2f(pos.x + impl->width, pos.y + impl->height);
 
   glTexCoord2f(impl->uv.left, impl->uv.bottom);
-  glVertex2f(x, y + impl->height);
+  glVertex2f(pos.x, pos.y + impl->height);
 
   glEnd();
 }

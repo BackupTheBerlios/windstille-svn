@@ -1,4 +1,4 @@
-//  $Id: energiebar.hpp,v 1.1 2003/09/12 22:14:03 grumbel Exp $
+//  $Id$
 // 
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -20,13 +20,13 @@
 #ifndef HEADER_ENERGYBAR_HXX
 #define HEADER_ENERGYBAR_HXX
 
-#include <ClanLib/Display/sprite.h>
+#include "sprite2d/sprite.hpp"
 
 /** */
 class EnergyBar
 {
 private:
-  CL_Sprite bar;
+  Sprite bar;
 public:
   EnergyBar();
   ~EnergyBar();

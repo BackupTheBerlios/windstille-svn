@@ -60,7 +60,7 @@ using namespace Windstille;
 GameSession* GameSession::current_ = 0; 
 
 GameSession::GameSession(const std::string& arg_filename)
-  : control_dialog("controldialog", resources),
+  : control_dialog("images/controldialog.sprite"),
     sector (0)
 {
   if (debug) std::cout << "Creating new GameSession" << std::endl;
@@ -110,8 +110,8 @@ GameSession::draw_game()
   
   conversation->draw();
 
-  control_dialog.set_alignment(origin_bottom_right);
-  control_dialog.draw(800-16, 600-16);
+  //control_dialog.set_alignment(origin_bottom_right);
+  control_dialog.draw(Vector(800-16, 600-16));
 }
 
 void
@@ -124,12 +124,12 @@ GameSession::draw()
     {
     case FADEOUT:
       VDisplay::fill_rect(Rect(0, 0, 
-                                 CL_Display::get_width(), CL_Display::get_height()),
+                               VDisplay::get_width(), VDisplay::get_height()),
                           Color(0,0,0, fadeout_value));
       break;
     case FADEIN:
       VDisplay::fill_rect(Rect(0, 0, 
-                               CL_Display::get_width(), CL_Display::get_height()),
+                               VDisplay::get_width(), VDisplay::get_height()),
                           Color(0,0,0, 1.0f - fadeout_value));
       break;
 

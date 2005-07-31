@@ -1,4 +1,4 @@
-//  $Id: windstille_game.hpp,v 1.9 2003/11/04 22:48:51 grumbel Exp $
+//  $Id$
 // 
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
@@ -28,6 +28,7 @@
 #include "console.hpp"
 #include "squirrel/include/squirrel.h"
 #include "screen.hpp"
+#include "sprite2d/sprite.hpp"
 #include "globals.hpp"
 
 class CL_InputEvent;
@@ -46,7 +47,7 @@ private:
 
   float fadeout_value;
 
-  CL_Sprite control_dialog;
+  Sprite control_dialog;
 
   std::string filename;
   Sector* sector;

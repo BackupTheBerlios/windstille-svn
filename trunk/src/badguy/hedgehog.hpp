@@ -31,10 +31,10 @@
 class Hedgehog : public Badguy
 {
 private:
-  CL_Sprite sprite;
-  CL_Sprite die_sprite;
-  CL_Sprite light;
-  CL_Sprite highlight;
+  Sprite sprite;
+  Sprite die_sprite;
+  Sprite light;
+  Sprite highlight;
 
   bool direction_left;
   enum { WALKING, FALLING, DYING } state;

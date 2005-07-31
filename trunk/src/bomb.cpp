@@ -28,19 +28,16 @@
 #include "badguy/badguy.hpp"
 
 Bomb::Bomb(int x, int y)
-  : sprite("bomb", resources),
-    explo("explo", resources),
-    light("bomblight", resources),
-    highlight("bombhighlight", resources),
-    explolight("explolight", resources),
+  : sprite("images/bomb.sprite"),
+    explo("images/explo.sprite"),
+    light("images/bomblight.sprite"),
+    highlight("images/bombhighlight.sprite"),
+    explolight("images/explolight.sprite"),
     pos(x, int(y/TILE_SIZE+1)*TILE_SIZE),
     count(2.0f),
     state(COUNTDOWN),
     exploded(false)
 {
-  light.set_blend_func(blend_src_alpha, blend_one);
-  highlight.set_blend_func(blend_src_alpha, blend_one);
-  explolight.set_blend_func(blend_src_alpha, blend_one);
 }
 
 Bomb::~Bomb()
@@ -78,20 +75,23 @@ Bomb::draw(SceneContext& sc)
 {
   if (state == EXPLODE)
     {
-      explo.draw(pos.x, pos.y);
-      sc.light().draw(explolight, pos.x, pos.y, 0);
+      sc.color().draw(explo, pos);
+      sc.light().draw(explolight, pos, 0);
+
       explolight.set_alpha(0.5);
-      explolight.set_scale(.5, .5);
-      sc.highlight().draw(explolight, pos.x, pos.y, 0);
+      explolight.set_scale(0.5);
+
+      sc.highlight().draw(explolight, pos, 0);
+
       explolight.set_alpha(1.0);
-      explolight.set_scale(1.0, 1.0);
+      explolight.set_scale(1.0);
     }
   else
     {
-      sc.color().draw(sprite, pos.x, pos.y);
-      if (sprite.get_current_frame() == 0) {
-        sc.light().draw(light, pos.x, pos.y, 0);
-        sc.highlight().draw(highlight, pos.x, pos.y, 0);
+      sc.color().draw(sprite, pos);
+      if (sprite.is_finished()) {
+        sc.light().draw(light, pos, 0);
+        sc.highlight().draw(highlight, pos, 0);
       }
     }
 }

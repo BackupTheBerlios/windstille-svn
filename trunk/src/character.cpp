@@ -66,8 +66,6 @@ Character::draw (SceneContext& gc)
 void
 Character::use()
 {
-  //Scripting::add_dialog(Dialog::TOP | Dialog::RIGHT, "portrait");
-
   std::string filename = basename(GameSession::current()->get_filename());
   filename.erase(filename.find('.'));
   filename = "scripts/" + filename + "/" + name + ".nut";

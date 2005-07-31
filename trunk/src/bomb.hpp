@@ -25,20 +25,21 @@
 #ifndef HEADER_BOMB_HXX
 #define HEADER_BOMB_HXX
 
-#include <ClanLib/Display/sprite.h>
 #include <ClanLib/Core/Math/point.h>
+#include "sprite2d/sprite.hpp"
 #include "game_object.hpp"
 
 /** */
 class Bomb : public GameObject
 {
 private:
-  CL_Sprite sprite;
-  CL_Sprite explo;
-  CL_Sprite light;
-  CL_Sprite highlight;
-  CL_Sprite explolight;
-  CL_Point pos;
+  Sprite sprite;
+  Sprite explo;
+  Sprite light;
+  Sprite highlight;
+  Sprite explolight;
+
+  Vector pos;
   float count;
   enum { COUNTDOWN, EXPLODE } state;
   bool exploded;

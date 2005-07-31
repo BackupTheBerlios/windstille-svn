@@ -35,8 +35,6 @@ sources =
         controller_def.hpp
         conversation.hpp
         conversation.cpp
-        default_shoot.cpp
-        default_shoot.hpp
         dialog_manager.cpp
         dialog_manager.hpp
         energy_bar.cpp

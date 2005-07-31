@@ -19,7 +19,6 @@
 
 #include "tile_map.hpp"
 #include "sector.hpp"
-#include "default_shoot.hpp"
 #include "input/controller.hpp"
 #include "input/input_manager.hpp"
 #include "controller_def.hpp"
@@ -38,7 +37,7 @@ static const float RUN_SPEED = 256.0;
 Player* Player::current_ = 0;
 
 Player::Player () :
-  light("light", resources),
+  light("images/light.sprite"),
   //sprite ("3dsprites/heroken.wsprite"),
   grenade("3dsprites/grenade.wsprite"),
   state(STAND)
@@ -71,21 +70,21 @@ Player::~Player()
 }
 
 void
-Player::draw (SceneContext& gc)
+Player::draw (SceneContext& sc)
 {
-  light.set_blend_func(blend_src_alpha, blend_one);
-  gc.light().draw(light, pos.x, pos.y, 100);
-  sprite.draw(gc, pos, 100);
+  light.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+  sc.light().draw(light, pos, 100.0f);
+  sprite.draw(sc, pos, 100);
 
   Entity* obj = find_useable_entity();
   if (obj)
     {
       std::string use_str = "[" + obj->get_use_verb() + "]";
-      gc.highlight().draw(use_str, obj->get_pos().x, obj->get_pos().y - 150, 1000);
+      sc.highlight().draw(use_str, obj->get_pos().x, obj->get_pos().y - 150, 1000);
     }
   
   //BoneID id = sprite.get_bone_id("Hand.R");
-  //grenade->draw(gc, sprite.get_bone_matrix(id));
+  //grenade->draw(sc, sprite.get_bone_matrix(id));
 }
 
 void

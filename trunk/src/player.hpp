@@ -24,6 +24,7 @@
 #include <ClanLib/gl.h>
 #include <ClanLib/display.h>
 
+#include "sprite2d/sprite.hpp"
 #include "input/controller.hpp"
 #include "sprite3d/sprite3d.hpp"
 #include "math/vector.hpp"
@@ -39,7 +40,7 @@ class Player : public Entity
 private:
   Controller controller;
 
-  CL_Sprite light;
+  Sprite   light;
   Sprite3D sprite;
   Sprite3D grenade;
 

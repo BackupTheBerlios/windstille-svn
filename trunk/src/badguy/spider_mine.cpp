@@ -31,8 +31,8 @@
 #include "sprite2d/manager.hpp"
 
 SpiderMine::SpiderMine(const lisp::Lisp* lisp)
-  : explode("explo", resources),
-    explode_light("explolight", resources)
+  : explode("images/explosion.sprite"),
+    explode_light("images/explolight.sprite")
 {
   lisp::Properties props(lisp);
   props.get("name", name);
@@ -82,13 +82,17 @@ void
 SpiderMine::draw (SceneContext& sc)
 {
   if (state == EXPLODE) {
-    explode.draw(pos.x, pos.y);
-    sc.light().draw(explode_light, pos.y, pos.y, 0);
+    sc.color().draw(explode, pos);
+
+    sc.light().draw(explode_light, pos, 0);
+
     explode_light.set_alpha(0.5);
-    explode_light.set_scale(.5, .5);
-    sc.highlight().draw(explode_light, pos.x, pos.y, 0);
+    explode_light.set_scale(0.5f);
+
+    sc.highlight().draw(explode_light, pos, 0);
+
     explode_light.set_alpha(1.0);
-    explode_light.set_scale(1.0, 1.0);
+    explode_light.set_scale(1.0);
   }
   else {
     sc.color().draw(sprite, pos, 10.0f);
