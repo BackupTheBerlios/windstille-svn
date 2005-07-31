@@ -25,6 +25,7 @@
 
 #include <ClanLib/gl.h>
 #include <ClanLib/display.h>
+#include <cmath>
 #include "display.hpp"
 
 void
@@ -80,6 +81,107 @@ VDisplay::draw_rect(const Rectf& rect, const Color& color)
   glVertex2f(rect.right, rect.bottom);
   glVertex2f(rect.left,  rect.bottom);
   glVertex2f(rect.left,  rect.top);
+  glEnd();
+}
+
+void
+VDisplay::fill_rounded_rect(const Rectf& rect, float radius, const Color& color)
+{
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active();
+  state.setup_2d();
+
+  // Keep radius in the limits, so that we get a circle instead of
+  // just graphic junk
+  radius = std::min(radius, std::min(rect.get_width()/2, rect.get_height()/2));
+
+  // inner rectangle
+  Rectf irect(rect.left    + radius,
+              rect.top     + radius,
+              rect.right   - radius,
+              rect.bottom  - radius);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glColor4f(color.r, color.g, color.b, color.a);
+
+  int n = 8;
+  glBegin(GL_QUAD_STRIP);
+  for(int i = 0; i <= n; ++i)
+    {
+      float x = sinf(i * (M_PI/2) / n) * radius;
+      float y = cosf(i * (M_PI/2) / n) * radius;
+
+      glVertex2f(irect.left  - x, irect.top - y);
+      glVertex2f(irect.right + x, irect.top - y);
+    }
+  for(int i = 0; i <= n; ++i)
+    {
+      float x = cosf(i * (M_PI/2) / n) * radius;
+      float y = sinf(i * (M_PI/2) / n) * radius;
+
+      glVertex2f(irect.left  - x, irect.bottom + y);
+      glVertex2f(irect.right + x, irect.bottom + y);
+    }
+  glEnd();
+}
+
+void
+VDisplay::draw_rounded_rect(const Rectf& rect, float radius, const Color& color)
+{
+  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+  state.set_active();
+  state.setup_2d();
+
+  // Keep radius in the limits, so that we get a circle instead of
+  // just graphic junk
+  radius = std::min(radius, std::min(rect.get_width()/2, rect.get_height()/2));
+
+  // inner rectangle
+  Rectf irect(rect.left    + radius,
+              rect.top     + radius,
+              rect.right   - radius,
+              rect.bottom  - radius);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glColor4f(color.r, color.g, color.b, color.a);
+
+  int n = 4;
+  glBegin(GL_LINE_STRIP);
+  for(int i = 0; i <= n; ++i)
+    {
+      float x = sinf(i * (M_PI/2) / n) * radius;
+      float y = cosf(i * (M_PI/2) / n) * radius;
+
+      glVertex2f(irect.left  - x, irect.top - y);
+    }
+  for(int i = 0; i <= n; ++i)
+    {
+      float x = cosf(i * (M_PI/2) / n) * radius;
+      float y = sinf(i * (M_PI/2) / n) * radius;
+
+      glVertex2f(irect.left  - x, irect.bottom + y);
+    }
+
+  for(int i = 0; i <= n; ++i)
+    {
+      float x = sinf(i * (M_PI/2) / n) * radius;
+      float y = cosf(i * (M_PI/2) / n) * radius;
+
+      glVertex2f(irect.right + x, irect.bottom + y);
+    }
+
+  for(int i = 0; i <= n; ++i)
+    {
+      float x = cosf(i * (M_PI/2) / n) * radius;
+      float y = sinf(i * (M_PI/2) / n) * radius;
+        
+      glVertex2f(irect.right + x, irect.top - y);
+    }
+  // go back to start
+  glVertex2f(irect.left, irect.top - radius);
+
   glEnd();
 }
 

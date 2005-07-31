@@ -199,16 +199,16 @@ DrawingContext::rotate(float angle, float x, float y, float z)
   double s = sin(angle*3.14159265/180);
 
   Matrix matrix = Matrix::identity();
-  matrix[0] = x*x*(1-c)+c;
-  matrix[1] = y*x*(1-c)+z*s;
-  matrix[2] = x*z*(1-c)-y*s;
+  matrix[0]  = x*x*(1-c)+c;
+  matrix[1]  = y*x*(1-c)+z*s;
+  matrix[2]  = x*z*(1-c)-y*s;
 
-  matrix[4] = x*y*(1-c)-z*s;
-  matrix[5] = y*y*(1-c)+c;
-  matrix[6] = y*z*(1-c)+x*s;
+  matrix[4]  = x*y*(1-c)-z*s;
+  matrix[5]  = y*y*(1-c)+c;
+  matrix[6]  = y*z*(1-c)+x*s;
 
-  matrix[8] = x*z*(1-c)+y*s;
-  matrix[9] = y*z*(1-c)-x*s;
+  matrix[8]  = x*z*(1-c)+y*s;
+  matrix[9]  = y*z*(1-c)-x*s;
   matrix[10] = z*z*(1-c)+c;
 
   modelview_stack.back() = modelview_stack.back().multiply(matrix);
@@ -218,8 +218,8 @@ void
 DrawingContext::scale(float x, float y, float z)
 {
   Matrix matrix = Matrix::identity();
-  matrix[0] = x;
-  matrix[5] = y;
+  matrix[0]  = x;
+  matrix[5]  = y;
   matrix[10] = z;
 
   modelview_stack.back() = modelview_stack.back().multiply(matrix);
