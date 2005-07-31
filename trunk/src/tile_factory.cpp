@@ -116,11 +116,15 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
   std::string highlight_filename;
   std::vector<int> colmap;
   std::vector<int> ids;
+  int width  = 0;
+  int height = 0;
 
   Properties props(data);
   props.get("ids", ids);
   props.get("image", filename);
   props.get("colmap", colmap);
+  props.get("width", width);
+  props.get("height", height);
   props.print_unused_warnings("tiles");
 
   if(filename == "")

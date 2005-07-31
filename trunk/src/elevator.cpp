@@ -42,6 +42,7 @@ Elevator::Elevator(const lisp::Lisp* lisp)
 
   if(spritename == "")
     throw std::runtime_error("No sprite name specified in Elevator");
+
   sprite = Sprite(spritename);
   size  = CL_Size(128, 64);
   colobject = new CollisionObject(Rectf(Vector(0,0), size));
