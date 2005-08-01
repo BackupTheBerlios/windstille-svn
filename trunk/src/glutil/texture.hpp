@@ -47,12 +47,12 @@ public:
    * Upload an SDL_Surface onto an OpenGL texture. The surface must have power
    * of 2 dimensions
    * */
-  explicit Texture(SDL_Surface* image);
+  explicit Texture(SDL_Surface* image, GLint format = GL_RGBA);
 
   /** 
    * Create an empty Texture with the given dimensions
    */
-  explicit Texture(int width, int height);
+  explicit Texture(int width, int height, GLint format = GL_RGBA);
 
   ~Texture();
 

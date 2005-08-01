@@ -70,7 +70,7 @@ Texture::Texture(const std::string& filename)
   std::cout << "Filename: " << filename << " -> " << get_handle() << std::endl;
 }
 
-Texture::Texture(int width, int height)
+Texture::Texture(int width, int height, GLint format)
   : impl(new TextureImpl())
 {
   impl->width  = width;
@@ -80,7 +80,7 @@ Texture::Texture(int width, int height)
   state.set_active(); 
   
   glBindTexture(GL_TEXTURE_2D, impl->handle);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+  glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA,
                GL_UNSIGNED_BYTE, 0);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -95,7 +95,7 @@ static inline bool is_power_of_2(int v)
   return (v & (v-1)) == 0;
 }
 
-Texture::Texture(SDL_Surface* image)
+Texture::Texture(SDL_Surface* image, GLint glformat)
   : impl(new TextureImpl())
 {
   impl->width  = image->w;
@@ -121,11 +121,25 @@ Texture::Texture(SDL_Surface* image)
       if(image->w > maxt || image->h > maxt)
         throw std::runtime_error("Texture size not supported");
 
+      GLint sdl_format;
+      if (format->BytesPerPixel == 3)
+        {
+          sdl_format = GL_RGB;
+        }
+      else if (format->BytesPerPixel == 4)
+        {
+          sdl_format = GL_RGBA;
+        }
+      else
+        {
+          throw std::runtime_error("Texture: Image format not supported");
+        }
+
       glBindTexture(GL_TEXTURE_2D, impl->handle);
       glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
       glPixelStorei(GL_UNPACK_ROW_LENGTH, image->pitch/format->BytesPerPixel);
-      glTexImage2D(GL_TEXTURE_2D, 0, format->BytesPerPixel,
-                   image->w, image->h, 0, GL_RGBA,
+      glTexImage2D(GL_TEXTURE_2D, 0, glformat,
+                   image->w, image->h, 0, sdl_format,
                    GL_UNSIGNED_BYTE, image->pixels);
 
       assert_gl("creating texture");
@@ -172,6 +186,20 @@ Texture::put(SDL_Surface* image, int x, int y)
   CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
   state.set_active(); 
 
+  GLint sdl_format;
+  if (image->format->BytesPerPixel == 3)
+    {
+      sdl_format = GL_RGB;
+    }
+  else if (image->format->BytesPerPixel == 4)
+    {
+      sdl_format = GL_RGBA;
+    }
+  else
+    {
+      throw std::runtime_error("Texture: Image format not supported");
+    }
+
   // FIXME: Add some checks here to make sure image has the right format 
   glBindTexture(GL_TEXTURE_2D, impl->handle);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -179,7 +207,7 @@ Texture::put(SDL_Surface* image, int x, int y)
                 image->pitch / image->format->BytesPerPixel);
 
   glTexSubImage2D(GL_TEXTURE_2D, 0, x, y,
-                  image->w, image->h, GL_RGBA, GL_UNSIGNED_BYTE,
+                  image->w, image->h, sdl_format, GL_UNSIGNED_BYTE,
                   image->pixels);
 }
 

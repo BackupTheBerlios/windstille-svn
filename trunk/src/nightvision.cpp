@@ -104,7 +104,6 @@ Nightvision::draw(SceneContext& sc)
           array->vertex(0, 600, 1.0f);
         }
 
-      //std::cout << "Drawing night" << std::endl;
       sc.light().draw(array);
     }
   sc.light().pop_modelview();
