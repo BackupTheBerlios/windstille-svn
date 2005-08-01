@@ -47,7 +47,6 @@ public:
 
   Sprite3D();
   Sprite3D(const std::string& filename);
-  Sprite3D(const sprite3d::Data* data);
   ~Sprite3D();
 
   /**
@@ -108,6 +107,8 @@ public:
 
   /** true if the Sprite3D is valid and usable, false if not */
   bool is_valid() const;
+
+  void set_blend_func(GLenum sfactor, GLenum dfactor);
   
 private:  
   friend class Sprite3DDrawingRequest;
@@ -138,6 +139,9 @@ private:
   Frame next_frame;
   Frame next_action;
   Frame abort_at_frame;
+
+  GLenum blend_sfactor;
+  GLenum blend_dfactor;
 };
 
 #endif

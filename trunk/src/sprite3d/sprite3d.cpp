@@ -53,20 +53,9 @@ Sprite3D::Sprite3D(const std::string& filename)
   next_frame.action  = 0;
   next_action.action = 0;
   blend_time = 0.0;
-}
 
-Sprite3D::Sprite3D(const Data* data)
-  : data(data), actions_switched(false)
-{
-  frame1.action = &data->actions[0];
-  frame1.frame = 0;
-  frame1.rot   = false;
-  frame1.speed = 1.0;
-  frame2       = frame1;
-  abort_at_frame.action = 0;
-  next_frame.action  = 0;
-  next_action.action = 0;
-  blend_time = 0.0;
+  blend_sfactor = GL_ONE;
+  blend_sfactor = GL_ZERO;
 }
 
 Sprite3D::~Sprite3D()
@@ -356,9 +345,18 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview
     glRotatef(180, 0, 1.0, 0);
   } 
 
-  glClear(GL_DEPTH_BUFFER_BIT);
-  glEnable(GL_DEPTH_TEST);
   glEnable(GL_TEXTURE_2D);
+
+  if (blend_sfactor != GL_ONE || blend_sfactor != GL_ZERO)
+    {
+      glEnable(GL_BLEND);
+      glBlendFunc(blend_sfactor, blend_dfactor);
+    }
+  else
+    {
+      glClear(GL_DEPTH_BUFFER_BIT);
+      glEnable(GL_DEPTH_TEST);
+    }
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_NORMAL_ARRAY);
@@ -379,7 +377,7 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview
     glBindTexture(GL_TEXTURE_2D, mesh.texture.get_handle());
     
     // blend between frame1 + frame2
-    float* verts = new float[mesh.vertex_count * 3];
+    float verts[mesh.vertex_count * 3];
     if(frame1.rot == frame2.rot) {
       for(uint16_t v = 0; v < mesh.vertex_count*3; ++v) {
         verts[v] 
@@ -407,7 +405,6 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview
     glTexCoordPointer(2, GL_FLOAT, 0, mesh.tex_coords);
     glDrawElements(GL_TRIANGLES, mesh.triangle_count * 3, GL_UNSIGNED_SHORT,
         mesh.vertex_indices);
-    delete[] verts;
   }
 
   assert_gl("rendering 3d sprite");      
@@ -419,6 +416,13 @@ bool
 Sprite3D::is_valid() const
 {
   return data != 0;
+}
+
+void
+Sprite3D::set_blend_func(GLenum sfactor, GLenum dfactor)
+{
+  blend_sfactor = sfactor;
+  blend_dfactor = dfactor;
 }
 
 /* EOF */
