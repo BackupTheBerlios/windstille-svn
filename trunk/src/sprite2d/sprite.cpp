@@ -141,7 +141,7 @@ Sprite::get_speed() const
 void
 Sprite::set_alpha(float alpha)
 {
-  this->alpha = alpha;
+  this->color.a = alpha;
 }
 
 float

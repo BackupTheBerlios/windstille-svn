@@ -150,6 +150,8 @@ SceneContext::render()
       }
     }
 
+  CL_Display::clear();
+
   if (impl->render_mask & COLORMAP)
     {
       impl->color.render();

@@ -114,7 +114,7 @@ Nightvision::draw(SceneContext& sc)
       sc.highlight().push_modelview();
       sc.highlight().set_modelview(Matrix::identity());
       nightvision.set_alpha(0.5f);
-      nightvision.set_blend_func(blend_src_alpha, blend_one);
+      nightvision.set_blend_func(GL_SRC_ALPHA, GL_ONE);
       sc.highlight().draw(nightvision, Vector(0, 0), 10000);
       sc.highlight().pop_modelview();
     }
