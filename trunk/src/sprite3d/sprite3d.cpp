@@ -55,7 +55,7 @@ Sprite3D::Sprite3D(const std::string& filename)
   blend_time = 0.0;
 
   blend_sfactor = GL_ONE;
-  blend_sfactor = GL_ZERO;
+  blend_dfactor = GL_ZERO;
 }
 
 Sprite3D::~Sprite3D()
@@ -347,7 +347,7 @@ Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview
 
   glEnable(GL_TEXTURE_2D);
 
-  if (blend_sfactor != GL_ONE || blend_sfactor != GL_ZERO)
+  if (blend_sfactor != GL_ONE || blend_dfactor != GL_ZERO)
     {
       glEnable(GL_BLEND);
       glBlendFunc(blend_sfactor, blend_dfactor);
