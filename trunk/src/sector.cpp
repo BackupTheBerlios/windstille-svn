@@ -332,4 +332,16 @@ Sector::set_tilemap(TileMap* t)
   interactive_tilemap = t;
 }
 
+void
+Sector::set_ambient_light(const Color& color)
+{
+  ambient_light = color;
+}
+
+Color
+Sector::get_ambient_light() const
+{
+  return ambient_light;
+}
+
 /* EOF */

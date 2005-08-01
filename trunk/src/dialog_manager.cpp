@@ -139,9 +139,9 @@ DialogManager::draw()
              pos.x + dialog_width,
              pos.y + 200);
 
-  VDisplay::fill_rounded_rect(rect, 32.0f,
-                              Color(0, 0, 0.4f, 0.8f));
-  VDisplay::draw_rounded_rect(rect, 32.0f,
+  VDisplay::fill_rounded_rect(rect, 16.0f,
+                              Color(0, 0, 0.3f, 0.5f));
+  VDisplay::draw_rounded_rect(rect, 16.0f,
                               Color(0.6f, 1.0f, 1.0f, 0.8f));
 
   portrait.draw(Vector(pos.x + portrait_border_x,

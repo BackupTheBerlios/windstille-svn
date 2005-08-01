@@ -44,6 +44,7 @@ class ScriptableObject : public Entity
 {
 private:
   Sprite sprite;
+  Sprite light;
   Sprite highlight;
   
   //useable stuff

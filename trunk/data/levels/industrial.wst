@@ -3,8 +3,34 @@
   (version 2)
   (name   "")
   (music  "")
-  (ambient-color .666 .666 .666)
+  (ambient-color .4 .4 .4)
   (objects
+    (scriptable-object
+      (name "Lamp")
+      (pos 256 736)
+      (sprite "images/streetlamp.sprite")
+      (highlight "images/streetlamp-highlight.sprite")
+      (light "images/streetlamp-light.sprite")
+      (active #t))
+
+    (scriptable-object
+      (name "Lamp")
+      (pos 768 736)
+      (sprite "images/streetlamp.sprite")
+      (highlight "images/streetlamp-highlight.sprite")
+      (light "images/streetlamp-light.sprite")
+      (active #t))
+
+
+    (scriptable-object
+      (name "Lamp")
+      (pos 1024 736)
+      (sprite "images/streetlamp.sprite")
+      (highlight "images/streetlamp-highlight.sprite")
+      (light "images/streetlamp-light.sprite")
+      (active #t))
+
+
   (tilemap (name "background") (width 100) (height 30) (z-pos 0)
     (data
       0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 

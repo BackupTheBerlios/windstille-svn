@@ -90,6 +90,9 @@ public:
   int get_width () const;
   int get_height () const;
 
+  void set_ambient_light(const Color& color);
+  Color get_ambient_light() const;
+
   void add(GameObject*);
   void add_object(const std::string& name, const lisp::Lisp* lisp);
 

@@ -39,15 +39,18 @@ ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
 { 
   std::string spritename;
   std::string highlightname;
+  std::string lightname;
   
   lisp::Properties props(lisp);
   props.get("name", name);
   props.get("sprite", spritename);
   props.get("highlight", highlightname);
+  props.get("light",   lightname);
   props.get("pos", pos);
   props.get("script", use_script);
   props.get("use-verb", use_verb);
   props.get("active", active);
+  props.get("flash-speed", flash_speed);
   props.print_unused_warnings("scriptable-object");
   
   if (use_verb != "")
@@ -59,6 +62,12 @@ ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
   
   if (highlightname != "")
     highlight = Sprite(highlightname);
+
+  if (lightname != "")
+    light = Sprite(lightname);
+
+  highlight.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+  light.set_blend_func(GL_SRC_ALPHA, GL_ONE);
     
   flash_delta = game_time;
   target_x = pos.x;
@@ -74,13 +83,17 @@ ScriptableObject::draw(SceneContext& sc)
 {
   if (flash_speed != 0)
     flash();
- 
-  sc.color().draw(sprite, pos, 1);
+
+  if (sprite)
+    sc.color().draw(sprite, pos, 50);
   
-  if (highlight) {
-    sc.color().draw(highlight, pos, 2);
-    sc.light().draw(highlight, pos, 1);
-  }
+  if (highlight) 
+    sc.highlight().draw(highlight, pos, 50);
+
+  if (light) 
+    {
+      sc.light().draw(light, pos, 50);
+    }
 }
 
 void
@@ -89,6 +102,9 @@ ScriptableObject::update(float delta)
   sprite.update(delta);
   if (highlight)
     highlight.update(delta);
+
+  if (light)
+    light.update(delta);
     
   if (target_speed > 0)
     move(delta);
@@ -186,11 +202,13 @@ ScriptableObject::flash()
   if(static_cast<int>(time/flash_speed) % 2 == 0) {    
     float alpha = fmodf(time, flash_speed) / flash_speed;
     // fade on
-    sprite.set_alpha(alpha);
+    highlight.set_alpha(alpha);
+    light.set_alpha(alpha);
   } else {
     float alpha = 1.0 - (fmodf(time, flash_speed) / flash_speed);
     // fade off
-    sprite.set_alpha(alpha);
+    highlight.set_alpha(alpha);
+    light.set_alpha(alpha);
   }
 }
 
