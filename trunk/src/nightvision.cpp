@@ -55,7 +55,7 @@ Nightvision::draw(SceneContext& sc)
   if (1)
     {
       nightvision.set_alpha(1.0f);
-      nightvision.set_blend_func(blend_one, blend_zero);
+      nightvision.set_blend_func(GL_ONE, GL_ZERO);
       sc.light().draw(nightvision, Vector(0, 0), 10000);
     }
 

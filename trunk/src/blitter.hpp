@@ -21,7 +21,6 @@
 #define HEADER_BLITTER_HXX
 
 #include <SDL.h>
-#include <ClanLib/Display/pixel_buffer.h>
 
 /** Duplicate all the edge pixel of the given rectangle to the outside
     of the rectangle, thus creating a border around the given

@@ -25,7 +25,6 @@
 #ifndef HEADER_BOMB_HXX
 #define HEADER_BOMB_HXX
 
-#include <ClanLib/Core/Math/point.h>
 #include "sprite2d/sprite.hpp"
 #include "game_object.hpp"
 

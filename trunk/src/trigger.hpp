@@ -21,7 +21,6 @@
 #define HEADER_TRIGGER_HXX
 
 #include <vector>
-#include <ClanLib/Core/Math/rect.h>
 #include "game_object.hpp"
 
 /** */

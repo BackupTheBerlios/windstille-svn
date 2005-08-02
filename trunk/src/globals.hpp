@@ -21,7 +21,6 @@
 #define GLOBALS_HXX
 
 #include <string>
-#include <ClanLib/Core/Resources/resource_manager.h>
 
 typedef enum { WEST, EAST} Direction;
 
@@ -32,8 +31,6 @@ const float GRAVITY = 1500;
 
 /** datadir => /usr/local/share/games/windstille/ */
 extern std::string datadir;
-
-extern CL_ResourceManager* resources;
 
 extern float text_speed;
 extern float game_speed;

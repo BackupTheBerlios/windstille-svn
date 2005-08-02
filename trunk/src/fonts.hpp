@@ -20,7 +20,6 @@
 #ifndef HEADER_FONTS_HXX
 #define HEADER_FONTS_HXX
 
-#include <ClanLib/Display/font.h>
 #include "ttf_font.hpp"
 
 namespace Fonts {

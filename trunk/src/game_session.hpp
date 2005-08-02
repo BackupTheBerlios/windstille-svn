@@ -21,8 +21,6 @@
 #define GAME_SESSION_HXX
 
 #include <string>
-#include <ClanLib/Display/sprite.h>
-#include <ClanLib/Display/font.h>
 #include <ClanLib/Signals/slot_container.h>
 #include "display/scene_context.hpp"
 #include "console.hpp"

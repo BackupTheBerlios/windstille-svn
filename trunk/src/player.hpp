@@ -21,8 +21,6 @@
 #define PLAYER_HXX
 
 #include <ClanLib/core.h>
-#include <ClanLib/gl.h>
-#include <ClanLib/display.h>
 
 #include "sprite2d/sprite.hpp"
 #include "input/controller.hpp"

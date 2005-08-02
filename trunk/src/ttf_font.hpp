@@ -26,8 +26,6 @@
 #ifndef HEADER_TTF_FONT_HXX
 #define HEADER_TTF_FONT_HXX
 
-#include <ClanLib/Core/Math/rect.h>
-#include <ClanLib/GL/opengl_surface.h>
 #include <string>
 #include <GL/gl.h>
 #include "color.hpp"

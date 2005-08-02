@@ -19,6 +19,7 @@
 
 #include <math.h>
 #include <ClanLib/gl.h>
+#include <ClanLib/display.h>
 #include <sstream>
 #include <stdarg.h>
 

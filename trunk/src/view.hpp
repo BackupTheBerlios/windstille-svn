@@ -20,8 +20,6 @@
 #ifndef HEADER_VIEW_HXX
 #define HEADER_VIEW_HXX
 
-#include <ClanLib/Core/Math/rect.h>
-#include <ClanLib/Core/Math/cl_vector.h>
 #include "camera.hpp"
 #include "graphic_context_state.hpp"
 #include "math/vector.hpp"

@@ -25,7 +25,6 @@
 #define MAXF 100000.0f
 
 #include <iostream>
-#include <ClanLib/Core/Math/vector2.h>
 
 struct SweepResult
 {

@@ -42,8 +42,8 @@ Hedgehog::Hedgehog(const lisp::Lisp* lisp)
   
   direction_left = false;
   state = WALKING;
-  light.set_blend_func(blend_src_alpha, blend_one);
-  highlight.set_blend_func(blend_src_alpha, blend_one);
+  light.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+  highlight.set_blend_func(GL_SRC_ALPHA, GL_ONE);
 }
 
 Hedgehog::~Hedgehog()

@@ -20,8 +20,6 @@
 #ifndef TILEMAP_HXX
 #define TILEMAP_HXX
 
-#include <ClanLib/core.h>
-#include <ClanLib/display.h>
 #include <string>
 
 #include "globals.hpp"

@@ -26,7 +26,6 @@
 #ifndef HEADER_ENTITY_HXX
 #define HEADER_ENTITY_HXX
 
-#include <ClanLib/Display/sprite.h>
 #include "math/vector.hpp"
 #include "game_object.hpp"
 #include "collision/collision_object.hpp"

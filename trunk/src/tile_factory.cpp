@@ -40,8 +40,6 @@
 #include "glutil/texture.hpp"
 #include "physfs/physfs_sdl.hpp"
 
-extern CL_ResourceManager* resources;
-
 TileFactory* TileFactory::current_ = 0;
 
 std::string TileFactory::tile_def_file = "tiles.scm";
