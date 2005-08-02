@@ -147,8 +147,8 @@ TTFFont::TTFFont(const std::string& filename, int size)
       generate_border(pixelbuffer, x_pos, y_pos, 
                       face->glyph->bitmap.width, face->glyph->bitmap.rows);
 
-      Rect pos(CL_Point(face->glyph->bitmap_left,  -face->glyph->bitmap_top), 
-               CL_Size (face->glyph->bitmap.width, face->glyph->bitmap.rows));
+      Rect pos(Point(face->glyph->bitmap_left,  -face->glyph->bitmap_top), 
+               Size (face->glyph->bitmap.width, face->glyph->bitmap.rows));
 
       Rectf uv(x_pos/float(pixelbuffer->w),
                y_pos/float(pixelbuffer->h),

@@ -61,7 +61,7 @@ CollisionObject::drawCollision()
   Vector v = get_pos ();
   Rectf  r = primitive;
 
-  r += CL_Pointf (v.x, v.y);
+  r += v;
 
   VDisplay::fill_rect(r, Color(1.0f, 1.0f, 1.0f));
   

@@ -27,36 +27,43 @@
 **    (if your name is missing here, please add it)
 */
 
+//! clanCore="Math"
+//! header=core.h
 
-#include <cmath>
+#ifndef HEADER_MATH_ORIGIN_HPP
+#define HEADER_MATH_ORIGIN_HPP
 
-#include "rect.hpp"
+#include "size.hpp"
+#include "point.hpp"
+#include "vector.hpp"
 
-#define cl_min(a,b) ((a < b) ? a : b)
-#define cl_max(a,b) ((a > b) ? a : b)
+namespace origin {
 
-Rect Rect::get_rot_bounds(const Point &hotspot, float angle) const
+//: Alignment origins.
+//- !group=Core/Math!
+//- !header=core.h!
+enum Origin
 {
-	//Find the rotated positions of each corner
-	Rect retVal(*this);
-	Point ul = Point(retVal.left, retVal.top).rotate(hotspot, angle);
-	Point ur = Point(retVal.right, retVal.top).rotate(hotspot, angle);
-	Point ll = Point(retVal.left, retVal.bottom).rotate(hotspot, angle);
-	Point lr = Point(retVal.right, retVal.bottom).rotate(hotspot, angle);
-	
-	//Use the sidemost corners as the bounds of the new rectangle
-	retVal.left = cl_min(cl_min(ul.x, ur.x), cl_min(ll.x, lr.x));
-	retVal.right = cl_max(cl_max(ul.x, ur.x), cl_max(ll.x, lr.x));
-	retVal.top = cl_min(cl_min(ul.y, ur.y), cl_min(ll.y, lr.y));
-	retVal.bottom = cl_max(cl_max(ul.y, ur.y), cl_max(ll.y, lr.y));
-	
-	return retVal;
+	top_left,
+	top_center,
+	top_right,
+	center_left,
+	center,
+	center_right,
+	bottom_left,
+	bottom_center,
+	bottom_right
+};
+
 }
 
-Rect Rect::get_rot_bounds(Origin origin, int x, int y, float angle) const
-{
-	return get_rot_bounds(
-		Point(left, top) + calc_origin(origin, get_size()) + Point(x, y),
-		angle);
-}
+typedef origin::Origin Origin;
 
+
+//: Returns the anchor point for the origin within the dimensions of the size structure.
+//- !group=Display/Display 2D!
+//- !header=display.h!
+Point  calc_origin(Origin origin, const Size &size);
+Vector calc_origin(Origin origin, const Sizef &size);
+
+#endif

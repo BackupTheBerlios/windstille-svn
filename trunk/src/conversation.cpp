@@ -54,9 +54,9 @@ Conversation::draw()
       int x = 100;
       int y = 200;
 
-      Rect rect(CL_Point(x - 20, y - 20 + Fonts::ttffont->get_height()/2 - 5),
-                CL_Size(300 + 20, // FIXME:
-                        (Fonts::ttffont->get_height() + 10) * choices.size() + 20));
+      Rect rect(Point(x - 20, y - 20 + Fonts::ttffont->get_height()/2 - 5),
+                Size(300 + 20, // FIXME:
+                     (Fonts::ttffont->get_height() + 10) * choices.size() + 20));
       
       VDisplay::fill_rect(rect, Color(0,0,0,0.5f));
       VDisplay::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.3f));

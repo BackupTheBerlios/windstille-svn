@@ -33,7 +33,7 @@
 class Elevator : public Entity
 {
 private:
-  CL_Sizef size;
+  Sizef size;
   CollisionObject* colobject;
   Sprite sprite;
 public:

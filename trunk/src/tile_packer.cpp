@@ -104,8 +104,8 @@ TilePacker::pack(SDL_Surface* image, int x, int y, int w, int h)
 
   Rectf rect(Vector(static_cast<float>(impl->x_pos+1)/impl->width, 
                     static_cast<float>(impl->y_pos+1)/impl->height), 
-             CL_Sizef(static_cast<float>(TILE_RESOLUTION)/impl->width, 
-                      static_cast<float>(TILE_RESOLUTION)/impl->height));
+             Sizef(static_cast<float>(TILE_RESOLUTION)/impl->width, 
+                   static_cast<float>(TILE_RESOLUTION)/impl->height));
 
   // we move by TILE_RESOLUTION+1 to avoid tiles bleeding into each other
   // when blending

@@ -30,11 +30,9 @@
 #ifndef __MATH_RECT_HPP__
 #define __MATH_RECT_HPP__
 
-#include <ClanLib/Core/Math/point.h>
-#include <ClanLib/Core/Math/size.h>
-#include <ClanLib/Core/Math/rect.h>
-#include <ClanLib/Core/Math/origin.h>
+#include "math/origin.hpp"
 #include "math/vector.hpp"
+#include "math/size.hpp"
 
 class Rectf;
 
@@ -57,12 +55,10 @@ public:
 
 	explicit Rect(const Rectf& rect);
 
-	operator CL_Rectf() { return CL_Rectf(left, top, right, bottom); }
-
 	Rect(int new_left, int new_top, int new_right, int new_bottom)
 	{ left = new_left; top = new_top; right = new_right; bottom = new_bottom; }
 
-	Rect(const CL_Point &p, const CL_Size &size)
+	Rect(const Point &p, const Size &size)
 	{ left = p.x; top = p.y; right = left + size.width; bottom = top + size.height; }
 
 	Rect(const Rect &rect)
@@ -77,11 +73,11 @@ public:
 	{ left -= r.left; top -= r.top; right -= r.right; bottom -= r.bottom; return *this; }
 	
 	//: Rect += Point operator.
-	Rect &operator+=(const CL_Point &p)
+	Rect &operator+=(const Point &p)
 	{ left += p.x; top += p.y; right += p.x; bottom += p.y; return *this; }
 
 	//: Rect -= Point operator.
-	Rect &operator-=(const CL_Point &p)
+	Rect &operator-=(const Point &p)
 	{ left -= p.x; top -= p.y; right -= p.x; bottom -= p.y; return *this; }
 
 	//: Rect + Rect operator.
@@ -93,11 +89,11 @@ public:
 	{ return Rect(left - r.left, top - r.top, right - r.right, bottom - r.bottom); }
 
 	//: Rect + Point operator.
-	Rect operator+(const CL_Point &p) const
+	Rect operator+(const Point &p) const
 	{ return Rect(left + p.x, top + p.y, right + p.x, bottom + p.y); }
 
 	//: Rect - Point operator.
-	Rect operator-(const CL_Point &p) const
+	Rect operator-(const Point &p) const
 	{ return Rect(left - p.x, top - p.y, right - p.x, bottom - p.y); }
 
 	//: Rect == Rect operator.
@@ -129,10 +125,10 @@ public:
 	int get_height() const { return bottom - top; }
 
 	//: Returns the size of the rectangle.
-	CL_Size get_size() const { return CL_Size(right - left, bottom - top); }
+	Size get_size() const { return Size(right - left, bottom - top); }
 	
 	//: Returns true if point is inside the rectangle.
-	bool is_inside(const CL_Point &p) const { return (p.x >= left && p.y >= top && p.x <= right && p.y <= bottom); }
+	bool is_inside(const Point &p) const { return (p.x >= left && p.y >= top && p.x <= right && p.y <= bottom); }
 
 	//: Returns true if rectangle passed is overlapping or inside this rectangle.
 	bool is_overlapped(const Rect &r) const 
@@ -145,13 +141,13 @@ public:
 	//param origin: Determines the hotspot point within the rectangle
 	//param x, y: Offsets applied negatively to the hotspot point
 	//param angle: Angle to rotate in degrees.
-	Rect get_rot_bounds(const CL_Point &hotspot, float angle) const;
-	Rect get_rot_bounds(CL_Origin origin, int x, int y, float angle) const;
+	Rect get_rot_bounds(const Point &hotspot, float angle) const;
+	Rect get_rot_bounds(Origin origin, int x, int y, float angle) const;
 	
 //! Operations:
 public:
 	//: Sets the size of the rectangle, maintaining top/left position.
-	void set_size(const CL_Size &size)
+	void set_size(const Size &size)
 	{
 		right = left + size.width;
 		bottom = top + size.height;
@@ -189,9 +185,9 @@ public:
 	//: Applies an origin and offset pair to this rectangle
 	//param origin: The new origin to adjust to from default upper-left position
 	//param x, y: Offsets applied negatively to each corner of the rectangle
-	void apply_alignment(CL_Origin origin, int x, int y)
+	void apply_alignment(Origin origin, int x, int y)
 	{
-		CL_Point offset = calc_origin(origin, get_size());
+		Point offset = calc_origin(origin, get_size());
 		offset.x -= x;
 		offset.y -= y;
 		
@@ -227,17 +223,12 @@ public:
 	Rectf(float new_left, float new_top, float new_right, float new_bottom)
 	{ left = new_left; top = new_top; right = new_right; bottom = new_bottom; }
 
-	Rectf(const Vector &p, const CL_Sizef &size)
-	{ left = p.x; top = p.y; right = left + size.width; bottom = top + size.height; }
-
-	Rectf(const CL_Pointf &p, const CL_Sizef &size)
+	Rectf(const Vector &p, const Sizef &size)
 	{ left = p.x; top = p.y; right = left + size.width; bottom = top + size.height; }
 
 	Rectf(const Rectf &rect)
 	{ left = rect.left; top = rect.top; right = rect.right; bottom = rect.bottom; }
 
-	operator CL_Rectf() { return CL_Rectf(left, top, right, bottom); }
-	
    //: Rect += Rect operator.
 	Rectf &operator+=(const Rectf &r)
 	{ left += r.left; top += r.top; right += r.right; bottom += r.bottom; return *this; }
@@ -247,11 +238,11 @@ public:
 	{ left -= r.left; top -= r.top; right -= r.right; bottom -= r.bottom; return *this; }
 	
 	//: Rect += Point operator.
-	Rectf &operator+=(const CL_Pointf &p)
+	Rectf &operator+=(const Vector &p)
 	{ left += p.x; top += p.y; right += p.x; bottom += p.y; return *this; }
 
 	//: Rect -= Point operator.
-	Rectf &operator-=(const CL_Pointf &p)
+	Rectf &operator-=(const Vector &p)
 	{ left -= p.x; top -= p.y; right -= p.x; bottom -= p.y; return *this; }
 
 	//: Rect + Rect operator.
@@ -263,11 +254,11 @@ public:
 	{ return Rectf(left - r.left, top - r.top, right - r.right, bottom - r.bottom); }
 
 	//: Rect + Point operator.
-	Rectf operator+(const CL_Pointf &p) const
+	Rectf operator+(const Vector &p) const
 	{ return Rectf(left + p.x, top + p.y, right + p.x, bottom + p.y); }
 
 	//: Rect - Point operator.
-	Rectf operator-(const CL_Pointf &p) const
+	Rectf operator-(const Vector &p) const
 	{ return Rectf(left - p.x, top - p.y, right - p.x, bottom - p.y); }
 
 	//: Rect == Rect operator.
@@ -299,7 +290,7 @@ public:
 	float get_height() const { return bottom - top; }
 
 	//: Returns the size of the rectangle.
-	CL_Sizef get_size() const { return CL_Sizef(right - left, bottom - top); }
+	Sizef get_size() const { return Sizef(right - left, bottom - top); }
 	
 	//: Returns true if point is inside the rectangle.
 	bool is_inside(const Vector &p) const { return (p.x >= left && p.y >= top && p.x <= right && p.y <= bottom); }
@@ -309,19 +300,11 @@ public:
 	{
 		return (r.left < right && r.right > left && r.top < bottom && r.bottom > top);
 	}
-
-	//: Returns another Rectf containing a rotated version of this one.
-	//param hotspot: Point to rotate around.
-	//param origin: Determines the hotspot point within the rectangle
-	//param x, y: Offsets applied negatively to the hotspot point
-	//param angle: Angle to rotate in degrees.
-	Rectf get_rot_bounds(const CL_Pointf &hotspot, float angle) const;
-	Rectf get_rot_bounds(CL_Origin origin, float x, float y, float angle) const;
 	
 //! Operations:
 public:
 	//: Sets the size of the rectangle, maintaining top/left position.
-	void set_size(const CL_Size &size)
+	void set_size(const Size &size)
 	{
 		right = left + size.width;
 		bottom = top + size.height;
@@ -359,9 +342,9 @@ public:
 	//: Applies an origin and offset pair to this rectangle
 	//param origin: The new origin to adjust to from default upper-left position
 	//param x, y: Offsets applied negatively to each corner of the rectangle
-	void apply_alignment(CL_Origin origin, float x, float y)
+	void apply_alignment(Origin origin, float x, float y)
 	{
-		CL_Pointf offset = calc_origin(origin, get_size());
+		Vector offset = calc_origin(origin, get_size());
 		offset.x -= x;
 		offset.y -= y;
 		

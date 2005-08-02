@@ -61,7 +61,7 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
   static const int portrait_width = 180;
   static const int portrait_height = 192;
 
-  CL_Point pos(0,0);
+  Point pos(0,0);
   if(alignment & LEFT) {
     pos.x = outer_border_x;
   } else if(alignment & RIGHT) {
@@ -72,8 +72,8 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
       
   int text_width
     = dialog_width - portrait_height - portrait_border_x*2 - text_border_x;
-  Rect text_rect = Rect(CL_Point(pos.x + portrait_width + portrait_border_x*2, 0),
-                        CL_Size(500, 200)); // FIXME: use real bounding box calc
+  Rect text_rect = Rect(Point(pos.x + portrait_width + portrait_border_x*2, 0),
+                        Size(500, 200)); // FIXME: use real bounding box calc
   
   text_rect.bottom = text_rect.top + text_rect.get_height();
   text_rect.top    = pos.y + text_border_y;
@@ -92,12 +92,12 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
   text_rect.bottom = text_rect.top + text_rect.get_height();
   text_rect.top = pos.y + text_border_y;
 
-  CL_Size dialog_size(dialog_width, dialog_height);
+  Size dialog_size(dialog_width, dialog_height);
 
 
   delete text_area;
-  text_area = new TextArea(Rect(CL_Point(text_rect.left, text_rect.top + Fonts::ttfdialog->get_height()),
-                                   CL_Size(text_width, 200)));
+  text_area = new TextArea(Rect(Point(text_rect.left, text_rect.top + Fonts::ttfdialog->get_height()),
+                                Size(text_width, 200)));
   text_area->set_font(Fonts::ttfdialog);
   text_area->set_text(text);
 }
@@ -117,7 +117,7 @@ DialogManager::draw()
                                int(text_area->get_rect().get_height()
                                    + text_border_y * 2.0f));
 
-  CL_Point pos(0,0);
+  Point pos(0,0);
   if(alignment & LEFT) {
     pos.x = outer_border_x;
   } else if(alignment & RIGHT) {
