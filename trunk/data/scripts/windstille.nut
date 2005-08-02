@@ -7,7 +7,7 @@ function nightvision_enabled(...)
   if (vargc == 1) 
     {
       if (::has_nightvision) {
-        ::activate_object("nightvision", vargv[0]); 
+        nightvision.set_active(vargv[0]); 
       } 
       else if (vargv[0]) 
         {
