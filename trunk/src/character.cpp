@@ -73,7 +73,7 @@ Character::use()
   try 
     {
       script_manager->run_script_file(filename);
-    } catch (std::exception e) {
+    } catch (std::exception& e) {
       console << e.what() << std::endl;
     }
 }
