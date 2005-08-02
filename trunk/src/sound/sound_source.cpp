@@ -46,13 +46,13 @@ SoundSource::set_looping(bool looping)
 }
 
 void
-SoundSource::set_position(CL_Vector position)
+SoundSource::set_position(const Vector& position)
 {
   alSource3f(source, AL_POSITION, position.x, position.y, 0);
 }
 
 void
-SoundSource::set_velocity(CL_Vector velocity)
+SoundSource::set_velocity(const Vector& velocity)
 {
   alSource3f(source, AL_VELOCITY, velocity.x, velocity.y, 0);
 }
