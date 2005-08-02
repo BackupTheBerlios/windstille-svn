@@ -76,7 +76,7 @@ Player::draw (SceneContext& sc)
   light.set_scale(4.0f);
 
   //sc.light().draw(light, pos, 100.0f);
-  sprite.draw(sc, pos, 100);
+  sprite.draw(sc.color(), pos, 100);
 
   Entity* obj = find_useable_entity();
   if (obj)

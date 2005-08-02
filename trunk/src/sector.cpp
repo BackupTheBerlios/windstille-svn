@@ -31,6 +31,7 @@
 #include "trigger.hpp"
 #include "test_object.hpp"
 #include "sector.hpp"
+#include "badguy/vrdummy.hpp"
 #include "spawnpoint.hpp"
 #include "sound/sound_manager.hpp"
 #include "script_manager.hpp"
@@ -154,6 +155,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new ParticleSystem(lisp));
   } else if(name == "scriptable-object") {    
     add(new ScriptableObject(lisp));
+  } else if (name == "vrdummy") {
+    add(new VRDummy(lisp));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }

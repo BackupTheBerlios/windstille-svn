@@ -7,6 +7,8 @@ sources =
   hedgehog.hpp
   spider_mine.cpp
   spider_mine.hpp
+  vrdummy.hpp
+  vrdummy.cpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;

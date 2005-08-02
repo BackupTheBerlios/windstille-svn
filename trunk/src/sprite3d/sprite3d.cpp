@@ -319,15 +319,15 @@ Sprite3D::update(float elapsed_time)
 }
 
 void
-Sprite3D::draw(SceneContext& sc, const Vector& pos, float z_pos) const
+Sprite3D::draw(DrawingContext& dc, const Vector& pos, float z_pos) const
 {
-  sc.color().draw(new Sprite3DDrawingRequest(this, pos, z_pos, sc.color().get_modelview()));
+  dc.draw(new Sprite3DDrawingRequest(this, pos, z_pos, dc.get_modelview()));
 }
 
 void
-Sprite3D::draw(SceneContext& sc, const Matrix& matrix, float z_pos) const
+Sprite3D::draw(DrawingContext& dc, const Matrix& matrix, float z_pos) const
 {
-  sc.color().draw(new Sprite3DDrawingRequest(this, Vector(0, 0), 0.0f, sc.color().get_modelview()));
+  dc.draw(new Sprite3DDrawingRequest(this, Vector(0, 0), 0.0f, dc.get_modelview()));
 }
 
 void

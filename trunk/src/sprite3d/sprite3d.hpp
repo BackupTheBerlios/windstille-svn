@@ -26,7 +26,7 @@
 #include "math/matrix.hpp"
 #include "sprite3d/data.hpp"
 
-class SceneContext;
+class DrawingContext;
 
 namespace sprite3d {
 
@@ -53,8 +53,8 @@ public:
    * You should call this every frame
    */
   void update(float elapsed_time);
-  void draw(SceneContext& sc, const Vector& pos, float z_pos) const;
-  void draw(SceneContext& sc, const Matrix& matrix, float z_pos) const;
+  void draw(DrawingContext& sc, const Vector& pos, float z_pos) const;
+  void draw(DrawingContext& sc, const Matrix& matrix, float z_pos) const;
   
   /**
    * Changes action (after the currently shown animation frame)

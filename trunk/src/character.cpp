@@ -58,9 +58,9 @@ Character::update(float delta)
 }
 
 void
-Character::draw (SceneContext& gc)
+Character::draw (SceneContext& sc)
 {
-  sprite.draw(gc, pos, 100);
+  sprite.draw(sc.color(), pos, 100);
 }
 
 void

@@ -27,13 +27,13 @@ TestObject::~TestObject()
 }
 
 void
-TestObject::draw(SceneContext& context)
+TestObject::draw(SceneContext& sc)
 {
-  sprite.draw(context, pos, 100);
+  sprite.draw(sc.color(), pos, 100);
   for(std::vector<AttachedSprite>::iterator i = attached_sprites.begin();
       i != attached_sprites.end(); ++i) {
     Matrix mat = sprite.get_attachement_point_matrix(i->attachpoint);
-    i->sprite.draw(context, mat, 100);
+    i->sprite.draw(sc.color(), mat, 100);
   }                                                                        
 }
 
