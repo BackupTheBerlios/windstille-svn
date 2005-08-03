@@ -15,6 +15,7 @@ SubInclude TOP src tinygettext ;
 SubInclude TOP src collision ;
 SubInclude TOP src particles ;
 SubInclude TOP src math ;
+SubInclude TOP src signals ;
 
 sources = 
         baby_xml.cpp
@@ -134,6 +135,8 @@ Application windstille
         $(particles_objects)
 
         $(math_objects)
+
+        $(signals_objects)
 
         $(sources)
 ;

@@ -22,7 +22,7 @@
 #ifndef HEADER_COLLISION_OBJECT_HPP
 #define HEADER_COLLISION_OBJECT_HPP
 
-#include <ClanLib/core.h>
+#include "signals/signals.hpp"
 #include "math/vector.hpp"
 #include "math/rect.hpp"
 #include "collision_data.hpp"
@@ -53,7 +53,7 @@ private:
 
   GameObject* game_object;
 
-  CL_Signal_v2<const CollisionData &, CollisionObject &> collision;
+  Signal_v2<const CollisionData &, CollisionObject &> collision;
 
   Rectf primitive;
   TileMap* tilemap;
@@ -107,7 +107,7 @@ public:
   void set_unstuck(bool s) { is_unstuckable = s; }
   void set_unstuck_movable(bool s) { is_unstuck_movable = s; }
 
-  CL_Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
+  Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
 
   friend class CollisionEngine;
 };

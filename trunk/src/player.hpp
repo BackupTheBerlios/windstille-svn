@@ -48,7 +48,7 @@ private:
   int energy;
 
   CollisionObject* c_object;
-  CL_Slot slot;
+  Slot slot;
 
 public:
   enum State
