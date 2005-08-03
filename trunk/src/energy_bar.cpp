@@ -17,10 +17,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ClanLib/Display/color.h>
-#include <ClanLib/Display/display.h>
-#include <ClanLib/Display/display_window.h>
-#include <ClanLib/Display/graphic_context.h>
 #include "globals.hpp"
 #include "player.hpp"
 #include "energy_bar.hpp"

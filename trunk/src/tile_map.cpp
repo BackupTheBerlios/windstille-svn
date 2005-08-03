@@ -17,8 +17,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ClanLib/gl.h>
-#include <ClanLib/display.h>
 #include <sstream>
 #include "tile_map.hpp"
 #include "tile.hpp"
@@ -27,8 +25,6 @@
 #include "view.hpp"
 #include "display/vertex_array_drawing_request.hpp"
 #include "lisp/properties.hpp"
-
-extern CL_ResourceManager* resources;
 
 TileMap::TileMap(const lisp::Lisp* lisp)
 {

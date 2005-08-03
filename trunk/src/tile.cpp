@@ -17,9 +17,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ClanLib/Core/System/error.h>
-#include <ClanLib/Display/sprite_description.h>
-#include <ClanLib/Display/pixel_buffer.h>
 #include <iostream>
 #include "globals.hpp"
 #include "tile.hpp"

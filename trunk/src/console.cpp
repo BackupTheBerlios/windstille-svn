@@ -24,7 +24,6 @@
 
 #include <assert.h>
 #include <ClanLib/Display/keys.h>
-#include <ClanLib/Display/keyboard.h>
 #include <ClanLib/core.h>
 #include "math/rect.hpp"
 #include "fonts.hpp"

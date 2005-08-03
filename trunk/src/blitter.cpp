@@ -21,8 +21,6 @@
 #include <iostream>
 #include <algorithm>
 #include <stdint.h>
-#include <ClanLib/Display/pixel_format.h>
-#include <ClanLib/Display/palette.h>
 #include "blitter.hpp"
 
 void generate_border(SDL_Surface* surface,
