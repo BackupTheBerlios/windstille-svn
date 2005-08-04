@@ -54,9 +54,6 @@
 
 using namespace Windstille;
 
-WindstilleMain main_app;
-CL_ResourceManager* resources;
-
 WindstilleMain::WindstilleMain()
   : screen(0)
 {
@@ -171,11 +168,6 @@ WindstilleMain::parse_command_line(int argc, char** argv)
 int 
 WindstilleMain::main(int argc, char** argv)
 {
-#ifdef WIN32
-  CL_ConsoleWindow cl_console("Console Output");
-  cl_console.redirect_stdio("windstille.log");
-#endif
-
   try {
     init_physfs(argv[0]);
     init_sdl();
@@ -194,6 +186,8 @@ WindstilleMain::main(int argc, char** argv)
   try {
     parse_command_line(argc, argv);
     init_modules();
+
+    std::cout << "Modules inited" << std::endl;
 
     if (playback_file.empty())
       {
@@ -261,22 +255,28 @@ WindstilleMain::init_modules()
   if (debug) std::cout << "Initialising Freetype2" << std::endl;
     
   TTFFont::init();
-
-  if (debug) std::cout << "Initialising ClanLib" << std::endl;
-  // Init ClanLib
-  CL_SetupCore::init();
   
-  if (debug) std::cout << "Initialising GL" << std::endl;
-  CL_SetupGL::init();
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); 
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
 
-  CL_SetupDisplay::init();
+  window = SDL_SetVideoMode(config->screen_width, config->screen_height,
+                            0, SDL_OPENGL | (config->use_fullscreen ? SDL_FULLSCREEN : 0));
+  SDL_WM_SetCaption("Windstille", 0 /* icon */);
 
-  window = new CL_DisplayWindow("Windstille",
-                                config->screen_width, config->screen_height,
-                                config->use_fullscreen, false);
+  std::cout << "Window: " << window->w << "x" << window->h << std::endl;
 
-  resources =  new CL_ResourceManager();
-  resources->add_resources(CL_ResourceManager(datadir + "windstille.xml", false));
+  glViewport(0, 0, window->w, window->h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+
+#define cl_pixelcenter_constant 0.375
+
+  glOrtho(0.0, window->w, window->h, 0.0, -1000.0, 1000.0);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glTranslated(cl_pixelcenter_constant, cl_pixelcenter_constant, 0.0);
 
   if (debug) std::cout << "Initialising Fonts" << std::endl;
   Fonts::init(); 
@@ -316,14 +316,6 @@ WindstilleMain::deinit_modules()
   sound_manager = 0;
   Fonts::deinit();
 
-  delete window;
-
-  CL_SetupDisplay::deinit();
-
-  CL_SetupGL::deinit();
-
-  CL_SetupCore::deinit(); 
-
   TTFFont::deinit();
 }
 
@@ -332,9 +324,9 @@ WindstilleMain::init_sdl()
 {
 #ifdef DEBUG
   // I wanna have usefull backtraces in debug mode
-  if(SDL_Init(SDL_INIT_EVERYTHING | SDL_INIT_NOPARACHUTE) < 0) {
+  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_NOPARACHUTE) < 0) {
 #else
-  if(SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
 #endif
     std::stringstream msg;
     msg << "Couldn't initialize SDL: " << SDL_GetError();
@@ -472,6 +464,15 @@ WindstilleMain::game_main()
     }
   
   return true;
+}
+
+int main(int argc, char** argv)
+{
+  WindstilleMain main_app;
+
+  main_app.main(argc, argv);
+
+  return 0;
 }
 
 /* EOF */

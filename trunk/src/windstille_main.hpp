@@ -26,12 +26,11 @@
 #ifndef WINDSTILLEMAIN_HPP
 #define WINDSTILLEMAIN_HPP
 
-#include <ClanLib/gl.h>
-#include <ClanLib/application.h>
-
 #include "screen.hpp"
 
-class WindstilleMain : public CL_ClanApplication
+struct SDL_Surface;
+
+class WindstilleMain
 {
 public:
   std::string levelfile;
@@ -40,13 +39,12 @@ public:
   std::string playback_file;
   std::string screenshot_dir;
   
-  CL_DisplayWindow* window;
+  SDL_Surface* window;
 public:
   WindstilleMain();
   ~WindstilleMain();
 
-  virtual char* get_title() { return "Windstille"; }
-  virtual int main(int argc, char** argv);
+  int main(int argc, char** argv);
 
 private:
   void init_sdl();
@@ -58,8 +56,6 @@ private:
 
   Windstille::Screen* screen;
 };
-
-extern WindstilleMain main_app;
 
 #endif
 

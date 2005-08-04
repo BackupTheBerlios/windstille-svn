@@ -20,6 +20,8 @@
 #ifndef HEADER_SCREEN_HXX
 #define HEADER_SCREEN_HXX
 
+#include <ClanLib/display.h>
+#include <ClanLib/core.h>
 #include "signals/slot.hpp"
 
 class CL_InputEvent;

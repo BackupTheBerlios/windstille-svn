@@ -67,8 +67,8 @@ GameSession::GameSession(const std::string& arg_filename)
   if (debug) std::cout << "Creating new GameSession" << std::endl;
   current_ = this;
   
-  slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
-  slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
+  //FIXME:slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
+  //FIXME:slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
 
   view = new View();  
   energy_bar = new EnergyBar();
@@ -138,27 +138,18 @@ GameSession::draw()
     default:
       break;
     }
-
-  if (!main_app.screenshot_dir.empty())
-    {
-      std::stringstream filename;
-      filename << main_app.screenshot_dir;
-      filename.width(8);
-      filename.fill('0');
-      filename << frames;
-      filename << ".png";
-      CL_ProviderFactory::save(CL_Display::get_front_buffer(), filename.str());
-    }
 }
 
 void
 GameSession::update(float delta)
 {  
-  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD1))
+  Uint8 *keystate = SDL_GetKeyState(NULL);
+
+  if(keystate[SDLK_KP1])
     game_speed *= 1.0 - delta;
-  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD3))
+  if(keystate[SDLK_KP3])
     game_speed *= 1.0 + delta;
-  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD5))
+  if(keystate[SDLK_KP5])
     game_speed = 1.0;
 
   InputManager::update(delta);
@@ -202,7 +193,7 @@ GameSession::update(float delta)
     }
   conversation->update(delta);
   
-  if (CL_Keyboard::get_keycode(CL_KEY_ESCAPE))
+  if(keystate[SDLK_ESCAPE])
     quit();
 }
 

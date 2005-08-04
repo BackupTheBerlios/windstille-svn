@@ -36,44 +36,47 @@
 
 InputManagerCustom::InputManagerCustom(const lisp::Lisp* lisp)
 {
-  init(lisp);
-
-  for (int i = 0; i < (int)buttons.size(); ++i)
+  if (0) // FIXME: input disabled, change this to SDL
     {
-      if (buttons[i])
-        {
-          slots.push_back(buttons[i]->on_key_down().connect(this, &InputManagerCustom::on_button_down, i));
-          slots.push_back(buttons[i]->on_key_up().connect  (this, &InputManagerCustom::on_button_up,   i));
-        }
-      else
-        {
-          std::cout << "# Warrning: Button '" << ControllerDef::button_id2name(i)
-                    << "' not configured and will not be usable" << std::endl;
-        }
-    }
+      init(lisp);
 
-  for (int i = 0; i < (int)axes.size(); ++i)
-    {
-      if (axes[i])
+      for (int i = 0; i < (int)buttons.size(); ++i)
         {
-          slots.push_back(axes[i]->on_move().connect(this, &InputManagerCustom::on_axis_move, i));
+          if (buttons[i])
+            {
+              slots.push_back(buttons[i]->on_key_down().connect(this, &InputManagerCustom::on_button_down, i));
+              slots.push_back(buttons[i]->on_key_up().connect  (this, &InputManagerCustom::on_button_up,   i));
+            }
+          else
+            {
+              std::cout << "# Warrning: Button '" << ControllerDef::button_id2name(i)
+                        << "' not configured and will not be usable" << std::endl;
+            }
         }
-      else
-        {
-          std::cout << "# Warrning: Axis '" << ControllerDef::axis_id2name(i)
-                    << "' not configured and will not be usable" << std::endl;
-        }
-    }
 
-  for (int i = 0; i < (int)keyboards.size(); ++i)
-    {
-      if (keyboards[i])
+      for (int i = 0; i < (int)axes.size(); ++i)
         {
-          slots.push_back(keyboards[i]->on_key().connect(this, &InputManagerCustom::on_key));
+          if (axes[i])
+            {
+              slots.push_back(axes[i]->on_move().connect(this, &InputManagerCustom::on_axis_move, i));
+            }
+          else
+            {
+              std::cout << "# Warrning: Axis '" << ControllerDef::axis_id2name(i)
+                        << "' not configured and will not be usable" << std::endl;
+            }
         }
-      else
+
+      for (int i = 0; i < (int)keyboards.size(); ++i)
         {
-          std::cout << "# Warrning: Keyboard not configured" << std::endl;
+          if (keyboards[i])
+            {
+              slots.push_back(keyboards[i]->on_key().connect(this, &InputManagerCustom::on_key));
+            }
+          else
+            {
+              std::cout << "# Warrning: Keyboard not configured" << std::endl;
+            }
         }
     }
 }

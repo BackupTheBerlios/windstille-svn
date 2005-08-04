@@ -44,15 +44,11 @@ public:
 
   TextureImpl()
   {
-    CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-    state.set_active(); 
     glGenTextures(1, &handle);
   }
 
   TextureImpl::~TextureImpl()
   {
-    CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-    state.set_active(); 
     glDeleteTextures(1, &handle);
   }
 };
@@ -73,9 +69,6 @@ Texture::Texture(int width, int height, GLint format)
 {
   impl->width  = width;
   impl->height = height;
-
-  CL_OpenGLState cstate(CL_Display::get_current_window()->get_gc());
-  cstate.set_active(); 
 
   OpenGLState state;
   state.bind_texture(*this);
@@ -109,9 +102,6 @@ Texture::Texture(SDL_Surface* image, GLint glformat)
     throw std::runtime_error("image has not 24 or 32 bit color depth");
 
   assert_gl("creating texture handle.");
-
-  CL_OpenGLState cstate(CL_Display::get_current_window()->get_gc());
-  cstate.set_active(); 
 
   try 
     {
@@ -203,9 +193,6 @@ Texture::put(SDL_Surface* image, int x, int y)
       throw std::runtime_error("Texture: Image format not supported");
     }
 
-  CL_OpenGLState cstate(CL_Display::get_current_window()->get_gc());
-  cstate.set_active(); 
-
   OpenGLState state;
   state.bind_texture(*this);
   state.activate();
@@ -223,9 +210,6 @@ Texture::put(SDL_Surface* image, int x, int y)
 void
 Texture::set_wrap(GLenum mode)
 {
-  CL_OpenGLState cstate(CL_Display::get_current_window()->get_gc());
-  cstate.set_active(); 
-
   OpenGLState state;
   state.bind_texture(*this);
 
@@ -237,9 +221,6 @@ Texture::set_wrap(GLenum mode)
 void
 Texture::set_filter(GLenum mode)
 {
-  CL_OpenGLState cstate(CL_Display::get_current_window()->get_gc());
-  cstate.set_active(); 
-
   OpenGLState state;
   state.bind_texture(*this);
   state.activate();

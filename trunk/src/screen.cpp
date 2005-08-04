@@ -17,10 +17,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ClanLib/display.h>
-#include <ClanLib/Core/System/system.h>
-
 #include <math.h>
+#include <iostream>
 #include "display/display.hpp"
 #include "windstille_main.hpp"
 #include "screen.hpp"
@@ -40,12 +38,11 @@ Screen::Screen()
     fps_save(0),
     overlap_delta(0)
 {
-  ticks = CL_System::get_time();
+  ticks = SDL_GetTicks();
 }
 
 Screen::~Screen()
 {
-  CL_Keyboard::sig_key_down().disconnect(slot);
 }
 
 void 
@@ -55,9 +52,9 @@ Screen::display()
   /// independed of the number of frames and always constant
   static const float step = 10/1000.0f;
 
-  slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
+  //slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
 
-  unsigned int now = CL_System::get_time();
+  Uint32 now = SDL_GetTicks();
   float delta = static_cast<float>(now - ticks) / 1000.0f;
   ticks = now;
 
@@ -78,22 +75,29 @@ Screen::display()
   sound_manager->update();
 
   {
-    CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-    state.set_active(); 
-    state.setup_2d(); 
-
     draw();
     
     if (config->show_fps)
       draw_fps(delta);
-  
+ 
     console.draw();
   }
 
-  CL_Display::flip(0);
+  SDL_GL_SwapBuffers();
   ++frames;
   
-  CL_System::keep_alive ();
+  SDL_Event event;
+  while(SDL_PollEvent(&event))
+    {
+      switch(event.type)
+        {
+        case SDL_QUIT:
+          // FIXME: This should be a bit more gentle, but will do for now
+          exit(EXIT_SUCCESS);
+          break;
+        }
+    }
+
 }
 
 void 

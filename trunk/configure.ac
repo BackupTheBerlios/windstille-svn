@@ -4,7 +4,7 @@
 #----------------------------------------------------------------------------
 AC_PREREQ([2.54])
 
-AC_INIT([windstille], [0.5], [matze@braunis.de])
+AC_INIT([windstille], [0.3.0], [matze@braunis.de])
 AC_CONFIG_SRCDIR([mk/jam/build.jam])
 AC_CONFIG_AUX_DIR([mk/autoconf])
 
@@ -96,7 +96,7 @@ if test "$no_glu" = "yes"; then
     AC_MSG_ERROR([You need to have GLU headers and libraries installed])
 fi
 
-PKG_CHECK_MODULES([CLANLIB], [clanApp-0.7 clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7])
+PKG_CHECK_MODULES([CLANLIB], [clanCore-0.7 clanDisplay-0.7 clanGL-0.7 clanSignals-0.7])
 
 XIPH_PATH_OGG(, [AC_MSG_ERROR([Please install libogg])])
 XIPH_PATH_VORBIS(, [AC_MSG_ERROR([Please install libvorbis])])

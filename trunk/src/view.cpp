@@ -17,7 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ClanLib/display.h>
+#include <SDL.h>
 #include "display/display.hpp"
 #include "player.hpp"
 #include "sector.hpp"
@@ -49,20 +49,22 @@ View::update (float delta)
 {
   camera.update(delta);
 
-  if (CL_Keyboard::get_keycode(CL_KEY_ADD))
+  Uint8 *keystate = SDL_GetKeyState(NULL);
+
+  if (keystate[SDLK_KP_PLUS])
     zoom *= 1.0 + delta;
-  if (CL_Keyboard::get_keycode(CL_KEY_SUBTRACT))
+  if (keystate[SDLK_KP_MINUS])
     zoom *= 1.0 - delta;
 
-  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD2))
+  if(keystate[SDLK_KP2])
     transform.y += delta * 200 / zoom;
-  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD8))
+  if(keystate[SDLK_KP8])
     transform.y -= delta * 200 / zoom;
-  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD4))
+  if(keystate[SDLK_KP4])
     transform.x -= delta * 200 / zoom;
-  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD6))
+  if(keystate[SDLK_KP6])
     transform.x += delta * 200 / zoom;
-  if(CL_Keyboard::get_keycode(CL_KEY_NUMPAD5)) {
+  if(keystate[SDLK_KP5]){
     transform = Vector(0, 0);
     zoom = 1.0;
   }
