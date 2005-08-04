@@ -48,6 +48,8 @@ public:
   static int  get_width();
   static int  get_height();
 
+  static void set_fullscreen(bool fullscreen);
+
   static void init();
 };
 

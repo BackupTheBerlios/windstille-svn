@@ -27,6 +27,9 @@
 #include <SDL.h>
 #include <iostream>
 #include "console.hpp"
+#include "globals.hpp"
+#include "gameconfig.hpp"
+#include "display/display.hpp"
 #include "input/input_manager_sdl.hpp"
 #include "event_manager.hpp"
 
@@ -88,6 +91,39 @@ EventManager::update()
 
         case SDL_KEYDOWN:
         case SDL_KEYUP:
+          if (event.key.state)
+            {
+              switch (event.key.keysym.sym)
+                {
+                case SDLK_c:
+                  if (debug) {
+                    collision_debug = !collision_debug;
+                    console << "Collision Debugging " << (collision_debug ? "enabled" : "disabled") << std::endl;
+                  }
+                  break;
+
+                case SDLK_F10:
+                  config->show_fps = ! (config->show_fps);
+                  break;
+              
+                case SDLK_F11:
+                  config->use_fullscreen = ! (config->use_fullscreen);
+                  Display::set_fullscreen(config->use_fullscreen);
+                  break;
+              
+                case SDLK_F12:
+                  // FIXME: Implement me for SDL
+                  {
+                    std::string filename = "screenshot.png";
+                    std::cout << "Saving screenshot *NOT* to: " << filename << std::endl;
+                  }
+                  break;
+              
+                default:
+                  break;
+                }
+            }
+              
           if (!console.is_active() && event.key.state && event.key.keysym.sym == SDLK_F1)
             {
               console.activate();

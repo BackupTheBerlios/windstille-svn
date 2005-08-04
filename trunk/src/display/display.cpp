@@ -226,4 +226,28 @@ Display::init()
   glTranslated(cl_pixelcenter_constant, cl_pixelcenter_constant, 0.0);
 }
 
+void
+Display::set_fullscreen(bool fullscreen)
+{
+  if (fullscreen)
+    {
+      window = SDL_SetVideoMode(config->screen_width, config->screen_height,
+                                0, SDL_OPENGL | SDL_FULLSCREEN);
+      if (!window)
+        {
+          throw std::runtime_error("Display:: Couldn't create window");
+        }
+
+    }
+  else
+    {
+      window = SDL_SetVideoMode(config->screen_width, config->screen_height,
+                                0, SDL_OPENGL);
+      if (!window)
+        {
+          throw std::runtime_error("Display:: Couldn't create window");
+        }
+    }
+}
+
 /* EOF */
