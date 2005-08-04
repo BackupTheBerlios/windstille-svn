@@ -77,12 +77,19 @@ Screen::display()
 
   sound_manager->update();
 
-  draw();
+  {
+    CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
+    state.set_active(); 
+    state.setup_2d(); 
+
+    draw();
     
-  if (config->show_fps)
-    draw_fps(delta);
+    if (config->show_fps)
+      draw_fps(delta);
   
-  console.draw();
+    console.draw();
+  }
+
   CL_Display::flip(0);
   ++frames;
   

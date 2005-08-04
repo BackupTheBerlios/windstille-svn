@@ -236,12 +236,6 @@ Texture::set_filter(GLenum mode)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
 }
 
-void 
-Texture::bind() const
-{
-  glBindTexture(GL_TEXTURE_2D, impl->handle);
-}
-
 Texture::operator bool() const
 {
   return !impl.is_null();

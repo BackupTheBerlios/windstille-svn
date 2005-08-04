@@ -123,10 +123,6 @@ TextArea::set_font(TTFFont* font)
 void
 TextArea::draw()
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();
-  state.setup_2d();
-
   glDisable(GL_DEPTH_TEST);
   glEnable(GL_TEXTURE_2D);
   glEnable(GL_BLEND);

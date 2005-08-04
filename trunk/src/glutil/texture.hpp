@@ -27,6 +27,7 @@
 #ifndef __TEXTURE_HPP__
 #define __TEXTURE_HPP__
 
+#include <string>
 #include <GL/gl.h>
 #include <SDL.h>
 #include "../sharedptr.hpp"
@@ -68,8 +69,6 @@ public:
 
   /** Uploads the given image to the given coordinates */
   void put(SDL_Surface* image, int x, int y);
-
-  void bind() const;
 
   GLuint get_handle() const;
 

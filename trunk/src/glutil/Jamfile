@@ -1,6 +1,8 @@
 SubDir TOP src glutil ;
 
 sources =
+    opengl_state.hpp
+    opengl_state.cpp
     texture.cpp
     texture.hpp
     surface.hpp

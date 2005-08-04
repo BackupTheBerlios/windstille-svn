@@ -142,7 +142,7 @@ SceneContext::render()
         state.set_active();
         
         // Weird y-pos is needed since OpenGL is upside down when it comes to y-coordinate
-        impl->lightmap.get_texture().bind();
+        glBindTexture(GL_TEXTURE_2D, impl->lightmap.get_texture().get_handle());
         glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
                             0, 0, 
                             0, 600 - impl->lightmap.get_height(),
