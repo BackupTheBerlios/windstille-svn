@@ -52,6 +52,7 @@ public:
   void on_button_down(int name);
   void on_axis_move(float pos, int name);
   void on_key(KeyboardEvent::KeyType key_type, int code);
+
 private:
   void init(const lisp::Lisp* lisp);
 

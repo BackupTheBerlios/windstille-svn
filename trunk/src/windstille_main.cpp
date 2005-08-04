@@ -43,6 +43,7 @@
 #include "gameconfig.hpp"
 #include "util.hpp"
 #include "ttf_font.hpp"
+#include "display/display.hpp"
 #include "glutil/surface_manager.hpp"
 #include "glutil/texture_manager.hpp"
 #include "sprite3d/manager.hpp"
@@ -256,27 +257,7 @@ WindstilleMain::init_modules()
     
   TTFFont::init();
   
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); 
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
-  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
-  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
-
-  window = SDL_SetVideoMode(config->screen_width, config->screen_height,
-                            0, SDL_OPENGL | (config->use_fullscreen ? SDL_FULLSCREEN : 0));
-  SDL_WM_SetCaption("Windstille", 0 /* icon */);
-
-  std::cout << "Window: " << window->w << "x" << window->h << std::endl;
-
-  glViewport(0, 0, window->w, window->h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-
-#define cl_pixelcenter_constant 0.375
-
-  glOrtho(0.0, window->w, window->h, 0.0, -1000.0, 1000.0);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  glTranslated(cl_pixelcenter_constant, cl_pixelcenter_constant, 0.0);
+  Display::init();
 
   if (debug) std::cout << "Initialising Fonts" << std::endl;
   Fonts::init(); 
@@ -332,6 +313,8 @@ WindstilleMain::init_sdl()
     msg << "Couldn't initialize SDL: " << SDL_GetError();
     throw std::runtime_error(msg.str());
   }
+
+  SDL_EnableUNICODE(1);
 }
 
 void

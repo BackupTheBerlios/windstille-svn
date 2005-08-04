@@ -122,21 +122,18 @@ void
 InputManagerCustom::on_axis_move(float pos, int name)
 {
   add_axis_event(name, pos);
-  controller.set_axis_state(name, pos);
 }
 
 void
 InputManagerCustom::on_button_up(int name)
 {
   add_button_event(name, false);
-  controller.set_button_state(name, false);
 }
 
 void
 InputManagerCustom::on_button_down(int name)
 {
   add_button_event(name, true);
-  controller.set_button_state(name, true);
 }
 
 void

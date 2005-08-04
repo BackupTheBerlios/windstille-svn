@@ -26,8 +26,8 @@
 View* View::current_ = 0;
 
 View::View()
-  : state(VDisplay::get_width(), VDisplay::get_height()),
-  zoom(1), transform(0, 0)
+  : state(Display::get_width(), Display::get_height()),
+    zoom(1), transform(0, 0)
 {
   current_ = this;
 }

@@ -57,8 +57,8 @@ Conversation::draw()
                 Size(300 + 20, // FIXME:
                      (Fonts::ttffont->get_height() + 10) * choices.size() + 20));
       
-      VDisplay::fill_rect(rect, Color(0,0,0,0.5f));
-      VDisplay::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.3f));
+      Display::fill_rect(rect, Color(0,0,0,0.5f));
+      Display::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.3f));
  
       for(int i = 0; i < int(choices.size()); ++i)
         {

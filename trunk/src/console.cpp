@@ -164,8 +164,8 @@ ConsoleImpl::draw()
   int num_lines = 600 / (Fonts::ttffont->get_height() + 2);
 
   if (console.is_active())
-    VDisplay::fill_rect(Rect(0,0, 800, 600),
-                        Color(0, 0, 0, 0.25f));
+    Display::fill_rect(Rect(0,0, 800, 600),
+                       Color(0, 0, 0, 0.25f));
 
   for(int i = buffer.size()-1 - scroll_offset; i >= 0 && i > int(buffer.size()) - num_lines - scroll_offset; --i)
     {
@@ -231,7 +231,7 @@ ConsoleImpl::update(float delta)
 
                   switch (i->keyboard.code)
                     {
-                    case CL_KEY_BACKSPACE:
+                    case SDLK_BACKSPACE:
                       if (!command_line.empty() && cursor_pos > 0)
                         {
                           command_line.erase(cursor_pos - 1, 1);
@@ -239,14 +239,14 @@ ConsoleImpl::update(float delta)
                         }
                       break;
 
-                    case CL_KEY_DELETE:
+                    case SDLK_DELETE:
                       if (!command_line.empty())
                         {
                           command_line.erase(cursor_pos, 1);
                         }
                       break;
 
-                    case CL_KEY_DOWN:
+                    case SDLK_DOWN:
                       if (!history.empty())
                         {
                           history_position += 1;
@@ -257,27 +257,27 @@ ConsoleImpl::update(float delta)
                         }
                       break;
 
-                    case CL_KEY_HOME:
+                    case SDLK_HOME:
                       cursor_pos = 0;
                       break;
                       
-                    case CL_KEY_END:
+                    case SDLK_END:
                       cursor_pos = command_line.size();
                       break;
                         
-                    case CL_KEY_PRIOR:
+                    case SDLK_PAGEUP:
                       console.scroll(10);
                       break;
 
-                    case CL_KEY_NEXT:
+                    case SDLK_PAGEDOWN:
                       console.scroll(-10);
                       break;
 
-                    case CL_KEY_TAB:
+                    case SDLK_TAB:
                       tab_complete();
                       break;
 
-                    case CL_KEY_UP:
+                    case SDLK_UP:
                       if (!history.empty())
                         {
                           history_position -= 1;
@@ -289,24 +289,24 @@ ConsoleImpl::update(float delta)
                         }
                       break;
 
-                    case CL_KEY_LEFT:
+                    case SDLK_LEFT:
                       cursor_pos -= 1;
                       if (cursor_pos < 0)
                         cursor_pos = 0;
                       break;
 
-                    case CL_KEY_RIGHT:
+                    case SDLK_RIGHT:
                       cursor_pos += 1;
                       if (cursor_pos > int(command_line.size()))
                         cursor_pos = command_line.size();
                       break;
 
-                    case CL_KEY_ENTER:
+                    case SDLK_RETURN:
                       eval_command_line();
                       break;
 
-                    case CL_KEY_ESCAPE:
-                    case CL_KEY_F1:
+                    case SDLK_ESCAPE:
+                    case SDLK_F1:
                       console.deactive();
                       break;
                     }

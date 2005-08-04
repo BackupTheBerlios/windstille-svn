@@ -33,7 +33,7 @@
     conflict with X11 header, should be renamed as soon as we got rid
     of ClanLib, which includes the X11 header in one of the
     headerfiles */
-class VDisplay
+class Display
 {
 private:
 public:
@@ -47,6 +47,8 @@ public:
 
   static int  get_width();
   static int  get_height();
+
+  static void init();
 };
 
 #endif

@@ -40,6 +40,8 @@ InputManagerImpl::add_axis_event(int name, float pos)
   event.axis.name = name;
   event.axis.pos  = pos;
   events.push_back(event);
+
+  controller.set_axis_state(name, pos);
 }
 
 void
@@ -50,6 +52,8 @@ InputManagerImpl::add_button_event(int name, bool down)
   event.button.name = name;
   event.button.down = down;
   events.push_back(event);
+
+  controller.set_button_state(name, down);
 }
 
 void

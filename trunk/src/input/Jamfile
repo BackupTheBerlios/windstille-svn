@@ -23,6 +23,8 @@ sources =
     input_event.hpp
     input_manager_custom.cpp
     input_manager_custom.hpp
+    input_manager_sdl.cpp
+    input_manager_sdl.hpp
     input_manager.cpp
     input_manager.hpp
     input_manager_impl.cpp

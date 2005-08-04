@@ -29,6 +29,7 @@
 #include "lisp/properties.hpp"
 #include "windstille_error.hpp"
 #include "input_manager_custom.hpp"
+#include "input_manager_sdl.hpp"
 #include "input_manager_player.hpp"
 #include "input_manager_impl.hpp"
 #include "input_recorder.hpp"
@@ -56,7 +57,7 @@ InputManager::init(const std::string& filename)
     throw std::runtime_error(msg.str());
   }
   
-  impl = new InputManagerCustom(controller);
+  impl = new InputManagerSDL();
 }
 
 void

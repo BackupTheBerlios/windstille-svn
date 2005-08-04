@@ -50,11 +50,11 @@ Camera::update(float )
   else if (dist < -vscroll_threshold)
     pos.y = tpos.y + vscroll_threshold;
 
-  int start_x = VDisplay::get_width()/2;
-  int end_x   = Sector::current()->get_width() - VDisplay::get_width()/2;
+  int start_x = Display::get_width()/2;
+  int end_x   = Sector::current()->get_width() - Display::get_width()/2;
 
-  int start_y = VDisplay::get_height()/2;
-  int end_y   = Sector::current()->get_height() - VDisplay::get_height()/2;
+  int start_y = Display::get_height()/2;
+  int end_y   = Sector::current()->get_height() - Display::get_height()/2;
 
   if (pos.x < start_x)
     pos.x = start_x;

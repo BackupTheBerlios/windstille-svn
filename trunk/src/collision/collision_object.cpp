@@ -63,11 +63,11 @@ CollisionObject::drawCollision()
 
   r += v;
 
-  VDisplay::fill_rect(r, Color(1.0f, 1.0f, 1.0f));
+  Display::fill_rect(r, Color(1.0f, 1.0f, 1.0f));
   
-  VDisplay::draw_rect(r, Color(0.6f, 0.6f, 0.6f));
+  Display::draw_rect(r, Color(0.6f, 0.6f, 0.6f));
   
-  VDisplay::draw_line(Vector(r.left + r.get_width ()/2,
+  Display::draw_line(Vector(r.left + r.get_width ()/2,
                              r.top  + r.get_height ()/2),
                       Vector(r.left + r.get_width ()/2  + get_velocity ().x,
                              r.top  + r.get_height ()/2 + get_velocity ().y),

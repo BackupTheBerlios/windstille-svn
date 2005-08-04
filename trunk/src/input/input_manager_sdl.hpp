@@ -5,7 +5,7 @@
 **   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
 **    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
 **         \/          \/      \/    \/                         \/
-**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
 **
 **  This program is free software; you can redistribute it and/or
 **  modify it under the terms of the GNU General Public License
@@ -23,37 +23,30 @@
 **  02111-1307, USA.
 */
 
-#ifndef WINDSTILLEMAIN_HPP
-#define WINDSTILLEMAIN_HPP
+#ifndef HEADER_INPUT_MANAGER_SDL_HPP
+#define HEADER_INPUT_MANAGER_SDL_HPP
 
-#include "screen.hpp"
+#include "input_manager_impl.hpp"
 
-struct SDL_Surface;
+#include <SDL.h>
 
-class WindstilleMain
+/** */
+class InputManagerSDL : public InputManagerImpl
 {
-public:
-  std::string levelfile;
-  std::string controller_file;
-  std::string recorder_file;
-  std::string playback_file;
-  std::string screenshot_dir;
-  
-public:
-  WindstilleMain();
-  ~WindstilleMain();
-
-  int main(int argc, char** argv);
-
 private:
-  void init_sdl();
-  void init_physfs(const char* argv0);
-  void parse_command_line(int argc, char** argv);
-  void init_modules();
-  void deinit_modules();
-  bool game_main();
+  static InputManagerSDL* current_;
+public:
+  static InputManagerSDL* current() { return current_; }
 
-  Windstille::Screen* screen;
+  InputManagerSDL();
+  virtual ~InputManagerSDL();
+
+  void update(float delta);
+  
+  void on_event(const SDL_Event& event);
+private:
+  InputManagerSDL (const InputManagerSDL&);
+  InputManagerSDL& operator= (const InputManagerSDL&);
 };
 
 #endif

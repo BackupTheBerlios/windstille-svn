@@ -26,6 +26,7 @@
 #include "globals.hpp"
 #include "console.hpp"
 #include "gameconfig.hpp"
+#include "event_manager.hpp"
 #include "input/input_manager.hpp"
 #include "sound/sound_manager.hpp"
 
@@ -85,19 +86,8 @@ Screen::display()
 
   SDL_GL_SwapBuffers();
   ++frames;
-  
-  SDL_Event event;
-  while(SDL_PollEvent(&event))
-    {
-      switch(event.type)
-        {
-        case SDL_QUIT:
-          // FIXME: This should be a bit more gentle, but will do for now
-          exit(EXIT_SUCCESS);
-          break;
-        }
-    }
 
+  EventManager::instance()->update();
 }
 
 void 
@@ -115,7 +105,7 @@ Screen::draw_fps(float delta)
   char output[20];
   snprintf(output, sizeof(output), "FPS: %d", fps_save);
   
-  Fonts::ttffont->draw(VDisplay::get_width() - 100, 30, output);
+  Fonts::ttffont->draw(Display::get_width() - 100, 30, output);
 }
 
 void
@@ -123,21 +113,21 @@ Screen::key_down(const CL_InputEvent& event)
 {
   switch (event.id) 
     {
-    case CL_KEY_F1:
+    case SDLK_F1:
       if (!console.is_active())
         console.activate();
       break;
 
-    case CL_KEY_C:
+    case SDLK_c:
       if(debug) {
         collision_debug = !collision_debug;
         console << "Collision Debugging " << (collision_debug ? "enabled" : "disabled") << std::endl;
       }
       break;
-    case CL_KEY_F10:
+    case SDLK_F10:
       config->show_fps = ! (config->show_fps);
       break;
-    case CL_KEY_F11:
+    case SDLK_F11:
       config->use_fullscreen = ! (config->use_fullscreen);
       
       if (config->use_fullscreen)
@@ -146,7 +136,7 @@ Screen::key_down(const CL_InputEvent& event)
       else
         CL_Display::set_windowed();
       break;
-    case CL_KEY_F12:
+    case SDLK_F12:
       std::string filename = "screenshot.png";
       std::cout << "Saving screenshot to: " << filename << std::endl;
       CL_ProviderFactory::save(CL_Display::get_front_buffer(),

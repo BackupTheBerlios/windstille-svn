@@ -18,8 +18,6 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <math.h>
-#include <ClanLib/gl.h>
-#include <ClanLib/display.h>
 #include <sstream>
 #include <stdarg.h>
 
@@ -125,14 +123,14 @@ GameSession::draw()
   switch (fade_state)
     {
     case FADEOUT:
-      VDisplay::fill_rect(Rect(0, 0, 
-                               VDisplay::get_width(), VDisplay::get_height()),
+      Display::fill_rect(Rect(0, 0, 
+                               Display::get_width(), Display::get_height()),
                           Color(0,0,0, fadeout_value));
       break;
     case FADEIN:
-      VDisplay::fill_rect(Rect(0, 0, 
-                               VDisplay::get_width(), VDisplay::get_height()),
-                          Color(0,0,0, 1.0f - fadeout_value));
+      Display::fill_rect(Rect(0, 0, 
+                               Display::get_width(), Display::get_height()),
+                         Color(0,0,0, 1.0f - fadeout_value));
       break;
 
     default:
@@ -271,22 +269,22 @@ GameSession::on_key_down(const CL_InputEvent& event)
     {
       switch(event.id)
         {
-        case CL_KEY_1:
+        case SDLK_1:
           sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
           console << "Toggled COLORMAP: " << ((sc.get_render_mask() & SceneContext::COLORMAP) > 0) << std::endl;
           break;
 
-        case CL_KEY_2:
+        case SDLK_2:
           sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
           console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAP) > 0) << std::endl;
           break;
           
-        case CL_KEY_3:
+        case SDLK_3:
           sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
           console << "Toggled HIGHLIGHTMAP: " << ((sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0) << std::endl;
           break;      
       
-        case CL_KEY_4:
+        case SDLK_4:
           sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAPSCREEN);
           console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAPSCREEN) > 0) << std::endl;
           break;

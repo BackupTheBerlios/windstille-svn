@@ -24,11 +24,16 @@
 */
 
 #include <cmath>
+#include <stdexcept>
+#include <SDL.h>
+#include "gameconfig.hpp"
 #include "glutil/opengl_state.hpp"
 #include "display.hpp"
 
+SDL_Surface* window;
+
 void
-VDisplay::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
+Display::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
 {
   OpenGLState state;
 
@@ -44,7 +49,7 @@ VDisplay::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
 }
 
 void
-VDisplay::fill_rect(const Rectf& rect, const Color& color)
+Display::fill_rect(const Rectf& rect, const Color& color)
 {
   OpenGLState state;
 
@@ -62,7 +67,7 @@ VDisplay::fill_rect(const Rectf& rect, const Color& color)
 }
 
 void
-VDisplay::draw_rect(const Rectf& rect, const Color& color)
+Display::draw_rect(const Rectf& rect, const Color& color)
 {
   OpenGLState state;
 
@@ -81,7 +86,7 @@ VDisplay::draw_rect(const Rectf& rect, const Color& color)
 }
 
 void
-VDisplay::fill_rounded_rect(const Rectf& rect, float radius, const Color& color)
+Display::fill_rounded_rect(const Rectf& rect, float radius, const Color& color)
 {
   // Keep radius in the limits, so that we get a circle instead of
   // just graphic junk
@@ -123,7 +128,7 @@ VDisplay::fill_rounded_rect(const Rectf& rect, float radius, const Color& color)
 }
 
 void
-VDisplay::draw_rounded_rect(const Rectf& rect, float radius, const Color& color)
+Display::draw_rounded_rect(const Rectf& rect, float radius, const Color& color)
 {
   // Keep radius in the limits, so that we get a circle instead of
   // just graphic junk
@@ -181,15 +186,44 @@ VDisplay::draw_rounded_rect(const Rectf& rect, float radius, const Color& color)
 }
 
 int
-VDisplay::get_width()
+Display::get_width()
 {
-  return 800;
+  return window->w;
 }
 
 int
-VDisplay::get_height()
+Display::get_height()
 {
-  return 600;
+  return window->h;
+}
+
+void
+Display::init()
+{
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); 
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+
+  window = SDL_SetVideoMode(config->screen_width, config->screen_height,
+                            0, SDL_OPENGL | (config->use_fullscreen ? SDL_FULLSCREEN : 0));
+  if (!window)
+    {
+      throw std::runtime_error("Display:: Couldn't create window");
+    }
+
+  SDL_WM_SetCaption("Windstille", 0 /* icon */);
+
+  glViewport(0, 0, window->w, window->h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+
+#define cl_pixelcenter_constant 0.375
+
+  glOrtho(0.0, window->w, window->h, 0.0, -1000.0, 1000.0);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glTranslated(cl_pixelcenter_constant, cl_pixelcenter_constant, 0.0);
 }
 
 /* EOF */
