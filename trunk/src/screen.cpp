@@ -53,8 +53,6 @@ Screen::display()
   /// independed of the number of frames and always constant
   static const float step = 10/1000.0f;
 
-  //slot = CL_Keyboard::sig_key_down().connect(this, &Screen::key_down);
-
   Uint32 now = SDL_GetTicks();
   float delta = static_cast<float>(now - ticks) / 1000.0f;
   ticks = now;

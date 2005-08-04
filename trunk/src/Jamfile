@@ -32,6 +32,10 @@ sources =
         character.hpp
         console.cpp
         console.hpp
+        command_line.hpp
+        command_line.cpp
+        command_line_generic.hpp
+        command_line_generic.cpp
         controller_def.cpp
         controller_def.hpp
         conversation.hpp

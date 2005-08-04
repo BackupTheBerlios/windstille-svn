@@ -47,6 +47,7 @@
 #include "glutil/surface_manager.hpp"
 #include "glutil/texture_manager.hpp"
 #include "sprite3d/manager.hpp"
+#include "command_line.hpp"
 #include "sprite2d/manager.hpp"
 
 #ifdef main
@@ -68,7 +69,7 @@ WindstilleMain::~WindstilleMain()
 void
 WindstilleMain::parse_command_line(int argc, char** argv)
 {
-  CL_CommandLine argp;
+  CommandLine argp;
 
   const int debug_flag = 256;
     

@@ -97,7 +97,7 @@ public:
 	
 	//: Gives access to the pointer itself.
 	//- <p> Be careful not to keep the returned pointer around after doing any
-	//- non-const operations on the CL_LazyCopyPtr; it could be invalid
+	//- non-const operations on the SharedPtr; it could be invalid
 	//- after that.</p>
 	U* get() { return (U*) ((impl != 0) ? impl->ptr : 0); }
 
