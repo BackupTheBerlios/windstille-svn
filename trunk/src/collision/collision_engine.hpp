@@ -24,6 +24,8 @@
 
 #include "collision_object.hpp"
 
+class DrawingContext;
+
 class CollisionEngine
 {
 private:
@@ -35,7 +37,7 @@ public:
   CollisionEngine();
   ~CollisionEngine();
 
-  void draw();
+  void draw(DrawingContext& dc);
   void update(float delta);
   void update(CollisionObject& obj, float delta);
   void collision(CollisionObject& a, CollisionObject& b, const CollisionData &result, float delta);

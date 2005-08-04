@@ -21,6 +21,7 @@
 
 #include <assert.h>
 
+#include "display/drawing_context.hpp"
 #include "display/display.hpp"
 #include "collision_object.hpp"
 #include "collision_engine.hpp"
@@ -56,22 +57,22 @@ CollisionObject::~CollisionObject()
 }
 
 void
-CollisionObject::drawCollision()
+CollisionObject::draw(DrawingContext& dc)
 {
   Vector v = get_pos ();
   Rectf  r = primitive;
 
   r += v;
 
-  Display::fill_rect(r, Color(1.0f, 1.0f, 1.0f));
+  dc.fill_rect(r, Color(1.0f, 1.0f, 1.0f), 100.0f);
   
-  Display::draw_rect(r, Color(0.6f, 0.6f, 0.6f));
+  dc.draw_rect(r, Color(0.6f, 0.6f, 0.6f), 100.0f);
   
-  Display::draw_line(Vector(r.left + r.get_width ()/2,
-                             r.top  + r.get_height ()/2),
-                      Vector(r.left + r.get_width ()/2  + get_velocity ().x,
-                             r.top  + r.get_height ()/2 + get_velocity ().y),
-                      Color(1.0f, 0, 1.0f));
+  dc.draw_line(Vector(r.left + r.get_width ()/2,
+                      r.top  + r.get_height ()/2),
+               Vector(r.left + r.get_width ()/2  + get_velocity ().x,
+                      r.top  + r.get_height ()/2 + get_velocity ().y),
+               Color(1.0f, 0, 1.0f), 100.0f);
 }
 
 void CollisionObject::update(float delta)

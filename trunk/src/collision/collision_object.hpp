@@ -27,6 +27,7 @@
 #include "math/rect.hpp"
 #include "collision_data.hpp"
 
+class DrawingContext;
 class TileMap;
 class CollisionEngine;
 class GameObject;
@@ -96,7 +97,7 @@ public:
   void update(float delta);
 
   // debugging helpers
-  void drawCollision();
+  void draw(DrawingContext& dc);
 
   // this functions support unstucking, which needs to be done, when more than 2 object stack over one another
   // should this object be unstuck ??

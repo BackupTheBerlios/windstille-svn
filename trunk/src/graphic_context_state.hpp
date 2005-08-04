@@ -40,9 +40,6 @@ public:
 
   void set_size(int w, int h);
 
-  void push(CL_GraphicContext* gc = 0);
-  void pop (CL_GraphicContext* gc = 0);
-
   void push(SceneContext& sc);
   void pop(SceneContext& sc);
 

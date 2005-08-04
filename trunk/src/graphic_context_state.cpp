@@ -79,25 +79,6 @@ GraphicContextState::pop(SceneContext& sc)
   sc.pop_modelview();
 }
 
-void
-GraphicContextState::push(CL_GraphicContext* gc)
-{
-  glPushMatrix();
-  
-  glTranslatef(impl->width/2, impl->height/2, 0);
-  glRotatef(impl->rotation, 0, 0, 1.0);
-  glTranslatef(-impl->width/2, -impl->height/2, 0);
-
-  glScalef(get_zoom(), get_zoom(), 1.0f);
-  glTranslatef(impl->offset.x, impl->offset.y, 0);
-}
-
-void
-GraphicContextState::pop(CL_GraphicContext* gc)
-{
-  glPopMatrix();
-}
-
 Rectf
 GraphicContextState::get_clip_rect()
 {

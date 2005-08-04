@@ -40,11 +40,11 @@ CollisionEngine::~CollisionEngine()
 }
 
 void
-CollisionEngine::draw()
+CollisionEngine::draw(DrawingContext& dc)
 {
   for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
     {
-      (*i)->drawCollision();
+      (*i)->draw(dc);
     }
 }
 

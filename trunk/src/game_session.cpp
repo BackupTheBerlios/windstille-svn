@@ -68,10 +68,10 @@ GameSession::GameSession(const std::string& arg_filename)
   //FIXME:slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
   //FIXME:slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
 
-  view = new View();  
-  energy_bar = new EnergyBar();
+  view           = new View();  
+  energy_bar     = new EnergyBar();
   dialog_manager = new DialogManager();
-  conversation  = new Conversation();
+  conversation   = new Conversation();
 
   filename = arg_filename;
   change_sector();
@@ -93,13 +93,6 @@ GameSession::draw_game()
 
   // Render the scene to the screen
   sc.render();
-
-  if (debug)
-    {
-      view->get_gc_state().push();
-      sector->get_collision_engine()->draw();
-      view->get_gc_state().pop();
-    }
 
   // Draw HUD
   energy_bar->draw();

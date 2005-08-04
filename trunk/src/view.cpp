@@ -19,6 +19,7 @@
 
 #include <SDL.h>
 #include "display/display.hpp"
+#include "collision/collision_engine.hpp"
 #include "player.hpp"
 #include "sector.hpp"
 #include "view.hpp"
@@ -41,6 +42,8 @@ View::draw (SceneContext& sc)
 
   state.push(sc);
   Sector::current()->draw(sc);
+  if (debug)
+    Sector::current()->get_collision_engine()->draw(sc.highlight());
   state.pop(sc);
 }
 

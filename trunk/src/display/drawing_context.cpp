@@ -26,6 +26,7 @@
 #include "drawing_context.hpp"
 #include "glutil/opengl_state.hpp"
 #include "glutil/surface_drawing_parameters.hpp"
+#include "display/vertex_array_drawing_request.hpp"
 #include "glutil/surface.hpp"
 
 struct DrawingRequestsSorter
@@ -266,6 +267,72 @@ DrawingContext::get_clip_rect()
   return Rectf(Vector(modelview_stack.back()[12],
                       modelview_stack.back()[13]),
                Sizef(800, 600));
+}
+
+void
+DrawingContext::draw_line(const Vector& pos1, const Vector& pos2, const Color& color, float z_pos)
+{
+  VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), z_pos, modelview_stack.back());
+
+  array->set_mode(GL_LINES);
+  array->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  array->color(color);
+  array->vertex(pos1.x, pos1.y);
+
+  array->color(color);
+  array->vertex(pos2.x, pos2.y);
+
+  draw(array);
+}
+
+void
+DrawingContext::draw_rect(const Rectf& rect, const Color& color, float z_pos)
+{
+  VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), z_pos, modelview_stack.back());
+
+  array->set_mode(GL_LINE_STRIP);
+  array->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  array->color(color);
+  array->vertex(rect.left, rect.top);
+
+  array->color(color);
+  array->vertex(rect.right, rect.top);  
+
+  array->color(color);
+  array->vertex(rect.right, rect.bottom);  
+
+  array->color(color);
+  array->vertex(rect.left, rect.bottom);  
+  
+  array->color(color);
+  array->vertex(rect.left, rect.top);
+  
+  draw(array);
+}
+
+void
+DrawingContext::fill_rect(const Rectf& rect, const Color& color, float z_pos)
+{
+  VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), z_pos, modelview_stack.back());
+
+  array->set_mode(GL_QUADS);
+  array->set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  array->color(color);
+  array->vertex(rect.left, rect.top);
+
+  array->color(color);
+  array->vertex(rect.right, rect.top);  
+
+  array->color(color);
+  array->vertex(rect.right, rect.bottom);  
+
+  array->color(color);
+  array->vertex(rect.left, rect.bottom);  
+
+  draw(array);
 }
 
 /* EOF */

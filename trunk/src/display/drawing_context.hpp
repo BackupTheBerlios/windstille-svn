@@ -60,6 +60,11 @@ public:
       queue */
   void fill_screen(const Color& color);
 
+  void draw_line(const Vector& pos1, const Vector& pos2, const Color& color, float z_pos);
+
+  void draw_rect(const Rectf& rect, const Color& color, float z_pos);
+  void fill_rect(const Rectf& rect, const Color& color, float z_pos);
+
   /*{ */
   void draw(DrawingRequest* request);
   void draw(const Sprite&   sprite,  const Vector& pos, float z = 0);

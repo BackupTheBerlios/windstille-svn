@@ -84,14 +84,14 @@ InputManagerSDL::on_event(const SDL_Event& event)
 
           case SDLK_UP:
             if (event.key.state)
-              add_axis_event(VERTICAL_AXIS, 1.0);
+              add_axis_event(VERTICAL_AXIS, -1.0);
             else
               add_axis_event(VERTICAL_AXIS, 0);
             break;
 
           case SDLK_DOWN:
             if (event.key.state)
-              add_axis_event(VERTICAL_AXIS, -1.0);
+              add_axis_event(VERTICAL_AXIS, 1.0);
             else
               add_axis_event(VERTICAL_AXIS, 0);
             break;
