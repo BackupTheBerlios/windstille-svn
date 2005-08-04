@@ -20,8 +20,6 @@
 #ifndef PLAYER_HXX
 #define PLAYER_HXX
 
-#include <ClanLib/core.h>
-
 #include "sprite2d/sprite.hpp"
 #include "input/controller.hpp"
 #include "sprite3d/sprite3d.hpp"

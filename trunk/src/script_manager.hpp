@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include <map>
 #include <squirrel.h>
 #include <iostream>
 #include "timer.hpp"
