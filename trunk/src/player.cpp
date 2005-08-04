@@ -172,7 +172,7 @@ Player::set_stand()
 void
 Player::update_walk_stand()
 {
-  if(controller.get_button_state(DOWN_BUTTON)) {
+  if (controller.get_axis_state(VERTICAL_AXIS) > 0) {
     set_ducking();
     return;
   }
@@ -214,14 +214,12 @@ Player::update_stand()
         obj->use();
     }
 
-  if(controller.get_button_state(LEFT_BUTTON)
-      && !controller.get_button_state(RIGHT_BUTTON)) {
+  if (controller.get_axis_state(HORIZONTAL_AXIS) < 0) {
     if(get_direction() == WEST)
       set_walk(WEST);
     else
       set_turnaround();
-  } else if(controller.get_button_state(RIGHT_BUTTON)
-      && !controller.get_button_state(LEFT_BUTTON)) {
+  } else if (controller.get_axis_state(HORIZONTAL_AXIS) > 0) {
     if(get_direction() == EAST)
       set_walk(EAST);
     else
@@ -245,14 +243,13 @@ Player::set_walk(Direction direction)
 void
 Player::update_walk()
 {
-  if(controller.get_button_state(LEFT_BUTTON)
-     == controller.get_button_state(RIGHT_BUTTON)) {
+  if (controller.get_axis_state(HORIZONTAL_AXIS) == 0) {
     set_stand();
     return;
   }
 
-  if(get_direction() == WEST && controller.get_button_state(RIGHT_BUTTON)
-     || get_direction() == EAST && controller.get_button_state(LEFT_BUTTON)) {
+  if(get_direction() == WEST && controller.get_axis_state(HORIZONTAL_AXIS) > 0
+     || get_direction() == EAST && controller.get_axis_state(HORIZONTAL_AXIS) < 0) {
     set_turnaround();
     return;
   }
@@ -286,13 +283,12 @@ Player::update_ducking()
     return;
   }
   
-  if(!controller.get_button_state(DOWN_BUTTON) && sprite.get_speed() > 0) {
+  if(!(controller.get_axis_state(VERTICAL_AXIS) > 0) && sprite.get_speed() > 0) {
     printf("Changespeed1.\n");
     sprite.set_speed(-1.0);
     sprite.set_next_action("Stand");
     state = STAND;
-  } else if(controller.get_button_state(DOWN_BUTTON) 
-      && sprite.get_speed() < 0) {
+  } else if(controller.get_axis_state(VERTICAL_AXIS) > 0 && sprite.get_speed() < 0) {
     printf("Changespeed2.\n");
     sprite.set_speed(1.0);
     sprite.set_next_action("Ducking");
@@ -310,7 +306,7 @@ Player::set_ducked()
 void
 Player::update_ducked()
 {
-  if(!controller.get_button_state(DOWN_BUTTON)) {
+  if(!controller.get_axis_state(VERTICAL_AXIS) > 0) {
     printf("ducking.\n");
     state = DUCKING;
     sprite.set_action("StandToDuck", -1.0);
@@ -339,8 +335,8 @@ Player::update_turnaround()
       set_walk(WEST);
     }
   } 
-  if(sprite.get_rot() && controller.button_pressed(RIGHT_BUTTON)
-     || !sprite.get_rot() && controller.button_pressed(LEFT_BUTTON)) {
+  if(sprite.get_rot() && controller.get_axis_state(HORIZONTAL_AXIS) > 0
+     || !sprite.get_rot() && controller.get_axis_state(HORIZONTAL_AXIS) < 0) {
     sprite.set_speed(-1.0);
     sprite.set_next_action("Walk");
     state = WALK;

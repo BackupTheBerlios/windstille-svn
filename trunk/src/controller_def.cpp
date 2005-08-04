@@ -22,13 +22,13 @@
 int
 ControllerDef::get_button_count()
 {
-  return 8;
+  return 4;
 }
 
 int
 ControllerDef::get_axis_count()
 {
-  return 0;
+  return 2;
 }
 
 int
@@ -42,14 +42,6 @@ ControllerDef::button_id2name(int id)
 {
   switch (id)
     {
-    case UP_BUTTON:
-      return "up";
-    case DOWN_BUTTON:
-      return "down";
-    case LEFT_BUTTON:
-      return "left";
-    case RIGHT_BUTTON:
-      return "right";
     case FIRE_BUTTON:
       return "fire";
     case USE_BUTTON:
@@ -66,15 +58,7 @@ ControllerDef::button_id2name(int id)
 int
 ControllerDef::button_name2id(const std::string& name)
 {
-  if (name == "up") 
-    return UP_BUTTON;
-  else if (name == "down")
-    return DOWN_BUTTON;
-  else if (name == "left")
-    return LEFT_BUTTON;
-  else if (name == "right")
-    return (RIGHT_BUTTON);
-  else if (name == "fire")
+  if (name == "fire")
     return FIRE_BUTTON;
   else if (name == "use")
     return USE_BUTTON;
@@ -87,15 +71,29 @@ ControllerDef::button_name2id(const std::string& name)
 }
 
 std::string
-ControllerDef::axis_id2name(int )
+ControllerDef::axis_id2name(int id)
 {
-  return "unknown";
+  switch (id)
+    {
+    case HORIZONTAL_AXIS:
+      return "horizontal";
+
+    case VERTICAL_AXIS:
+      return "vertical";
+    }
+  
+  return "<unknown>";
 }
 
 int 
-ControllerDef::axis_name2id(const std::string& )
+ControllerDef::axis_name2id(const std::string& id)
 {
-  return -1;
+  if (id == "horizontal")
+    return HORIZONTAL_AXIS;
+  else if (id == "vertical")
+    return VERTICAL_AXIS;
+  else
+    return -1;
 }
 
 /* EOF */

@@ -23,7 +23,8 @@
 #include <string>
 
 //enum AxisName       { ORIENTATION_AXIS, ACCELERATE_AXIS, STRAFE_AXIS };
-enum ButtonName     { UP_BUTTON, DOWN_BUTTON, LEFT_BUTTON, RIGHT_BUTTON, FIRE_BUTTON, JUMP_BUTTON, USE_BUTTON, RUN_BUTTON };
+enum AxisName    { HORIZONTAL_AXIS, VERTICAL_AXIS };
+enum ButtonName  { FIRE_BUTTON, JUMP_BUTTON, USE_BUTTON, RUN_BUTTON };
 
 /** */
 class ControllerDef

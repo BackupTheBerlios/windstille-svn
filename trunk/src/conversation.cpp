@@ -80,6 +80,19 @@ Conversation::update(float delta)
     {
       Controller controller = InputManager::get_controller();
       const InputEventLst& events = controller.get_events();
+
+      if (controller.get_axis_state(VERTICAL_AXIS) > 0)
+        {
+          selection -= 1;
+          if (selection < 0)
+            selection = choices.size() - 1;
+        }
+      else if (controller.get_axis_state(VERTICAL_AXIS) < 0)
+        {        
+          selection += 1;
+          if (selection >= int(choices.size()))
+            selection = 0;
+        }
   
       for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
         {
@@ -87,18 +100,6 @@ Conversation::update(float delta)
             {
               switch (i->button.name)
                 {
-                case UP_BUTTON:
-                  selection -= 1;
-                  if (selection < 0)
-                    selection = choices.size() - 1;
-                  break;
-              
-                case DOWN_BUTTON:
-                  selection += 1;
-                  if (selection >= int(choices.size()))
-                    selection = 0;
-                  break;
-
                 case FIRE_BUTTON:
                   visible = false;
                   choices.clear();

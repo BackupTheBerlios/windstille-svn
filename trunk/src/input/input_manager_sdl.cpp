@@ -69,19 +69,31 @@ InputManagerSDL::on_event(const SDL_Event& event)
         switch (event.key.keysym.sym)
           {
           case SDLK_LEFT:
-            add_button_event(LEFT_BUTTON, event.key.state);
+            if (event.key.state)
+              add_axis_event(HORIZONTAL_AXIS, -1.0);
+            else
+              add_axis_event(HORIZONTAL_AXIS, 0);
             break;
 
           case SDLK_RIGHT:
-            add_button_event(RIGHT_BUTTON, event.key.state);
+            if (event.key.state)
+              add_axis_event(HORIZONTAL_AXIS, 1.0);
+            else
+              add_axis_event(HORIZONTAL_AXIS, 0);
             break;
 
           case SDLK_UP:
-            add_button_event(UP_BUTTON, event.key.state);
+            if (event.key.state)
+              add_axis_event(VERTICAL_AXIS, 1.0);
+            else
+              add_axis_event(VERTICAL_AXIS, 0);
             break;
 
           case SDLK_DOWN:
-            add_button_event(DOWN_BUTTON, event.key.state);
+            if (event.key.state)
+              add_axis_event(VERTICAL_AXIS, -1.0);
+            else
+              add_axis_event(VERTICAL_AXIS, 0);
             break;
 
           case SDLK_a:
@@ -123,36 +135,30 @@ InputManagerSDL::on_event(const SDL_Event& event)
         {
           if (event.jaxis.value < -DEAD_ZONE)
             {
-              add_button_event(LEFT_BUTTON, true);   
-              add_button_event(RIGHT_BUTTON, false);
+              add_axis_event(HORIZONTAL_AXIS, -1.0);
             }
           else if (event.jaxis.value > DEAD_ZONE)
             {
-              add_button_event(LEFT_BUTTON, false); 
-              add_button_event(RIGHT_BUTTON, true); 
+              add_axis_event(HORIZONTAL_AXIS, 1.0);
             }
           else
             {
-              add_button_event(LEFT_BUTTON, false);
-              add_button_event(RIGHT_BUTTON, false);
+              add_axis_event(HORIZONTAL_AXIS, 0);
             }
         }
       else if (event.jaxis.axis == 1) 
         {
           if (event.jaxis.value < -DEAD_ZONE)
             {
-              add_button_event(UP_BUTTON, true);   
-              add_button_event(DOWN_BUTTON, false);
+              add_axis_event(VERTICAL_AXIS, -1.0);
             }
           else if (event.jaxis.value > DEAD_ZONE)
             {
-              add_button_event(UP_BUTTON, false); 
-              add_button_event(DOWN_BUTTON, true); 
+              add_axis_event(VERTICAL_AXIS, 1.0);
             }
           else
             {
-              add_button_event(UP_BUTTON, false);
-              add_button_event(DOWN_BUTTON, false);
+              add_axis_event(VERTICAL_AXIS, 0);
             }
         }
       break;
