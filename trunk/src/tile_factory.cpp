@@ -48,10 +48,6 @@ TileFactory::TileFactory (const std::string& filename)
 {
   using namespace lisp;
 
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();                                                
-  state.setup_2d();                                                  
-
   packers.push_back(new TilePacker(1024, 1024));
   packers.push_back(new TilePacker(1024, 1024));
   color_packer     = 0;

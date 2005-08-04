@@ -171,10 +171,6 @@ TTFFont::TTFFont(const std::string& filename, int size)
     }
   FT_Done_Face(face);
 
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();
-  state.setup_2d();
-
   try {
     impl->texture = Texture(pixelbuffer);
   } catch(...) {
