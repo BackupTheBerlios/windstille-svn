@@ -17,11 +17,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ClanLib/Display/display.h>
-#include <ClanLib/Display/display_window.h>
-#include <ClanLib/Display/graphic_context.h>
-#include <ClanLib/GUI/component.h>
 #include <math.h>
+#include <GL/gl.h>
 #include "display/scene_context.hpp"
 #include "graphic_context_state.hpp"
 
@@ -85,26 +82,20 @@ GraphicContextState::pop(SceneContext& sc)
 void
 GraphicContextState::push(CL_GraphicContext* gc)
 {
-  if (gc == 0)
-    gc = CL_Display::get_current_window()->get_gc();
+  glPushMatrix();
   
-  gc->push_modelview();
+  glTranslatef(impl->width/2, impl->height/2, 0);
+  glRotatef(impl->rotation, 0, 0, 1.0);
+  glTranslatef(-impl->width/2, -impl->height/2, 0);
 
-  gc->add_translate(impl->width/2, impl->height/2);
-  gc->add_rotate(impl->rotation, 0, 0, 1.0);
-  gc->add_translate(-impl->width/2, -impl->height/2);
-
-  gc->add_scale(get_zoom(), get_zoom());
-  gc->add_translate(impl->offset.x, impl->offset.y);
+  glScalef(get_zoom(), get_zoom(), 1.0f);
+  glTranslatef(impl->offset.x, impl->offset.y, 0);
 }
 
 void
 GraphicContextState::pop(CL_GraphicContext* gc)
 {
-  if (gc == 0)
-    gc = CL_Display::get_current_window()->get_gc();
-  
-  gc->pop_modelview();
+  glPopMatrix();
 }
 
 Rectf

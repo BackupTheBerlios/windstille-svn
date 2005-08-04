@@ -42,7 +42,7 @@ public:
   OpenGLState();
   ~OpenGLState();
 
-  void bind(const Texture& texture);
+  void bind_texture(const Texture& texture);
   void set_blend_func(GLenum sfactor, GLenum dfactor);
 
   void enable(GLenum cap);
@@ -52,6 +52,10 @@ public:
   void disable_client_state(GLenum array);
 
   void color(const Color& color);
+
+  /** Activates the given state, you *must* call this before you issue
+      gl commands that depend on the given state */
+  void activate();
 
 private:
   std::auto_ptr<OpenGLStateImpl> impl;

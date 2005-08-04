@@ -17,9 +17,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ClanLib/display.h>
-#include <ClanLib/gl.h>
 #include "glutil/surface.hpp"
+#include "glutil/opengl_state.hpp"
 #include "scene_context.hpp"
 
 // The lightmap has a resolution of screen.w/LIGHTMAP, screen.h/LIGHTMAP
@@ -130,19 +129,21 @@ SceneContext::render()
 {
   if (impl->render_mask & LIGHTMAPSCREEN)
     {
-      CL_Display::clear();
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
       
-      CL_Display::push_modelview();
-      CL_Display::add_scale(1.0f/LIGHTMAP_DIV, 1.0f/LIGHTMAP_DIV, 1.0f);
+      glPushMatrix();
+      glScalef(1.0f/LIGHTMAP_DIV, 1.0f/LIGHTMAP_DIV, 1.0f);
+
       impl->light.render();
-      CL_Display::pop_modelview();
+      glPopMatrix();
       
       {
-        CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-        state.set_active();
+        OpenGLState state;
         
         // Weird y-pos is needed since OpenGL is upside down when it comes to y-coordinate
-        glBindTexture(GL_TEXTURE_2D, impl->lightmap.get_texture().get_handle());
+        state.bind_texture(impl->lightmap.get_texture());
+        state.activate();
+
         glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
                             0, 0, 
                             0, 600 - impl->lightmap.get_height(),
@@ -150,7 +151,7 @@ SceneContext::render()
       }
     }
 
-  CL_Display::clear();
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if (impl->render_mask & COLORMAP)
     {
@@ -159,18 +160,17 @@ SceneContext::render()
 
   if (impl->render_mask & LIGHTMAP)
     {
-      CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-      state.set_active(); 
-      state.setup_2d(); 
+      OpenGLState state;
 
       Rectf uv = impl->lightmap.get_uv();
 
-      glEnable(GL_TEXTURE_2D);
-      glBindTexture(GL_TEXTURE_2D, impl->lightmap.get_texture().get_handle());
+      state.enable(GL_TEXTURE_2D);
+      state.bind_texture(impl->lightmap.get_texture());
 
-      glEnable(GL_BLEND);
-      glBlendFunc(GL_DST_COLOR, GL_ZERO);
-      
+      state.enable(GL_BLEND);
+      state.set_blend_func(GL_DST_COLOR, GL_ZERO);
+      state.activate();
+
       glBegin(GL_QUADS);
 
       glTexCoord2f(uv.left, uv.bottom);

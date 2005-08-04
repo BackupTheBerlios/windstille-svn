@@ -33,6 +33,7 @@
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
+#include "glutil/opengl_state.hpp"
 #include "physfs/physfs_stream.hpp"
 #include "glutil/texture_manager.hpp"
 #include "blitter.hpp"
@@ -201,22 +202,19 @@ TTFFont::get_height() const
 void
 TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& color)
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();
-  state.setup_2d();
+  OpenGLState state;
 
-  glDisable(GL_DEPTH_TEST);
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  glBindTexture(GL_TEXTURE_2D, impl->texture.get_handle());
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  state.enable(GL_TEXTURE_2D);
+  state.bind_texture(impl->texture);
+  state.color(color);
+  state.activate();
 
   // Voodoo to get non-blurry fonts
   float mx = -0.375;
   float my = -0.375; 
   glBegin(GL_QUADS);
-  glColor4f(color.r, color.g, color.b, color.a);
   for(std::string::const_iterator i = str.begin(); i != str.end(); ++i)
     {
       const TTFCharacter& character = impl->characters[*i];

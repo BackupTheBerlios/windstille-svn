@@ -24,10 +24,9 @@
 */
 #include <config.h>
 
-#include <ClanLib/gl.h>
-#include <ClanLib/display.h>
 #include "surface.hpp"
 #include "math/vector.hpp"
+#include "glutil/opengl_state.hpp"
 #include "surface_drawing_parameters.hpp"
 #include "surface_manager.hpp"
 
@@ -143,12 +142,10 @@ Surface::operator bool() const
 void
 Surface::draw(const Vector& pos) const
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active(); 
-  state.setup_2d(); 
-
-  glEnable(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, impl->texture.get_handle());
+  OpenGLState state;
+  state.enable(GL_TEXTURE_2D);
+  state.bind_texture(impl->texture);
+  state.activate();
 
   glBegin(GL_QUADS);
 
@@ -170,18 +167,13 @@ Surface::draw(const Vector& pos) const
 void
 Surface::draw(const SurfaceDrawingParameters& params) const
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active(); 
-  state.setup_2d(); 
-
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_BLEND);
-  glBlendFunc(params.blendfunc_src, params.blendfunc_dst);
-  glBindTexture(GL_TEXTURE_2D, impl->texture.get_handle());
-  glColor4f(params.color.r,
-            params.color.g,
-            params.color.b,
-            params.color.a);
+  OpenGLState state;
+  state.enable(GL_TEXTURE_2D);
+  state.enable(GL_BLEND);
+  state.set_blend_func(params.blendfunc_src, params.blendfunc_dst);
+  state.bind_texture(impl->texture);
+  state.color(params.color);
+  state.activate();
 
   glBegin(GL_QUADS);
 

@@ -29,6 +29,13 @@
 
 class OpenGLStateImpl
 {
+public:
+  bool was_activated;
+
+  OpenGLStateImpl()
+    : was_activated(false)
+  {}
+
 };
 
 // The code here is just as placeholder for the moment, should be
@@ -42,14 +49,19 @@ OpenGLState::OpenGLState()
   glDisable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+  glDisableClientState(GL_COLOR_ARRAY);
+  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 OpenGLState::~OpenGLState()
 {
+  assert(impl->was_activated);
 }
 
 void
-OpenGLState::bind(const Texture& texture)
+OpenGLState::bind_texture(const Texture& texture)
 {
   glBindTexture(GL_TEXTURE_2D, texture.get_handle());
 }
@@ -88,6 +100,13 @@ void
 OpenGLState::color(const Color& color)
 {
   glColor4f(color.r, color.g, color.b, color.a);
+}
+
+void
+OpenGLState::activate()
+{
+  // do nothing for now, should be implemented later on
+  impl->was_activated = true;
 }
 
 /* EOF */

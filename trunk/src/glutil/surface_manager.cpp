@@ -6,9 +6,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <SDL_image.h>
-#include <ClanLib/GL/opengl_state.h>
-#include <ClanLib/Display/display.h>
-#include <ClanLib/Display/display_window.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include "util.hpp"
@@ -127,10 +124,6 @@ Texture
 SurfaceManager::create_texture(SDL_Surface* image,
                                float& maxu, float& maxv)
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();
-  state.setup_2d();
-
   int texture_w = power_of_two(image->w);
   int texture_h = power_of_two(image->h);
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN

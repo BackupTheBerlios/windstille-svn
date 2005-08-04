@@ -21,7 +21,6 @@
 #define HEADER_VERTEX_ARRAY_DRAWING_REQUEST_HXX
 
 #include <vector>
-#include <ClanLib/gl.h>
 #include "color.hpp"
 #include "math/matrix.hpp"
 #include "glutil/texture.hpp"

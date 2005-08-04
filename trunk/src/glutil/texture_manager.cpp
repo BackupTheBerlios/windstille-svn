@@ -6,9 +6,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <SDL_image.h>
-#include <ClanLib/GL/opengl_state.h>
-#include <ClanLib/Display/display.h>
-#include <ClanLib/Display/display_window.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include "util.hpp"

@@ -23,21 +23,19 @@
 **  02111-1307, USA.
 */
 
-#include <ClanLib/gl.h>
-#include <ClanLib/display.h>
 #include <cmath>
+#include "glutil/opengl_state.hpp"
 #include "display.hpp"
 
 void
 VDisplay::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();
-  state.setup_2d();
+  OpenGLState state;
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glColor4f(color.r, color.g, color.b, color.a);
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  state.color(color);
+  state.activate();
 
   glBegin(GL_LINES);
   glVertex2f(pos1.x, pos1.y);
@@ -48,13 +46,12 @@ VDisplay::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
 void
 VDisplay::fill_rect(const Rectf& rect, const Color& color)
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();
-  state.setup_2d();
+  OpenGLState state;
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glColor4f(color.r, color.g, color.b, color.a);
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  state.color(color);
+  state.activate();
 
   glBegin(GL_QUADS);
   glVertex2f(rect.left,  rect.top);
@@ -67,13 +64,12 @@ VDisplay::fill_rect(const Rectf& rect, const Color& color)
 void
 VDisplay::draw_rect(const Rectf& rect, const Color& color)
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();
-  state.setup_2d();
+  OpenGLState state;
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glColor4f(color.r, color.g, color.b, color.a);
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  state.color(color);
+  state.activate();
 
   glBegin(GL_LINE_STRIP);
   glVertex2f(rect.left,  rect.top);
@@ -87,10 +83,6 @@ VDisplay::draw_rect(const Rectf& rect, const Color& color)
 void
 VDisplay::fill_rounded_rect(const Rectf& rect, float radius, const Color& color)
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();
-  state.setup_2d();
-
   // Keep radius in the limits, so that we get a circle instead of
   // just graphic junk
   radius = std::min(radius, std::min(rect.get_width()/2, rect.get_height()/2));
@@ -101,9 +93,13 @@ VDisplay::fill_rounded_rect(const Rectf& rect, float radius, const Color& color)
               rect.right   - radius,
               rect.bottom  - radius);
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glColor4f(color.r, color.g, color.b, color.a);
+
+  OpenGLState state;
+
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  state.color(color);
+  state.activate();
 
   int n = 8;
   glBegin(GL_QUAD_STRIP);
@@ -129,10 +125,6 @@ VDisplay::fill_rounded_rect(const Rectf& rect, float radius, const Color& color)
 void
 VDisplay::draw_rounded_rect(const Rectf& rect, float radius, const Color& color)
 {
-  CL_OpenGLState state(CL_Display::get_current_window()->get_gc());
-  state.set_active();
-  state.setup_2d();
-
   // Keep radius in the limits, so that we get a circle instead of
   // just graphic junk
   radius = std::min(radius, std::min(rect.get_width()/2, rect.get_height()/2));
@@ -143,9 +135,12 @@ VDisplay::draw_rounded_rect(const Rectf& rect, float radius, const Color& color)
               rect.right   - radius,
               rect.bottom  - radius);
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glColor4f(color.r, color.g, color.b, color.a);
+  OpenGLState state;
+
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  state.color(color);
+  state.activate();
 
   int n = 4;
   glBegin(GL_LINE_STRIP);

@@ -18,16 +18,13 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <assert.h>
-#include <ClanLib/Display/display.h>
-#include <ClanLib/Display/display_window.h>
-#include <ClanLib/Display/graphic_context.h>
-#include <ClanLib/gl.h>
-#include <ClanLib/display.h>
 #include <iostream>
 #include <iosfwd>
+#include <GL/gl.h>
 #include "fonts.hpp"
 #include "sprite2d/sprite.hpp"
 #include "drawing_context.hpp"
+#include "glutil/opengl_state.hpp"
 #include "glutil/surface_drawing_parameters.hpp"
 #include "glutil/surface.hpp"
 
@@ -50,11 +47,11 @@ public:
   virtual ~FillScreenDrawingRequest() {}
 
   void draw(CL_GraphicContext* gc) {
-    gc->clear(CL_Color(
-                static_cast<unsigned int> (color.r * 255.0),
-                static_cast<unsigned int> (color.g * 255.0),
-                static_cast<unsigned int> (color.b * 255.0),
-                static_cast<unsigned int> (color.a * 255.0)));
+    OpenGLState state;
+    // FIXME: move clear color to opengl_state
+    state.activate();
+    glClearColor(color.r, color.g, color.b, color.a);
+    glClear(GL_COLOR_BUFFER_BIT);
   }
 };
 
@@ -70,10 +67,10 @@ public:
   virtual ~TextDrawingRequest() {}
 
   void draw(CL_GraphicContext* gc) {
-    gc->push_modelview();
-    gc->add_modelview(modelview.matrix);
+    glPushMatrix();
+    glMultMatrixf(modelview.matrix);
     Fonts::ttffont->draw(int(pos.x), int(pos.y), text);
-    gc->pop_modelview();
+    glPopMatrix();
   }
 };
 
@@ -93,12 +90,12 @@ public:
 
   void draw(CL_GraphicContext* gc) 
   {
-    gc->push_modelview();
-    gc->add_modelview(modelview.matrix);
+    glPushMatrix();
+    glMultMatrixf(modelview.matrix);
 
     surface.draw(params);
 
-    gc->pop_modelview();
+    glPopMatrix();
   }
 };
 
@@ -117,7 +114,7 @@ DrawingContext::render(CL_GraphicContext* gc)
 {
   if (gc == 0)
     {
-      gc = CL_Display::get_current_window()->get_gc();
+      //gc = CL_Display::get_current_window()->get_gc();
     }
 
   std::stable_sort(drawingrequests.begin(), drawingrequests.end(), DrawingRequestsSorter());

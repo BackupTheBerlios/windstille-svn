@@ -1,26 +1,33 @@
-//  $Id$
-//
-//  Windstille - A Jump'n Shoot Game
-//  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
-//
-//  This program is free software; you can redistribute it and/or
-//  modify it under the terms of the GNU General Public License
-//  as published by the Free Software Foundation; either version 2
-//  of the License, or (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+/*  $Id$
+**   __      __ __             ___        __   __ __   __
+**  /  \    /  \__| ____    __| _/_______/  |_|__|  | |  |   ____
+**  \   \/\/   /  |/    \  / __ |/  ___/\   __\  |  | |  | _/ __ \
+**   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
+**    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
+**         \/          \/      \/    \/                         \/
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
+**
+**  This program is free software; you can redistribute it and/or
+**  modify it under the terms of the GNU General Public License
+**  as published by the Free Software Foundation; either version 2
+**  of the License, or (at your option) any later version.
+**
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+** 
+**  You should have received a copy of the GNU General Public License
+**  along with this program; if not, write to the Free Software
+**  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+**  02111-1307, USA.
+*/
+
 #include <config.h>
 
 #include <assert.h>
 
-#include <ClanLib/Display/graphic_context.h>
+#include "glutil/opengl_state.hpp"
 #include "vertex_array_drawing_request.hpp"
 
 VertexArrayDrawingRequest::VertexArrayDrawingRequest(const Vector& pos_, float z_pos_, 
@@ -51,60 +58,56 @@ VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
   assert(texcoords.empty() || int(texcoords.size()/2) == num_vertices());
   assert(colors.empty() || int(colors.size()/4) == num_vertices());
 
-  CL_OpenGLState state(gc);
-  state.set_active();
-  state.setup_2d();
+  OpenGLState state;
 
   glClear(GL_DEPTH_BUFFER_BIT);
-  glDisable(GL_DEPTH_TEST);
-
-  glPushMatrix();
-  glMultMatrixf(modelview.matrix);
-
-  glEnable(GL_BLEND);
-  glBlendFunc(blend_sfactor, blend_dfactor);
+  state.disable(GL_DEPTH_TEST);
+  state.enable(GL_BLEND);
+  state.set_blend_func(blend_sfactor, blend_dfactor);
 
   if (!colors.empty())
     {
-      glEnableClientState(GL_COLOR_ARRAY);
+      state.enable_client_state(GL_COLOR_ARRAY);
       glColorPointer(4, GL_UNSIGNED_BYTE, 0, &*colors.begin());
     }
   else
     {
-      glDisableClientState(GL_COLOR_ARRAY);
-      glColor3f(1.0f, 1.0f, 1.0f);
+      state.disable_client_state(GL_COLOR_ARRAY);
+      state.color(Color(1.0f, 1.0f, 1.0f));
     }
 
   if (!texcoords.empty())
     {
-      glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+      state.enable_client_state(GL_TEXTURE_COORD_ARRAY);
       glTexCoordPointer(2, GL_FLOAT, 0, &*texcoords.begin());
     }
   else
     {
-      glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+      state.disable_client_state(GL_TEXTURE_COORD_ARRAY);
     }
 
   // FIXME: Might be worth to not use VertexArrays when we have a pretty small number of vertices
-  glDisableClientState(GL_NORMAL_ARRAY);
-  glEnableClientState(GL_VERTEX_ARRAY);
+  state.disable_client_state(GL_NORMAL_ARRAY);
+  state.enable_client_state(GL_VERTEX_ARRAY);
+
   glVertexPointer  (3, GL_FLOAT, 0, &*vertices.begin());
   
   if (texture)
     {
-      glEnable(GL_TEXTURE_2D);
-      glBindTexture(GL_TEXTURE_2D, texture.get_handle());
+      state.enable(GL_TEXTURE_2D);
+      state.bind_texture(texture);
     }
   else
     {
-      glDisable(GL_TEXTURE_2D);
+      state.disable(GL_TEXTURE_2D);
     }
 
-  glDrawArrays(mode, start, end);
+  state.activate();
 
-  glDisableClientState(GL_COLOR_ARRAY);
-  glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-  glDisableClientState(GL_VERTEX_ARRAY);
+  glPushMatrix();
+  glMultMatrixf(modelview.matrix);
+
+  glDrawArrays(mode, start, end);
 
   glPopMatrix();
 }
