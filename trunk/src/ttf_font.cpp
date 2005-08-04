@@ -26,8 +26,6 @@
 #include <vector>
 #include <stdexcept>
 #include <sstream>
-#include <ClanLib/gl.h>
-#include <ClanLib/Display/display.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

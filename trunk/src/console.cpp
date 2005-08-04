@@ -23,8 +23,6 @@
 */
 
 #include <assert.h>
-#include <ClanLib/Display/keys.h>
-#include <ClanLib/core.h>
 #include "math/rect.hpp"
 #include "fonts.hpp"
 #include "game_session.hpp"

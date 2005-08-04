@@ -26,9 +26,6 @@
 #include <sstream>
 #include <iostream>
 #include <memory>
-#include <ClanLib/GL/opengl_state.h>
-#include <ClanLib/Display/display.h>
-#include <ClanLib/Display/display_window.h>
 #include "globals.hpp"
 #include "tile.hpp"
 #include "tile_packer.hpp"

@@ -23,7 +23,6 @@
 **  02111-1307, USA.
 */
 
-#include <ClanLib/Display/display.h>
 #include <assert.h>
 #include "globals.hpp"
 #include "entity.hpp"

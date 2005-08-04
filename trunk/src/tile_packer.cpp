@@ -19,9 +19,6 @@
 #include <config.h>
 
 #include <assert.h>
-#include <ClanLib/GL/opengl_state.h>
-#include <ClanLib/Display/display.h>
-#include <ClanLib/Display/display_window.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include "windstille_error.hpp"

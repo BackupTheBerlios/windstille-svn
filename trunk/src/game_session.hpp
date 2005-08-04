@@ -21,7 +21,6 @@
 #define GAME_SESSION_HXX
 
 #include <string>
-#include <ClanLib/Signals/slot_container.h>
 #include "display/scene_context.hpp"
 #include "console.hpp"
 #include "squirrel/include/squirrel.h"
@@ -58,7 +57,6 @@ private:
   enum { DIALOG, GAME } control_state;
   GameMainState target_state;
 
-  std::vector<CL_Slot> slots;
   void on_key_down  (const CL_InputEvent& event);
   void on_mouse_down  (const CL_InputEvent& event);
   void change_sector ();
