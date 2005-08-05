@@ -56,6 +56,10 @@ Screen::display()
   Uint32 now = SDL_GetTicks();
   float delta = static_cast<float>(now - ticks) / 1000.0f;
   ticks = now;
+  
+  /*only used in debug. Limits page flipping so one can see what the framerate
+  is like without it being clipped by vsync*/  
+  static int last_flip_time = 0;
 
   ++frames;
  
@@ -82,7 +86,11 @@ Screen::display()
     console.draw();
   }
 
-  SDL_GL_SwapBuffers();
+  if (!debug || now - last_flip_time > 20)
+    {
+      SDL_GL_SwapBuffers();
+      last_flip_time = now;
+    }
   ++frames;
 
   EventManager::instance()->update();
