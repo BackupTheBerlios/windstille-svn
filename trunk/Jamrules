@@ -55,7 +55,9 @@ IncludeDir $(top_srcdir)/src/squirrel/include ;
 USE_LIBS = FT2 OPENAL PHYSFS VORBISFILE VORBIS OGG ICONV GL GLU SDL SDLIMAGE ;
 CXXFLAGS += $($(USE_LIBS)_CFLAGS) ;
 CFLAGS += $($(USE_LIBS)_CFLAGS) ;
-LIBS += $($(USE_LIBS)_LIBS) ;
+# don't set LIBS globally for now, as miniswig doesn't link with SDL on win32
+# we set libs for the windstille target manually
+#LIBS += $($(USE_LIBS)_LIBS) ;
 
 # for the emacsers out there (compiles all objects in current subdir if jam is
 # invoked in a subdir)

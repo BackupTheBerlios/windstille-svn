@@ -151,4 +151,6 @@ Application windstille
 
 C++Flags windstille : -DAPPDATADIR='\"$(appdatadir)\"' ;
 LinkWith windstille : squirrel ;
+LFlags windstille : $($(USE_LIBS)_LIBS) ;
 Help windstille : "Build the windstille executable" ;
+
