@@ -424,9 +424,6 @@ WindstilleMain::game_main()
       break;
 
     case LOAD_MENU:
-      delete screen;
-      screen = 0;
-      return false;
       // Fall through and load the game directly as long as we don't
       // have a new menu
     case LOAD_GAME_SESSION:
