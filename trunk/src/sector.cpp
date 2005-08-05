@@ -169,7 +169,8 @@ Sector::activate()
   commit_removes();
 
   sound_manager->play_music(music);
-  script_manager->run_script_file(init_script);
+  if (init_script != "")
+    script_manager->run_script_file(init_script);
 }
 
 void
