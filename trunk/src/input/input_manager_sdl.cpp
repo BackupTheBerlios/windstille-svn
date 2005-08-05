@@ -135,11 +135,11 @@ InputManagerSDL::on_event(const SDL_Event& event)
         {
           if (event.jaxis.value < -DEAD_ZONE)
             {
-              add_axis_event(HORIZONTAL_AXIS, -1.0);
+              add_axis_event(HORIZONTAL_AXIS, event.jaxis.value/32768.0f);
             }
           else if (event.jaxis.value > DEAD_ZONE)
             {
-              add_axis_event(HORIZONTAL_AXIS, 1.0);
+              add_axis_event(HORIZONTAL_AXIS, event.jaxis.value/32767.0f);
             }
           else
             {
@@ -150,11 +150,11 @@ InputManagerSDL::on_event(const SDL_Event& event)
         {
           if (event.jaxis.value < -DEAD_ZONE)
             {
-              add_axis_event(VERTICAL_AXIS, -1.0);
+              add_axis_event(VERTICAL_AXIS, event.jaxis.value/32768.0f);
             }
           else if (event.jaxis.value > DEAD_ZONE)
             {
-              add_axis_event(VERTICAL_AXIS, 1.0);
+              add_axis_event(VERTICAL_AXIS, event.jaxis.value/32767.0f);
             }
           else
             {

@@ -23,33 +23,24 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_DISPLAY_DISPLAY_HPP
-#define HEADER_DISPLAY_DISPLAY_HPP
+#ifndef HEADER_CONTROLLER_HELP_WINDOW_HPP
+#define HEADER_CONTROLLER_HELP_WINDOW_HPP
 
-#include "math/rect.hpp"
-#include "color.hpp"
+#include "sharedptr.hpp"
 
-class Display
+class ControllerHelpWindowImpl;
+
+/** */
+class ControllerHelpWindow
 {
-private:
 public:
-  static void fill_rect(const Rectf& rect, const Color& color);
-  static void draw_rect(const Rectf& rect, const Color& color);
+  ControllerHelpWindow();
 
-  static void fill_rounded_rect(const Rectf& rect, float radius, const Color& color);
-  static void draw_rounded_rect(const Rectf& rect, float radius, const Color& color);
+  void draw();
+  void update(float delta);
 
-  static void draw_line(const Vector& pos1, const Vector& pos2, const Color& color);
-
-  static void draw_circle(const Vector& pos, float radius, const Color& color);
-  static void fill_circle(const Vector& pos, float radius, const Color& color);
-
-  static int  get_width();
-  static int  get_height();
-
-  static void set_fullscreen(bool fullscreen);
-
-  static void init();
+private:
+  SharedPtr<ControllerHelpWindowImpl> impl;
 };
 
 #endif

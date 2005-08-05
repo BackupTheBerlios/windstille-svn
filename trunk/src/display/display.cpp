@@ -250,4 +250,53 @@ Display::set_fullscreen(bool fullscreen)
     }
 }
 
+void
+Display::draw_circle(const Vector& pos, float radius, const Color& color)
+{
+  OpenGLState state;
+
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  state.color(color);
+  state.activate();
+
+  int n = 4;
+  glBegin(GL_LINE_STRIP);
+  glVertex2f(radius + pos.x, pos.y);
+  for(int i = 1; i < n * 4; ++i)
+    {
+      float x = cosf(i * (M_PI/2) / n) * radius;
+      float y = sinf(i * (M_PI/2) / n) * radius;
+      
+      glVertex2f(x + pos.x, y + pos.y);
+    }
+  glVertex2f(radius + pos.x, pos.y);
+  glEnd();
+}
+
+void
+Display::fill_circle(const Vector& pos, float radius, const Color& color)
+{
+  OpenGLState state;
+
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  state.color(color);
+  state.activate();
+
+  int n = 4;
+  glBegin(GL_TRIANGLE_FAN);
+  glVertex2f(pos.x, pos.y);
+  glVertex2f(radius + pos.x, pos.y);
+  for(int i = 1; i < n * 4; ++i)
+    {
+      float x = cosf(i * (M_PI/2) / n) * radius;
+      float y = sinf(i * (M_PI/2) / n) * radius;
+      
+      glVertex2f(x + pos.x, y + pos.y);
+    }
+  glVertex2f(radius + pos.x, pos.y);
+  glEnd();
+}
+
 /* EOF */

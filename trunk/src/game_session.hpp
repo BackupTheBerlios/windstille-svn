@@ -31,6 +31,7 @@
 #include "console.hpp"
 #include "squirrel/include/squirrel.h"
 #include "screen.hpp"
+#include "controller_help_window.hpp"
 #include "sprite2d/sprite.hpp"
 #include "globals.hpp"
 
@@ -41,6 +42,7 @@ class Player;
 class DialogManager;
 class Conversation;
 
+
 class GameSession : public Windstille::Screen
 {
 private:
@@ -48,7 +50,7 @@ private:
 
   float fadeout_value;
 
-  Sprite control_dialog;
+  ControllerHelpWindow controller_help_window;
 
   std::string filename;
   Sector* sector;

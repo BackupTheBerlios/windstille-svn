@@ -353,6 +353,14 @@ public:
 		right += offset.x;
 		bottom += offset.y;
 	}
+
+	// Moves each edge f away from the center, thus width = old_width + 2*f
+	Rectf grow(float f) const {
+		return Rectf(left   - f, 
+						 top    - f,
+						 right  + f,
+						 bottom + f);
+	}
 };
 
 inline Rect::Rect(const Rectf& rect)

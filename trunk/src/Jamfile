@@ -38,6 +38,8 @@ sources =
         command_line_generic.cpp
         controller_def.cpp
         controller_def.hpp
+        controller_help_window.hpp
+        controller_help_window.cpp
         conversation.hpp
         conversation.cpp
         dialog_manager.cpp

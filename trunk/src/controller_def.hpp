@@ -24,7 +24,7 @@
 
 //enum AxisName       { ORIENTATION_AXIS, ACCELERATE_AXIS, STRAFE_AXIS };
 enum AxisName    { HORIZONTAL_AXIS, VERTICAL_AXIS };
-enum ButtonName  { FIRE_BUTTON, JUMP_BUTTON, USE_BUTTON, RUN_BUTTON };
+enum ButtonName  { RUN_BUTTON, JUMP_BUTTON, FIRE_BUTTON, USE_BUTTON };
 
 /** */
 class ControllerDef

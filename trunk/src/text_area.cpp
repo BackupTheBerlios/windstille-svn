@@ -129,7 +129,7 @@ TextArea::draw()
   glBindTexture(GL_TEXTURE_2D, impl->font->get_texture().get_handle());
 
   glPushMatrix();
-  glTranslatef(impl->rect.left, impl->rect.top, 0);
+  glTranslatef(impl->rect.left, impl->rect.top + impl->font->get_height(), 0);
   // Voodoo to get non-blurry fonts
   float mx = -0.375;
   float my = -0.375; 

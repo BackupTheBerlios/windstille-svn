@@ -65,8 +65,7 @@ using namespace Windstille;
 GameSession* GameSession::current_ = 0; 
 
 GameSession::GameSession(const std::string& arg_filename)
-  : control_dialog("images/controldialog.sprite"),
-    sector (0)
+  : sector (0)
 {
   if (debug) std::cout << "Creating new GameSession" << std::endl;
   current_ = this;
@@ -104,10 +103,7 @@ GameSession::draw_game()
     dialog_manager->draw(); 
   
   conversation->draw();
-
-  //control_dialog.set_alignment(origin_bottom_right);
-  control_dialog.draw(Vector(800-16 - control_dialog.get_width(), 
-                             600-16 - control_dialog.get_height()));
+  controller_help_window.draw();
 }
 
 void
@@ -186,6 +182,7 @@ GameSession::update(float delta)
       break;
     }
   conversation->update(delta);
+  controller_help_window.update(delta);
   
   if(keystate[SDLK_ESCAPE])
     quit();
