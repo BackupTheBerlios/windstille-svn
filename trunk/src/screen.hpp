@@ -20,11 +20,7 @@
 #ifndef HEADER_SCREEN_HXX
 #define HEADER_SCREEN_HXX
 
-#include <ClanLib/display.h>
-#include <ClanLib/core.h>
 #include "signals/slot.hpp"
-
-class CL_InputEvent;
 
 namespace Windstille {
 
@@ -33,9 +29,6 @@ class Screen
 {
 private:
   void draw_fps(float delta);
-  void key_down(const CL_InputEvent& event);
-  
-  CL_Slot slot;
   unsigned int ticks;
 
 protected:  

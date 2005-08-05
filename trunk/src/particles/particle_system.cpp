@@ -19,7 +19,6 @@
 
 #include <math.h>
 #include <iostream>
-#include <ClanLib/gl.h>
 #include "particle_system.hpp"
 #include "display/scene_context.hpp"
 #include "math/vector.hpp"

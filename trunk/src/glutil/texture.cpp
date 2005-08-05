@@ -24,8 +24,6 @@
 **  02111-1307, USA.
 */
 
-#include <ClanLib/display.h>
-#include <ClanLib/gl.h>
 #include <stdexcept>
 #include <iostream>
 #include <GL/gl.h>

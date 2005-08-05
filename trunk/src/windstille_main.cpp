@@ -23,9 +23,6 @@
 **  02111-1307, USA.
 */
 
-#include <ClanLib/core.h>
-#include <ClanLib/vorbis.h>
-#include <ClanLib/display.h>
 #include <physfs.h>
 
 #include "windstille_error.hpp"
@@ -135,7 +132,7 @@ WindstilleMain::parse_command_line(int argc, char** argv)
             std::cout << "Geometry: " << config->screen_width
                       << "x" << config->screen_height << std::endl;
           else
-            throw CL_Error("Geometry option '-g' requires argument of type {WIDTH}x{HEIGHT}");
+            throw std::runtime_error("Geometry option '-g' requires argument of type {WIDTH}x{HEIGHT}");
           break;
         
         case 's':
@@ -160,7 +157,7 @@ WindstilleMain::parse_command_line(int argc, char** argv)
           exit(EXIT_SUCCESS);
           break;
 
-        case CL_CommandLine::REST_ARG:
+        case CommandLine::REST_ARG:
           levelfile = argp.get_argument();
           break;
         }
@@ -229,8 +226,6 @@ WindstilleMain::main(int argc, char** argv)
 
     deinit_modules();
 
-  } catch (CL_Error& error) {
-    std::cout << "CL_Error: " << error.message << std::endl;
   } catch (WindstilleError& err) {
     std::cout << "WindstilleError: " << err.what() << std::endl;
   } catch (std::exception& err) {

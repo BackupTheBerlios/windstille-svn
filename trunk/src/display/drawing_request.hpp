@@ -23,8 +23,6 @@
 #include "math/vector.hpp"
 #include "math/matrix.hpp"
 
-class CL_GraphicContext;
-
 /** 
  */
 class DrawingRequest
@@ -40,7 +38,7 @@ public:
   {}
   virtual ~DrawingRequest() {}
   
-  virtual void draw(CL_GraphicContext* gc) = 0;
+  virtual void draw() = 0;
   
   /** Returns the position at which the request should be drawn */
   float get_z_pos() const { return z_pos; }

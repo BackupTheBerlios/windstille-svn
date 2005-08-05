@@ -43,8 +43,8 @@ private:
 public:
   VertexArrayDrawingRequest(const Vector& pos_, float z_pos_, const Matrix& modelview_);
 
-  void draw(CL_GraphicContext* gc);
-  void draw(CL_GraphicContext* gc, int start, int end);
+  void draw();
+  void draw(int start, int end);
 
   void vertex(float x, float y, float z = 0.0f);
   void texcoord(float u, float v);

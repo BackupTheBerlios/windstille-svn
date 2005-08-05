@@ -25,7 +25,6 @@
 #include "sharedptr.hpp"
 
 class SceneContext;
-class CL_GraphicContext;
 
 class GraphicContextStateImpl;
 

@@ -23,8 +23,6 @@
 #include <stdint.h>
 #include <sstream>
 #include <stdexcept>
-#include <ClanLib/gl.h>
-#include <ClanLib/display.h>
 #include <physfs.h>
 #include "display/drawing_request.hpp"
 #include "display/scene_context.hpp"
@@ -263,9 +261,9 @@ public:
     : DrawingRequest(pos, z_pos, modelview), sprite(sprite)
   {}
 
-  void draw(CL_GraphicContext* gc)
+  void draw()
   {
-    sprite->draw(gc, pos, modelview);
+    sprite->draw(pos, modelview);
   }
 };
 
@@ -332,7 +330,7 @@ Sprite3D::draw(DrawingContext& dc, const Matrix& matrix, float z_pos) const
 }
 
 void
-Sprite3D::draw(CL_GraphicContext* gc, const Vector& pos, const Matrix& modelview) const
+Sprite3D::draw(const Vector& pos, const Matrix& modelview) const
 {
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix(); 

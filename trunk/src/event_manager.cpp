@@ -30,6 +30,9 @@
 #include "globals.hpp"
 #include "gameconfig.hpp"
 #include "display/display.hpp"
+#include "display/scene_context.hpp"
+#include "game_session.hpp"
+#include "view.hpp"
 #include "input/input_manager_sdl.hpp"
 #include "event_manager.hpp"
 
@@ -93,8 +96,30 @@ EventManager::update()
         case SDL_KEYUP:
           if (event.key.state)
             {
+              SceneContext& sc = GameSession::current()->get_scene_context();
+          
               switch (event.key.keysym.sym)
                 {
+                case SDLK_1:
+                  sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
+                  console << "Toggled COLORMAP: " << ((sc.get_render_mask() & SceneContext::COLORMAP) > 0) << std::endl;
+                  break;
+
+                case SDLK_2:
+                  sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
+                  console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAP) > 0) << std::endl;
+                  break;
+          
+                case SDLK_3:
+                  sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
+                  console << "Toggled HIGHLIGHTMAP: " << ((sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0) << std::endl;
+                  break;      
+      
+                case SDLK_4:
+                  sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAPSCREEN);
+                  console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAPSCREEN) > 0) << std::endl;
+                  break;
+
                 case SDLK_c:
                   if (debug) {
                     collision_debug = !collision_debug;
@@ -135,9 +160,17 @@ EventManager::update()
             }
           break;
 
-        case SDL_MOUSEMOTION:
         case SDL_MOUSEBUTTONDOWN:
+          {
+            Vector real_pos = GameSession::current()->get_view()->screen2world(Vector(event.button.x,
+                                                                                      event.button.y));
+          
+            console << "Click at: " << int(real_pos.x) << ", " << int(real_pos.y) << std::endl;
+          }
+          break;
+
         case SDL_MOUSEBUTTONUP:
+        case SDL_MOUSEMOTION:
         case SDL_JOYAXISMOTION:
         case SDL_JOYBALLMOTION:
         case SDL_JOYHATMOTION:

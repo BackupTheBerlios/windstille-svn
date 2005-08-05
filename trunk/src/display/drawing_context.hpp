@@ -50,7 +50,7 @@ public:
   ~DrawingContext();
 
   /** Draws everything in the drawing context to the screen */
-  void render(CL_GraphicContext* gc = 0);
+  void render();
 
   /** Empties the drawing context */
   void clear();

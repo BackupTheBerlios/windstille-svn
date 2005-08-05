@@ -4,8 +4,6 @@
 
 #include <math.h>
 #include <GL/gl.h>
-#include <ClanLib/gl.h>
-#include <ClanLib/display.h>
 #include "display/drawing_request.hpp"
 #include "display/scene_context.hpp"
 #include "sprite2d/data.hpp"

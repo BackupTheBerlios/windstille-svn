@@ -46,13 +46,13 @@ VertexArrayDrawingRequest::num_vertices() const
 }
 
 void
-VertexArrayDrawingRequest::draw(CL_GraphicContext* gc)
+VertexArrayDrawingRequest::draw()
 {
-  draw(gc, 0, num_vertices());
+  draw(0, num_vertices());
 }
 
 void
-VertexArrayDrawingRequest::draw(CL_GraphicContext* gc, int start, int end)
+VertexArrayDrawingRequest::draw(int start, int end)
 {
   assert(!vertices.empty());
   assert(texcoords.empty() || int(texcoords.size()/2) == num_vertices());

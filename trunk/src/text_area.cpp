@@ -23,8 +23,6 @@
 **  02111-1307, USA.
 */
 
-#include <ClanLib/gl.h>
-#include <ClanLib/Display/display.h>
 #include "ttf_font.hpp"
 #include "text_area.hpp"
 #include "baby_xml.hpp"

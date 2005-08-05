@@ -29,10 +29,6 @@
 #include "math/rect.hpp"
 #include "color.hpp"
 
-/** FIXME: its called VDisplay instead of Display to avoid naming
-    conflict with X11 header, should be renamed as soon as we got rid
-    of ClanLib, which includes the X11 header in one of the
-    headerfiles */
 class Display
 {
 private:

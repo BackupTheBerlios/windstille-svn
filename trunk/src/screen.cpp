@@ -106,14 +106,6 @@ Screen::draw_fps(float delta)
   Fonts::ttffont->draw(Display::get_width() - 100, 30, output);
 }
 
-void
-Screen::key_down(const CL_InputEvent& event)
-{
-  switch (event.id) 
-    {
-    }
-}
-
 } // namespace Windstille
 
 /* EOF */

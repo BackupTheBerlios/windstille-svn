@@ -22,13 +22,11 @@
 #include <stdexcept>
 #include <sstream>
 #include <memory>
-#include <ClanLib/Display/joystick.h>
 
 #include "lisp/parser.hpp"
 #include "lisp/lisp.hpp"
 #include "lisp/properties.hpp"
 #include "windstille_error.hpp"
-#include "input_manager_custom.hpp"
 #include "input_manager_sdl.hpp"
 #include "input_manager_player.hpp"
 #include "input_manager_impl.hpp"

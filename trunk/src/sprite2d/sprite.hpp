@@ -8,7 +8,6 @@
 #include "math/vector.hpp"
 #include "math/matrix.hpp"
 
-class CL_GraphicContext;
 class DrawingContext;
 class Color;
 

@@ -1,21 +1,27 @@
-//  $Id$
-//
-//  Windstille - A Jump'n Shoot Game
-//  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>
-//
-//  This program is free software; you can redistribute it and/or
-//  modify it under the terms of the GNU General Public License
-//  as published by the Free Software Foundation; either version 2
-//  of the License, or (at your option) any later version.
-//
-//  This program is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//  GNU General Public License for more details.
-//
-//  You should have received a copy of the GNU General Public License
-//  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+/*  $Id$
+**   __      __ __             ___        __   __ __   __
+**  /  \    /  \__| ____    __| _/_______/  |_|__|  | |  |   ____
+**  \   \/\/   /  |/    \  / __ |/  ___/\   __\  |  | |  | _/ __ \
+**   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
+**    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
+**         \/          \/      \/    \/                         \/
+**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**
+**  This program is free software; you can redistribute it and/or
+**  modify it under the terms of the GNU General Public License
+**  as published by the Free Software Foundation; either version 2
+**  of the License, or (at your option) any later version.
+**
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+** 
+**  You should have received a copy of the GNU General Public License
+**  along with this program; if not, write to the Free Software
+**  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+**  02111-1307, USA.
+*/
 
 #include <math.h>
 #include <sstream>
@@ -65,9 +71,6 @@ GameSession::GameSession(const std::string& arg_filename)
   if (debug) std::cout << "Creating new GameSession" << std::endl;
   current_ = this;
   
-  //FIXME:slots.push_back(CL_Keyboard::sig_key_down().connect(this, &GameSession::on_key_down));
-  //FIXME:slots.push_back(CL_Mouse::sig_key_down().connect(this, &GameSession::on_mouse_down));
-
   view           = new View();  
   energy_bar     = new EnergyBar();
   dialog_manager = new DialogManager();
@@ -236,58 +239,6 @@ GameSession::quit()
       fadeout_value = 0;
       sound_manager->stop_music();
       fade_state = FADEOUT;
-    }
-}
-
-void
-GameSession::on_mouse_down(const CL_InputEvent& event)
-{
-  Vector real_pos = view->screen2world(Vector(event.mouse_pos.x,
-                                              event.mouse_pos.y));
-
-  switch(event.id)
-    {
-    case CL_MOUSE_LEFT:
-      console << "Click at: " << real_pos.x << ", " << real_pos.y << std::endl;
-      break;
-    default:
-      break;
-    }
-}
-
-void
-GameSession::on_key_down(const CL_InputEvent& event)
-{
-  if (!console.is_active())
-    {
-      switch(event.id)
-        {
-        case SDLK_1:
-          sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
-          console << "Toggled COLORMAP: " << ((sc.get_render_mask() & SceneContext::COLORMAP) > 0) << std::endl;
-          break;
-
-        case SDLK_2:
-          sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
-          console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAP) > 0) << std::endl;
-          break;
-          
-        case SDLK_3:
-          sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
-          console << "Toggled HIGHLIGHTMAP: " << ((sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0) << std::endl;
-          break;      
-      
-        case SDLK_4:
-          sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAPSCREEN);
-          console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAPSCREEN) > 0) << std::endl;
-          break;
-
-
-        default:
-          // ignore key
-          //console.add("Key pressed:: ", event.id);
-          break;
-        }
     }
 }
 

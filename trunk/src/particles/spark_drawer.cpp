@@ -17,9 +17,6 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#include <ClanLib/Display/graphic_context.h>
-#include <ClanLib/Display/surface.h>
-#include <ClanLib/gl.h>
 #include "display/drawing_request.hpp"
 #include "display/vertex_array_drawing_request.hpp"
 #include "particle_system.hpp"
