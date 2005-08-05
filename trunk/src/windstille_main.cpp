@@ -47,10 +47,6 @@
 #include "command_line.hpp"
 #include "sprite2d/manager.hpp"
 
-#ifdef main
-#undef main
-#endif
-
 using namespace Windstille;
 
 WindstilleMain::WindstilleMain()
@@ -428,6 +424,9 @@ WindstilleMain::game_main()
       break;
 
     case LOAD_MENU:
+      delete screen;
+      screen = 0;
+      return false;
       // Fall through and load the game directly as long as we don't
       // have a new menu
     case LOAD_GAME_SESSION:
