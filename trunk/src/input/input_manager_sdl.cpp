@@ -38,6 +38,8 @@ InputManagerSDL::InputManagerSDL()
 
   if (num_joysticks > 0)
     /*SDL_Joystick* joy =*/ SDL_JoystickOpen(0);
+    
+  keystate = SDL_GetKeyState(0);
 }
 
 InputManagerSDL::~InputManagerSDL()
@@ -71,14 +73,14 @@ InputManagerSDL::on_event(const SDL_Event& event)
           case SDLK_LEFT:
             if (event.key.state)
               add_axis_event(HORIZONTAL_AXIS, -1.0);
-            else
+            else if (!keystate[SDLK_RIGHT])
               add_axis_event(HORIZONTAL_AXIS, 0);
             break;
 
           case SDLK_RIGHT:
             if (event.key.state)
               add_axis_event(HORIZONTAL_AXIS, 1.0);
-            else
+            else if (!keystate[SDLK_LEFT])
               add_axis_event(HORIZONTAL_AXIS, 0);
             break;
 

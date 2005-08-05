@@ -47,6 +47,7 @@ public:
 private:
   InputManagerSDL (const InputManagerSDL&);
   InputManagerSDL& operator= (const InputManagerSDL&);
+  Uint8* keystate;
 };
 
 #endif
