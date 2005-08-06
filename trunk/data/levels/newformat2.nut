@@ -1,3 +1,4 @@
+set_controller_help_active(true);
 player_flames2.set_active(false);
 player_flames.set_active(false);      
 
