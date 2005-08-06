@@ -37,6 +37,7 @@ Display::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
 {
   OpenGLState state;
 
+  state.enable(GL_LINE_SMOOTH);
   state.enable(GL_BLEND);
   state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   state.color(color);
@@ -143,6 +144,7 @@ Display::draw_rounded_rect(const Rectf& rect, float radius, const Color& color)
   OpenGLState state;
 
   state.enable(GL_BLEND);
+  state.enable(GL_LINE_SMOOTH);
   state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   state.color(color);
   state.activate();
@@ -249,6 +251,7 @@ Display::draw_circle(const Vector& pos, float radius, const Color& color)
   OpenGLState state;
 
   state.enable(GL_BLEND);
+  state.enable(GL_LINE_SMOOTH);
   state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   state.color(color);
   state.activate();

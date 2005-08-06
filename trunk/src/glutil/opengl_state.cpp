@@ -95,9 +95,10 @@ OpenGLState::global()
 OpenGLState::OpenGLState()
   : impl(new OpenGLStateImpl())
 {
-  impl->state[GL_TEXTURE_2D] = false;
-  impl->state[GL_DEPTH_TEST] = false;
-  impl->state[GL_BLEND]      = false;
+  impl->state[GL_TEXTURE_2D]  = false;
+  impl->state[GL_DEPTH_TEST]  = false;
+  impl->state[GL_BLEND]       = false;
+  impl->state[GL_LINE_SMOOTH] = false;
 
   impl->client_state[GL_VERTEX_ARRAY]        = false;
   impl->client_state[GL_COLOR_ARRAY]         = false;
