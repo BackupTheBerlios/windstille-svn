@@ -230,25 +230,16 @@ Display::init()
 
 void
 Display::set_fullscreen(bool fullscreen)
-{
+{ 
+  Uint32 flags = SDL_OPENGL;
   if (fullscreen)
-    {
-      window = SDL_SetVideoMode(config->screen_width, config->screen_height,
-                                0, SDL_OPENGL | SDL_FULLSCREEN);
-      if (!window)
-        {
-          throw std::runtime_error("Display:: Couldn't create window");
-        }
+    flags |= SDL_FULLSCREEN;
 
-    }
-  else
+  window = SDL_SetVideoMode(config->screen_width, config->screen_height,
+                            0, flags);
+  if (!window)
     {
-      window = SDL_SetVideoMode(config->screen_width, config->screen_height,
-                                0, SDL_OPENGL);
-      if (!window)
-        {
-          throw std::runtime_error("Display:: Couldn't create window");
-        }
+      throw std::runtime_error("Display:: Couldn't create window");
     }
 }
 
