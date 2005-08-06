@@ -46,8 +46,6 @@ sources =
         dialog_manager.hpp
         energy_bar.cpp
         energy_bar.hpp
-        event_manager.hpp
-        event_manager.cpp
         entity.cpp
         entity.hpp
         elevator.hpp
@@ -70,6 +68,8 @@ sources =
         math.hpp
         nightvision.cpp
         nightvision.hpp
+        pda.cpp
+        pda.hpp
         player.cpp
         player.hpp
         random.cpp

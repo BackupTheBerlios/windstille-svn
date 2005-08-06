@@ -32,6 +32,7 @@
 #include "squirrel/include/squirrel.h"
 #include "screen.hpp"
 #include "controller_help_window.hpp"
+#include "pda.hpp"
 #include "sprite2d/sprite.hpp"
 #include "globals.hpp"
 
@@ -74,6 +75,7 @@ public:
 
   SceneContext& get_scene_context() { return sc; }
   View* get_view() { return view; }
+  PDA pda;
 
   void set_dialog_state() { control_state = DIALOG; }
   void set_game_state()   { control_state = GAME; }
@@ -83,6 +85,7 @@ public:
   void draw();
   void draw_game();
   void update(float delta);
+  void handle_event(const SDL_Event& event);
 
   void quit();
 };

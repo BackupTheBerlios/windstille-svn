@@ -28,6 +28,7 @@
 #include "gameconfig.hpp"
 #include "event_manager.hpp"
 #include "input/input_manager.hpp"
+#include "input/input_manager_sdl.hpp"
 #include "sound/sound_manager.hpp"
 
 namespace Windstille {
@@ -93,7 +94,7 @@ Screen::display()
     }
   ++frames;
 
-  EventManager::instance()->update();
+  poll_events();
 }
 
 void 
@@ -112,6 +113,99 @@ Screen::draw_fps(float delta)
   snprintf(output, sizeof(output), "FPS: %d", fps_save);
   
   Fonts::ttffont->draw(Display::get_width() - 100, 30, output);
+}
+
+void
+Screen::poll_events()
+{
+  SDL_Event event;
+  while(SDL_PollEvent(&event))
+    {
+      switch(event.type)
+        {
+        case SDL_QUIT:
+          // FIXME: This should be a bit more gentle, but will do for now
+          std::cout << "Ctrl-c or Window-close pressed, game is going to quit" << std::endl;
+          exit(EXIT_SUCCESS);
+          break;
+          
+        case SDL_ACTIVEEVENT:
+          // event.active
+          break;
+          
+        case SDL_VIDEORESIZE:
+          // event.resize
+          break;
+              
+        case SDL_VIDEOEXPOSE:
+          // event.expose
+          break;
+                
+        case SDL_USEREVENT:
+          // event.user
+          break;
+                    
+        case SDL_SYSWMEVENT:
+          // event.syswm
+          break;
+          break;
+
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+          if (event.key.state)
+            {    
+              switch (event.key.keysym.sym)
+                {               
+                case SDLK_F10:
+                  config->show_fps = ! (config->show_fps);
+                  break;
+              
+                case SDLK_F11:
+                  config->use_fullscreen = ! (config->use_fullscreen);
+                  Display::set_fullscreen(config->use_fullscreen);
+                  break;
+              
+                case SDLK_F12:
+                  // FIXME: Implement me for SDL
+                  {
+                    std::string filename = "screenshot.png";
+                    std::cout << "Saving screenshot *NOT* to: " << filename << std::endl;
+                  }
+                  break;
+              
+                default:
+                  handle_event(event);
+                  break;
+                }
+            }
+              
+          if (!console.is_active() && event.key.state && event.key.keysym.sym == SDLK_F1)
+            {
+              console.activate();
+            }
+          else
+            {
+              if (InputManagerSDL::current())
+                InputManagerSDL::current()->on_event(event);
+            }
+          break;
+
+        case SDL_MOUSEBUTTONUP:
+        case SDL_MOUSEMOTION:
+        case SDL_JOYAXISMOTION:
+        case SDL_JOYBALLMOTION:
+        case SDL_JOYHATMOTION:
+        case SDL_JOYBUTTONUP:
+        case SDL_JOYBUTTONDOWN:
+          if (InputManagerSDL::current())
+            InputManagerSDL::current()->on_event(event);
+          break;
+        
+        default:
+          handle_event(event);
+          break;
+      }
+    }
 }
 
 } // namespace Windstille

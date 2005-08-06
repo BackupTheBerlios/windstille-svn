@@ -20,6 +20,7 @@
 #ifndef HEADER_SCREEN_HXX
 #define HEADER_SCREEN_HXX
 
+#include <SDL.h>
 #include "signals/slot.hpp"
 
 namespace Windstille {
@@ -30,6 +31,7 @@ class Screen
 private:
   void draw_fps(float delta);
   unsigned int ticks;
+  void poll_events();
 
 protected:  
   int frames;
@@ -43,6 +45,7 @@ public:
 
   virtual void draw() =0;
   virtual void update(float delta) =0;
+  virtual void handle_event(const SDL_Event& event) =0;
 
   void display();
 };

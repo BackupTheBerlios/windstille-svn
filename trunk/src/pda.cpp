@@ -27,44 +27,25 @@
 #include "display/display.hpp"
 #include "text_area.hpp"
 #include "fonts.hpp"
-#include "controller_help_window.hpp"
+#include "pda.hpp"
 
-class ControllerHelpWindowImpl
-{
-public:
-  TextArea* text_area;
-};
-
-ControllerHelpWindow::ControllerHelpWindow()
-  : impl(new ControllerHelpWindowImpl)
-{
-  int width  = 200;
-  int height = 120;
-
-  impl->text_area = new TextArea(Rect(Point(Display::get_width() - width - 16,
-                                            Display::get_height() - height - 16),
-                                      Size(width, height)));
-  impl->text_area->set_font(Fonts::ttffont);
-  impl->text_area->set_text("<large>Control Help</large>\n"
-                            "------------------------\n"
-                            "walk: left/right\n"
-                            "duck: down\n"
-                            "run:  a\n"
-                            "jump: s\n"
-                            "fire: d\n"
-                            "use:  w\n"
-                            "PDA:  z\n"
-                            );
+PDA::PDA()
+  : visible(false)
+{ 
+  text_area = 0;
 }
 
 void
-ControllerHelpWindow::draw()
+PDA::draw()
 {
-  const Rectf& rect = impl->text_area->get_rect().grow(8.0f);
+  if (!visible)
+    return;
+    
+  const Rectf& rect = text_area->get_rect().grow(8.0f);
 
   Display::fill_rounded_rect(rect, 16.0f, Color(0.3f, 0.3f, 0.5f, 0.5f));
   Display::draw_rounded_rect(rect, 16.0f, Color(1.0f, 1.0f, 1.0f, 0.5f));
-  impl->text_area->draw();
+  text_area->draw();
 
   Controller controller = InputManager::get_controller();
   
@@ -100,9 +81,36 @@ ControllerHelpWindow::draw()
 }
 
 void
-ControllerHelpWindow::update(float delta)
+PDA::update(float delta)
 {
-  impl->text_area->update(delta);
+  int width  = 200;
+  int height = 120;
+  std::string text;
+  text = "<large>PDA</large>\n"
+         "------------------------\n";
+
+  for (unsigned i = 0; i != messages.size(); ++i)
+    text += messages[i] + '\n';
+  
+  if (text != old_text)
+  {
+    delete text_area;
+    text_area = new TextArea(Rect(Point(16,
+                Display::get_height() - height - 16),
+                Size(width, height)));
+    text_area->set_font(Fonts::ttffont);
+    text_area->set_text(text);
+    
+    old_text = text;
+  }
+  
+  text_area->update(delta);
+}
+
+void
+PDA::add_dialog(const std::string& text)
+{
+  messages.push_back(text);
 }
 
 /* EOF */

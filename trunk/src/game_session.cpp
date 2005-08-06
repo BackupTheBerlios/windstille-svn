@@ -104,6 +104,7 @@ GameSession::draw_game()
   
   conversation->draw();
   controller_help_window.draw();
+  pda.draw();
 }
 
 void
@@ -183,6 +184,7 @@ GameSession::update(float delta)
     }
   conversation->update(delta);
   controller_help_window.update(delta);
+  pda.update(delta);
   
   if(keystate[SDLK_ESCAPE])
     quit();
@@ -224,6 +226,64 @@ GameSession::set_sector(const std::string& arg_filename)
   fadeout_value = 0;
   sound_manager->stop_music();
   fade_state = FADEOUT;
+}
+
+void
+GameSession::handle_event(const SDL_Event& event)
+{
+  switch(event.type)
+  {
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
+      if (event.key.state)
+        {    
+          switch (event.key.keysym.sym)
+            {
+            case SDLK_1:
+              sc.set_render_mask(sc.get_render_mask() ^ SceneContext::COLORMAP);
+              console << "Toggled COLORMAP: " << ((sc.get_render_mask() & SceneContext::COLORMAP) > 0) << std::endl;
+              break;
+
+            case SDLK_2:
+              sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAP);
+              console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAP) > 0) << std::endl;
+              break;
+      
+            case SDLK_3:
+              sc.set_render_mask(sc.get_render_mask() ^ SceneContext::HIGHLIGHTMAP);
+              console << "Toggled HIGHLIGHTMAP: " << ((sc.get_render_mask() & SceneContext::HIGHLIGHTMAP) > 0) << std::endl;
+              break;      
+  
+            case SDLK_4:
+              sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAPSCREEN);
+              console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAPSCREEN) > 0) << std::endl;
+              break;
+
+            case SDLK_c:
+              if (debug) {
+                collision_debug = !collision_debug;
+                console << "Collision Debugging " << (collision_debug ? "enabled" : "disabled") << std::endl;
+              }
+              break;
+              
+            case SDLK_z:
+              pda.set_visible(!pda.get_visible());
+              break;
+          
+            default:
+              break;
+            }
+        }
+      break;
+        
+    case SDL_MOUSEBUTTONDOWN:
+      {
+        Vector real_pos = GameSession::current()->get_view()->screen2world(Vector(event.button.x,
+                                                                                  event.button.y));      
+        console << "Click at: " << int(real_pos.x) << ", " << int(real_pos.y) << std::endl;
+      }
+      break;
+  }
 }
 
 void

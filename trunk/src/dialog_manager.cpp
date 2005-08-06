@@ -43,7 +43,7 @@ DialogManager::~DialogManager()
 
 void
 DialogManager::add_dialog(int alignment_, const std::string& portrait_, const std::string& text_)
-{
+{ 
   progress  = 0;
   delay     = 0.0;
   alignment = alignment_;
@@ -99,6 +99,8 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
                                 Size(text_width, 200)));
   text_area->set_font(Fonts::ttfdialog);
   text_area->set_text(text);
+  
+  GameSession::current()->pda.add_dialog(text);
 }
 
 void

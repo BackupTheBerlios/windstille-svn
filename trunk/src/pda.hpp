@@ -23,21 +23,28 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_EVENT_MANAGER_HPP
-#define HEADER_EVENT_MANAGER_HPP
+#ifndef HEADER_PDA_HPP
+#define HEADER_PDA_HPP
 
-/** Management class for SDL events */
-class EventManager
+class TextArea;
+
+/** */
+class PDA
 {
-private:
-  EventManager();
-  ~EventManager();
-
-  static EventManager* instance_;
 public:
-  static EventManager* instance();
+  PDA();
 
-  void update();
+  void draw();
+  void update(float delta);
+  bool get_visible() const {return visible;}
+  void set_visible(bool arg_visible) {visible = arg_visible;}
+  void add_dialog(const std::string& text);
+
+private:
+  TextArea* text_area;
+  bool visible;
+  std::vector<std::string> messages;
+  std::string old_text;
 };
 
 #endif
