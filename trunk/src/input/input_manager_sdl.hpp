@@ -30,6 +30,8 @@
 
 #include <SDL.h>
 
+class InputManagerSDLImpl;
+
 /** */
 class InputManagerSDL : public InputManagerImpl
 {
@@ -42,9 +44,23 @@ public:
   virtual ~InputManagerSDL();
 
   void update(float delta);
+
+  void bind_joystick_hat_axis(int event, int device, int axis);
+
+  void bind_joystick_axis(int event, int device, int axis);
+  void bind_joystick_button(int event, int device, int button);
+
+  void bind_keyboard_button(int event, SDLKey key);
+  void bind_keyboard_axis(int event, SDLKey minus, SDLKey plus);
   
   void on_event(const SDL_Event& event);
 private:
+  void on_key_event(const SDL_KeyboardEvent& key);
+  void on_joy_button_event(const SDL_JoyButtonEvent& button);
+  void on_joy_axis_event(const SDL_JoyAxisEvent& button);
+  
+  std::auto_ptr<InputManagerSDLImpl> impl;
+
   InputManagerSDL (const InputManagerSDL&);
   InputManagerSDL& operator= (const InputManagerSDL&);
 };

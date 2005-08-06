@@ -24,6 +24,7 @@
 */
 
 #include <iostream>
+#include <vector>
 #include "controller_def.hpp"
 #include "input_manager_sdl.hpp"
 
@@ -31,7 +32,45 @@ InputManagerSDL* InputManagerSDL::current_ = 0;
 
 #define DEAD_ZONE 4096
 
+struct JoystickButtonBinding
+{
+  int event;
+  int device;
+  int button;
+};
+
+struct JoystickAxisBinding
+{
+  int event;
+  int device;
+  int axis;
+};
+
+struct KeyboardButtonBinding
+{
+  int event;
+  SDLKey key;
+};
+
+struct KeyboardAxisBinding
+{
+  int event;
+  SDLKey plus;
+  SDLKey minus;
+};
+
+class InputManagerSDLImpl
+{
+public:
+  std::vector<JoystickButtonBinding> joystick_button_bindings;
+  std::vector<JoystickAxisBinding>   joystick_axis_bindings;
+
+  std::vector<KeyboardButtonBinding> keyboard_button_bindings;
+  std::vector<KeyboardAxisBinding>   keyboard_axis_bindings;
+};
+
 InputManagerSDL::InputManagerSDL()
+  : impl(new InputManagerSDLImpl)
 {
   current_ = this;
   
@@ -39,6 +78,40 @@ InputManagerSDL::InputManagerSDL()
 
   if (num_joysticks > 0)
     /*SDL_Joystick* joy =*/ SDL_JoystickOpen(0);
+
+  //SDLK_LAST
+
+  bind_joystick_button(PDA_BUTTON,       0, 0);
+  bind_joystick_button(TERTIARY_BUTTON,  0, 1);
+  bind_joystick_button(SECONDARY_BUTTON, 0, 2);
+  bind_joystick_button(PRIMARY_BUTTON,   0, 3);
+  bind_joystick_button(AIM_BUTTON,       0, 7);
+  bind_joystick_button(PAUSE_BUTTON,     0, 9);
+
+  bind_joystick_axis(X_AXIS, 0, 0);
+  bind_joystick_axis(Y_AXIS, 0, 1);
+
+  if (1)
+    {
+      bind_keyboard_button(PDA_BUTTON,       SDLK_w);
+      bind_keyboard_button(TERTIARY_BUTTON,  SDLK_a);
+      bind_keyboard_button(SECONDARY_BUTTON, SDLK_d);
+      bind_keyboard_button(PRIMARY_BUTTON,   SDLK_s);
+      bind_keyboard_button(AIM_BUTTON,       SDLK_LSHIFT);
+      bind_keyboard_button(PAUSE_BUTTON,     SDLK_p);
+    }
+  else
+    {
+      bind_keyboard_button(PDA_BUTTON,       SDLK_COMMA);
+      bind_keyboard_button(TERTIARY_BUTTON,  SDLK_a);
+      bind_keyboard_button(SECONDARY_BUTTON, SDLK_e);
+      bind_keyboard_button(PRIMARY_BUTTON,   SDLK_o);
+      bind_keyboard_button(AIM_BUTTON,       SDLK_LSHIFT);
+      bind_keyboard_button(PAUSE_BUTTON,     SDLK_p);
+    }
+
+  bind_keyboard_axis(X_AXIS, SDLK_LEFT, SDLK_RIGHT);
+  bind_keyboard_axis(Y_AXIS, SDLK_UP, SDLK_DOWN);
 }
 
 InputManagerSDL::~InputManagerSDL()
@@ -46,10 +119,85 @@ InputManagerSDL::~InputManagerSDL()
 }
 
 void
-InputManagerSDL::on_event(const SDL_Event& event)
+InputManagerSDL::on_key_event(const SDL_KeyboardEvent& event)
 {
+  for (std::vector<KeyboardButtonBinding>::const_iterator i = impl->keyboard_button_bindings.begin();
+       i != impl->keyboard_button_bindings.end();
+       ++i)
+    {
+      if (event.keysym.sym == i->key)
+        {
+          add_button_event(i->event, event.state);
+        }
+    }
+
   Uint8* keystate = SDL_GetKeyState(0);
 
+  for (std::vector<KeyboardAxisBinding>::const_iterator i = impl->keyboard_axis_bindings.begin();
+       i != impl->keyboard_axis_bindings.end();
+       ++i)
+    {
+      if (event.keysym.sym == i->minus)
+        {
+          if (event.state)
+            add_axis_event(i->event, -1.0f);
+          else if (!keystate[i->plus])
+            add_axis_event(i->event, 0.0f);
+        }
+      else if (event.keysym.sym == i->plus)
+        {
+          if (event.state)
+            add_axis_event(i->event, 1.0f);
+          else if (!keystate[i->minus])
+            add_axis_event(i->event, 0.0f);
+        }
+    }
+}
+
+void
+InputManagerSDL::on_joy_button_event(const SDL_JoyButtonEvent& button)
+{
+  for (std::vector<JoystickButtonBinding>::const_iterator i = impl->joystick_button_bindings.begin();
+       i != impl->joystick_button_bindings.end();
+       ++i)
+    {
+      if (button.which  == i->device &&
+          button.button == i->button)
+        {
+          add_button_event(i->event, button.state);
+        }
+    }
+}
+
+void
+InputManagerSDL::on_joy_axis_event(const SDL_JoyAxisEvent& event)
+{
+  for (std::vector<JoystickAxisBinding>::const_iterator i = impl->joystick_axis_bindings.begin();
+       i != impl->joystick_axis_bindings.end();
+       ++i)
+    {
+      if (event.which  == i->device &&
+          event.axis   == i->axis)
+        {
+          if (event.value < -DEAD_ZONE)
+            {
+              add_axis_event(i->event, event.value/32768.0f);
+            }
+          else if (event.value > DEAD_ZONE)
+            {
+              add_axis_event(i->event, event.value/32767.0f);
+            }
+          else
+            {
+              add_axis_event(i->event, 0);
+            }
+        }
+    }
+}
+
+void
+InputManagerSDL::on_event(const SDL_Event& event)
+{
   switch(event.type)
     {        
     case SDL_KEYUP:
@@ -67,67 +215,8 @@ InputManagerSDL::on_event(const SDL_Event& event)
                 add_keyboard_event(0, KeyboardEvent::SPECIAL, event.key.keysym.sym);
               }
           }
-
-
-        switch (event.key.keysym.sym)
-          {
-          case SDLK_LEFT:
-            if (event.key.state)
-              add_axis_event(X_AXIS, -1.0);
-            else if (!keystate[SDLK_RIGHT])
-              add_axis_event(X_AXIS, 0);
-            break;
-
-          case SDLK_RIGHT:
-            if (event.key.state)
-              add_axis_event(X_AXIS, 1.0);
-            else if (!keystate[SDLK_LEFT])
-              add_axis_event(X_AXIS, 0);
-            break;
-
-          case SDLK_UP:
-            if (event.key.state)
-              add_axis_event(Y_AXIS, -1.0);
-            else
-              add_axis_event(Y_AXIS, 0);
-            break;
-
-          case SDLK_DOWN:
-            if (event.key.state)
-              add_axis_event(Y_AXIS, 1.0);
-            else
-              add_axis_event(Y_AXIS, 0);
-            break;
-
-          case SDLK_a:
-            add_button_event(TERTIARY_BUTTON, event.key.state);
-            break;
-
-          case SDLK_s:
-            add_button_event(PRIMARY_BUTTON, event.key.state);
-            break;
-
-          case SDLK_d:
-            add_button_event(SECONDARY_BUTTON, event.key.state);
-            break;
-
-          case SDLK_w:
-            add_button_event(PDA_BUTTON, event.key.state);
-            break;
-
-          case SDLK_LSHIFT:
-            add_button_event(AIM_BUTTON, event.key.state);
-            break;
-
-          case SDLK_PAUSE:
-          case SDLK_p:
-            add_button_event(PAUSE_BUTTON, event.key.state);
-            break;
-           
-          default:
-            break;
-          }
       }
+      on_key_event(event.key);
       break;
 
     case SDL_MOUSEMOTION:
@@ -142,36 +231,7 @@ InputManagerSDL::on_event(const SDL_Event& event)
       break;
 
     case SDL_JOYAXISMOTION:
-      if (event.jaxis.axis == 0) 
-        {
-          if (event.jaxis.value < -DEAD_ZONE)
-            {
-              add_axis_event(X_AXIS, event.jaxis.value/32768.0f);
-            }
-          else if (event.jaxis.value > DEAD_ZONE)
-            {
-              add_axis_event(X_AXIS, event.jaxis.value/32767.0f);
-            }
-          else
-            {
-              add_axis_event(X_AXIS, 0);
-            }
-        }
-      else if (event.jaxis.axis == 1) 
-        {
-          if (event.jaxis.value < -DEAD_ZONE)
-            {
-              add_axis_event(Y_AXIS, event.jaxis.value/32768.0f);
-            }
-          else if (event.jaxis.value > DEAD_ZONE)
-            {
-              add_axis_event(Y_AXIS, event.jaxis.value/32767.0f);
-            }
-          else
-            {
-              add_axis_event(Y_AXIS, 0);
-            }
-        }
+      on_joy_axis_event(event.jaxis);
       break;
 
     case SDL_JOYBALLMOTION:
@@ -184,30 +244,7 @@ InputManagerSDL::on_event(const SDL_Event& event)
           
     case SDL_JOYBUTTONUP:
     case SDL_JOYBUTTONDOWN:
-      if (event.jbutton.button == 0)
-        {
-          add_button_event(PDA_BUTTON, event.jbutton.state); 
-        }
-      else if (event.jbutton.button == 1)
-        {
-          add_button_event(TERTIARY_BUTTON, event.jbutton.state); 
-        }
-      else if (event.jbutton.button == 2)
-        {
-          add_button_event(SECONDARY_BUTTON, event.jbutton.state);
-        }
-      else if (event.jbutton.button == 3)
-        {
-          add_button_event(PRIMARY_BUTTON, event.jbutton.state);
-        }
-      else if (event.jbutton.button == 7)
-        {
-          add_button_event(AIM_BUTTON, event.jbutton.state);
-        }
-      else if (event.jbutton.button == 9)
-        {
-          add_button_event(PAUSE_BUTTON, event.jbutton.state);
-        }
+      on_joy_button_event(event.jbutton);
       break;
 
     default:
@@ -219,7 +256,58 @@ InputManagerSDL::on_event(const SDL_Event& event)
 void
 InputManagerSDL::update(float delta)
 {
+}
+
+void
+InputManagerSDL::bind_joystick_hat_axis(int event, int device, int axis)
+{
+}
+
+void
+InputManagerSDL::bind_joystick_axis(int event, int device, int axis)
+{
+  JoystickAxisBinding binding;
+
+  binding.event  = event;
+  binding.device = device;
+  binding.axis   = axis;
+
+  impl->joystick_axis_bindings.push_back(binding);
+}
+
+void
+InputManagerSDL::bind_joystick_button(int event, int device, int button)
+{
+  JoystickButtonBinding binding;
+
+  binding.event  = event;
+  binding.device = device;
+  binding.button = button;
+
+  impl->joystick_button_bindings.push_back(binding);
+}
+
+void
+InputManagerSDL::bind_keyboard_button(int event, SDLKey key)
+{
+  KeyboardButtonBinding binding;
   
+  binding.event = event;
+  binding.key   = key;
+
+  impl->keyboard_button_bindings.push_back(binding);
+}
+
+void
+InputManagerSDL::bind_keyboard_axis(int event, SDLKey minus, SDLKey plus)
+{
+  KeyboardAxisBinding binding;
+  
+  binding.event = event;
+  binding.minus = minus;
+  binding.plus  = plus;
+
+  impl->keyboard_axis_bindings.push_back(binding);
 }
 
 /* EOF */
