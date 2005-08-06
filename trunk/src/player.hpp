@@ -63,7 +63,10 @@ public:
     LISTEN,
     JUMP_BEGIN,
     JUMP_AIR,
-    JUMP_LAND
+    JUMP_LAND,
+    JUMP_UP_BEGIN,
+    JUMP_UP_AIR,
+    JUMP_UP_LAND
   };
 
 private:
@@ -119,12 +122,20 @@ private:
   void update_listen();
   void set_run();
   void update_run();
+  
   void set_jump_begin();
   void update_jump_begin();
   void set_jump_air();
   void update_jump_air();
   void set_jump_land();
   void update_jump_land();
+  
+  void set_jump_up_begin();
+  void update_jump_up_begin();
+  void set_jump_up_air();
+  void update_jump_up_air();
+  void set_jump_up_land();
+  void update_jump_up_land();
 
   /**
    * Sets an action for the sprite. In contrast to sprite->set_action this

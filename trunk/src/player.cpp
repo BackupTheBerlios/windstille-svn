@@ -144,6 +144,15 @@ Player::update (float delta)
     case JUMP_LAND:
       update_jump_land();
       break;
+    case JUMP_UP_BEGIN:
+      update_jump_up_begin();
+      break;
+    case JUMP_UP_AIR:
+      update_jump_up_air();
+      break;
+    case JUMP_UP_LAND:
+      update_jump_up_land();
+      break;
     default:
       assert(false);
       break;
@@ -211,7 +220,13 @@ Player::update_stand()
       Entity* obj = find_useable_entity();
       if (obj)
         obj->use();
+      return;
     }
+    
+  if(controller.get_button_state(JUMP_BUTTON)) {
+    set_jump_up_begin();
+    return;
+  }
 
   if (controller.get_axis_state(X_AXIS) < 0) {
     if(get_direction() == WEST)
@@ -458,6 +473,55 @@ Player::update_jump_land()
 {
   if(sprite.switched_actions()) {
     set_run();
+    return;
+  }
+}
+
+void
+Player::set_jump_up_begin()
+{
+  sprite.set_next_action("JumpUp");
+  state = JUMP_UP_BEGIN;
+}
+
+void
+Player::update_jump_up_begin()
+{
+  if(sprite.switched_actions()) {
+    set_jump_up_air();
+    return;
+  }
+}
+
+void
+Player::set_jump_up_air()
+{
+  velocity.y = -400;
+  sprite.set_next_action("JumpLandSofttoRun");
+  state = JUMP_UP_AIR;
+}
+
+void
+Player::update_jump_up_air()
+{
+  if(sprite.switched_actions()) {
+    set_jump_up_land();
+    return;
+  }
+}
+
+void
+Player::set_jump_up_land()
+{
+  sprite.set_next_action("Stand");
+  state = JUMP_UP_LAND;
+}
+
+void
+Player::update_jump_up_land()
+{
+  if(sprite.switched_actions()) {
+    set_stand();
     return;
   }
 }

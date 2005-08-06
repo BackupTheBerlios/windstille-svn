@@ -42,7 +42,7 @@ View::draw (SceneContext& sc)
 
   state.push(sc);
   Sector::current()->draw(sc);
-  if (debug)
+  if (collision_debug)
     Sector::current()->get_collision_engine()->draw(sc.highlight());
   state.pop(sc);
 }
