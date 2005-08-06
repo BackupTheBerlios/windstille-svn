@@ -63,11 +63,11 @@ Conversation::draw()
       for(int i = 0; i < int(choices.size()); ++i)
         {
           if (i == selection)
-            Fonts::ttffont->draw(x, y, choices[i]);
+            Fonts::ttfdialog->draw(x, y, choices[i]);
           else
-            Fonts::ttffont->draw(x, y, choices[i], Color(0.5f, 0.5f, 0.5f));
+            Fonts::ttfdialog->draw(x, y, choices[i], Color(0.5f, 0.5f, 0.5f));
       
-          y += Fonts::ttffont->get_height() + 10;
+          y += Fonts::ttfdialog->get_height() + 10;
         }
     }
 }
