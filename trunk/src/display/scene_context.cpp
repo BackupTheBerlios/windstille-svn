@@ -17,6 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#include "display/display.hpp"
 #include "glutil/surface.hpp"
 #include "glutil/opengl_state.hpp"
 #include "scene_context.hpp"
@@ -127,10 +128,14 @@ SceneContext::reset_modelview()
 void
 SceneContext::render()
 {
+  glClear(GL_DEPTH_BUFFER_BIT);
+      
   if (impl->render_mask & LIGHTMAPSCREEN)
     {
-      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-      
+      glEnable(GL_SCISSOR_TEST);
+      glScissor(0, Display::get_height() - impl->lightmap.get_height(), 
+                impl->lightmap.get_width(), impl->lightmap.get_height());
+
       glPushMatrix();
       glScalef(1.0f/LIGHTMAP_DIV, 1.0f/LIGHTMAP_DIV, 1.0f);
 
@@ -146,12 +151,12 @@ SceneContext::render()
 
         glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
                             0, 0, 
-                            0, 600 - impl->lightmap.get_height(),
+                            0, Display::get_height() - impl->lightmap.get_height(),
                             impl->lightmap.get_width(), impl->lightmap.get_height());
       }
-    }
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+      glDisable(GL_SCISSOR_TEST);
+    }
 
   if (impl->render_mask & COLORMAP)
     {

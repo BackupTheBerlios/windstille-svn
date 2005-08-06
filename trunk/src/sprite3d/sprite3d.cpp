@@ -350,7 +350,6 @@ Sprite3D::draw(const Vector& pos, const Matrix& modelview) const
     }
   else
     {
-      glClear(GL_DEPTH_BUFFER_BIT);
       state.enable(GL_DEPTH_TEST);
     }
 
