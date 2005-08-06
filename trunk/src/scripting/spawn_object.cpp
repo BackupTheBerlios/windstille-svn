@@ -40,10 +40,8 @@ void sq_to_lisp(HSQUIRRELVM v, std::vector<Lisp*>& entries)
     }
     case OT_STRING: {
       const char* str;
-      sq_getstring(v, -1, &str);
-      std::string lisp_str = sq_to_lisp_string(str);
-      
-      entries.push_back(new Lisp(Lisp::TYPE_STRING, lisp_str));
+      sq_getstring(v, -1, &str);      
+      entries.push_back(new Lisp(Lisp::TYPE_STRING, str));
       break;
     }                                                    
     case OT_BOOL: {
@@ -81,9 +79,10 @@ void table_to_lisp(HSQUIRRELVM v, int table_idx, std::vector<Lisp*>& entries)
 
       const char* key;
       sq_getstring(v, -2, &key);
+      std::string lisp_key = sq_to_lisp_string(key);
 
       std::vector<Lisp*> childs;
-      childs.push_back(new Lisp(Lisp::TYPE_SYMBOL, key));
+      childs.push_back(new Lisp(Lisp::TYPE_SYMBOL, lisp_key));
       sq_to_lisp(v, childs);
       entries.push_back(new Lisp(childs));
     } else {
