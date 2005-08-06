@@ -83,9 +83,9 @@ ControllerDef::button_id2name(int id) const
 int
 ControllerDef::button_name2id(const std::string& name) const
 {
-  std::map<std::string, int>::const_iterator i = axes.find(name);
-  if (i == axes.end())
-    throw std::runtime_error("Unknown button id: " + name);
+  std::map<std::string, int>::const_iterator i = buttons.find(name);
+  if (i == buttons.end())
+    throw std::runtime_error("Unknown button name: " + name);
 
   return i->second;
 }

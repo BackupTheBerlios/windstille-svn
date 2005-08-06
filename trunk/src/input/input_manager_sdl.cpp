@@ -25,6 +25,8 @@
 
 #include <iostream>
 #include <vector>
+#include "lisp/properties.hpp"
+#include "lisp/property_iterator.hpp"
 #include "controller_def.hpp"
 #include "input_manager_sdl.hpp"
 
@@ -67,51 +69,145 @@ public:
 
   std::vector<KeyboardButtonBinding> keyboard_button_bindings;
   std::vector<KeyboardAxisBinding>   keyboard_axis_bindings;
+
+  std::vector<SDL_Joystick*> joysticks;
+
+  std::map<std::string, SDLKey> keyidmapping;
 };
 
-InputManagerSDL::InputManagerSDL()
+std::string
+InputManagerSDL::keyid_to_string(SDLKey id)
+{
+  return SDL_GetKeyName(id);
+}
+
+SDLKey
+InputManagerSDL::string_to_keyid(const std::string& str)
+{
+  return impl->keyidmapping[str];
+}
+
+void
+InputManagerSDL::ensure_open_joystick(int device)
+{
+  if (device >= int(impl->joysticks.size()))
+    impl->joysticks.resize(device + 1, 0);
+
+  if (!impl->joysticks[device])
+    {
+      if (SDL_Joystick* joystick = SDL_JoystickOpen(device))
+        {
+          impl->joysticks[device] = joystick;
+        }
+      else
+        {
+          std::cout << "InputManagerSDL: Couldn't open joystick device " << device << std::endl;
+        }
+    }
+  
+}
+
+static bool has_suffix(const std::string& str, const std::string& suffix)
+{
+  if (str.length() >= suffix.length())
+    return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
+  else
+    return false;
+}
+
+void
+InputManagerSDL::parse_config(const lisp::Lisp* lisp)
+{
+  ControllerDef controller_def;
+  
+  lisp::Properties cur(lisp);
+  lisp::PropertyIterator<const lisp::Lisp*> iter = cur.get_iter();
+
+  while(iter.next()) 
+    {
+      if (has_suffix(iter.item(), "-button"))
+        {
+          lisp::Properties dev_prop(*iter);
+          lisp::PropertyIterator<const lisp::Lisp*> dev_iter = dev_prop.get_iter();
+          while(dev_iter.next())
+            {
+              if (dev_iter.item() == "joystick-button")
+                {
+                  int device = 0;
+                  int button = 0;
+
+                  lisp::Properties props(*dev_iter);
+                  props.get("device", device);
+                  props.get("button", button);
+
+                  bind_joystick_button(controller_def.button_name2id(iter.item()),
+                                       device, button);
+                }
+              else if (dev_iter.item() == "keyboard-button")
+                {
+                  std::string key;
+
+                  lisp::Properties props(*dev_iter);
+                  props.get("key", key);
+
+                  bind_keyboard_button(controller_def.button_name2id(iter.item()), 
+                                       string_to_keyid(key));
+                }
+              else
+                {
+                  std::cout << "InputManagerSDL: Unknown tag: " << dev_iter.item() << std::endl;
+                }
+            }
+        }
+      else if (has_suffix(iter.item(), "-axis"))
+        {
+          lisp::Properties dev_prop(*iter);
+          lisp::PropertyIterator<const lisp::Lisp*> dev_iter = dev_prop.get_iter();
+          while(dev_iter.next())
+            {
+              if (dev_iter.item() == "joystick-axis")
+                {
+                  int device = 0;
+                  int axis   = 0;
+
+                  lisp::Properties props(*dev_iter);
+                  props.get("device", device);
+                  props.get("axis",   axis);
+
+                  bind_joystick_axis(controller_def.axis_name2id(iter.item()), device, axis);
+                }
+              else if (dev_iter.item() == "keyboard-axis")
+                {
+                  std::string minus;
+                  std::string plus;
+
+                  lisp::Properties props(*dev_iter);
+                  props.get("minus", minus);
+                  props.get("plus",  plus);
+
+                  bind_keyboard_axis(controller_def.axis_name2id(iter.item()), 
+                                     string_to_keyid(minus), string_to_keyid(plus));
+                }
+              else
+                {
+                  std::cout << "InputManagerSDL: Unknown tag: " << dev_iter.item() << std::endl;
+                }
+            }
+
+        }
+    }
+
+}
+
+InputManagerSDL::InputManagerSDL(const lisp::Lisp* lisp)
   : impl(new InputManagerSDLImpl)
 {
   current_ = this;
-  
-  int num_joysticks = SDL_NumJoysticks();
 
-  if (num_joysticks > 0)
-    /*SDL_Joystick* joy =*/ SDL_JoystickOpen(0);
+  for (int i = 0; i < SDLK_LAST; ++i)
+    impl->keyidmapping[SDL_GetKeyName(static_cast<SDLKey>(i))] = static_cast<SDLKey>(i);
 
-  //SDLK_LAST
-
-  bind_joystick_button(PDA_BUTTON,       0, 0);
-  bind_joystick_button(TERTIARY_BUTTON,  0, 1);
-  bind_joystick_button(SECONDARY_BUTTON, 0, 2);
-  bind_joystick_button(PRIMARY_BUTTON,   0, 3);
-  bind_joystick_button(AIM_BUTTON,       0, 7);
-  bind_joystick_button(PAUSE_BUTTON,     0, 9);
-
-  bind_joystick_axis(X_AXIS, 0, 0);
-  bind_joystick_axis(Y_AXIS, 0, 1);
-
-  if (1)
-    {
-      bind_keyboard_button(PDA_BUTTON,       SDLK_w);
-      bind_keyboard_button(TERTIARY_BUTTON,  SDLK_a);
-      bind_keyboard_button(SECONDARY_BUTTON, SDLK_d);
-      bind_keyboard_button(PRIMARY_BUTTON,   SDLK_s);
-      bind_keyboard_button(AIM_BUTTON,       SDLK_LSHIFT);
-      bind_keyboard_button(PAUSE_BUTTON,     SDLK_p);
-    }
-  else
-    {
-      bind_keyboard_button(PDA_BUTTON,       SDLK_COMMA);
-      bind_keyboard_button(TERTIARY_BUTTON,  SDLK_a);
-      bind_keyboard_button(SECONDARY_BUTTON, SDLK_e);
-      bind_keyboard_button(PRIMARY_BUTTON,   SDLK_o);
-      bind_keyboard_button(AIM_BUTTON,       SDLK_LSHIFT);
-      bind_keyboard_button(PAUSE_BUTTON,     SDLK_p);
-    }
-
-  bind_keyboard_axis(X_AXIS, SDLK_LEFT, SDLK_RIGHT);
-  bind_keyboard_axis(Y_AXIS, SDLK_UP, SDLK_DOWN);
+  parse_config(lisp);
 }
 
 InputManagerSDL::~InputManagerSDL()
@@ -266,6 +362,8 @@ InputManagerSDL::bind_joystick_hat_axis(int event, int device, int axis)
 void
 InputManagerSDL::bind_joystick_axis(int event, int device, int axis)
 {
+  ensure_open_joystick(device);
+
   JoystickAxisBinding binding;
 
   binding.event  = event;
@@ -278,6 +376,8 @@ InputManagerSDL::bind_joystick_axis(int event, int device, int axis)
 void
 InputManagerSDL::bind_joystick_button(int event, int device, int button)
 {
+  ensure_open_joystick(device);
+
   JoystickButtonBinding binding;
 
   binding.event  = event;

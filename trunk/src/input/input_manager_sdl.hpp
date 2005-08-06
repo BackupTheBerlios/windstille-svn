@@ -26,9 +26,9 @@
 #ifndef HEADER_INPUT_MANAGER_SDL_HPP
 #define HEADER_INPUT_MANAGER_SDL_HPP
 
-#include "input_manager_impl.hpp"
-
 #include <SDL.h>
+#include "input_manager_impl.hpp"
+#include "lisp/lisp.hpp"
 
 class InputManagerSDLImpl;
 
@@ -40,7 +40,7 @@ private:
 public:
   static InputManagerSDL* current() { return current_; }
 
-  InputManagerSDL();
+  InputManagerSDL(const lisp::Lisp* lisp);
   virtual ~InputManagerSDL();
 
   void update(float delta);
@@ -53,12 +53,20 @@ public:
   void bind_keyboard_button(int event, SDLKey key);
   void bind_keyboard_axis(int event, SDLKey minus, SDLKey plus);
   
+  std::string keyid_to_string(SDLKey id);
+  SDLKey string_to_keyid(const std::string& str);
+
   void on_event(const SDL_Event& event);
 private:
   void on_key_event(const SDL_KeyboardEvent& key);
   void on_joy_button_event(const SDL_JoyButtonEvent& button);
   void on_joy_axis_event(const SDL_JoyAxisEvent& button);
   
+  /** Ensure that the joystick device \a device is open */
+  void ensure_open_joystick(int device);
+
+  void parse_config(const lisp::Lisp* lisp);
+
   std::auto_ptr<InputManagerSDLImpl> impl;
 
   InputManagerSDL (const InputManagerSDL&);

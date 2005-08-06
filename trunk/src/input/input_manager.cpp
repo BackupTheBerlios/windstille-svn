@@ -55,7 +55,7 @@ InputManager::init(const std::string& filename)
     throw std::runtime_error(msg.str());
   }
   
-  impl = new InputManagerSDL();
+  impl = new InputManagerSDL(controller);
 }
 
 void
