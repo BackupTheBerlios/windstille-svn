@@ -50,7 +50,7 @@ public:
   void set_font(TTFFont* font);
 
   void update(float delta);
-  void draw();
+  void draw(bool letter_by_letter = false);
 
   Rectf get_rect() const;
 private:

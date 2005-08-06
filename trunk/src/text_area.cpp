@@ -120,7 +120,7 @@ TextArea::set_font(TTFFont* font)
 }
 
 void
-TextArea::draw()
+TextArea::draw(bool letter_by_letter)
 {
   OpenGLState state;
   
@@ -230,8 +230,11 @@ TextArea::draw()
                 }
               else
                 {
-                  for(std::string::const_iterator j = i->content.begin(); j != i->content.end() && eat_time > 0; ++j)
+                  for(std::string::const_iterator j = i->content.begin(); j != i->content.end(); ++j)
                     {
+                      if (letter_by_letter && eat_time <= 0)
+                        break;
+                        
                       int x = x_pos;
                       int y = y_pos;
 

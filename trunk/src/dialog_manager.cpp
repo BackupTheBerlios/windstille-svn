@@ -148,7 +148,7 @@ DialogManager::draw()
   portrait.draw(Vector(pos.x + portrait_border_x,
                        pos.y + portrait_border_y));
   
-  text_area->draw();
+  text_area->draw(true);
 }
 
 void

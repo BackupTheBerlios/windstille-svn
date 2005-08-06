@@ -46,38 +46,6 @@ PDA::draw()
   Display::fill_rounded_rect(rect, 16.0f, Color(0.3f, 0.3f, 0.5f, 0.5f));
   Display::draw_rounded_rect(rect, 16.0f, Color(1.0f, 1.0f, 1.0f, 0.5f));
   text_area->draw();
-
-  Controller controller = InputManager::get_controller();
-  
-  Rectf crect(Vector(rect.right - 100, rect.top - 100 - 8.0f),
-              Size(100, 100));
-
-  Display::fill_rounded_rect(crect, 10.0f, Color(1.0f, 1.0f, 1.0f, 0.2f));
-  Display::draw_rounded_rect(crect, 10.0f, Color(1.0f, 1.0f, 1.0f, 0.5f));
-
-  Vector pos(crect.left + crect.get_width()/2  + controller.get_axis_state(HORIZONTAL_AXIS) * (crect.get_width()-16.0f)/2,
-             crect.top  + crect.get_height()/2 + controller.get_axis_state(VERTICAL_AXIS)   * (crect.get_width()-16.0f)/2);
-
-  Display::fill_circle(pos, 10.0f, Color(0.8f, 0, 0));
-  Display::draw_circle(pos, 10.0f, Color(1.0f, 0, 0));
-
-  for(int i = 0; i < 4; ++i)
-    {
-      if (controller.get_button_state(i))
-        {
-          Display::fill_circle(Vector(crect.left - 16.0f, crect.top + (crect.get_height()-20)/3 * i + 10.0f),
-                               10.0f, Color(0.8f, 0, 0));
-          Display::draw_circle(Vector(crect.left - 16.0f, crect.top + (crect.get_height()-20)/3 * i + 10.0f),
-                               10.0f, Color(1.0f, 0.0f, 0.0f));
-        }
-      else
-        {
-          Display::fill_circle(Vector(crect.left - 16.0f, crect.top + (crect.get_height()-20)/3 * i + 10.0f),
-                               10.0f, Color(1.0f, 1.0f, 1.0f, 0.2f));
-          Display::draw_circle(Vector(crect.left - 16.0f, crect.top + (crect.get_height()-20)/3 * i + 10.0f),
-                               10.0f,  Color(1.0f, 1.0f, 1.0f, 0.5f));
-        }
-    }
 }
 
 void
