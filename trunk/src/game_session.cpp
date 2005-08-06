@@ -76,6 +76,10 @@ GameSession::GameSession(const std::string& arg_filename)
   conversation   = new Conversation();
 
   filename = arg_filename;
+  
+  if (1)
+    script_manager->run_script_file("scripts/init_script_vars.nut");
+    
   change_sector();
 }
 
@@ -198,11 +202,6 @@ GameSession::change_sector()
 
   sector = new Sector(filename);
   
-  if (1)
-    {
-      script_manager->run_script_file("scripts/init_script_vars.nut");
-    }
-
   //sector->add(new TestObject());
   
   sector->activate();
