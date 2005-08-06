@@ -71,10 +71,11 @@ void wait_for_dialog(HSQUIRRELVM vm)
   script_manager->set_wakeup_event(vm, ScriptManager::DIALOG_CLOSED);
 }
 
-void dialog_show(int alignment, const std::string& portrait, const std::string& text)
+void dialog_show(int alignment, const std::string& character, const std::string& portrait, const std::string& text)
 {
   DialogManager::current()->add_dialog(alignment, portrait, text);
   GameSession::current()->set_dialog_state();
+  GameSession::current()->pda.add_dialog(character, text);
 }
 
 bool run_before(HSQUIRRELVM vm)

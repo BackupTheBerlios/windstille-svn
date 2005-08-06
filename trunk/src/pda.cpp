@@ -108,9 +108,9 @@ PDA::update(float delta)
 }
 
 void
-PDA::add_dialog(const std::string& text)
+PDA::add_dialog(const std::string& character, const std::string& text)
 {
-  dialogs.push_back(Dialog_Entry("Someone", text));
+  dialogs.push_back(Dialog_Entry(character, text));
 }
 
 void

@@ -1,7 +1,7 @@
 function intro()
 {
 	bob_seen_before = true;
-	dialog(0, "images/portrait.sprite", "Hey, my name's bob.  Are you new around here?"); 
+  dialog.set("Hey, my name's bob.  Are you new around here?"); 
 	conversation_add("Yes, I am.");
 	conversation_add("Go away"); 
 	if (!conversation_get())
@@ -16,7 +16,7 @@ function intro()
 
 function hello_again()
 {
-	dialog(0, "images/portrait.sprite", "Hello again");
+	dialog.set("Hello again");
 	conversation_add("Hey.");
 	conversation_add("Bye");
 	if (!conversation_get())
@@ -27,7 +27,7 @@ function hello_again()
 
 function ask_questions()
 {
-	dialog(0, "images/portrait.sprite", "So what are you doing here?");
+	dialog.set("So what are you doing here?");
 	conversation_add("I work as a mercenary.");
 	conversation_add("Not much");
 	if (!conversation_get())
@@ -41,7 +41,7 @@ function ask_questions()
 
 function offer_job()
 {
-	dialog(0, "images/portrait.sprite", "Are you looking for some work?");
+	dialog.set("Are you looking for some work?");
 	conversation_add("I might be, if the offer is good enough.");
 	conversation_add("No thanks.");
 	if (!conversation_get())
@@ -55,19 +55,20 @@ function offer_job()
 
 function explain_job()
 {
-	dialog(0, "images/portrait.sprite", "Your job is to kill the spider at the end of the level ;)");
+	dialog.set("Your job is to kill the spider at the end of the level ;)");
 }
 
 function bye()
 {
 	if (bob_knows_job)
-		dialog(0, "images/portrait.sprite", "Feel free to come back if you need a job");
+		dialog.set("Feel free to come back if you need a job");
 	else
-		dialog(0, "images/portrait.sprite", "See you again some time");
+		dialog.set("See you again some time");
 }
 
 //sintro();
 
+dialog <- Dialog(0, "Bob", "images/portrait.sprite");
 if (bob_knows_job)
 	explain_job();
 else if (bob_knows_your_mercenary)

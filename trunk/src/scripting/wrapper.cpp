@@ -387,8 +387,10 @@ static int dialog_show_wrapper(HSQUIRRELVM v)
   sq_getstring(v, 3, &arg1);
   const char* arg2;
   sq_getstring(v, 4, &arg2);
+  const char* arg3;
+  sq_getstring(v, 5, &arg3);
   
-  Scripting::dialog_show(arg0, arg1, arg2);
+  Scripting::dialog_show(arg0, arg1, arg2, arg3);
   
   return 0;
 }

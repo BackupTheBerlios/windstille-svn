@@ -24,6 +24,7 @@
 #include "script_manager.hpp"
 #include "display/display.hpp"
 #include "conversation.hpp"
+#include "game_session.hpp"
 
 Conversation* Conversation::current_ = 0;
 
@@ -105,6 +106,7 @@ Conversation::update(float delta)
             {
             case PRIMARY_BUTTON:
               active = false;
+              GameSession::current()->pda.add_dialog("Jane", choices[selection]);
               choices.clear();
               script_manager->fire_wakeup_event(ScriptManager::CONVERSATION_CLOSED);
               return;

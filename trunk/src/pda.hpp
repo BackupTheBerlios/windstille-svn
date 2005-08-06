@@ -47,7 +47,7 @@ public:
   void update(float delta);
   bool is_active() const {return active;}
   void set_active(bool arg_active) {active = arg_active;}
-  void add_dialog(const std::string& text);
+  void add_dialog(const std::string& character, const std::string& text);
 
 private:
   void show_inventory();

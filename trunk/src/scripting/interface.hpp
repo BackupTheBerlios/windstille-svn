@@ -32,7 +32,7 @@ static const int HCENTER = 0x00;
 static const int TOP     = 0x10;
 static const int BOTTOM  = 0x20;
 
-void dialog_show(int alignment, const std::string& portrait, const std::string& text);
+void dialog_show(int alignment, const std::string& character, const std::string& portrait, const std::string& text);
 void wait_for_dialog(HSQUIRRELVM vm) __suspend;
 
 void conversation_add(const std::string& text);

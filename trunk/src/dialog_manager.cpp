@@ -51,8 +51,7 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
   text      = text_;
   caption = false;
   
-  create_text();  
-  GameSession::current()->pda.add_dialog(text);
+  create_text();
 }
 
 void

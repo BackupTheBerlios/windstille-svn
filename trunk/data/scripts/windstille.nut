@@ -36,10 +36,29 @@ function conversation_get()
   return conversation_get_selection();
 }
 
-function dialog(align, portrait, text)
+class Dialog {
+  constructor(arg_align, arg_character, arg_portrait)
+  {
+    align = arg_align;
+    character = arg_character;
+    portrait = arg_portrait;
+  }
+
+  function set(text)
+  {
+    dialog_show(align, character, portrait, text);
+    wait_for_dialog();
+  }
+
+  align = null;
+  character = null;
+  portrait = null;
+}
+
+function add_dialog(align, character, portrait, text)
 {
-        dialog_show(align, portrait, text);
-        wait_for_dialog();
+  dialog_show(align, character, portrait, text);
+  wait_for_dialog();  
 }
 
 /* Some debugging/testing stuff */
