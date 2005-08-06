@@ -46,6 +46,7 @@ private:
   Sprite sprite;
   Sprite light;
   Sprite highlight;
+  float z_pos;
   
   //useable stuff
   std::string use_script;

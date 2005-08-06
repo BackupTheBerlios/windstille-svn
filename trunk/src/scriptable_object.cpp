@@ -33,7 +33,8 @@
 #include "script_manager.hpp"
 
 ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
-  : target_speed(0),
+  : z_pos(50),
+    target_speed(0),
     acceleration(0),
     flash_speed(0)
 { 
@@ -51,6 +52,7 @@ ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
   props.get("use-verb", use_verb);
   props.get("active", active);
   props.get("flash-speed", flash_speed);
+  props.get("z-pos", z_pos);
   props.print_unused_warnings("scriptable-object");
   
   if (use_verb != "")
@@ -85,14 +87,14 @@ ScriptableObject::draw(SceneContext& sc)
     flash();
 
   if (sprite)
-    sc.color().draw(sprite, pos, 50);
+    sc.color().draw(sprite, pos, z_pos);
   
   if (highlight) 
-    sc.highlight().draw(highlight, pos, 50);
+    sc.highlight().draw(highlight, pos, z_pos);
 
   if (light) 
     {
-      sc.light().draw(light, pos, 50);
+      sc.light().draw(light, pos, z_pos);
     }
 }
 
