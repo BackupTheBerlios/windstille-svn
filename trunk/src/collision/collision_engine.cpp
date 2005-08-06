@@ -24,7 +24,7 @@
 #include "globals.hpp"
 #include "tile_map.hpp"
 
-std::vector<Rectf> tilemap_collision_list(TileMap *tilemap, const Rectf &r);
+std::vector<Rectf> tilemap_collision_list(TileMap *tilemap, const Rectf &r, bool is_ground);
 
 /***********************************************************************
  * Collision
@@ -113,9 +113,99 @@ Vector unstuck_direction(const Rectf &a, const Rectf &b, float delta, float unst
   return dir;
 }
 
+int c_roundup(float f)
+{
+  int i=(int)f;
+  if(f>i)
+    i++;
+  return i;
+}
+
+int c_round(float f)
+{
+  int i=(int)f;
+  if(fabs(f-i)>0.5)
+    {
+      if(i>0)
+	i++;
+      else
+	i--;
+    }
+  return i;
+}
+
+bool is_rect_free(TileMap *tilemap, int l, int t, int w,int h)
+{
+  int x,y;
+  for (x=l; x<=l+w; x++)
+    for (y=t; y<=t+h; y++)
+      {
+	if (tilemap->is_ground( x * TILE_SIZE, y * TILE_SIZE))
+	  return false;
+      }
+  return true;
+}
+
+Rectf get_next_free_rect(TileMap *tilemap, const Rectf &r)
+{
+  int rx = c_round (r.left / TILE_SIZE);
+  int ry = c_round (std::min (r.top, r.bottom)  / TILE_SIZE);
+  
+  float fw = r.right - r.left;
+  float fh = fabs (r.bottom   - r.top);
+  
+  int rw = c_roundup (fw / TILE_SIZE);
+  int rh = c_roundup (fh / TILE_SIZE);
+
+  std::vector<Rectf> rects;
+
+  // find first set of free rectangle
+  // simply iterate the rectangles around current position
+  for(int d=1; d<20; d++) // not more than 20 steps
+    {
+      for(int i=-d; i<=d; i++)
+	{
+	  if (is_rect_free(tilemap, i + rx, -d + ry, rw, rh))
+	    rects.push_back( Rect(i + rx, -d + ry, rw, rh));
+	  if (is_rect_free(tilemap, i + rx, d + ry, rw, rh))
+	    rects.push_back( Rect(i + rx, d + ry, rw, rh));
+
+	  if (is_rect_free(tilemap, -d + rx, i + ry, rw, rh))
+	    rects.push_back( Rect(-d + rx, i + ry, rw, rh));
+	  if (is_rect_free(tilemap,  d + rx, i + ry, rw, rh))
+	    rects.push_back( Rect(d  + rx, i + ry, rw, rh));
+	}
+      if (rects.size())
+	break;
+    }
+  assert(rects.size());
+
+  // find nearest rectangle in this set
+  float distance=10000.0f;
+  float dx,dy,d;
+  Rectf nr;
+  for (std::vector<Rectf>::iterator i = rects.begin(); i != rects.end(); ++i)
+    {
+      dx = i->left - r.left / TILE_SIZE;
+      dy = i->top  - r.top  / TILE_SIZE;
+      d = sqrt( dx * dx + dy * dy );
+      if (d < distance)
+	{
+	  distance=d;
+	  nr=*i;
+	}
+    }
+
+  nr.right += nr.left; 
+  nr.bottom += nr.top; 
+
+  return nr;
+}
+
 void
 CollisionEngine::unstuck_tilemap(CollisionObject& a, CollisionObject& b, float delta)
 {
+  (void)delta;
   Rectf rb = b.primitive;
 
   rb.left   += b.get_pos().x;
@@ -123,21 +213,29 @@ CollisionEngine::unstuck_tilemap(CollisionObject& a, CollisionObject& b, float d
   rb.top    += b.get_pos().y;
   rb.bottom += b.get_pos().y;
 
-  // assume, that only one tile is penetrated
-  std::vector<Rectf> rect_list= tilemap_collision_list (a.tilemap, rb);
+  Rectf target = get_next_free_rect(a.tilemap, rb);
   
-  assert (b.get_type() == CollisionObject::RECTANGLE);
-  assert (a.get_type() == CollisionObject::TILEMAP);
-	
-  if (rect_list.size() == 0)
-    return;
-  assert (rect_list.size()>=1);
+  target.left   *= TILE_SIZE;
+  target.top    *= TILE_SIZE;
+  target.right  = target.left + (rb.right - rb.left);
+  target.bottom = target.top  + (rb.top - rb.bottom);
 
-  Vector dir = unstuck_direction (rect_list[0], rb, delta, unstuck_velocity);
-  
-  assert (b.unstuck_movable());
-  b.pos += dir;
+  // align to grid, if coming from right or bottom
 
+  if(target.top < rb.top)
+    {
+      float add = c_roundup (target.bottom / TILE_SIZE) * TILE_SIZE - target.bottom;
+      target.top    += add;
+      target.bottom += add;
+    }
+  if(target.left < rb.left)
+    {
+      float add = c_roundup (target.right / TILE_SIZE) * TILE_SIZE - target.right;
+      target.left  += add;
+      target.right += add;
+    }
+
+  b.pos = Vector(target.left-b.primitive.left, target.top-b.primitive.top);
 }
 
 void
@@ -250,10 +348,9 @@ CollisionEngine::update(float delta)
 	      
 	      if (i != j && ((*i)->unstuck_movable() || ((*j)->unstuck_movable())))
 		{
-		  CollisionData r = collide(**i, **j, delta/1000.0f);
+		  CollisionData r = collide(**i, **j, 0);
 		  if(r.state!=CollisionData::NONE)
 		    {
-		      //		      collision(**i, **j, r, delta);///30.0f);
 		      penetration=true;
 		      unstuck(**i, **j, delta/3.0f);
 		    }
@@ -434,7 +531,7 @@ bool tilemap_collision(TileMap *tilemap, const Rectf &r)
   return false;
 }
 
-std::vector<Rectf> tilemap_collision_list(TileMap *tilemap, const Rectf &r)
+std::vector<Rectf> tilemap_collision_list(TileMap *tilemap, const Rectf &r,bool is_ground)
 {
   std::vector<Rectf> rect_list;
   int minx, maxx;
@@ -449,7 +546,7 @@ std::vector<Rectf> tilemap_collision_list(TileMap *tilemap, const Rectf &r)
   for (y = std::max (0, miny); y <= std::min (maxy, tilemap->get_height() - 1); ++y)
     for (x = std::max (0, minx); x <= std::min (maxx, tilemap->get_width() - 1); ++x)
       {
-	if(tilemap->is_ground (x * TILE_SIZE, y * TILE_SIZE ))
+	if(tilemap->is_ground (x * TILE_SIZE, y * TILE_SIZE ) == is_ground)
 	  {
 	    rect_list.push_back (Rectf (x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE));
 	  }
