@@ -39,7 +39,7 @@ InputManagerSDL::InputManagerSDL()
   if (num_joysticks > 0)
     /*SDL_Joystick* joy =*/ SDL_JoystickOpen(0);
     
-  keystate = SDL_GetKeyState(0);
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 InputManagerSDL::~InputManagerSDL()
@@ -49,6 +49,8 @@ InputManagerSDL::~InputManagerSDL()
 void
 InputManagerSDL::on_event(const SDL_Event& event)
 {
+  Uint8* keystate = SDL_GetKeyState(0);
+
   switch(event.type)
     {        
     case SDL_KEYUP:
