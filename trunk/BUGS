@@ -1,9 +1,6 @@
 Windstille Bugs
 ===============
 
-- if you keep alternately holding down left and right, and sometimes
-  hold both at once, you can sometimes get the player stuck
-
 - Jane's hat is white, caused by one mesh using two textures, could be
   fixed in either the exporter or in the model itself
 
@@ -18,9 +15,5 @@ Windstille Bugs
 
   in general the game shouldn't crash when stuff isn't found, but
   instead fallback to placeholders and give a error message on the console
-
-- sometimes (very rarly) the game freezes at startup
-
-- can't Ctrl-c the game
 
 # EOF #
