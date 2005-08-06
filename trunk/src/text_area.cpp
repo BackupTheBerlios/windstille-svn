@@ -48,16 +48,17 @@ public:
   float passed_time;
 
   int v_space;
+  bool letter_by_letter;
   std::vector<TextAreaCommand> commands;
 };
 
-TextArea::TextArea(const Rectf& rect)
+TextArea::TextArea(const Rectf& rect, bool letter_by_letter)
   : impl(new TextAreaImpl)
 {
   impl->rect    = rect;
   // FIXME: freetype might provide info for vspacing, not sure
   impl->v_space = 2;
-
+  impl->letter_by_letter = letter_by_letter;
   impl->passed_time = 0;
 }
 
@@ -120,7 +121,7 @@ TextArea::set_font(TTFFont* font)
 }
 
 void
-TextArea::draw(bool letter_by_letter)
+TextArea::draw()
 {
   OpenGLState state;
   
@@ -232,7 +233,7 @@ TextArea::draw(bool letter_by_letter)
                 {
                   for(std::string::const_iterator j = i->content.begin(); j != i->content.end(); ++j)
                     {
-                      if (letter_by_letter && eat_time <= 0)
+                      if (impl->letter_by_letter && eat_time <= 0)
                         break;
                         
                       int x = x_pos;

@@ -39,7 +39,7 @@ class TextArea
 {
 public:
   /** The area which the TextArea should cover */
-  TextArea(const Rectf& rect);
+  TextArea(const Rectf& rect, bool letter_by_letter);
   ~TextArea();
 
   /** Sets the text to be displayed in the text box */
@@ -50,7 +50,7 @@ public:
   void set_font(TTFFont* font);
 
   void update(float delta);
-  void draw(bool letter_by_letter = false);
+  void draw();
 
   Rectf get_rect() const;
 private:

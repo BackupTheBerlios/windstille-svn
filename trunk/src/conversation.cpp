@@ -80,23 +80,25 @@ Conversation::update(float delta)
     {
       Controller controller = InputManager::get_controller();
       const InputEventLst& events = controller.get_events();
-
-      if (controller.get_axis_state(VERTICAL_AXIS) > 0)
-        {
-          selection -= 1;
-          if (selection < 0)
-            selection = choices.size() - 1;
-        }
-      else if (controller.get_axis_state(VERTICAL_AXIS) < 0)
-        {        
-          selection += 1;
-          if (selection >= int(choices.size()))
-            selection = 0;
-        }
-  
+ 
       for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
         {
-          if (i->type == BUTTON_EVENT && i->button.down)
+          if (i->type == AXIS_EVENT && i->axis.name == VERTICAL_AXIS)
+            {
+              if (i->axis.pos > 0)
+                {
+                  selection -= 1;
+                  if (selection < 0)
+                    selection = choices.size() - 1;
+                }
+              else if (i->axis.pos < 0)
+                {        
+                  selection += 1;
+                  if (selection >= int(choices.size()))
+                    selection = 0;
+                }
+            }
+          else if (i->type == BUTTON_EVENT && i->button.down)
             {
               switch (i->button.name)
                 {

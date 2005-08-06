@@ -96,7 +96,7 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
 
   delete text_area;
   text_area = new TextArea(Rect(Point(text_rect.left, text_rect.top + Fonts::ttfdialog->get_height()),
-                                Size(text_width, 200)));
+                                Size(text_width, 200)), true);
   text_area->set_font(Fonts::ttfdialog);
   text_area->set_text(text);
   
@@ -148,7 +148,7 @@ DialogManager::draw()
   portrait.draw(Vector(pos.x + portrait_border_x,
                        pos.y + portrait_border_y));
   
-  text_area->draw(true);
+  text_area->draw();
 }
 
 void

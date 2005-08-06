@@ -43,7 +43,7 @@ ControllerHelpWindow::ControllerHelpWindow()
 
   impl->text_area = new TextArea(Rect(Point(Display::get_width() - width - 16,
                                             Display::get_height() - height - 16),
-                                      Size(width, height)));
+                                      Size(width, height)), false);
   impl->text_area->set_font(Fonts::ttffont);
   impl->text_area->set_text("<large>Control Help</large>\n"
                             "------------------------\n"

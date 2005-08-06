@@ -65,7 +65,7 @@ PDA::update(float delta)
     delete text_area;
     text_area = new TextArea(Rect(Point(16,
                 Display::get_height() - height - 16),
-                Size(width, height)));
+                Size(width, height)), false);
     text_area->set_font(Fonts::ttffont);
     text_area->set_text(text);
     
