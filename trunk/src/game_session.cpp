@@ -81,6 +81,7 @@ GameSession::GameSession(const std::string& arg_filename)
     script_manager->run_script_file("scripts/init_script_vars.nut");
     
   change_sector();
+  pause = false;
 }
 
 GameSession::~GameSession()
@@ -133,11 +134,23 @@ GameSession::draw()
     default:
       break;
     }
+
+  if (pause)
+    {
+      if ((SDL_GetTicks() / 1000) % 2)
+        Fonts::ttfdialog->draw(Display::get_width()/2, Display::get_height()/2, "Pause");
+    }
 }
 
 void
 GameSession::update(float delta)
 {  
+  if (InputManager::get_controller().button_pressed(PDA_BUTTON))
+    pda.set_visible(!pda.get_visible());
+
+  if (InputManager::get_controller().button_pressed(PAUSE_BUTTON))
+    pause = !pause;
+
   Uint8 *keystate = SDL_GetKeyState(NULL);
 
   if(keystate[SDLK_KP1])
@@ -148,47 +161,51 @@ GameSession::update(float delta)
     game_speed = 1.0;
 
   InputManager::update(delta);
+  
   delta *= game_speed;
 
-  game_time += delta;
-  script_manager->update();
-
-  view->update(delta);
-
-  switch (fade_state)
+  if (!pause)
     {
-    case FADEIN:
-      if (fadeout_value > 1.0f)
-        fade_state = RUNNING;
-      fadeout_value += delta;
-      break;
-    case FADEOUT:
-      if (fadeout_value > 1.0f)
-        {
-          if (target_state == LOAD_GAME_SESSION)
-            change_sector();
-          else
-            game_main_state = target_state;
-        }
-      fadeout_value += delta;
-      break;
+      game_time += delta;
+      script_manager->update();
 
-    case RUNNING:
-      sector->update (delta);
-      energy_bar->update(delta);
-      switch (control_state) 
+      view->update(delta);
+  
+      switch (fade_state)
         {
-        case DIALOG:
-          dialog_manager->update(delta);
+        case FADEIN:
+          if (fadeout_value > 1.0f)
+            fade_state = RUNNING;
+          fadeout_value += delta;
           break;
-        case GAME:
+        case FADEOUT:
+          if (fadeout_value > 1.0f)
+            {
+              if (target_state == LOAD_GAME_SESSION)
+                change_sector();
+              else
+                game_main_state = target_state;
+            }
+          fadeout_value += delta;
+          break;
+
+        case RUNNING:
+          sector->update (delta);
+          energy_bar->update(delta);
+          switch (control_state) 
+            {
+            case DIALOG:
+              dialog_manager->update(delta);
+              break;
+            case GAME:
+              break;
+            }
           break;
         }
-      break;
+      conversation->update(delta);
+      controller_help_window.update(delta);
+      pda.update(delta);
     }
-  conversation->update(delta);
-  controller_help_window.update(delta);
-  pda.update(delta);
   
   if(keystate[SDLK_ESCAPE])
     quit();
@@ -264,11 +281,7 @@ GameSession::handle_event(const SDL_Event& event)
                 console << "Collision Debugging " << (collision_debug ? "enabled" : "disabled") << std::endl;
               }
               break;
-              
-            case SDLK_z:
-              pda.set_visible(!pda.get_visible());
-              break;
-          
+        
             default:
               break;
             }

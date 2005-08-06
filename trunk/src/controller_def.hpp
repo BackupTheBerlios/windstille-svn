@@ -20,26 +20,52 @@
 #ifndef HEADER_CONTROLLER_DEF_HXX
 #define HEADER_CONTROLLER_DEF_HXX
 
+#include <map>
 #include <string>
 
-//enum AxisName       { ORIENTATION_AXIS, ACCELERATE_AXIS, STRAFE_AXIS };
-enum AxisName    { HORIZONTAL_AXIS, VERTICAL_AXIS };
-enum ButtonName  { RUN_BUTTON, JUMP_BUTTON, FIRE_BUTTON, USE_BUTTON };
+enum AxisName
+  { 
+    X_AXIS, // used to run left/right
+    Y_AXIS  // used to aim up/down
+  };
+
+enum ButtonName
+  { 
+    PRIMARY_BUTTON,   // used to ok a dialog or for running
+    SECONDARY_BUTTON, // used to cancel a dialog or for jumping
+    TERTIARY_BUTTON, // used to cancel a dialog or for jumping
+    PDA_BUTTON,       // display the PDA
+    
+    PAUSE_BUTTON,     // used to pause the game
+    AIM_BUTTON,       // used to draw the gun and aim
+  };
+
+#define JUMP_BUTTON SECONDARY_BUTTON
+#define RUN_BUTTON  PRIMARY_BUTTON
 
 /** */
 class ControllerDef
 {
 private:
+  std::map<std::string, int> buttons;
+  std::map<std::string, int> axes;
+
 public:
-  static int         get_button_count();
-  static int         get_axis_count();
-  static int         get_keyboard_count();
+  ControllerDef();
+  ~ControllerDef();
 
-  static std::string button_id2name(int id);
-  static int         button_name2id(const std::string& name);
+  void add_button(const std::string& name, int id);
+  void add_axis  (const std::string& name, int id);
 
-  static std::string axis_id2name(int id);
-  static int         axis_name2id(const std::string& name);
+  int         get_button_count()   const;
+  int         get_axis_count()     const;
+  int         get_keyboard_count() const;
+
+  std::string button_id2name(int id) const;
+  int         button_name2id(const std::string& name) const;
+
+  std::string axis_id2name(int id) const;
+  int         axis_name2id(const std::string& name) const;
 };
 
 #endif

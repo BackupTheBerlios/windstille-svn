@@ -20,6 +20,7 @@
 #ifndef HEADER_INPUT_MANAGER_HXX
 #define HEADER_INPUT_MANAGER_HXX
 
+#include <string>
 #include <vector>
 #include "controller.hpp"
 #include "input_event.hpp"

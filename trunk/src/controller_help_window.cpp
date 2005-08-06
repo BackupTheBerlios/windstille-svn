@@ -45,15 +45,14 @@ ControllerHelpWindow::ControllerHelpWindow()
                                             Display::get_height() - height - 16),
                                       Size(width, height)), false);
   impl->text_area->set_font(Fonts::ttffont);
-  impl->text_area->set_text("<large>Control Help</large>\n"
-                            "------------------------\n"
+  impl->text_area->set_text("Control Help\n"
+                            "------------\n"
                             "walk: left/right\n"
-                            "duck: down\n"
-                            "run:  a\n"
-                            "jump: s\n"
-                            "fire: d\n"
-                            "use:  w\n"
-                            "PDA:  z\n"
+                            "duck: down\n\n"
+                            "primary/run:    s\n"
+                            "secondary/jump: d\n"
+                            "tertiary:       a\n"
+                            "pda:            w\n"
                             );
 }
 
@@ -74,13 +73,13 @@ ControllerHelpWindow::draw()
   Display::fill_rounded_rect(crect, 10.0f, Color(1.0f, 1.0f, 1.0f, 0.2f));
   Display::draw_rounded_rect(crect, 10.0f, Color(1.0f, 1.0f, 1.0f, 0.5f));
 
-  Vector pos(crect.left + crect.get_width()/2  + controller.get_axis_state(HORIZONTAL_AXIS) * (crect.get_width()-16.0f)/2,
-             crect.top  + crect.get_height()/2 + controller.get_axis_state(VERTICAL_AXIS)   * (crect.get_width()-16.0f)/2);
+  Vector pos(crect.left + crect.get_width()/2  + controller.get_axis_state(X_AXIS) * (crect.get_width()-16.0f)/2,
+             crect.top  + crect.get_height()/2 + controller.get_axis_state(Y_AXIS)   * (crect.get_width()-16.0f)/2);
 
   Display::fill_circle(pos, 10.0f, Color(0.8f, 0, 0));
   Display::draw_circle(pos, 10.0f, Color(1.0f, 0, 0));
 
-  for(int i = 0; i < 4; ++i)
+  for(int i = 0; i < 6; ++i)
     {
       if (controller.get_button_state(i))
         {

@@ -59,6 +59,7 @@ private:
   EnergyBar* energy_bar;
   DialogManager* dialog_manager;
   Conversation*  conversation;
+  bool pause;
 
   enum { FADEIN, RUNNING, FADEOUT } fade_state;
   enum { DIALOG, GAME } control_state;

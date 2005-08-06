@@ -18,12 +18,15 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <assert.h>
+#include "controller_def.hpp"
 #include "controller.hpp"
 
 Controller::Controller()
 {
-  buttons.resize(ControllerDef::get_button_count());
-  axes.resize(ControllerDef::get_axis_count());
+  ControllerDef def;
+
+  buttons.resize(def.get_button_count());
+  axes.resize(def.get_axis_count());
 }
 
 float

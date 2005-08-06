@@ -24,6 +24,7 @@
 */
 
 #include <iostream>
+#include "controller_def.hpp"
 #include "input_manager_sdl.hpp"
 
 InputManagerSDL* InputManagerSDL::current_ = 0;
@@ -38,8 +39,6 @@ InputManagerSDL::InputManagerSDL()
 
   if (num_joysticks > 0)
     /*SDL_Joystick* joy =*/ SDL_JoystickOpen(0);
-    
-  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 InputManagerSDL::~InputManagerSDL()
@@ -74,48 +73,57 @@ InputManagerSDL::on_event(const SDL_Event& event)
           {
           case SDLK_LEFT:
             if (event.key.state)
-              add_axis_event(HORIZONTAL_AXIS, -1.0);
+              add_axis_event(X_AXIS, -1.0);
             else if (!keystate[SDLK_RIGHT])
-              add_axis_event(HORIZONTAL_AXIS, 0);
+              add_axis_event(X_AXIS, 0);
             break;
 
           case SDLK_RIGHT:
             if (event.key.state)
-              add_axis_event(HORIZONTAL_AXIS, 1.0);
+              add_axis_event(X_AXIS, 1.0);
             else if (!keystate[SDLK_LEFT])
-              add_axis_event(HORIZONTAL_AXIS, 0);
+              add_axis_event(X_AXIS, 0);
             break;
 
           case SDLK_UP:
             if (event.key.state)
-              add_axis_event(VERTICAL_AXIS, -1.0);
+              add_axis_event(Y_AXIS, -1.0);
             else
-              add_axis_event(VERTICAL_AXIS, 0);
+              add_axis_event(Y_AXIS, 0);
             break;
 
           case SDLK_DOWN:
             if (event.key.state)
-              add_axis_event(VERTICAL_AXIS, 1.0);
+              add_axis_event(Y_AXIS, 1.0);
             else
-              add_axis_event(VERTICAL_AXIS, 0);
+              add_axis_event(Y_AXIS, 0);
             break;
 
           case SDLK_a:
-            add_button_event(RUN_BUTTON, event.key.state);
-            break;
-
-          case SDLK_d:
-            add_button_event(FIRE_BUTTON, event.key.state);
+            add_button_event(TERTIARY_BUTTON, event.key.state);
             break;
 
           case SDLK_s:
-            add_button_event(JUMP_BUTTON, event.key.state);
+            add_button_event(PRIMARY_BUTTON, event.key.state);
+            break;
+
+          case SDLK_d:
+            add_button_event(SECONDARY_BUTTON, event.key.state);
             break;
 
           case SDLK_w:
-            add_button_event(USE_BUTTON, event.key.state);
+            add_button_event(PDA_BUTTON, event.key.state);
             break;
-            
+
+          case SDLK_LSHIFT:
+            add_button_event(AIM_BUTTON, event.key.state);
+            break;
+
+          case SDLK_PAUSE:
+          case SDLK_p:
+            add_button_event(PAUSE_BUTTON, event.key.state);
+            break;
+           
           default:
             break;
           }
@@ -123,8 +131,7 @@ InputManagerSDL::on_event(const SDL_Event& event)
       break;
 
     case SDL_MOUSEMOTION:
-      // event.motion:
-      break;
+      // event.motion:      break;
 
     case SDL_MOUSEBUTTONDOWN:
       // event.button
@@ -139,30 +146,30 @@ InputManagerSDL::on_event(const SDL_Event& event)
         {
           if (event.jaxis.value < -DEAD_ZONE)
             {
-              add_axis_event(HORIZONTAL_AXIS, event.jaxis.value/32768.0f);
+              add_axis_event(X_AXIS, event.jaxis.value/32768.0f);
             }
           else if (event.jaxis.value > DEAD_ZONE)
             {
-              add_axis_event(HORIZONTAL_AXIS, event.jaxis.value/32767.0f);
+              add_axis_event(X_AXIS, event.jaxis.value/32767.0f);
             }
           else
             {
-              add_axis_event(HORIZONTAL_AXIS, 0);
+              add_axis_event(X_AXIS, 0);
             }
         }
       else if (event.jaxis.axis == 1) 
         {
           if (event.jaxis.value < -DEAD_ZONE)
             {
-              add_axis_event(VERTICAL_AXIS, event.jaxis.value/32768.0f);
+              add_axis_event(Y_AXIS, event.jaxis.value/32768.0f);
             }
           else if (event.jaxis.value > DEAD_ZONE)
             {
-              add_axis_event(VERTICAL_AXIS, event.jaxis.value/32767.0f);
+              add_axis_event(Y_AXIS, event.jaxis.value/32767.0f);
             }
           else
             {
-              add_axis_event(VERTICAL_AXIS, 0);
+              add_axis_event(Y_AXIS, 0);
             }
         }
       break;
@@ -179,19 +186,27 @@ InputManagerSDL::on_event(const SDL_Event& event)
     case SDL_JOYBUTTONDOWN:
       if (event.jbutton.button == 0)
         {
-          add_button_event(FIRE_BUTTON, event.jbutton.state); 
+          add_button_event(PDA_BUTTON, event.jbutton.state); 
         }
       else if (event.jbutton.button == 1)
         {
-          add_button_event(USE_BUTTON, event.jbutton.state); 
+          add_button_event(TERTIARY_BUTTON, event.jbutton.state); 
         }
       else if (event.jbutton.button == 2)
         {
-          add_button_event(JUMP_BUTTON, event.jbutton.state);
+          add_button_event(SECONDARY_BUTTON, event.jbutton.state);
         }
       else if (event.jbutton.button == 3)
         {
-          add_button_event(RUN_BUTTON, event.jbutton.state);
+          add_button_event(PRIMARY_BUTTON, event.jbutton.state);
+        }
+      else if (event.jbutton.button == 7)
+        {
+          add_button_event(AIM_BUTTON, event.jbutton.state);
+        }
+      else if (event.jbutton.button == 9)
+        {
+          add_button_event(PAUSE_BUTTON, event.jbutton.state);
         }
       break;
 

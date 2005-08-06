@@ -535,12 +535,16 @@ Console::activate()
   // Get rid of all input events so that we don't double press
   InputManager::clear();
   impl->active = true;
+
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 void
 Console::deactive()
 {
   impl->active = false;
+
+  SDL_EnableKeyRepeat(0, SDL_DEFAULT_REPEAT_INTERVAL);
 }
 
 bool

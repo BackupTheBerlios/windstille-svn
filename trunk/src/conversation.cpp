@@ -83,7 +83,7 @@ Conversation::update(float delta)
  
       for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
         {
-          if (i->type == AXIS_EVENT && i->axis.name == VERTICAL_AXIS)
+          if (i->type == AXIS_EVENT && i->axis.name == Y_AXIS)
             {
               if (i->axis.pos > 0)
                 {
@@ -102,7 +102,7 @@ Conversation::update(float delta)
             {
               switch (i->button.name)
                 {
-                case FIRE_BUTTON:
+                case PRIMARY_BUTTON:
                   visible = false;
                   choices.clear();
                   script_manager->fire_wakeup_event(ScriptManager::CONVERSATION_CLOSED);
