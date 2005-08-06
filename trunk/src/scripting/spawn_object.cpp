@@ -13,6 +13,16 @@ using namespace lisp;
 
 void table_to_lisp(HSQUIRRELVM v, int table_idx, std::vector<Lisp*>& entries);
 
+std::string sq_to_lisp_string(std::string sq_str)
+{
+  for (unsigned i = 0; i != sq_str.size(); ++i) {
+    if (sq_str[i] == '_')
+      sq_str[i] = '-';
+  }
+  
+  return sq_str;
+}
+
 void sq_to_lisp(HSQUIRRELVM v, std::vector<Lisp*>& entries)
 {
   switch(sq_gettype(v, -1)) {
@@ -31,7 +41,9 @@ void sq_to_lisp(HSQUIRRELVM v, std::vector<Lisp*>& entries)
     case OT_STRING: {
       const char* str;
       sq_getstring(v, -1, &str);
-      entries.push_back(new Lisp(Lisp::TYPE_STRING, str));
+      std::string lisp_str = sq_to_lisp_string(str);
+      
+      entries.push_back(new Lisp(Lisp::TYPE_STRING, lisp_str));
       break;
     }                                                    
     case OT_BOOL: {
