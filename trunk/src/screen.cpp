@@ -173,7 +173,8 @@ Screen::poll_events()
                   break;
               
                 default:
-                  handle_event(event);
+                  if (!console.is_active())
+                    handle_event(event);
                   break;
                 }
             }
