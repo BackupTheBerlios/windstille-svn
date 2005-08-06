@@ -28,6 +28,7 @@ class Camera
 {
 private:
   Vector pos;
+  bool active;
 
   static Camera* current_;
 public:
@@ -37,6 +38,8 @@ public:
 
   void update(float delta);
   Vector get_pos() const { return pos; }
+  void set_pos(float x, float y);
+  void set_active(bool arg_active) { active = arg_active; }
 private:
   Camera (const Camera&);
   Camera& operator= (const Camera&);

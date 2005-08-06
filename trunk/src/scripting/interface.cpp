@@ -9,6 +9,8 @@
 #include "sector.hpp"
 #include "fonts.hpp"
 #include "serialize.hpp"
+#include "camera.hpp"
+#include "controller_help_window.hpp"
 
 namespace Scripting
 {
@@ -31,6 +33,32 @@ void stop_music(float fadetime)
 void play_sound(const std::string& soundfile)
 {
   sound_manager->play(soundfile);
+}
+
+void add_caption(int alignment, const std::string& text)
+{
+  DialogManager::current()->add_caption(alignment, text);
+  GameSession::current()->set_dialog_state();
+}
+
+void end_caption()
+{
+  GameSession::current()->set_game_state();
+}
+
+void set_view(float x, float y)
+{
+  Camera::current()->set_pos(x, y);
+}
+
+void set_camera_active(bool active)
+{
+  Camera::current()->set_active(active);
+}
+
+void set_controller_help_active(bool active)
+{
+  ControllerHelpWindow::current()->set_active(active);
 }
 
 void wait(HSQUIRRELVM vm, float time)

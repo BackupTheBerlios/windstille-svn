@@ -49,17 +49,102 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
   alignment = alignment_;
   portrait  = Sprite(portrait_);
   text      = text_;
+  caption = false;
+  
+  create_text();  
+  GameSession::current()->pda.add_dialog(text);
+}
 
-  static const int dialog_width = 600;
-  static const int outer_border_x = 20;
-  static const int outer_border_y = 20;
-  static const int portrait_border_x = 10;
-  static const int portrait_border_y = 10;
-  static const int text_border_x = 10;
-  static const int text_border_y = 10;
-  static const int portrait_width = 180;
-  static const int portrait_height = 192;
+void
+DialogManager::add_caption(int alignment_, const std::string& text_)
+{
+  progress  = 0;
+  delay     = 0.0;
+  alignment = alignment_;
+  text      = text_;
+  caption = true;
+  
+  create_text();
+}
 
+void
+DialogManager::draw()
+{
+  int dialog_height = std::max(portrait_height + portrait_border_y*2,
+                               int(text_area->get_rect().get_height()
+                                   + text_border_y * 2.0f));
+
+  Point pos(0,0);
+  if(alignment & LEFT) {
+    pos.x = outer_border_x;
+  } else if(alignment & RIGHT) {
+    pos.x = config->screen_width - dialog_width - outer_border_x;
+  } else {
+    pos.x = (config->screen_width - dialog_width) / 2;
+  }
+
+  if(alignment & TOP) {
+    pos.y = outer_border_y;
+  } else if(alignment & BOTTOM) {
+    pos.y = config->screen_height - dialog_height - outer_border_y;
+  } else {
+    pos.y = (config->screen_height - dialog_height) / 2;
+  }
+
+  if (!caption) {
+    Rectf rect(pos.x,
+               pos.y,
+               pos.x + dialog_width,
+               pos.y + 200);
+    
+    Display::fill_rounded_rect(rect, 16.0f,
+                               Color(0, 0, 0.3f, 0.5f));
+    Display::draw_rounded_rect(rect, 16.0f,
+                               Color(0.6f, 1.0f, 1.0f, 0.8f));
+  
+    portrait.draw(Vector(pos.x + portrait_border_x,
+                         pos.y + portrait_border_y));
+  }
+  
+  text_area->draw();
+}
+
+void
+DialogManager::update(float delta)
+{
+  text_area->update(delta);
+
+  delay += delta;
+  if (InputManager::get_controller().get_button_state(PRIMARY_BUTTON) 
+      && delay > 0.2 && progress * text_speed < text.size())
+    progress = int(text.size()) / text_speed;
+  else
+    progress += delta;
+
+  InputEventLst events = InputManager::get_controller().get_events();
+	
+  for (InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+    {
+      if ((*i).type == BUTTON_EVENT)
+        {
+          if ((*i).button.name == PRIMARY_BUTTON && (*i).button.down == true
+              && int(progress * text_speed) > int(text.size()))
+            {
+              GameSession::current()->set_game_state();
+              script_manager->fire_wakeup_event(ScriptManager::DIALOG_CLOSED);
+            } 
+        }
+    }
+}
+
+void
+DialogManager::create_text()
+{
+  if (caption)
+    outer_border_y = 0;
+  else
+    outer_border_y = 20;
+    
   Point pos(0,0);
   if(alignment & LEFT) {
     pos.x = outer_border_x;
@@ -99,84 +184,6 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
                                 Size(text_width, 200)), true);
   text_area->set_font(Fonts::ttfdialog);
   text_area->set_text(text);
-  
-  GameSession::current()->pda.add_dialog(text);
-}
-
-void
-DialogManager::draw()
-{
-  static const int outer_border_x = 20;
-  static const int outer_border_y = 20;
-  static const int portrait_border_x = 10;
-  static const int portrait_border_y = 10;
-  static const int dialog_width = 600;
-  static const int portrait_height = 192;
-  static const int text_border_y = 10;
-
-  int dialog_height = std::max(portrait_height + portrait_border_y*2,
-                               int(text_area->get_rect().get_height()
-                                   + text_border_y * 2.0f));
-
-  Point pos(0,0);
-  if(alignment & LEFT) {
-    pos.x = outer_border_x;
-  } else if(alignment & RIGHT) {
-    pos.x = config->screen_width - dialog_width - outer_border_x;
-  } else {
-    pos.x = (config->screen_width - dialog_width) / 2;
-  }
-
-  if(alignment & TOP) {
-    pos.y = outer_border_y;
-  } else if(alignment & BOTTOM) {
-    pos.y = config->screen_height - dialog_height - outer_border_y;
-  } else {
-    pos.y = (config->screen_height - dialog_height) / 2;
-  }
-
-  Rectf rect(pos.x,
-             pos.y,
-             pos.x + dialog_width,
-             pos.y + 200);
-
-  Display::fill_rounded_rect(rect, 16.0f,
-                             Color(0, 0, 0.3f, 0.5f));
-  Display::draw_rounded_rect(rect, 16.0f,
-                             Color(0.6f, 1.0f, 1.0f, 0.8f));
-
-  portrait.draw(Vector(pos.x + portrait_border_x,
-                       pos.y + portrait_border_y));
-  
-  text_area->draw();
-}
-
-void
-DialogManager::update(float delta)
-{
-  text_area->update(delta);
-
-  delay += delta;
-  if (InputManager::get_controller().get_button_state(PRIMARY_BUTTON) 
-      && delay > 0.2 && progress * text_speed < text.size())
-    progress = int(text.size()) / text_speed;
-  else
-    progress += delta;
-
-  InputEventLst events = InputManager::get_controller().get_events();
-	
-  for (InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
-    {
-      if ((*i).type == BUTTON_EVENT)
-        {
-          if ((*i).button.name == PRIMARY_BUTTON && (*i).button.down == true
-              && int(progress * text_speed) > int(text.size()))
-            {
-              GameSession::current()->set_game_state();
-              script_manager->fire_wakeup_event(ScriptManager::DIALOG_CLOSED);
-            } 
-        }
-    }
 }
 
 /* EOF */

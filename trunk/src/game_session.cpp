@@ -168,7 +168,7 @@ GameSession::update(float delta)
     {
       game_time += delta;
       script_manager->update();
-
+      
       view->update(delta);
   
       switch (fade_state)
@@ -218,18 +218,18 @@ GameSession::change_sector()
     delete sector;
 
   sector = new Sector(filename);
-  
-  //sector->add(new TestObject());
-  
-  sector->activate();
-  sector->spawn_player("default");
-  
-  GameObject::set_world(sector);
-  
   fade_state = FADEIN;
   fadeout_value = 0;
   control_state = GAME;
   target_state = RUN_GAME;
+  GameObject::set_world(sector);
+  
+  //FIXME: does the TestObject class still need to exist?
+  //sector->add(new TestObject());
+  
+  sector->spawn_player("default");
+  sector->activate();
+  
   if (debug) std::cout << "Finished changing sector" << std::endl;
 }
 

@@ -25,7 +25,8 @@
 Camera* Camera::current_ = 0;
 
 Camera::Camera()
-  : pos(0, 0)
+  : pos(0, 0),
+    active(true)
 {
   current_ = this;
 }
@@ -33,6 +34,9 @@ Camera::Camera()
 void
 Camera::update(float )
 {
+  if (!active)
+    return;
+    
   int hscroll_threshold = 100;
   int vscroll_threshold = 150;
 
@@ -67,6 +71,13 @@ Camera::update(float )
 
   if (pos.y > end_y)
     pos.y = end_y;
+}
+
+void
+Camera::set_pos(float x, float y)
+{
+  pos.x = x + Display::get_width()/2;
+  pos.y = y + Display::get_height()/2;
 }
 
 /* EOF */

@@ -31,6 +31,8 @@ class TextArea;
 class DialogManager
 {
 private:
+  void create_text();
+  
   Sprite portrait;
   std::string text;
   float progress;
@@ -46,6 +48,17 @@ private:
     BOTTOM  = 0x20
   };
   int alignment;
+  bool caption;
+  
+  static const int dialog_width = 600;
+  static const int portrait_border_x = 10;
+  static const int portrait_border_y = 10;
+  static const int text_border_x = 10;
+  static const int text_border_y = 10;
+  static const int portrait_width = 180;
+  static const int portrait_height = 192;
+  static const int outer_border_x = 20;
+  int outer_border_y;
 
   static DialogManager* current_;
 public:
@@ -58,6 +71,7 @@ public:
   void update(float delta);
 
   void add_dialog(int alignment, const std::string& portrait, const std::string& text);
+  void add_caption(int alignment, const std::string& text);
 };
 
 #endif

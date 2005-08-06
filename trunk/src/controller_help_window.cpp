@@ -29,18 +29,23 @@
 #include "fonts.hpp"
 #include "controller_help_window.hpp"
 
+ControllerHelpWindow* ControllerHelpWindow::current_ = 0;
+
 class ControllerHelpWindowImpl
 {
 public:
   TextArea* text_area;
+  bool active;
 };
 
 ControllerHelpWindow::ControllerHelpWindow()
   : impl(new ControllerHelpWindowImpl)
 {
+  current_ = this;
   int width  = 200;
   int height = 120;
-
+  
+  impl->active = false;
   impl->text_area = new TextArea(Rect(Point(Display::get_width() - width - 16,
                                             Display::get_height() - height - 16),
                                       Size(width, height)), false);
@@ -59,6 +64,9 @@ ControllerHelpWindow::ControllerHelpWindow()
 void
 ControllerHelpWindow::draw()
 {
+  if (!impl->active)
+    return;
+    
   const Rectf& rect = impl->text_area->get_rect().grow(8.0f);
 
   Display::fill_rounded_rect(rect, 16.0f, Color(0.3f, 0.3f, 0.5f, 0.5f));
@@ -102,6 +110,12 @@ void
 ControllerHelpWindow::update(float delta)
 {
   impl->text_area->update(delta);
+}
+
+void
+ControllerHelpWindow::set_active(bool active)
+{
+  impl->active = active;
 }
 
 /* EOF */

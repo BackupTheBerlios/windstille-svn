@@ -38,9 +38,12 @@ public:
 
   void draw();
   void update(float delta);
+  void set_active(bool active);
+  static ControllerHelpWindow* current() { return current_; }
 
 private:
   SharedPtr<ControllerHelpWindowImpl> impl;
+  static ControllerHelpWindow* current_;
 };
 
 #endif

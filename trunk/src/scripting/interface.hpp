@@ -17,6 +17,13 @@ void stop_music(float fadetime);
 
 void play_sound(const std::string& soundfile);
 
+void add_caption(int alignment, const std::string& text);
+void end_caption();
+
+void set_view(float x, float y);
+void set_camera_active(bool active);
+void set_controller_help_active(bool active);
+
 // dialog alignment constants
 static const int VCENTER = 0x00;
 static const int LEFT    = 0x01;
