@@ -146,7 +146,7 @@ void
 GameSession::update(float delta)
 {  
   if (InputManager::get_controller().button_pressed(PDA_BUTTON))
-    pda.set_visible(!pda.get_visible());
+    pda.set_active(!pda.is_active());
 
   if (InputManager::get_controller().button_pressed(PAUSE_BUTTON))
     pause = !pause;

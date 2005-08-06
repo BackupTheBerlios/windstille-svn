@@ -28,6 +28,15 @@
 
 class TextArea;
 
+class Dialog_Entry
+{
+public:
+  Dialog_Entry(const std::string& arg_character, const std::string& arg_text);
+  
+  std::string character;
+  std::string text;
+};
+
 /** */
 class PDA
 {
@@ -36,15 +45,21 @@ public:
 
   void draw();
   void update(float delta);
-  bool get_visible() const {return visible;}
-  void set_visible(bool arg_visible) {visible = arg_visible;}
+  bool is_active() const {return active;}
+  void set_active(bool arg_active) {active = arg_active;}
   void add_dialog(const std::string& text);
 
 private:
+  void show_inventory();
+  void show_missions();
+  void show_dialogs();
+  
   TextArea* text_area;
-  bool visible;
-  std::vector<std::string> messages;
+  bool active;
+  std::vector<Dialog_Entry> dialogs;
+  std::string new_text;  
   std::string old_text;
+  enum pda_state { PDA_INVENTORY, PDA_MISSIONS, PDA_DIALOGS } state;
 };
 
 #endif

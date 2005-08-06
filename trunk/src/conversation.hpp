@@ -28,7 +28,7 @@
 class Conversation
 {
 private:
-  bool visible;
+  bool active;
   int selection;
 
   typedef std::vector<std::string> Choices;

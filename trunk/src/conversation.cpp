@@ -30,14 +30,14 @@ Conversation* Conversation::current_ = 0;
 Conversation::Conversation()
 {
   current_ = this;
-  visible = false;
+  active = false;
   selection = 0;
 }
 
 void
 Conversation::add(const std::string& text)
 {
-  if (!visible)
+  if (!active)
     {
       choices.push_back(text);
       if (selection >= int(choices.size()))
@@ -48,27 +48,27 @@ Conversation::add(const std::string& text)
 void
 Conversation::draw()
 {
-  if (visible)
-    {
-      int x = 100;
-      int y = 200;
+  if (!active)
+    return;
+    
+  int x = 100;
+  int y = 200;
 
-      Rect rect(Point(x - 20, y - 20 + Fonts::ttffont->get_height()/2 - 5),
-                Size(300 + 20, // FIXME:
-                     (Fonts::ttffont->get_height() + 10) * choices.size() + 20));
-      
-      Display::fill_rect(rect, Color(0,0,0,0.5f));
-      Display::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.3f));
- 
-      for(int i = 0; i < int(choices.size()); ++i)
-        {
-          if (i == selection)
-            Fonts::ttfdialog->draw(x, y, choices[i]);
-          else
-            Fonts::ttfdialog->draw(x, y, choices[i], Color(0.5f, 0.5f, 0.5f));
-      
-          y += Fonts::ttfdialog->get_height() + 10;
-        }
+  Rect rect(Point(x - 20, y - 20 + Fonts::ttffont->get_height()/2 - 5),
+            Size(300 + 20, // FIXME:
+                 (Fonts::ttffont->get_height() + 10) * choices.size() + 20));
+  
+  Display::fill_rect(rect, Color(0,0,0,0.5f));
+  Display::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.3f));
+
+  for(int i = 0; i < int(choices.size()); ++i)
+    {
+      if (i == selection)
+        Fonts::ttfdialog->draw(x, y, choices[i]);
+      else
+        Fonts::ttfdialog->draw(x, y, choices[i], Color(0.5f, 0.5f, 0.5f));
+  
+      y += Fonts::ttfdialog->get_height() + 10;
     }
 }
 
@@ -76,39 +76,39 @@ void
 Conversation::update(float delta)
 {
   (void) delta;
-  if (visible)
+  if (!active)
+    return;
+    
+  Controller controller = InputManager::get_controller();
+  const InputEventLst& events = controller.get_events();
+
+  for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
     {
-      Controller controller = InputManager::get_controller();
-      const InputEventLst& events = controller.get_events();
- 
-      for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
+      if (i->type == AXIS_EVENT && i->axis.name == Y_AXIS)
         {
-          if (i->type == AXIS_EVENT && i->axis.name == Y_AXIS)
+          if (i->axis.pos > 0)
             {
-              if (i->axis.pos > 0)
-                {
-                  selection -= 1;
-                  if (selection < 0)
-                    selection = choices.size() - 1;
-                }
-              else if (i->axis.pos < 0)
-                {        
-                  selection += 1;
-                  if (selection >= int(choices.size()))
-                    selection = 0;
-                }
+              selection -= 1;
+              if (selection < 0)
+                selection = choices.size() - 1;
             }
-          else if (i->type == BUTTON_EVENT && i->button.down)
+          else if (i->axis.pos < 0)
+            {        
+              selection += 1;
+              if (selection >= int(choices.size()))
+                selection = 0;
+            }
+        }
+      else if (i->type == BUTTON_EVENT && i->button.down)
+        {
+          switch (i->button.name)
             {
-              switch (i->button.name)
-                {
-                case PRIMARY_BUTTON:
-                  visible = false;
-                  choices.clear();
-                  script_manager->fire_wakeup_event(ScriptManager::CONVERSATION_CLOSED);
-                  return;
-                  break;
-                }
+            case PRIMARY_BUTTON:
+              active = false;
+              choices.clear();
+              script_manager->fire_wakeup_event(ScriptManager::CONVERSATION_CLOSED);
+              return;
+              break;
             }
         }
     }
@@ -123,7 +123,7 @@ Conversation::get_selection() const
 void
 Conversation::show()
 {
-  visible = true;
+  active = true;
 }
 
 /* EOF */
