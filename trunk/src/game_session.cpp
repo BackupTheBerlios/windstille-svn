@@ -278,7 +278,7 @@ GameSession::handle_event(const SDL_Event& event)
         
     case SDL_MOUSEBUTTONDOWN:
       {
-        Vector real_pos = GameSession::current()->get_view()->screen2world(Vector(event.button.x,
+        Vector real_pos = GameSession::current()->get_view()->screen_to_world(Vector(event.button.x,
                                                                                   event.button.y));      
         console << "Click at: " << int(real_pos.x) << ", " << int(real_pos.y) << std::endl;
       }

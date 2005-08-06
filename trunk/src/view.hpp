@@ -46,7 +46,7 @@ public:
   /** @return the rectangle which represents the currently visible
       area, everything outside of it doesn't have to be drawn */
   Rectf get_clip_rect();
-  Vector screen2world(const Vector& point);
+  Vector screen_to_world(const Vector& point);
 
   void draw(SceneContext& gc);
   void update(float delta);

@@ -149,7 +149,7 @@ GraphicContextState::zoom_to (const Rectf& rect)
 }
 
 Vector
-GraphicContextState::screen2world(const Vector& pos_)
+GraphicContextState::screen_to_world(const Vector& pos_)
 {
   Vector pos(pos_.x, pos_.y);
   float sa = sin(-impl->rotation/180.0f*M_PI);

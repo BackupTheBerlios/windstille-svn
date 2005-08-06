@@ -68,7 +68,7 @@ public:
 
   void zoom_to (const Rectf& rect);
 
-  Vector screen2world(const Vector& pos);
+  Vector screen_to_world(const Vector& pos);
 
 private:
   SharedPtr<GraphicContextStateImpl> impl;

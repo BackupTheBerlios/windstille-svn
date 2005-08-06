@@ -80,9 +80,9 @@ View::get_clip_rect()
 }
 
 Vector
-View::screen2world(const Vector& point)
+View::screen_to_world(const Vector& point)
 {
-  return state.screen2world(point);
+  return state.screen_to_world(point);
 }
 
 /* EOF */
