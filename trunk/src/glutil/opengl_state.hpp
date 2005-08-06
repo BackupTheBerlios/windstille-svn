@@ -38,25 +38,40 @@ class OpenGLStateImpl;
     default defined state to begin with. */
 class OpenGLState
 {
+private:
+  static OpenGLState* global_;
 public:
+  static void init();
+  static OpenGLState* global();
+
   OpenGLState();
   ~OpenGLState();
 
   void bind_texture(const Texture& texture);
   void set_blend_func(GLenum sfactor, GLenum dfactor);
 
+
   void enable(GLenum cap);
   void disable(GLenum cap);
+
+  void set_state(GLenum array, bool value);
+  bool get_state(GLenum array) const;
   
+
   void enable_client_state(GLenum array);
   void disable_client_state(GLenum array);
+
+  void set_client_state(GLenum array, bool value);
+  bool get_client_state(GLenum array) const;
 
   void color(const Color& color);
 
   /** Activates the given state, you *must* call this before you issue
       gl commands that depend on the given state */
   void activate();
-
+  
+  /** Verify that all states got set as planed, for debugging purpose only */
+  void verify();
 private:
   std::auto_ptr<OpenGLStateImpl> impl;
 

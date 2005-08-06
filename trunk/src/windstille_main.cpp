@@ -182,8 +182,6 @@ WindstilleMain::main(int argc, char** argv)
     parse_command_line(argc, argv);
     init_modules();
 
-    std::cout << "Modules inited" << std::endl;
-
     if (playback_file.empty())
       {
         if (!controller_file.empty())

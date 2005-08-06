@@ -166,7 +166,6 @@ Player::set_stand()
   try_set_action("Stand");
   velocity = Vector(0, 0);
   state = STAND;
-  printf("stand.\n");
 }
 
 void
@@ -237,7 +236,6 @@ Player::set_walk(Direction direction)
     velocity.x = WALK_SPEED;
   else
     velocity.x = -WALK_SPEED;
-  printf("walk.\n");
 }
 
 void
@@ -267,7 +265,6 @@ Player::set_ducking()
   sprite.set_next_action("Ducking");
   state = DUCKING;
   velocity.x = 0;
-  printf("ducking.\n");
 }
 
 void
@@ -275,7 +272,6 @@ Player::update_ducking()
 {
   // ducking
   if(sprite.switched_actions()) {
-    printf("finished.\n");
     if(sprite.get_action() == "Ducking")
       set_ducked();
     else
@@ -284,12 +280,10 @@ Player::update_ducking()
   }
   
   if(!(controller.get_axis_state(VERTICAL_AXIS) > 0) && sprite.get_speed() > 0) {
-    printf("Changespeed1.\n");
     sprite.set_speed(-1.0);
     sprite.set_next_action("Stand");
     state = STAND;
   } else if(controller.get_axis_state(VERTICAL_AXIS) > 0 && sprite.get_speed() < 0) {
-    printf("Changespeed2.\n");
     sprite.set_speed(1.0);
     sprite.set_next_action("Ducking");
   }
@@ -299,7 +293,6 @@ void
 Player::set_ducked()
 {
   assert(sprite.get_action() == "Ducking");
-  printf("ducked.\n");
   state = DUCKED;
 }
 
@@ -307,7 +300,6 @@ void
 Player::update_ducked()
 {
   if(!controller.get_axis_state(VERTICAL_AXIS) > 0) {
-    printf("ducking.\n");
     state = DUCKING;
     sprite.set_action("StandToDuck", -1.0);
     sprite.set_next_action("Stand");
@@ -322,7 +314,6 @@ Player::set_turnaround()
   sprite.set_next_action("Walk");
   sprite.set_next_rot(! sprite.get_rot());
   state = TURNAROUND;
-  printf("turn.\n");
 }
 
 void
@@ -410,17 +401,14 @@ Player::set_jump_begin()
   if(sprite.before_marker("RightFoot")) {
     sprite.set_next_action("JumpRightFoot");
     sprite.abort_at_marker("RightFoot");
-    printf("jumpright.\n");
     jump_foot = LEFT_FOOT;
   } else if(sprite.before_marker("LeftFoot")) {
     sprite.set_next_action("JumpLeftFoot");
     sprite.abort_at_marker("LeftFoot");
-    printf("jumpleft.\n");
     jump_foot = RIGHT_FOOT;
   } else {
     sprite.set_next_action("JumpRightFoot");
     sprite.abort_at_marker("RightFoot");
-    printf("jumpright.\n");
     jump_foot = LEFT_FOOT;
   }
   state = JUMP_BEGIN;

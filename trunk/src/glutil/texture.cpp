@@ -232,4 +232,16 @@ Texture::operator bool() const
   return !impl.is_null();
 }
 
+bool
+Texture::operator==(const Texture& other) const
+{
+  return impl.get() == other.impl.get();
+}
+
+bool
+Texture::operator!=(const Texture& other) const
+{
+  return impl.get() != other.impl.get();
+}
+
 /* EOF */

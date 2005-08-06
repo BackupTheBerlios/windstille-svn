@@ -57,6 +57,9 @@ public:
 
   ~Texture();
 
+  bool operator==(const Texture&) const;
+  bool operator!=(const Texture&) const;
+
   int get_width() const;
   int get_height() const;
 

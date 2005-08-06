@@ -64,6 +64,16 @@ VertexArrayDrawingRequest::draw(int start, int end)
   state.disable(GL_DEPTH_TEST);
   state.enable(GL_BLEND);
   state.set_blend_func(blend_sfactor, blend_dfactor);
+  
+  if (texture)
+    {
+      state.enable(GL_TEXTURE_2D);
+      state.bind_texture(texture);
+    }
+  else
+    {
+      state.disable(GL_TEXTURE_2D);
+    }
 
   if (!colors.empty())
     {
@@ -91,16 +101,6 @@ VertexArrayDrawingRequest::draw(int start, int end)
   state.enable_client_state(GL_VERTEX_ARRAY);
 
   glVertexPointer  (3, GL_FLOAT, 0, &*vertices.begin());
-  
-  if (texture)
-    {
-      state.enable(GL_TEXTURE_2D);
-      state.bind_texture(texture);
-    }
-  else
-    {
-      state.disable(GL_TEXTURE_2D);
-    }
 
   state.activate();
 

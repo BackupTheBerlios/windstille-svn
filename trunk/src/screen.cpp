@@ -26,7 +26,6 @@
 #include "globals.hpp"
 #include "console.hpp"
 #include "gameconfig.hpp"
-#include "event_manager.hpp"
 #include "input/input_manager.hpp"
 #include "input/input_manager_sdl.hpp"
 #include "sound/sound_manager.hpp"

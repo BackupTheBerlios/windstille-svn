@@ -32,6 +32,18 @@ public:
     return true;
   }
 
+  /** 
+   * Ignore a property so that it doesn't give a warning, usefull for
+   * example if some tags are only used by the editor but not by the
+   * game.
+   */
+  void ignore(const std::string& name)
+  {
+    PropertyMap::iterator i = properties.find(name);
+    if(i != properties.end())
+      i->second.used = true;
+  }
+
   /**
    * returns an iterator over all properties with a certain name
    */

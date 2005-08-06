@@ -27,13 +27,10 @@ GameObject::set_active(bool active)
 void
 GameObject::set_parent(const std::string& name)
 {
-  std::cout << "Trying to set parent" << std::endl;
   if (::Entity* entity = dynamic_cast<Entity*>(object.get()))
     {
-      std::cout << "Have Entity: " << name << std::endl;
       if (::GameObject* obj = Sector::current()->get_object(name))
         {
-          std::cout << "Setting parent: " << name << std::endl;
           entity->set_parent(dynamic_cast<Entity*>(obj));
         }
     }

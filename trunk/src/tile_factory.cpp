@@ -120,7 +120,10 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
 
   if(filename == "")
     throw std::runtime_error("Missing color-image");
- 
+
+  if (debug)
+    std::cout << "Loading tiles: " << filename << std::endl;
+
   SDL_Surface* image = IMG_Load_RW(get_physfs_SDLRWops(filename), 1);
   if(!image) 
     {

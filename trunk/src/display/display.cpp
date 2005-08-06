@@ -30,7 +30,7 @@
 #include "glutil/opengl_state.hpp"
 #include "display.hpp"
 
-SDL_Surface* window;
+SDL_Surface* window       = 0;
 
 void
 Display::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
@@ -224,6 +224,8 @@ Display::init()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslated(cl_pixelcenter_constant, cl_pixelcenter_constant, 0.0);
+
+  OpenGLState::init();
 }
 
 void

@@ -23,6 +23,7 @@
 **  02111-1307, USA.
 */
 
+#include "glutil/opengl_state.hpp"
 #include "ttf_font.hpp"
 #include "text_area.hpp"
 #include "baby_xml.hpp"
@@ -121,12 +122,14 @@ TextArea::set_font(TTFFont* font)
 void
 TextArea::draw()
 {
-  glDisable(GL_DEPTH_TEST);
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  OpenGLState state;
+  
+  state.enable(GL_TEXTURE_2D);
+  state.bind_texture(impl->font->get_texture());
 
-  glBindTexture(GL_TEXTURE_2D, impl->font->get_texture().get_handle());
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  state.activate();
 
   glPushMatrix();
   glTranslatef(impl->rect.left, impl->rect.top + impl->font->get_height(), 0);
