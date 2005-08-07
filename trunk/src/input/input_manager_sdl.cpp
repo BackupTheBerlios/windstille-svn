@@ -34,33 +34,6 @@ InputManagerSDL* InputManagerSDL::current_ = 0;
 
 #define DEAD_ZONE 4096
 
-struct JoystickButtonBinding
-{
-  int event;
-  int device;
-  int button;
-};
-
-struct JoystickAxisBinding
-{
-  int event;
-  int device;
-  int axis;
-};
-
-struct KeyboardButtonBinding
-{
-  int event;
-  SDLKey key;
-};
-
-struct KeyboardAxisBinding
-{
-  int event;
-  SDLKey plus;
-  SDLKey minus;
-};
-
 class InputManagerSDLImpl
 {
 public:

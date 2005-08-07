@@ -28,7 +28,7 @@ Sprite::Sprite(const std::string& filename)
   pingpong = false;
   reverse  = false;
   alpha    = 0.0;
-  scale    = 1.0f;
+  scale = current_action->scale;
   color    = Color(1.0f, 1.0f, 1.0f);
   blend_sfactor = GL_SRC_ALPHA;
   blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
@@ -44,7 +44,7 @@ Sprite::Sprite(const sprite2d::Data* data)
   pingpong = false;
   reverse = false;
   alpha = 0.0;
-  scale    = 1.0f;
+  scale = current_action->scale;
   color    = Color(1.0f, 1.0f, 1.0f);
   blend_sfactor = GL_SRC_ALPHA;
   blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
@@ -80,7 +80,7 @@ Sprite::set_action(const std::string& name)
       frame = 0;
       vflip = false;
       alpha = 0.0;
-      scale = 1.0f;
+      scale = current_action->scale;
       color = Color(1.0f, 1.0f, 1.0f);
       blend_sfactor = GL_SRC_ALPHA;
       blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;

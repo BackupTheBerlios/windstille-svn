@@ -32,6 +32,33 @@
 
 class InputManagerSDLImpl;
 
+struct JoystickButtonBinding
+{
+  int event;
+  int device;
+  int button;
+};
+
+struct JoystickAxisBinding
+{
+  int event;
+  int device;
+  int axis;
+};
+
+struct KeyboardButtonBinding
+{
+  int event;
+  SDLKey key;
+};
+
+struct KeyboardAxisBinding
+{
+  int event;
+  SDLKey plus;
+  SDLKey minus;
+};
+
 /** */
 class InputManagerSDL : public InputManagerImpl
 {

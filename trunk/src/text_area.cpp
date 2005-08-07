@@ -70,6 +70,8 @@ TextArea::~TextArea()
 void
 TextArea::set_text(const std::string& str)
 {
+  impl->commands.clear();
+
   BabyXML xml(str);
 
   for(BabyXML::iterator i = xml.begin(); i != xml.end(); ++i)

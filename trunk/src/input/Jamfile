@@ -1,28 +1,9 @@
 SubDir TOP src input ;
 
 sources =
-#    axis_button.cpp                
-#    axis_button.hpp
-#    axis_factory.cpp
-#    axis_factory.hpp
-#    button_axis.cpp
-#    button_axis.hpp
-#    button_factory.cpp
-#    button_factory.hpp
     controller.cpp
     controller.hpp
-#    input_axis.hpp
-#    input_axis_input_device.cpp
-#    input_axis_input_device.hpp
-#    input_button.hpp
-#    input_keyboard.hpp
-#    input_button_input_device.cpp
-#    input_button_input_device.hpp
-#    input_keyboard_input_device.hpp
-#    input_keyboard_input_device.cpp
     input_event.hpp
-#    input_manager_custom.cpp
-#    input_manager_custom.hpp
     input_manager_sdl.cpp
     input_manager_sdl.hpp
     input_manager.cpp
@@ -33,8 +14,8 @@ sources =
     input_manager_player.hpp
     input_recorder.cpp
     input_recorder.hpp
-#    multi_button.cpp
-#    multi_button.hpp
+    input_configurator.hpp
+    input_configurator.cpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
