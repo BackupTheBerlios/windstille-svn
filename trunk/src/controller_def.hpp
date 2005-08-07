@@ -40,8 +40,8 @@ enum ButtonName
     AIM_BUTTON,       // used to draw the gun and aim
   };
 
-#define JUMP_BUTTON PRIMARY_BUTTON
-#define RUN_BUTTON  SECONDARY_BUTTON
+#define JUMP_BUTTON SECONDARY_BUTTON
+#define RUN_BUTTON PRIMARY_BUTTON
 
 /** */
 class ControllerDef

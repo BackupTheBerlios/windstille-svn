@@ -29,6 +29,8 @@
 #include "glutil/surface_manager.hpp"
 #include "particles/particle_system.hpp"
 #include "collision/collision_engine.hpp"
+#include "game_session.hpp"
+#include "console.hpp"
 
 static const int MAX_ENERGY = 16;
 static const float WALK_SPEED = 128.0;
@@ -112,51 +114,55 @@ Player::update (float delta)
 {
   controller = InputManager::get_controller();
 
-  switch(state) {
-    case STAND:
-    case WALK:
-      update_walk_stand();
-      break;
-    case RUN:
-      update_run();
-      break;
-    case DUCKING:
-      update_ducking();
-      break;
-    case DUCKED:
-      update_ducked();
-      break;
-    case TURNAROUND:
-      update_turnaround();
-      break;
-    case STAND_TO_LISTEN:
-      update_stand_to_listen();
-      break;
-    case LISTEN:
-      update_listen();
-      break;
-    case JUMP_BEGIN:
-      update_jump_begin();
-      break;
-    case JUMP_AIR:
-      update_jump_air();
-      break;
-    case JUMP_LAND:
-      update_jump_land();
-      break;
-    case JUMP_UP_BEGIN:
-      update_jump_up_begin();
-      break;
-    case JUMP_UP_AIR:
-      update_jump_up_air();
-      break;
-    case JUMP_UP_LAND:
-      update_jump_up_land();
-      break;
-    default:
-      assert(false);
-      break;
-  }
+  if (!console.is_active() && !GameSession::current()->pda.is_active()
+  && GameSession::current()->get_game_state() != GameSession::DIALOG)
+    {
+      switch(state) {
+        case STAND:
+        case WALK:
+          update_walk_stand();
+          break;
+        case RUN:
+          update_run();
+          break;
+        case DUCKING:
+          update_ducking();
+          break;
+        case DUCKED:
+          update_ducked();
+          break;
+        case TURNAROUND:
+          update_turnaround();
+          break;
+        case STAND_TO_LISTEN:
+          update_stand_to_listen();
+          break;
+        case LISTEN:
+          update_listen();
+          break;
+        case JUMP_BEGIN:
+          update_jump_begin();
+          break;
+        case JUMP_AIR:
+          update_jump_air();
+          break;
+        case JUMP_LAND:
+          update_jump_land();
+          break;
+        case JUMP_UP_BEGIN:
+          update_jump_up_begin();
+          break;
+        case JUMP_UP_AIR:
+          update_jump_up_air();
+          break;
+        case JUMP_UP_LAND:
+          update_jump_up_land();
+          break;
+        default:
+          assert(false);
+          break;
+      }
+    }
 
   // fall down
   velocity.y += GRAVITY * delta;

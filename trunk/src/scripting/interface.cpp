@@ -138,6 +138,7 @@ void conversation_add(const std::string& text)
 void conversation_show()
 {
   Conversation::current()->show();
+  GameSession::current()->set_dialog_state();
 }
 
 int  conversation_get_selection()

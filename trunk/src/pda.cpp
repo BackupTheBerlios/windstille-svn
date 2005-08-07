@@ -134,10 +134,10 @@ PDA::show_dialogs()
   new_text = "<large>Personal Digital Assistant</large>\n";
   new_text += "inventory - missions - <b>dialogs</b>\n\n";
   
-  for (unsigned i = 0; i != dialogs.size(); ++i) {
-    new_text += dialogs[i].character;
+  for (std::vector<Dialog_Entry>::reverse_iterator i = dialogs.rbegin(); i != dialogs.rend(); ++i) {
+    new_text += i->character;
     new_text += ": ";
-    new_text += dialogs[i].text + '\n';
+    new_text += i->text + '\n';
   }
 }
 

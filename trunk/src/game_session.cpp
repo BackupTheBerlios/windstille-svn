@@ -196,13 +196,14 @@ GameSession::update(float delta)
             {
             case DIALOG:
               dialog_manager->update(delta);
+              conversation->update(delta);
               break;
             case GAME:
               break;
             }
           break;
         }
-      conversation->update(delta);
+      
       controller_help_window.update(delta);
       pda.update(delta);
     }

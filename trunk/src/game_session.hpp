@@ -46,6 +46,8 @@ class Conversation;
 
 class GameSession : public Windstille::Screen
 {
+public:
+  enum ControlState { DIALOG, GAME };
 private:
   SceneContext sc;
 
@@ -62,7 +64,7 @@ private:
   bool pause;
 
   enum { FADEIN, RUNNING, FADEOUT } fade_state;
-  enum { DIALOG, GAME } control_state;
+  ControlState control_state;
   GameMainState target_state;
 
   void change_sector ();
@@ -81,6 +83,8 @@ public:
   void set_dialog_state() { control_state = DIALOG; }
   void set_game_state()   { control_state = GAME; }
   void set_sector(const std::string& arg_filename);
+  
+  ControlState get_game_state() const { return control_state; }
   const std::string& get_filename () const { return filename; }
 
   void draw();

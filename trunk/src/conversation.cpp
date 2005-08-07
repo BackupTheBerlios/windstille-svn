@@ -108,6 +108,7 @@ Conversation::update(float delta)
               active = false;
               GameSession::current()->pda.add_dialog("Jane", choices[selection]);
               choices.clear();
+              GameSession::current()->set_game_state();
               script_manager->fire_wakeup_event(ScriptManager::CONVERSATION_CLOSED);
               return;
               break;
