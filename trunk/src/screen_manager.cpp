@@ -32,6 +32,7 @@
 #include "fonts.hpp"
 #include "gameconfig.hpp"
 #include "input/input_manager.hpp"
+#include "input/input_configurator.hpp"
 #include "sound/sound_manager.hpp"
 #include "screen_manager.hpp"
 
@@ -45,6 +46,9 @@ ScreenManager::ScreenManager()
     do_quit(false)
 {
   screen = 0;
+  overlay_screen = 0;
+  next_overlay_screen = 0;
+  has_next_overlay_screen = false;
   ticks = 0;
 }
 
@@ -74,7 +78,11 @@ ScreenManager::run()
       while (delta > step)
         {
           console.update(step);
-          screen->update(step, InputManager::get_controller());
+          if (overlay_screen)
+            overlay_screen->update(step, InputManager::get_controller());
+          else
+            screen->update(step, InputManager::get_controller());
+                
           InputManager::clear();
   
           delta -= step;
@@ -85,7 +93,10 @@ ScreenManager::run()
       sound_manager->update();
 
       screen->draw();
-      
+
+      if (overlay_screen)
+        overlay_screen->draw();
+
       console.draw();
 
       if (config->show_fps)
@@ -93,6 +104,14 @@ ScreenManager::run()
 
       SDL_GL_SwapBuffers();
       frame_counter += 1;
+
+      if (has_next_overlay_screen)
+        {
+          delete overlay_screen;
+          overlay_screen = next_overlay_screen;
+          next_overlay_screen = 0;
+          has_next_overlay_screen = false;
+        }
 
       poll_events();
     }
@@ -139,6 +158,10 @@ ScreenManager::poll_events()
             {    
               switch (event.key.keysym.sym)
                 {               
+                case SDLK_F9:
+                  set_overlay(new InputConfigurator());
+                  break;
+
                 case SDLK_F10:
                   config->show_fps = ! (config->show_fps);
                   break;
@@ -158,7 +181,12 @@ ScreenManager::poll_events()
               
                 default:
                   if (!console.is_active())
-                    screen->handle_event(event);
+                    {
+                    if (overlay_screen)
+                      overlay_screen->handle_event(event);
+                    else
+                      screen->handle_event(event);
+                    }
                   break;
                 }
             }
@@ -186,7 +214,10 @@ ScreenManager::poll_events()
           break;
         
         default:
-          screen->handle_event(event);
+          if (overlay_screen)
+            overlay_screen->handle_event(event);
+          else              
+            screen->handle_event(event);
           break;
       }
     }
@@ -213,6 +244,13 @@ ScreenManager::set_screen(Screen* s)
 {
   delete screen;
   screen = s;
+}
+
+void
+ScreenManager::set_overlay(Screen* s)
+{
+  next_overlay_screen = s;
+  has_next_overlay_screen = true;
 }
 
 void

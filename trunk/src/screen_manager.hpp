@@ -33,6 +33,10 @@ class ScreenManager
 {
 private:
   Screen* screen;
+  Screen* overlay_screen;
+
+  Screen* next_overlay_screen;
+  bool    has_next_overlay_screen;
 
   unsigned int ticks;
 
@@ -46,9 +50,20 @@ public:
   ScreenManager();
   ~ScreenManager();
 
+  /** Displays the previously set screen in until quit() is called */
   void run();
-  void set_screen(Screen* s);
+
+  /** Breaks out of the run() function */
   void quit();
+
+  /** Sets the currently active screen */
+  void set_screen(Screen* s);
+
+  /** Sets the overlay, which is a screen drawn on-top of the current
+      screen, usefull for menus or console, use set_overlay(0) to kill
+      the current overlay */
+  void set_overlay(Screen* s);
+
 private:
   void poll_events();
   void draw_fps();

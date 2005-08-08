@@ -80,6 +80,8 @@ public:
   void bind_keyboard_button(int event, SDLKey key);
   void bind_keyboard_axis(int event, SDLKey minus, SDLKey plus);
   
+  void clear_bindings();
+
   std::string keyid_to_string(SDLKey id);
   SDLKey string_to_keyid(const std::string& str);
 

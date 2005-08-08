@@ -26,6 +26,7 @@
 #ifndef HEADER_INPUT_CONFIGURATOR_HPP
 #define HEADER_INPUT_CONFIGURATOR_HPP
 
+#include "screen.hpp"
 #include "text_area.hpp"
 
 struct ConfigureItem
@@ -36,7 +37,7 @@ struct ConfigureItem
 };
 
 /** */
-class InputConfigurator
+class InputConfigurator : public Screen
 {
 private:
   std::vector<ConfigureItem> items;
@@ -50,8 +51,8 @@ public:
   ~InputConfigurator();
   
   void draw();
-  void update(float delta);
-  void on_event(const SDL_Event& event);
+  void update(float delta, const Controller& controller);
+  void handle_event(const SDL_Event& event);
   void add_configure_item(ConfigureItem::Mode mode, int event_id);
   void next_item();
   void print_item();

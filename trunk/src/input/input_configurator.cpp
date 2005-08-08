@@ -27,13 +27,14 @@
 #include "math/rect.hpp"
 #include "controller_def.hpp"
 #include "fonts.hpp"
+#include "screen_manager.hpp"
 #include "input/input_manager_sdl.hpp"
 #include "input_configurator.hpp"
 
 InputConfigurator::InputConfigurator()
-  : area(Rectf(120, 120,
-               Display::get_width()  - 220, 
-               Display::get_height() - 220), 
+  : area(Rectf(120, 100,
+               Display::get_width()  - 120, 
+               Display::get_height() - 100), 
          false)
 {
   out << "Input Configurator\n"
@@ -45,6 +46,7 @@ InputConfigurator::InputConfigurator()
 
   area.set_font(Fonts::ttffont);
 
+  add_configure_item(ConfigureItem::CONFIGURE_BUTTON, AIM_BUTTON);
   add_configure_item(ConfigureItem::CONFIGURE_BUTTON, PDA_BUTTON);
   add_configure_item(ConfigureItem::CONFIGURE_BUTTON, TERTIARY_BUTTON);
   add_configure_item(ConfigureItem::CONFIGURE_BUTTON, SECONDARY_BUTTON);
@@ -53,10 +55,9 @@ InputConfigurator::InputConfigurator()
   add_configure_item(ConfigureItem::CONFIGURE_AXIS, Y_AXIS);
   add_configure_item(ConfigureItem::CONFIGURE_AXIS, X_AXIS);
 
-
-  add_configure_item(ConfigureItem::CONFIGURE_BUTTON, AIM_BUTTON);
-
   print_item();
+
+  InputManagerSDL::current()->clear_bindings();
 }
 
 InputConfigurator::~InputConfigurator()
@@ -78,9 +79,9 @@ InputConfigurator::add_configure_item(ConfigureItem::Mode mode, int event_id)
 void
 InputConfigurator::draw()
 {
-  Rectf rect(100, 100,
-             Display::get_width()  - 200, 
-             Display::get_height() - 200);
+  Rectf rect(100, 75,
+             Display::get_width()  - 100, 
+             Display::get_height() - 75);
 
   Display::fill_rounded_rect(rect, 16.0f, Color(0.3f, 0.3f, 0.5f, 0.5f));
   Display::draw_rounded_rect(rect, 16.0f, Color(1.0f, 1.0f, 1.0f, 0.5f)); 
@@ -88,7 +89,7 @@ InputConfigurator::draw()
 }
 
 void
-InputConfigurator::update(float delta)
+InputConfigurator::update(float delta, const Controller& controller)
 {
   
 }
@@ -118,10 +119,13 @@ InputConfigurator::print_item()
 void
 InputConfigurator::next_item()
 {
-  ControllerDef def;
-
   out << std::endl;
   items.pop_back();
+
+  if (items.empty())
+    {
+      out << "Controller configuration is done, pressy any key to continue" << std::endl;
+    }
 
   print_item();
 
@@ -129,10 +133,14 @@ InputConfigurator::next_item()
 }
 
 void
-InputConfigurator::on_event(const SDL_Event& event)
+InputConfigurator::handle_event(const SDL_Event& event)
 {
   if (items.empty())
-    return; 
+    {
+      std::cout << "InputConfigurator: done" << std::endl;
+      screen_manager.set_overlay(0);
+      return; 
+    }
 
   switch(event.type)
     {        
@@ -189,7 +197,9 @@ InputConfigurator::on_event(const SDL_Event& event)
     case SDL_KEYDOWN:
       if (event.key.keysym.sym == SDLK_ESCAPE)
         {
-          next_item();
+          std::cout << "InputConfigurator: abort" << std::endl;
+          screen_manager.set_overlay(0);
+          //next_item();
         }
       else
         {

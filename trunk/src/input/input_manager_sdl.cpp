@@ -383,4 +383,14 @@ InputManagerSDL::bind_keyboard_axis(int event, SDLKey minus, SDLKey plus)
   impl->keyboard_axis_bindings.push_back(binding);
 }
 
+void
+InputManagerSDL::clear_bindings()
+{
+  impl->joystick_button_bindings.clear();
+  impl->joystick_axis_bindings.clear();
+  
+  impl->keyboard_button_bindings.clear();
+  impl->keyboard_axis_bindings.clear();
+}
+
 /* EOF */
