@@ -60,8 +60,6 @@
 
 #include "game_session.hpp"
 
-using namespace Windstille;
-
 GameSession* GameSession::current_ = 0; 
 
 GameSession::GameSession(const std::string& arg_filename)
@@ -142,12 +140,12 @@ GameSession::draw()
 }
 
 void
-GameSession::update(float delta)
+GameSession::update(float delta, const Controller& controller)
 {  
-  if (InputManager::get_controller().button_was_pressed(PDA_BUTTON))
+  if (controller.button_was_pressed(PDA_BUTTON))
     pda.set_active(!pda.is_active());
 
-  if (InputManager::get_controller().button_was_pressed(PAUSE_BUTTON))
+  if (controller.button_was_pressed(PAUSE_BUTTON))
     pause = !pause;
 
   Uint8 *keystate = SDL_GetKeyState(NULL);

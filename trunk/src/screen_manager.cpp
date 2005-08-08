@@ -5,7 +5,7 @@
 **   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
 **    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
 **         \/          \/      \/    \/                         \/
-**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
 **
 **  This program is free software; you can redistribute it and/or
 **  modify it under the terms of the GNU General Public License
@@ -23,36 +23,56 @@
 **  02111-1307, USA.
 */
 
-#ifndef WINDSTILLEMAIN_HPP
-#define WINDSTILLEMAIN_HPP
-
+#include "game_session.hpp"
+#include "globals.hpp"
 #include "screen.hpp"
+#include "screen_manager.hpp"
 
-struct SDL_Surface;
-
-class WindstilleMain
+ScreenManager::ScreenManager()
 {
-public:
-  std::string levelfile;
-  std::string controller_file;
-  std::string recorder_file;
-  std::string playback_file;
-  std::string screenshot_dir;
-  
-public:
-  WindstilleMain();
-  ~WindstilleMain();
+  screen = 0;
+}
 
-  int main(int argc, char** argv);
+ScreenManager::~ScreenManager()
+{
+}
 
-private:
-  void init_sdl();
-  void init_physfs(const char* argv0);
-  void parse_command_line(int argc, char** argv);
-  void init_modules();
-  void deinit_modules();
-};
+void
+ScreenManager::run()
+{
+  bool quit = false;
+  while (!quit)
+    {
+      switch (game_main_state)
+        {
+        case RUN_GAME:
+          screen->display();
+          break;
 
-#endif
+        case LOAD_MENU:
+          // Fall through and load the game directly as long as we don't
+          // have a new menu
+        case LOAD_GAME_SESSION:
+          delete screen;
+          screen = new GameSession("levels/newformat2.wst");
+          game_main_state = RUN_GAME;
+          break;
+
+        case QUIT_GAME:
+          delete screen;
+          screen = 0;
+          quit = true;
+          break;
+        }
+    }
+ 
+}
+
+void
+ScreenManager::set_screen(Screen* s)
+{
+  delete screen;
+  screen = s;
+}
 
 /* EOF */

@@ -91,9 +91,9 @@ Controller::set_events(const InputEventLst& lst)
 }
 
 bool
-Controller::button_was_pressed(int name)
+Controller::button_was_pressed(int name) const
 {
-  for(InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+  for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
     {
       if (i->type == BUTTON_EVENT && i->button.name == name && i->button.down)
         {
@@ -104,9 +104,9 @@ Controller::button_was_pressed(int name)
 }
 
 bool
-Controller::axis_was_pressed_up(int name)
+Controller::axis_was_pressed_up(int name) const
 {
-  for(InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+  for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
     {
       if (i->type == AXIS_EVENT && i->axis.name == name && i->axis.pos > 0.5f)
         {
@@ -117,9 +117,9 @@ Controller::axis_was_pressed_up(int name)
 }
 
 bool
-Controller::axis_was_pressed_down(int name)
+Controller::axis_was_pressed_down(int name) const
 {
-  for(InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+  for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
     {
       if (i->type == AXIS_EVENT && i->axis.name == name && i->axis.pos < -0.5f)
         {

@@ -76,8 +76,10 @@ sources =
         random.hpp
         screen.cpp
         screen.hpp
-        script_manager.hpp
+        screen_manager.cpp
+        screen_manager.hpp
         script_manager.cpp
+        script_manager.hpp
         scriptable_object.hpp
         scriptable_object.cpp
         sector.cpp
@@ -105,8 +107,6 @@ sources =
         util.hpp
         view.cpp
         view.hpp
-        windstille_error.cpp
-        windstille_error.hpp
         windstille_getters.hpp
         windstille_getters.cpp
         windstille_main.cpp

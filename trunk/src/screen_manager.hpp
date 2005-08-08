@@ -5,7 +5,7 @@
 **   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
 **    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
 **         \/          \/      \/    \/                         \/
-**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
 **
 **  This program is free software; you can redistribute it and/or
 **  modify it under the terms of the GNU General Public License
@@ -23,34 +23,26 @@
 **  02111-1307, USA.
 */
 
-#ifndef WINDSTILLEMAIN_HPP
-#define WINDSTILLEMAIN_HPP
+#ifndef HEADER_SCREEN_MANAGER_HPP
+#define HEADER_SCREEN_MANAGER_HPP
 
-#include "screen.hpp"
+class Screen;
 
-struct SDL_Surface;
-
-class WindstilleMain
+/** */
+class ScreenManager
 {
-public:
-  std::string levelfile;
-  std::string controller_file;
-  std::string recorder_file;
-  std::string playback_file;
-  std::string screenshot_dir;
-  
-public:
-  WindstilleMain();
-  ~WindstilleMain();
-
-  int main(int argc, char** argv);
-
 private:
-  void init_sdl();
-  void init_physfs(const char* argv0);
-  void parse_command_line(int argc, char** argv);
-  void init_modules();
-  void deinit_modules();
+  Screen* screen;
+
+public:
+  ScreenManager();
+  ~ScreenManager();
+
+  void run();
+  void set_screen(Screen* s);
+private:
+  ScreenManager (const ScreenManager&);
+  ScreenManager& operator= (const ScreenManager&);
 };
 
 #endif

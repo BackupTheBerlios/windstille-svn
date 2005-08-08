@@ -67,7 +67,7 @@ Screen::display()
   while (time_delta > step)
     {
       console.update(step);
-      update(step);
+      update(step, InputManager::get_controller());
       InputManager::clear();
   
       time_delta -= step;

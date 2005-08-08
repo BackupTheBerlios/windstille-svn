@@ -26,7 +26,6 @@
 #include "lisp/parser.hpp"
 #include "lisp/lisp.hpp"
 #include "lisp/properties.hpp"
-#include "windstille_error.hpp"
 #include "input_manager_sdl.hpp"
 #include "input_manager_player.hpp"
 #include "input_manager_impl.hpp"

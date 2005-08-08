@@ -43,8 +43,7 @@ class Player;
 class DialogManager;
 class Conversation;
 
-
-class GameSession : public Windstille::Screen
+class GameSession : public Screen
 {
 public:
   enum ControlState { DIALOG, GAME };
@@ -89,7 +88,7 @@ public:
 
   void draw();
   void draw_game();
-  void update(float delta);
+  void update(float delta, const Controller& controller);
   void handle_event(const SDL_Event& event);
 
   void quit();

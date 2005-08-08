@@ -25,12 +25,11 @@
 
 #include <physfs.h>
 
-#include "windstille_error.hpp"
 #include "globals.hpp"
 #include "screen.hpp"
-#include "game_session.hpp"
 #include "windstille_main.hpp"
 #include "fonts.hpp"
+#include "game_session.hpp"
 #include "sector.hpp"
 #include "input/input_manager.hpp"
 #include "sound/sound_manager.hpp"
@@ -44,13 +43,11 @@
 #include "glutil/surface_manager.hpp"
 #include "glutil/texture_manager.hpp"
 #include "sprite3d/manager.hpp"
+#include "screen_manager.hpp"
 #include "command_line.hpp"
 #include "sprite2d/manager.hpp"
 
-using namespace Windstille;
-
 WindstilleMain::WindstilleMain()
-  : screen(0)
 {
   game_main_state = LOAD_GAME_SESSION;
 }
@@ -199,6 +196,8 @@ WindstilleMain::main(int argc, char** argv)
     
     if (debug) std::cout << "Initialising TileFactory" << std::endl;
     TileFactory::init();
+
+    ScreenManager screen_manager;
     
     if (levelfile.empty())
       {
@@ -208,20 +207,18 @@ WindstilleMain::main(int argc, char** argv)
       {
         std::string leveldir = dirname(levelfile);
         PHYSFS_addToSearchPath(leveldir.c_str(), true);
-        screen = new GameSession(basename(levelfile));
+        screen_manager.set_screen(new GameSession(basename(levelfile)));
         game_main_state = RUN_GAME;
       }
-   
+    
     console << "Press F1 to open the console" << std::endl;
-    while (game_main());
+    screen_manager.run();
     
     TileFactory::deinit();
     InputManager::deinit();
 
     deinit_modules();
 
-  } catch (WindstilleError& err) {
-    std::cout << "WindstilleError: " << err.what() << std::endl;
   } catch (std::exception& err) {
     std::cout << "std::exception: " << err.what() << std::endl;
   } catch (...) {
@@ -410,33 +407,6 @@ WindstilleMain::init_physfs(const char* argv0)
   //show search Path
   for(char** i = PHYSFS_getSearchPath(); *i != NULL; i++)
     printf("[%s] is in the search path.\n", *i);
-}
-
-bool
-WindstilleMain::game_main()
-{
-  switch (game_main_state)
-    {
-    case RUN_GAME:
-      screen->display();
-      break;
-
-    case LOAD_MENU:
-      // Fall through and load the game directly as long as we don't
-      // have a new menu
-    case LOAD_GAME_SESSION:
-      delete screen;
-      screen = new GameSession("levels/newformat2.wst");
-      game_main_state = RUN_GAME;
-      break;
-
-    case QUIT_GAME:
-      delete screen;
-      screen = 0;
-      return false;
-    }
-  
-  return true;
 }
 
 int main(int argc, char** argv)

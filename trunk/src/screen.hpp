@@ -23,7 +23,7 @@
 #include <SDL.h>
 #include "signals/slot.hpp"
 
-namespace Windstille {
+class Controller;
 
 /** */
 class Screen
@@ -45,13 +45,11 @@ public:
   virtual ~Screen();
 
   virtual void draw() =0;
-  virtual void update(float delta) =0;
+  virtual void update(float delta, const Controller& controller) =0;
   virtual void handle_event(const SDL_Event& event) =0;
 
   void display();
 };
-
-} // namespace Windstille
 
 #endif
 

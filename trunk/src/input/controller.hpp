@@ -55,15 +55,15 @@ public:
 
   /** Convenience function that searches for a button down event for
       the given button */
-  bool button_was_pressed(int name);
+  bool button_was_pressed(int name) const;
 
   /** Convenience function that searches for a AxisMove event that
       pushed the axis up */
-  bool axis_was_pressed_up(int name);
+  bool axis_was_pressed_up(int name) const;
 
   /** Convenience function that searches for a AxisMove event that
       pushed the axis down */
-  bool axis_was_pressed_down(int name);
+  bool axis_was_pressed_down(int name) const;
 };
 
 #endif
