@@ -114,7 +114,7 @@ DialogManager::update(float delta)
   text_area->update(delta);
 
   delay += delta;
-  if (InputManager::get_controller().get_button_state(PRIMARY_BUTTON) 
+  if (InputManager::get_controller().get_button_state(OK_BUTTON) 
       && delay > 0.2 && progress * text_speed < text.size())
     progress = int(text.size()) / text_speed;
   else
@@ -126,7 +126,7 @@ DialogManager::update(float delta)
     {
       if ((*i).type == BUTTON_EVENT)
         {
-          if ((*i).button.name == PRIMARY_BUTTON && (*i).button.down == true
+          if ((*i).button.name == OK_BUTTON && (*i).button.down == true
               && int(progress * text_speed) > int(text.size()))
             {
               GameSession::current()->set_game_state();

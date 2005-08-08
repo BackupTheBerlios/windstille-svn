@@ -104,7 +104,7 @@ Conversation::update(float delta)
         {
           switch (i->button.name)
             {
-            case PRIMARY_BUTTON:
+            case OK_BUTTON:
               active = false;
               GameSession::current()->pda.add_dialog("Jane", choices[selection]);
               choices.clear();

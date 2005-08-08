@@ -33,15 +33,18 @@ enum ButtonName
   { 
     PRIMARY_BUTTON,   // used to ok a dialog or for running
     SECONDARY_BUTTON, // used to cancel a dialog or for jumping
-    TERTIARY_BUTTON, // used to cancel a dialog or for jumping
+    TERTIARY_BUTTON,  // used to cancel a dialog or for jumping
     PDA_BUTTON,       // display the PDA
     
     PAUSE_BUTTON,     // used to pause the game
     AIM_BUTTON,       // used to draw the gun and aim
   };
 
-#define JUMP_BUTTON SECONDARY_BUTTON
-#define RUN_BUTTON PRIMARY_BUTTON
+#define JUMP_BUTTON PRIMARY_BUTTON
+#define RUN_BUTTON  SECONDARY_BUTTON
+#define USE_BUTTON  TERTIARY_BUTTON
+#define OK_BUTTON   PRIMARY_BUTTON
+#define CANCEL_BUTTON SECONDARY_BUTTON
 
 /** */
 class ControllerDef

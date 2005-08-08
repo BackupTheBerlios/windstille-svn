@@ -91,11 +91,37 @@ Controller::set_events(const InputEventLst& lst)
 }
 
 bool
-Controller::button_pressed(int name)
+Controller::button_was_pressed(int name)
 {
   for(InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
     {
       if (i->type == BUTTON_EVENT && i->button.name == name && i->button.down)
+        {
+          return true;
+        }
+    }
+  return false;
+}
+
+bool
+Controller::axis_was_pressed_up(int name)
+{
+  for(InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+    {
+      if (i->type == AXIS_EVENT && i->axis.name == name && i->axis.pos > 0.5f)
+        {
+          return true;
+        }
+    }
+  return false;  
+}
+
+bool
+Controller::axis_was_pressed_down(int name)
+{
+  for(InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+    {
+      if (i->type == AXIS_EVENT && i->axis.name == name && i->axis.pos < -0.5f)
         {
           return true;
         }

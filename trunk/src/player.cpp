@@ -221,7 +221,7 @@ Player::find_useable_entity()
 void
 Player::update_stand()
 { 
-  if(controller.button_pressed(PRIMARY_BUTTON))
+  if(controller.button_was_pressed(USE_BUTTON))
     {
       Entity* obj = find_useable_entity();
       if (obj)

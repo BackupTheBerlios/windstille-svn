@@ -34,11 +34,12 @@ private:
   void poll_events();
 
 protected:  
-  int frames;
+  int   frames;
   float time_counter;
-  int fps_counter;
-  int fps_save;
+  int   fps_counter;
+  int   fps_save;
   float overlap_delta;
+
 public:
   Screen();
   virtual ~Screen();

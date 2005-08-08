@@ -115,7 +115,6 @@ GameSession::draw_game()
 void
 GameSession::draw()
 {
-  //std::cout << gluErrorString(glGetError()) << std::endl;
   draw_game();
 
   switch (fade_state)
@@ -145,10 +144,10 @@ GameSession::draw()
 void
 GameSession::update(float delta)
 {  
-  if (InputManager::get_controller().button_pressed(PDA_BUTTON))
+  if (InputManager::get_controller().button_was_pressed(PDA_BUTTON))
     pda.set_active(!pda.is_active());
 
-  if (InputManager::get_controller().button_pressed(PAUSE_BUTTON))
+  if (InputManager::get_controller().button_was_pressed(PAUSE_BUTTON))
     pause = !pause;
 
   Uint8 *keystate = SDL_GetKeyState(NULL);
