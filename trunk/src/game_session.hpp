@@ -54,21 +54,23 @@ private:
 
   ControllerHelpWindow controller_help_window;
 
-  std::string filename;
-  Sector* sector;
-  View* view;
-  EnergyBar* energy_bar;
+  Sector*        sector;
+  View*          view;
+  EnergyBar*     energy_bar;
   DialogManager* dialog_manager;
   Conversation*  conversation;
+
+  std::string filename;
+
   bool pause;
 
+  enum { NO_ACTION, QUIT_ACTION, CHANGE_SECTOR_ACTION } next_action;
+  
   enum { FADEIN, RUNNING, FADEOUT } fade_state;
   ControlState control_state;
-  GameMainState target_state;
-
-  void change_sector ();
 
   static GameSession* current_; 
+
 public:
   static GameSession* current() { return current_; } 
 
@@ -81,8 +83,13 @@ public:
 
   void set_dialog_state() { control_state = DIALOG; }
   void set_game_state()   { control_state = GAME; }
-  void set_sector(const std::string& arg_filename);
-  
+
+  /** Switches the sector instantly without fadeout */
+  void set_sector(const std::string& filename);
+
+  /** Fades out then switches sectors and fades in again */
+  void change_sector(const std::string& filename);
+
   ControlState get_game_state() const { return control_state; }
   const std::string& get_filename () const { return filename; }
 

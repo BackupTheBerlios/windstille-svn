@@ -1,4 +1,4 @@
-//  $Id: globals.cxx,v 1.6 2003/11/07 22:41:18 grumbel Exp $
+//  $Id$
 //
 //  Pingus - A free Lemmings clone
 //  Copyright (C) 2002 Ingo Ruhnke <grumbel@gmx.de>
@@ -33,6 +33,5 @@ bool debug = false;
 #endif
 bool collision_debug = false;
 bool sound_disabled = false;
-GameMainState game_main_state;
 
 /* EOF */

@@ -49,7 +49,6 @@
 
 WindstilleMain::WindstilleMain()
 {
-  game_main_state = LOAD_GAME_SESSION;
 }
 
 WindstilleMain::~WindstilleMain()
@@ -197,20 +196,17 @@ WindstilleMain::main(int argc, char** argv)
     if (debug) std::cout << "Initialising TileFactory" << std::endl;
     TileFactory::init();
 
-    ScreenManager screen_manager;
-    
     if (levelfile.empty())
       {
-        game_main_state = LOAD_MENU;
+        screen_manager.set_screen(new GameSession("levels/newformat2.wst"));
       }
-    else 
+    else
       {
         std::string leveldir = dirname(levelfile);
         PHYSFS_addToSearchPath(leveldir.c_str(), true);
         screen_manager.set_screen(new GameSession(basename(levelfile)));
-        game_main_state = RUN_GAME;
       }
-    
+        
     console << "Press F1 to open the console" << std::endl;
     screen_manager.run();
     

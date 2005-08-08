@@ -28,18 +28,6 @@ class Controller;
 /** */
 class Screen
 {
-private:
-  void draw_fps(float delta);
-  unsigned int ticks;
-  void poll_events();
-
-protected:  
-  int   frames;
-  float time_counter;
-  int   fps_counter;
-  int   fps_save;
-  float overlap_delta;
-
 public:
   Screen();
   virtual ~Screen();
@@ -47,8 +35,6 @@ public:
   virtual void draw() =0;
   virtual void update(float delta, const Controller& controller) =0;
   virtual void handle_event(const SDL_Event& event) =0;
-
-  void display();
 };
 
 #endif

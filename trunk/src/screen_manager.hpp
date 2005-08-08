@@ -34,16 +34,30 @@ class ScreenManager
 private:
   Screen* screen;
 
+  unsigned int ticks;
+
+  float time_counter;
+  int   frame_counter;
+  int   last_fps;
+  float overlap_delta;
+  bool  do_quit;
+
 public:
   ScreenManager();
   ~ScreenManager();
 
   void run();
   void set_screen(Screen* s);
+  void quit();
 private:
+  void poll_events();
+  void draw_fps();
+
   ScreenManager (const ScreenManager&);
   ScreenManager& operator= (const ScreenManager&);
 };
+
+extern ScreenManager screen_manager; 
 
 #endif
 

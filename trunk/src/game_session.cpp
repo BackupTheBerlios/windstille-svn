@@ -37,6 +37,7 @@
 #include "game_object.hpp"
 #include "player.hpp"
 #include "tile_map.hpp"
+#include "screen_manager.hpp"
 #include "view.hpp"
 #include "timer.hpp"
 #include "energy_bar.hpp"
@@ -63,23 +64,23 @@
 GameSession* GameSession::current_ = 0; 
 
 GameSession::GameSession(const std::string& arg_filename)
-  : sector (0)
+  : sector (0),
+    filename(arg_filename)
 {
   if (debug) std::cout << "Creating new GameSession" << std::endl;
   current_ = this;
-  
+
   view           = new View();  
   energy_bar     = new EnergyBar();
   dialog_manager = new DialogManager();
   conversation   = new Conversation();
 
-  filename = arg_filename;
+  pause = false;
   
   if (1)
     script_manager->run_script_file("scripts/init_script_vars.nut");
     
-  change_sector();
-  pause = false;
+  set_sector(filename);
 }
 
 GameSession::~GameSession()
@@ -175,14 +176,25 @@ GameSession::update(float delta, const Controller& controller)
             fade_state = RUNNING;
           fadeout_value += delta;
           break;
+
         case FADEOUT:
           if (fadeout_value > 1.0f)
             {
-              if (target_state == LOAD_GAME_SESSION)
-                change_sector();
-              else
-                game_main_state = target_state;
+              switch(next_action)
+                {
+                case CHANGE_SECTOR_ACTION:
+                  set_sector(filename);
+                  break;
+
+                case QUIT_ACTION:
+                  screen_manager.quit();
+                  break;
+
+                default:
+                  break;
+                }
             }
+
           fadeout_value += delta;
           break;
 
@@ -210,36 +222,37 @@ GameSession::update(float delta, const Controller& controller)
 }
 
 void
-GameSession::change_sector()
+GameSession::change_sector(const std::string& arg_filename)
 {
-  if (sector)
-    delete sector;
+  filename = arg_filename;
+ 
+  sound_manager->stop_music();
 
-  sector = new Sector(filename);
-  fade_state = FADEIN;
+  fade_state    = FADEOUT;
   fadeout_value = 0;
-  control_state = GAME;
-  target_state = RUN_GAME;
-  GameObject::set_world(sector);
-  
-  //FIXME: does the TestObject class still need to exist?
-  //sector->add(new TestObject());
-  
-  sector->spawn_player("default");
-  sector->activate();
-  
-  if (debug) std::cout << "Finished changing sector" << std::endl;
+  next_action   = CHANGE_SECTOR_ACTION;
 }
 
 void
 GameSession::set_sector(const std::string& arg_filename)
 {
-  target_state = LOAD_GAME_SESSION;
-  filename = arg_filename;
+  delete sector;
+  sector = new Sector(filename);
+ 
+  GameObject::set_world(sector);
+
+  //FIXME: does the TestObject class still need to exist?
+  //sector->add(new TestObject());
   
+  sector->spawn_player("default");
+  sector->activate();
+    
+  fade_state    = FADEIN;
   fadeout_value = 0;
-  sound_manager->stop_music();
-  fade_state = FADEOUT;
+  control_state = GAME;
+  next_action   = NO_ACTION;
+
+  if (debug) std::cout << "Finished changing sector" << std::endl;
 }
 
 void
@@ -301,11 +314,10 @@ GameSession::quit()
 {
   if (fade_state != FADEOUT)
     {
-      target_state = LOAD_MENU;
-      
       fadeout_value = 0;
       sound_manager->stop_music();
       fade_state = FADEOUT;
+      next_action = QUIT_ACTION;
     }
 }
 

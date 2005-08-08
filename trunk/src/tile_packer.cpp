@@ -21,7 +21,6 @@
 #include <assert.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
-#include "windstille_error.hpp"
 #include "glutil/texture.hpp"
 #include "globals.hpp"
 #include "tile_packer.hpp"

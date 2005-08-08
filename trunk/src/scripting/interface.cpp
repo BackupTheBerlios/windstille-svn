@@ -17,7 +17,7 @@ namespace Scripting
 
 void set_sector(const std::string& filename)
 {
-  GameSession::current()->set_sector(filename);
+  GameSession::current()->change_sector(filename);
 }
 
 void play_music(const std::string& musicfile)
