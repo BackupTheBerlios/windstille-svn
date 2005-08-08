@@ -55,6 +55,7 @@ public:
 TextArea::TextArea(const Rectf& rect, bool letter_by_letter)
   : impl(new TextAreaImpl)
 {
+  impl->font = 0;
   impl->rect    = rect;
   // FIXME: freetype might provide info for vspacing, not sure
   impl->v_space = 2;
@@ -125,6 +126,8 @@ TextArea::set_font(TTFFont* font)
 void
 TextArea::draw()
 {
+  assert(impl->font);
+
   OpenGLState state;
   
   state.enable(GL_TEXTURE_2D);
