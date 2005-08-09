@@ -32,7 +32,8 @@
 #include "input_configurator.hpp"
 
 InputConfigurator::InputConfigurator()
-  : area(Rectf(120, 100,
+  : wait_for_plus(false),
+    area(Rectf(120, 100,
                Display::get_width()  - 120, 
                Display::get_height() - 100), 
          false)
@@ -105,11 +106,11 @@ InputConfigurator::print_item()
       
       if (item.mode == ConfigureItem::CONFIGURE_AXIS)
         {
-          out << "Configuring " << def.axis_id2name(item.event_id) << ": " << std::endl;
+          out << "Configuring " << def.get_definition(item.event_id).name << ": " << std::endl;
         }
       else if (item.mode == ConfigureItem::CONFIGURE_BUTTON)
         {
-          out << "Configuring " << def.button_id2name(item.event_id) << ": " << std::endl;
+          out << "Configuring " << def.get_definition(item.event_id).name << ": " << std::endl;
         }
     }
 

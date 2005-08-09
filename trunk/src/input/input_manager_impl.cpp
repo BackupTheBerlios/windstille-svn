@@ -19,19 +19,6 @@
 
 #include "input_manager_impl.hpp"
 
-InputEventLst
-InputManagerImpl::get_events()
-{
-  return events;
-}
-
-Controller
-InputManagerImpl::get_controller()
-{
-  controller.set_events(events);
-  return controller;
-}
-
 void
 InputManagerImpl::add_axis_event(int name, float pos)
 {
@@ -39,8 +26,8 @@ InputManagerImpl::add_axis_event(int name, float pos)
   event.type = AXIS_EVENT;
   event.axis.name = name;
   event.axis.pos  = pos;
-  events.push_back(event);
 
+  controller.add_event(event);
   controller.set_axis_state(name, pos);
 }
 
@@ -48,11 +35,12 @@ void
 InputManagerImpl::add_button_event(int name, bool down)
 {
   InputEvent event;
+
   event.type = BUTTON_EVENT;
   event.button.name = name;
   event.button.down = down;
-  events.push_back(event);
 
+  controller.add_event(event);
   controller.set_button_state(name, down);
 }
 
@@ -63,13 +51,20 @@ InputManagerImpl::add_keyboard_event(int , KeyboardEvent::KeyType key_type, int 
   event.type = KEYBOARD_EVENT;
   event.keyboard.key_type = key_type;
   event.keyboard.code     = code;
-  events.push_back(event);  
+
+  controller.add_event(event);
 }
 
 void
 InputManagerImpl::clear()
 {
-  events.clear();
+  controller.clear();
+}
+
+const Controller&
+InputManagerImpl::get_controller() const
+{
+  return controller;
 }
 
 /* EOF */

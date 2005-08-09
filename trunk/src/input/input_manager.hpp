@@ -46,7 +46,7 @@ public:
   static void setup_recorder(const std::string& filename);
 
   static void update(float delta);
-  static Controller get_controller();
+  static const Controller& get_controller();
   static void clear();
 private:
   InputManager(const InputManager&);

@@ -113,7 +113,7 @@ InputManagerSDL::parse_config(const lisp::Lisp* lisp)
                   props.get("device", device);
                   props.get("button", button);
 
-                  bind_joystick_button(controller_def.button_name2id(iter.item()),
+                  bind_joystick_button(controller_def.get_definition(iter.item()).id,
                                        device, button);
                 }
               else if (dev_iter.item() == "keyboard-button")
@@ -123,7 +123,7 @@ InputManagerSDL::parse_config(const lisp::Lisp* lisp)
                   lisp::Properties props(*dev_iter);
                   props.get("key", key);
 
-                  bind_keyboard_button(controller_def.button_name2id(iter.item()), 
+                  bind_keyboard_button(controller_def.get_definition(iter.item()).id,
                                        string_to_keyid(key));
                 }
               else
@@ -147,7 +147,8 @@ InputManagerSDL::parse_config(const lisp::Lisp* lisp)
                   props.get("device", device);
                   props.get("axis",   axis);
 
-                  bind_joystick_axis(controller_def.axis_name2id(iter.item()), device, axis);
+                  bind_joystick_axis(controller_def.get_definition(iter.item()).id,
+                                     device, axis);
                 }
               else if (dev_iter.item() == "keyboard-axis")
                 {
@@ -158,7 +159,7 @@ InputManagerSDL::parse_config(const lisp::Lisp* lisp)
                   props.get("minus", minus);
                   props.get("plus",  plus);
 
-                  bind_keyboard_axis(controller_def.axis_name2id(iter.item()), 
+                  bind_keyboard_axis(controller_def.get_definition(iter.item()).id, 
                                      string_to_keyid(minus), string_to_keyid(plus));
                 }
               else

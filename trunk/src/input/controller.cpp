@@ -25,46 +25,47 @@ Controller::Controller()
 {
   ControllerDef def;
 
-  buttons.resize(def.get_button_count());
-  axes.resize(def.get_axis_count());
+  states.resize(LAST_EVENT);
 }
 
 float
-Controller::get_axis_state(int name) const
+Controller::get_axis_state(int id) const
 {
-  assert(name < int(axes.size()));
-  return axes[name];
+  assert(id < int(states.size()));
+  return states[id].axis;
 }
         
 
 bool
-Controller::get_button_state(int name) const
+Controller::get_button_state(int id) const
 {
-  assert(name < int(buttons.size()));
-  return buttons[name];
+  assert(id < int(states.size()));
+  return states[id].button;
 }
 
 void
-Controller::set_axis_state(int name, float pos)
+Controller::set_axis_state(int id, float pos)
 {
-  assert(name < static_cast<int> (axes.size()));
-  axes[name] = pos;
+  assert(id < static_cast<int>(states.size()));
+  states[id].axis = pos;
 }
 
 void
 Controller::set_button_state(int name, bool down)
 {
-  assert(name < static_cast<int>(buttons.size()));
-  buttons[name] = down;
+  assert(name < static_cast<int>(states.size()));
+  states[name].button = down;
 }
 
 void
 Controller::add_axis_event(int name, float pos)
 {
   InputEvent event;
+
   event.type = AXIS_EVENT;
   event.axis.name = name;
   event.axis.pos  = pos;
+
   events.push_back(event);
 }
 
@@ -72,13 +73,15 @@ void
 Controller::add_button_event(int name, bool down)
 {
   InputEvent event;
+
   event.type = BUTTON_EVENT;
   event.button.name = name;
   event.button.down = down;
+
   events.push_back(event);
 }
 
-InputEventLst
+const InputEventLst&
 Controller::get_events() const
 {
   return events;
@@ -127,6 +130,18 @@ Controller::axis_was_pressed_down(int name) const
         }
     }
   return false;
+}
+
+void
+Controller::clear()
+{
+  events.clear();
+}
+
+void
+Controller::add_event(const InputEvent& event)
+{
+  events.push_back(event);
 }
 
 /* EOF */

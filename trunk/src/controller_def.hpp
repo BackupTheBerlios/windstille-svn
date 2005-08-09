@@ -22,15 +22,13 @@
 
 #include <map>
 #include <string>
+#include "input/input_event.hpp"
 
-enum AxisName
+enum InputEventName
   { 
     X_AXIS, // used to run left/right
-    Y_AXIS  // used to aim up/down
-  };
+    Y_AXIS,  // used to aim up/down
 
-enum ButtonName
-  { 
     PRIMARY_BUTTON,   // used to ok a dialog or for running
     SECONDARY_BUTTON, // used to cancel a dialog or for jumping
     TERTIARY_BUTTON,  // used to cancel a dialog or for jumping
@@ -38,37 +36,43 @@ enum ButtonName
     
     PAUSE_BUTTON,     // used to pause the game
     AIM_BUTTON,       // used to draw the gun and aim
+
+    LAST_EVENT
   };
 
-#define JUMP_BUTTON PRIMARY_BUTTON
-#define RUN_BUTTON  SECONDARY_BUTTON
-#define USE_BUTTON  TERTIARY_BUTTON
-#define OK_BUTTON   PRIMARY_BUTTON
+#define JUMP_BUTTON   PRIMARY_BUTTON
+#define RUN_BUTTON    SECONDARY_BUTTON
+#define USE_BUTTON    TERTIARY_BUTTON
+#define OK_BUTTON     PRIMARY_BUTTON
 #define CANCEL_BUTTON SECONDARY_BUTTON
+
+struct InputEventDefinition 
+{
+  InputEventType type;
+  int            id;
+  std::string    name;
+};
 
 /** */
 class ControllerDef
 {
 private:
-  std::map<std::string, int> buttons;
-  std::map<std::string, int> axes;
+  std::map<std::string, InputEventDefinition> str_to_event;
+  std::map<int,         InputEventDefinition> id_to_event;
 
 public:
   ControllerDef();
   ~ControllerDef();
 
   void add_button(const std::string& name, int id);
-  void add_axis  (const std::string& name, int id);
+  void add_axis  (const std::string& name, int id); 
 
-  int         get_button_count()   const;
-  int         get_axis_count()     const;
-  int         get_keyboard_count() const;
+  int get_button_count() const;
+  int get_axis_count() const;
+  int get_keyboard_count() const;
 
-  std::string button_id2name(int id) const;
-  int         button_name2id(const std::string& name) const;
-
-  std::string axis_id2name(int id) const;
-  int         axis_name2id(const std::string& name) const;
+  const InputEventDefinition& get_definition(int id) const;
+  const InputEventDefinition& get_definition(const std::string& name) const;
 };
 
 #endif

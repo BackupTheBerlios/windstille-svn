@@ -211,7 +211,6 @@ ConsoleImpl::update(float delta)
             {
               if ((*i).keyboard.key_type == KeyboardEvent::LETTER)
                 {
-                  //std::cout << "Key: '" << (char)((*i).keyboard.code) << "' " << (*i).keyboard.code << std::endl;
                   if (cursor_pos == int(command_line.size()))
                     {
                       command_line += (char)(*i).keyboard.code;

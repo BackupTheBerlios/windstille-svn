@@ -30,12 +30,12 @@
 class Controller
 {
 private:
-  /** State of all buttons, indexed by ButtonName */
-  std::vector<bool> buttons;
-  
-  /** State of all axis, indexed by AxisName */
-  std::vector<float> axes;
+  union State {
+    bool  button;
+    float axis;
+  };
 
+  std::vector<State> states;
   InputEventLst events;
 
 public:
@@ -50,7 +50,7 @@ public:
   void add_axis_event  (int name, float pos);
   void add_button_event(int name, bool down);
 
-  InputEventLst get_events() const;
+  const InputEventLst& get_events() const;
   void set_events(const InputEventLst& lst);
 
   /** Convenience function that searches for a button down event for
@@ -64,6 +64,10 @@ public:
   /** Convenience function that searches for a AxisMove event that
       pushed the axis down */
   bool axis_was_pressed_down(int name) const;
+
+  void clear();
+
+  void add_event(const InputEvent& event);
 };
 
 #endif

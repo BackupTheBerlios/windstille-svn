@@ -42,71 +42,45 @@ ControllerDef::~ControllerDef()
 void
 ControllerDef::add_button(const std::string& name, int id)
 {
-  buttons[name] = id;
+  InputEventDefinition event;
+
+  event.type = BUTTON_EVENT;
+  event.name = name;
+  event.id   = id;
+
+  str_to_event[event.name] = event;
+  id_to_event[event.id]    = event;
 }
 
 void
 ControllerDef::add_axis  (const std::string& name, int id)
 {
-  axes[name] = id;
+  InputEventDefinition event;
+
+  event.type = AXIS_EVENT;
+  event.name = name;
+  event.id   = id;
+
+  str_to_event[event.name] = event;
+  id_to_event[event.id]    = event;
 }
 
-int
-ControllerDef::get_button_count() const
+const InputEventDefinition&
+ControllerDef::get_definition(int id) const
 {
-  return buttons.size();
-}
-
-int
-ControllerDef::get_axis_count() const
-{
-  return axes.size();
-}
-
-int
-ControllerDef::get_keyboard_count() const
-{
-  return 1;
-}
-
-std::string
-ControllerDef::button_id2name(int id) const
-{
-  for(std::map<std::string, int>::const_iterator i = buttons.begin(); i != buttons.end(); ++i)
-    {
-      if (i->second == id)
-        return i->first;
-    }
-  throw std::runtime_error("Unknown button id");
-}
-
-int
-ControllerDef::button_name2id(const std::string& name) const
-{
-  std::map<std::string, int>::const_iterator i = buttons.find(name);
-  if (i == buttons.end())
-    throw std::runtime_error("Unknown button name: " + name);
+  std::map<int, InputEventDefinition>::const_iterator i = id_to_event.find(id);
+  if (i == id_to_event.end())
+    throw std::runtime_error("Unknown event id");
 
   return i->second;
 }
 
-std::string
-ControllerDef::axis_id2name(int id) const
+const InputEventDefinition&
+ControllerDef::get_definition(const std::string& name) const
 {
-  for(std::map<std::string, int>::const_iterator i = axes.begin(); i != axes.end(); ++i)
-    {
-      if (i->second == id)
-        return i->first;
-    }
-  throw std::runtime_error("Unknown axis id");
-}
-
-int 
-ControllerDef::axis_name2id(const std::string& name) const
-{
-  std::map<std::string, int>::const_iterator i = axes.find(name);
-  if (i == axes.end())
-    throw std::runtime_error("Unknown axis name: " + name);
+  std::map<std::string, InputEventDefinition>::const_iterator i = str_to_event.find(name);
+  if (i == str_to_event.end())
+    throw std::runtime_error("Unknown event str");
 
   return i->second;
 }

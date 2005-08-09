@@ -28,7 +28,6 @@ class InputManagerImpl
 {
 protected:
   Controller controller;
-  InputEventLst events;
 
 public:
   InputManagerImpl() {}
@@ -36,9 +35,7 @@ public:
 
   virtual void update(float delta) =0;
   
-  InputEventLst get_events();
-
-  Controller get_controller();
+  const Controller& get_controller() const;
   void clear();
 
   void add_axis_event  (int name, float pos);

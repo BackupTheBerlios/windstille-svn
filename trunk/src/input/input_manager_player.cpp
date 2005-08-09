@@ -80,9 +80,10 @@ InputManagerPlayer::update(float delta)
   (void) delta;
   if (entries.front().entry_num == entry_counter)
     {
-      events = entries.front().events;
+      controller.set_events(entries.front().events);
       
-      for (InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
+      for (InputEventLst::const_iterator i = controller.get_events().begin(); 
+           i != controller.get_events().end(); ++i)
         {
           if (i->type == AXIS_EVENT)
             controller.set_axis_state(i->axis.name, i->axis.pos);

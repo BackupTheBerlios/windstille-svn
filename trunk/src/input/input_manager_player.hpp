@@ -29,7 +29,8 @@
 class InputManagerPlayer : public InputManagerImpl
 {
 private:
-  struct Entry {
+  struct Entry 
+  {
     Entry(int num, const InputEventLst& lst) 
       : entry_num(num), events(lst)
     {}
