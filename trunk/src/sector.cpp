@@ -41,6 +41,7 @@
 #include "elevator.hpp"
 #include "nightvision.hpp"
 #include "character.hpp"
+#include "badguy/swarm.hpp"
 #include "badguy/hedgehog.hpp"
 #include "badguy/spider_mine.hpp"
 #include "box.hpp"
@@ -157,6 +158,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new ScriptableObject(lisp));
   } else if (name == "vrdummy") {
     add(new VRDummy(lisp));
+  } else if (name == "swarm") {
+    add(new Swarm(lisp));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }

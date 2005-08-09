@@ -48,11 +48,15 @@ PDA::draw()
   if (!active)
     return;
     
-  const Rectf& rect = text_area->get_rect().grow(8.0f);
+  if (text_area)
+    {
+      const Rectf& rect = text_area->get_rect().grow(8.0f);
 
-  Display::fill_rounded_rect(rect, 16.0f, Color(0.3f, 0.3f, 0.5f, 0.5f));
-  Display::draw_rounded_rect(rect, 16.0f, Color(1.0f, 1.0f, 1.0f, 0.5f));
-  text_area->draw();
+      Display::fill_rounded_rect(rect, 16.0f, Color(0.3f, 0.3f, 0.5f, 0.5f));
+      Display::draw_rounded_rect(rect, 16.0f, Color(1.0f, 1.0f, 1.0f, 0.5f));
+
+      text_area->draw();
+    }
 }
 
 void
