@@ -38,6 +38,7 @@ class InputManagerSDLImpl
 {
 public:
   std::vector<JoystickButtonBinding> joystick_button_bindings;
+  std::vector<JoystickButtonAxisBinding> joystick_button_axis_bindings;
   std::vector<JoystickAxisBinding>   joystick_axis_bindings;
 
   std::vector<KeyboardButtonBinding> keyboard_button_bindings;
@@ -237,6 +238,23 @@ InputManagerSDL::on_joy_button_event(const SDL_JoyButtonEvent& button)
           add_button_event(i->event, button.state);
         }
     }
+
+  for (std::vector<JoystickButtonAxisBinding>::const_iterator i = impl->joystick_button_axis_bindings.begin();
+       i != impl->joystick_button_axis_bindings.end();
+       ++i)
+    {
+      if (button.which  == i->device)
+        {
+          if (button.button == i->minus)
+            {
+              add_axis_event(i->event, button.state ? -1.0f : 0.0f);
+            }
+          else if (button.button == i->plus)
+            {
+              add_axis_event(i->event, button.state ?  1.0f : 0.0f);
+            }
+        }
+    }
 }
 
 void
@@ -334,6 +352,21 @@ InputManagerSDL::bind_joystick_hat_axis(int event, int device, int axis)
 }
 
 void
+InputManagerSDL::bind_joystick_button_axis(int event, int device, int minus, int plus)
+{
+  ensure_open_joystick(device);
+
+  JoystickButtonAxisBinding binding;
+
+  binding.event  = event;
+  binding.device = device;
+  binding.minus  = minus;
+  binding.plus   = plus;
+
+  impl->joystick_button_axis_bindings.push_back(binding); 
+}
+
+void
 InputManagerSDL::bind_joystick_axis(int event, int device, int axis)
 {
   ensure_open_joystick(device);
@@ -389,6 +422,7 @@ InputManagerSDL::clear_bindings()
 {
   impl->joystick_button_bindings.clear();
   impl->joystick_axis_bindings.clear();
+  impl->joystick_button_axis_bindings.clear();
   
   impl->keyboard_button_bindings.clear();
   impl->keyboard_axis_bindings.clear();

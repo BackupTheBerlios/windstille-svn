@@ -142,6 +142,7 @@ InputConfigurator::handle_event(const SDL_Event& event)
       screen_manager.set_overlay(0);
       return; 
     }
+  
 
   switch(event.type)
     {        
@@ -159,11 +160,14 @@ InputConfigurator::handle_event(const SDL_Event& event)
 
     case SDL_JOYAXISMOTION:
       if (items.back().mode == ConfigureItem::CONFIGURE_AXIS)
-        {
+        { // FIXME: This doesn't work with analog Axis!
           InputManagerSDL::current()->bind_joystick_axis(items.back().event_id, event.jaxis.which, event.jaxis.axis);
-          out << "(joystick-axis (device " << event.jaxis.which << ")\n"
-              << "               (axis   " << event.jaxis.axis << "))" << std::endl;
+          out << "(joystick-axis (device " << int(event.jaxis.which) << ")\n"
+              << "               (axis   " << int(event.jaxis.axis) << "))" << std::endl;
           next_item();
+        }
+      else
+        {
         }
       break;
 
@@ -182,13 +186,28 @@ InputConfigurator::handle_event(const SDL_Event& event)
       if (items.back().mode == ConfigureItem::CONFIGURE_BUTTON)
         {
           InputManagerSDL::current()->bind_joystick_button(items.back().event_id, event.jbutton.which, event.jbutton.button);
-          out << "(joystick-button (device " << event.jbutton.which << ")\n"
-              << "                 (button " << event.jbutton.button << "))" << std::endl;
+          out << "(joystick-button (device " << int(event.jbutton.which) << ")\n"
+              << "                 (button " << int(event.jbutton.button) << "))" << std::endl;
           next_item();
         }
       else if (items.back().mode == ConfigureItem::CONFIGURE_AXIS)
         {
-          // ignore
+          if (wait_for_plus && minus.type == SDL_JOYBUTTONDOWN)
+            {
+              out << "(joystick-axis-button (minus " << InputManagerSDL::current()->keyid_to_string(minus.key.keysym.sym) << ") "
+                  << "(plus  " << InputManagerSDL::current()->keyid_to_string(event.key.keysym.sym) << "))" << std::endl;
+              InputManagerSDL::current()->bind_joystick_button_axis(items.back().event_id, event.jbutton.which, 
+                                                                    minus.jbutton.button, event.jbutton.button);
+              next_item();
+              wait_for_plus = false;
+            }
+          else if (!wait_for_plus)
+            {
+              out << "Press key for other direction" << std::endl;
+              area.set_text(out.str());
+              minus = event;
+              wait_for_plus = true;
+            }
         }
       break;
 

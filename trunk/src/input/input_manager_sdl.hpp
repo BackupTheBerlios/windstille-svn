@@ -46,6 +46,14 @@ struct JoystickAxisBinding
   int axis;
 };
 
+struct JoystickButtonAxisBinding
+{
+  int event;
+  int device;
+  int minus;
+  int plus;
+};
+
 struct KeyboardButtonBinding
 {
   int event;
@@ -55,8 +63,8 @@ struct KeyboardButtonBinding
 struct KeyboardAxisBinding
 {
   int event;
-  SDLKey plus;
   SDLKey minus;
+  SDLKey plus;
 };
 
 /** */
@@ -75,6 +83,7 @@ public:
   void bind_joystick_hat_axis(int event, int device, int axis);
 
   void bind_joystick_axis(int event, int device, int axis);
+  void bind_joystick_button_axis(int event, int device, int minus, int plus);
   void bind_joystick_button(int event, int device, int button);
 
   void bind_keyboard_button(int event, SDLKey key);

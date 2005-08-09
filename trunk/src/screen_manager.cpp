@@ -211,6 +211,9 @@ ScreenManager::poll_events()
         case SDL_JOYBUTTONDOWN:
           if (InputManagerSDL::current())
             InputManagerSDL::current()->on_event(event);
+
+          if (overlay_screen)
+            overlay_screen->handle_event(event);
           break;
         
         default:

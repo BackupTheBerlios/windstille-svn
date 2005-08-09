@@ -23,8 +23,6 @@
 
 Controller::Controller()
 {
-  ControllerDef def;
-
   states.resize(LAST_EVENT);
 }
 
