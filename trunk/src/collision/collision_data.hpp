@@ -44,7 +44,8 @@ struct CollisionData
   // time of collision
   float col_time;
 
-  CollisionObject *a,*b;
+  CollisionObject* object1;
+  CollisionObject* object2;
 
   CollisionData()
   {
@@ -58,6 +59,8 @@ struct CollisionData
   {
     CollisionData r(*this);
     r.direction*=-1;
+    r.object1 = object2;
+    r.object2 = object1;
 
     return r;
   } 

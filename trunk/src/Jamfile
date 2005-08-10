@@ -68,6 +68,8 @@ sources =
         math.hpp
         nightvision.cpp
         nightvision.hpp
+        physics.cpp
+        physics.hpp
         pda.cpp
         pda.hpp
         player.cpp

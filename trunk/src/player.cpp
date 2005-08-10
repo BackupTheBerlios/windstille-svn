@@ -57,7 +57,7 @@ Player::Player () :
   sprite.set_action("Stand");
 
   // collision detection init
-  c_object = new CollisionObject(Rectf(-15, -120, 15, 0));
+  c_object = new CollisionObject(this, Rectf(-15, -120, 15, 0));
 
   c_object->set_pos(pos);
   c_object->set_velocity(velocity);
@@ -576,12 +576,11 @@ Player::hit(int points)
 }
 
 void
-Player::collision(const CollisionData& data, CollisionObject& other)
+Player::collision(const CollisionData& data)
 {
   // copy velocity, as "velocity" is the wanted velocity, whereas
   // cur_vel is the velocity in the current delta-frame
   Vector cur_vel = c_object->get_velocity(); 
-  (void) other;
   if (data.direction.y != 0)
     {
       cur_vel.y = 0;

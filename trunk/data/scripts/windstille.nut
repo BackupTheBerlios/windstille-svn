@@ -6,13 +6,13 @@ function nightvision_enabled(...)
 {
   if (vargc == 1) 
     {
-      if (::has_nightvision) {
-        nightvision.set_active(vargv[0]); 
+      if (has_nightvision) {
+        objects.nightvision.set_active(vargv[0]); 
       } 
       else if (vargv[0]) 
         {
-          ::spawn_object("nightvision", {});
-          ::has_nightvision = true;
+          spawn_object("nightvision", {});
+          has_nightvision = true;
         }
     } else {
       return true;

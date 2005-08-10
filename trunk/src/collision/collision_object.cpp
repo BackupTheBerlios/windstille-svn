@@ -30,7 +30,7 @@
  * CollisionObject
  ***********************************************************************/
 
-CollisionObject::CollisionObject(const Rectf& rect_)
+CollisionObject::CollisionObject(GameObject* game_object, const Rectf& rect_)
   : primitive(rect_)
 {
   object_type        = RECTANGLE;
@@ -38,7 +38,7 @@ CollisionObject::CollisionObject(const Rectf& rect_)
   is_unstuck_movable = true;
   velocity           = Vector(0,0);
   pos                = Vector(0,0);
-  game_object        = 0;
+  game_object        = game_object;
 }
 
 CollisionObject::CollisionObject(TileMap* tilemap_)

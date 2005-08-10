@@ -39,6 +39,7 @@ private:
   Signal_v0 done; 
 
 protected:
+  friend class Physics;
   bool on_ground() const;
   bool in_wall() const;
   

@@ -51,7 +51,7 @@ Box::Box(const lisp::Lisp* lisp)
     throw std::runtime_error("No sprite name specified in Box");
   sprite = Sprite(spritename);
   
-  colobj = new CollisionObject(Rectf(0, 0, width, height));
+  colobj = new CollisionObject(this, Rectf(0, 0, width, height));
   colobj->set_velocity(vel);
   colobj->set_pos(Vector(pos.x, pos.y));
 
@@ -66,10 +66,8 @@ Box::~Box()
 }
 
 void 
-Box::collision(const CollisionData& data, CollisionObject& other)
+Box::collision(const CollisionData& data)
 {
-  (void) data;
-  (void) other;
   //std::cout << this << ": Collision Event" << std::endl;
   if ((data.direction.x > 0 && colobj->get_velocity().x < 0) ||
       (data.direction.x < 0 && colobj->get_velocity().x > 0))

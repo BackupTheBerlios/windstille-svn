@@ -8,11 +8,14 @@
 #include <new>
 #include <assert.h>
 #include <string>
+#include <sstream>
 #include <squirrel.h>
-#include "wrapper_util.hpp"
+#include "squirrel_error.hpp"
 #include "wrapper.interface.hpp"
 
-namespace SquirrelWrapper
+namespace Scripting
+{
+namespace Wrapper
 {
 
 static int GameObject_release_hook(SQUserPointer ptr, int )
@@ -20,27 +23,6 @@ static int GameObject_release_hook(SQUserPointer ptr, int )
   Scripting::GameObject* _this = reinterpret_cast<Scripting::GameObject*> (ptr);
   delete _this;
   return 0;
-}
-
-void create_squirrel_instance(HSQUIRRELVM v, Scripting::GameObject* object, bool setup_releasehook)
-{
-  sq_pushstring(v, "GameObject", -1);
-  if(sq_get(v, -2) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't resolved squirrel type 'GameObject'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't setup squirrel instance for object of type 'GameObject'";
-    throw SquirrelError(v, msg.str());
-  }
-  sq_remove(v, -2);
-
-  if(setup_releasehook) {
-    sq_setreleasehook(v, -1, GameObject_release_hook);
-  }
 }
 
 static int GameObject_get_name_wrapper(HSQUIRRELVM v)
@@ -93,27 +75,6 @@ static int TestObject_release_hook(SQUserPointer ptr, int )
   Scripting::TestObject* _this = reinterpret_cast<Scripting::TestObject*> (ptr);
   delete _this;
   return 0;
-}
-
-void create_squirrel_instance(HSQUIRRELVM v, Scripting::TestObject* object, bool setup_releasehook)
-{
-  sq_pushstring(v, "TestObject", -1);
-  if(sq_get(v, -2) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't resolved squirrel type 'TestObject'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't setup squirrel instance for object of type 'TestObject'";
-    throw SquirrelError(v, msg.str());
-  }
-  sq_remove(v, -2);
-
-  if(setup_releasehook) {
-    sq_setreleasehook(v, -1, TestObject_release_hook);
-  }
 }
 
 static int TestObject_set_sprite_wrapper(HSQUIRRELVM v)
@@ -187,27 +148,6 @@ static int Player_release_hook(SQUserPointer ptr, int )
   return 0;
 }
 
-void create_squirrel_instance(HSQUIRRELVM v, Scripting::Player* object, bool setup_releasehook)
-{
-  sq_pushstring(v, "Player", -1);
-  if(sq_get(v, -2) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't resolved squirrel type 'Player'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't setup squirrel instance for object of type 'Player'";
-    throw SquirrelError(v, msg.str());
-  }
-  sq_remove(v, -2);
-
-  if(setup_releasehook) {
-    sq_setreleasehook(v, -1, Player_release_hook);
-  }
-}
-
 static int Player_start_listening_wrapper(HSQUIRRELVM v)
 {
   Scripting::Player* _this;
@@ -233,27 +173,6 @@ static int ScriptableObject_release_hook(SQUserPointer ptr, int )
   Scripting::ScriptableObject* _this = reinterpret_cast<Scripting::ScriptableObject*> (ptr);
   delete _this;
   return 0;
-}
-
-void create_squirrel_instance(HSQUIRRELVM v, Scripting::ScriptableObject* object, bool setup_releasehook)
-{
-  sq_pushstring(v, "ScriptableObject", -1);
-  if(sq_get(v, -2) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't resolved squirrel type 'ScriptableObject'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  if(sq_createinstance(v, -1) < 0 || sq_setinstanceup(v, -1, object) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't setup squirrel instance for object of type 'ScriptableObject'";
-    throw SquirrelError(v, msg.str());
-  }
-  sq_remove(v, -2);
-
-  if(setup_releasehook) {
-    sq_setreleasehook(v, -1, ScriptableObject_release_hook);
-  }
 }
 
 static int ScriptableObject_move_to_wrapper(HSQUIRRELVM v)
@@ -577,12 +496,120 @@ static int spawn_object_wrapper(HSQUIRRELVM v)
   return Scripting::spawn_object(v);
 }
 
+} // end of namespace Wrapper
+
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::GameObject* object, bool setup_releasehook)
+{
+  using namespace Wrapper;
+
+  sq_pushroottable(v);
+  sq_pushstring(v, "GameObject", -1);
+  if(SQ_FAILED(sq_get(v, -2))) {
+    std::ostringstream msg;
+    msg << "Couldn't resolved squirrel type 'GameObject'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(SQ_FAILED(sq_createinstance(v, -1)) || SQ_FAILED(sq_setinstanceup(v, -1, object))) {
+    std::ostringstream msg;
+    msg << "Couldn't setup squirrel instance for object of type 'GameObject'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_remove(v, -2); // remove object name
+
+  if(setup_releasehook) {
+    sq_setreleasehook(v, -1, GameObject_release_hook);
+  }
+
+  sq_remove(v, -2); // remove root table
+}
+
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::TestObject* object, bool setup_releasehook)
+{
+  using namespace Wrapper;
+
+  sq_pushroottable(v);
+  sq_pushstring(v, "TestObject", -1);
+  if(SQ_FAILED(sq_get(v, -2))) {
+    std::ostringstream msg;
+    msg << "Couldn't resolved squirrel type 'TestObject'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(SQ_FAILED(sq_createinstance(v, -1)) || SQ_FAILED(sq_setinstanceup(v, -1, object))) {
+    std::ostringstream msg;
+    msg << "Couldn't setup squirrel instance for object of type 'TestObject'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_remove(v, -2); // remove object name
+
+  if(setup_releasehook) {
+    sq_setreleasehook(v, -1, TestObject_release_hook);
+  }
+
+  sq_remove(v, -2); // remove root table
+}
+
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::Player* object, bool setup_releasehook)
+{
+  using namespace Wrapper;
+
+  sq_pushroottable(v);
+  sq_pushstring(v, "Player", -1);
+  if(SQ_FAILED(sq_get(v, -2))) {
+    std::ostringstream msg;
+    msg << "Couldn't resolved squirrel type 'Player'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(SQ_FAILED(sq_createinstance(v, -1)) || SQ_FAILED(sq_setinstanceup(v, -1, object))) {
+    std::ostringstream msg;
+    msg << "Couldn't setup squirrel instance for object of type 'Player'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_remove(v, -2); // remove object name
+
+  if(setup_releasehook) {
+    sq_setreleasehook(v, -1, Player_release_hook);
+  }
+
+  sq_remove(v, -2); // remove root table
+}
+
+void create_squirrel_instance(HSQUIRRELVM v, Scripting::ScriptableObject* object, bool setup_releasehook)
+{
+  using namespace Wrapper;
+
+  sq_pushroottable(v);
+  sq_pushstring(v, "ScriptableObject", -1);
+  if(SQ_FAILED(sq_get(v, -2))) {
+    std::ostringstream msg;
+    msg << "Couldn't resolved squirrel type 'ScriptableObject'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  if(SQ_FAILED(sq_createinstance(v, -1)) || SQ_FAILED(sq_setinstanceup(v, -1, object))) {
+    std::ostringstream msg;
+    msg << "Couldn't setup squirrel instance for object of type 'ScriptableObject'";
+    throw SquirrelError(v, msg.str());
+  }
+  sq_remove(v, -2); // remove object name
+
+  if(setup_releasehook) {
+    sq_setreleasehook(v, -1, ScriptableObject_release_hook);
+  }
+
+  sq_remove(v, -2); // remove root table
+}
+
 void register_windstille_wrapper(HSQUIRRELVM v)
 {
+  using namespace Wrapper;
+
   sq_pushroottable(v);
   sq_pushstring(v, "VCENTER", -1);
   sq_pushinteger(v, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register constant'VCENTER'";
     throw SquirrelError(v, msg.str());
@@ -590,7 +617,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "LEFT", -1);
   sq_pushinteger(v, 1);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register constant'LEFT'";
     throw SquirrelError(v, msg.str());
@@ -598,7 +625,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "RIGHT", -1);
   sq_pushinteger(v, 2);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register constant'RIGHT'";
     throw SquirrelError(v, msg.str());
@@ -606,7 +633,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "HCENTER", -1);
   sq_pushinteger(v, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register constant'HCENTER'";
     throw SquirrelError(v, msg.str());
@@ -614,7 +641,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "TOP", -1);
   sq_pushinteger(v, 16);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register constant'TOP'";
     throw SquirrelError(v, msg.str());
@@ -622,7 +649,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "BOTTOM", -1);
   sq_pushinteger(v, 32);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register constant'BOTTOM'";
     throw SquirrelError(v, msg.str());
@@ -630,7 +657,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_sector", -1);
   sq_newclosure(v, &set_sector_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_sector'";
     throw SquirrelError(v, msg.str());
@@ -638,7 +665,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "play_music", -1);
   sq_newclosure(v, &play_music_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'play_music'";
     throw SquirrelError(v, msg.str());
@@ -646,7 +673,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "stop_music", -1);
   sq_newclosure(v, &stop_music_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'stop_music'";
     throw SquirrelError(v, msg.str());
@@ -654,7 +681,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "play_sound", -1);
   sq_newclosure(v, &play_sound_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'play_sound'";
     throw SquirrelError(v, msg.str());
@@ -662,7 +689,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "add_caption", -1);
   sq_newclosure(v, &add_caption_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'add_caption'";
     throw SquirrelError(v, msg.str());
@@ -670,7 +697,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "end_caption", -1);
   sq_newclosure(v, &end_caption_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'end_caption'";
     throw SquirrelError(v, msg.str());
@@ -678,7 +705,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_view", -1);
   sq_newclosure(v, &set_view_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_view'";
     throw SquirrelError(v, msg.str());
@@ -686,7 +713,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_camera_active", -1);
   sq_newclosure(v, &set_camera_active_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_camera_active'";
     throw SquirrelError(v, msg.str());
@@ -694,7 +721,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_controller_help_active", -1);
   sq_newclosure(v, &set_controller_help_active_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_controller_help_active'";
     throw SquirrelError(v, msg.str());
@@ -702,7 +729,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "dialog_show", -1);
   sq_newclosure(v, &dialog_show_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'dialog_show'";
     throw SquirrelError(v, msg.str());
@@ -710,7 +737,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "wait_for_dialog", -1);
   sq_newclosure(v, &wait_for_dialog_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'wait_for_dialog'";
     throw SquirrelError(v, msg.str());
@@ -718,7 +745,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "conversation_add", -1);
   sq_newclosure(v, &conversation_add_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'conversation_add'";
     throw SquirrelError(v, msg.str());
@@ -726,7 +753,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "conversation_show", -1);
   sq_newclosure(v, &conversation_show_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'conversation_show'";
     throw SquirrelError(v, msg.str());
@@ -734,7 +761,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "conversation_get_selection", -1);
   sq_newclosure(v, &conversation_get_selection_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'conversation_get_selection'";
     throw SquirrelError(v, msg.str());
@@ -742,7 +769,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "wait_for_conversation", -1);
   sq_newclosure(v, &wait_for_conversation_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'wait_for_conversation'";
     throw SquirrelError(v, msg.str());
@@ -750,7 +777,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "run_before", -1);
   sq_newclosure(v, &run_before_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'run_before'";
     throw SquirrelError(v, msg.str());
@@ -758,7 +785,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "save_state", -1);
   sq_newclosure(v, &save_state_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'save_state'";
     throw SquirrelError(v, msg.str());
@@ -766,7 +793,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "load_state", -1);
   sq_newclosure(v, &load_state_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'load_state'";
     throw SquirrelError(v, msg.str());
@@ -774,7 +801,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "list_objects", -1);
   sq_newclosure(v, &list_objects_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'list_objects'";
     throw SquirrelError(v, msg.str());
@@ -782,7 +809,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_debug", -1);
   sq_newclosure(v, &set_debug_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_debug'";
     throw SquirrelError(v, msg.str());
@@ -790,7 +817,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "get_debug", -1);
   sq_newclosure(v, &get_debug_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'get_debug'";
     throw SquirrelError(v, msg.str());
@@ -798,7 +825,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "get_game_speed", -1);
   sq_newclosure(v, &get_game_speed_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'get_game_speed'";
     throw SquirrelError(v, msg.str());
@@ -806,7 +833,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_game_speed", -1);
   sq_newclosure(v, &set_game_speed_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_game_speed'";
     throw SquirrelError(v, msg.str());
@@ -814,7 +841,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "get_text_speed", -1);
   sq_newclosure(v, &get_text_speed_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'get_text_speed'";
     throw SquirrelError(v, msg.str());
@@ -822,7 +849,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_text_speed", -1);
   sq_newclosure(v, &set_text_speed_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_text_speed'";
     throw SquirrelError(v, msg.str());
@@ -830,7 +857,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "wait", -1);
   sq_newclosure(v, &wait_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'wait'";
     throw SquirrelError(v, msg.str());
@@ -838,7 +865,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "display", -1);
   sq_newclosure(v, &display_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'display'";
     throw SquirrelError(v, msg.str());
@@ -846,7 +873,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "println", -1);
   sq_newclosure(v, &println_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'println'";
     throw SquirrelError(v, msg.str());
@@ -854,7 +881,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_console_font", -1);
   sq_newclosure(v, &set_console_font_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_console_font'";
     throw SquirrelError(v, msg.str());
@@ -862,7 +889,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "spawn_object", -1);
   sq_newclosure(v, &spawn_object_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'spawn_object'";
     throw SquirrelError(v, msg.str());
@@ -877,7 +904,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   }
   sq_pushstring(v, "get_name", -1);
   sq_newclosure(v, &GameObject_get_name_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'get_name'";
     throw SquirrelError(v, msg.str());
@@ -885,7 +912,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "remove", -1);
   sq_newclosure(v, &GameObject_remove_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'remove'";
     throw SquirrelError(v, msg.str());
@@ -893,7 +920,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_active", -1);
   sq_newclosure(v, &GameObject_set_active_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_active'";
     throw SquirrelError(v, msg.str());
@@ -901,13 +928,13 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_parent", -1);
   sq_newclosure(v, &GameObject_set_parent_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_parent'";
     throw SquirrelError(v, msg.str());
   }
 
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register class'GameObject'";
     throw SquirrelError(v, msg.str());
@@ -924,7 +951,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   }
   sq_pushstring(v, "set_sprite", -1);
   sq_newclosure(v, &TestObject_set_sprite_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_sprite'";
     throw SquirrelError(v, msg.str());
@@ -932,7 +959,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_action", -1);
   sq_newclosure(v, &TestObject_set_action_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_action'";
     throw SquirrelError(v, msg.str());
@@ -940,7 +967,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_pos", -1);
   sq_newclosure(v, &TestObject_set_pos_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_pos'";
     throw SquirrelError(v, msg.str());
@@ -948,7 +975,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "set_vflip", -1);
   sq_newclosure(v, &TestObject_set_vflip_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_vflip'";
     throw SquirrelError(v, msg.str());
@@ -956,13 +983,13 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "attach", -1);
   sq_newclosure(v, &TestObject_attach_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'attach'";
     throw SquirrelError(v, msg.str());
   }
 
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register class'TestObject'";
     throw SquirrelError(v, msg.str());
@@ -979,7 +1006,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   }
   sq_pushstring(v, "start_listening", -1);
   sq_newclosure(v, &Player_start_listening_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'start_listening'";
     throw SquirrelError(v, msg.str());
@@ -987,13 +1014,13 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "stop_listening", -1);
   sq_newclosure(v, &Player_stop_listening_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'stop_listening'";
     throw SquirrelError(v, msg.str());
   }
 
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register class'Player'";
     throw SquirrelError(v, msg.str());
@@ -1010,7 +1037,7 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   }
   sq_pushstring(v, "move_to", -1);
   sq_newclosure(v, &ScriptableObject_move_to_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'move_to'";
     throw SquirrelError(v, msg.str());
@@ -1018,13 +1045,13 @@ void register_windstille_wrapper(HSQUIRRELVM v)
 
   sq_pushstring(v, "start_flash", -1);
   sq_newclosure(v, &ScriptableObject_start_flash_wrapper, 0);
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'start_flash'";
     throw SquirrelError(v, msg.str());
   }
 
-  if(sq_createslot(v, -3) < 0) {
+  if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register class'ScriptableObject'";
     throw SquirrelError(v, msg.str());
@@ -1033,5 +1060,5 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   sq_pop(v, 1);
 }
 
-}
+} // end of namespace Scripting
 

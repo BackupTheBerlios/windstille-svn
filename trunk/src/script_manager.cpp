@@ -15,7 +15,10 @@
 #include "timer.hpp"
 #include "scripting/wrapper.hpp"
 #include "scripting/wrapper_util.hpp"
+#include "scripting/squirrel_error.hpp"
 #include "physfs/physfs_stream.hpp"
+
+using namespace Scripting;
 
 ScriptManager* script_manager = 0;
 
@@ -55,7 +58,7 @@ ScriptManager::ScriptManager()
   sq_setprintfunc(v, printfunc);
   
   // register windstille API
-  SquirrelWrapper::register_windstille_wrapper(v);
+  register_windstille_wrapper(v);
 }
 
 ScriptManager::~ScriptManager()
@@ -163,19 +166,6 @@ ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float time)
       return;
     }
   }
-}
-
-void
-ScriptManager::remove_object(const std::string& name)
-{
-  sq_pushroottable(v);
-  sq_pushstring(v, name.c_str(), -1);
-  if(sq_deleteslot(v, -2, SQFalse) < 0) {
-    std::ostringstream msg;
-    msg << "Couldn't remove squirrel object '" << name << "'";
-    throw SquirrelError(v, msg.str());
-  }
-  sq_pop(v, 1);
 }
 
 void

@@ -39,7 +39,7 @@ public:
   Box(const lisp::Lisp* lisp);
   virtual ~Box();
 
-  void collision(const CollisionData& data, CollisionObject& other); 
+  void collision(const CollisionData& data); 
 
   void update(float delta);
 

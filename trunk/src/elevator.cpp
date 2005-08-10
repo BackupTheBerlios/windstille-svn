@@ -45,7 +45,7 @@ Elevator::Elevator(const lisp::Lisp* lisp)
 
   sprite = Sprite(spritename);
   size  = Size(128, 64);
-  colobject = new CollisionObject(Rectf(Vector(0,0), size));
+  colobject = new CollisionObject(this, Rectf(Vector(0,0), size));
   Sector::current()->get_collision_engine()->add(colobject);
   colobject->set_pos(pos);
 }

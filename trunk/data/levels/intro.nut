@@ -1,7 +1,8 @@
 set_camera_active(false);
-player.set_active(false);
+objects.player.set_active(false);
 set_view(0, 0);
-spawn_object("scriptable-object", {name="planet", pos=[0,0], sprite="images/planet.sprite", z_pos=1001});
+spawn_object("scriptable-object", { name="planet", pos=[0,0],
+    sprite="images/planet.sprite", z_pos=1001 });
 wait(3);
 add_caption(BOTTOM, "The Big Boom. Humanity found out it could travel to the stars, and it did, en masse.");
 wait(10);
@@ -10,8 +11,8 @@ wait(10);
 add_caption(BOTTOM, "Still, many individuals took their chances, even without military hardware and terraformers. Most worlds were so barren or so dangerous that whole colonies died out. In the Free Colonies that survive, life isn't easy.");
 wait(15);
 end_caption();
-player.set_active(true);
+objects.player.set_active(true);
 set_camera_active(true);
-planet.remove();
+objects.planet.remove();
 
 /* EOF */

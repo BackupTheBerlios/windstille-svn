@@ -49,14 +49,10 @@ CollisionEngine::draw(DrawingContext& dc)
 }
 
 void
-CollisionEngine::collision(CollisionObject& a, CollisionObject& b, const CollisionData &result, float delta)
+CollisionEngine::collision(const CollisionData &result)
 {
-  (void)delta;
-
-  CollisionData inv=result.invert();
-
-  a.sig_collision()(result, b);
-  b.sig_collision()(inv, a);
+  result.object1->sig_collision() (result);
+  result.object2->sig_collision() (result.invert());
 }
 
 void
@@ -290,8 +286,8 @@ CollisionEngine::update(float delta)
 		    {
 		      if (min_time > r.col_time && r.col_time>=0)
 			{
-			  r.a=*i;
-			  r.b=*j;
+			  r.object1 = *i;
+			  r.object2 = *j;
 			  col_data = r;
 			  min_time = r.col_time;
 			  if (min_time > 0.0005)
@@ -313,7 +309,7 @@ CollisionEngine::update(float delta)
       // report collision
       if (min_time < frame)
 	{
-	  collision (*col_data.a, *col_data.b, col_data, min_time);
+	  collision (col_data);
 	}
 
       frame-=min_time;

@@ -16,6 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include <iostream>
 #include <sstream>
@@ -46,12 +47,22 @@
 #include "badguy/spider_mine.hpp"
 #include "box.hpp"
 #include "scriptable_object.hpp"
+#include "scripting/squirrel_error.hpp"
+
+// The table (works like a namespace here) where the game objects will appear
+#define OBJECTS_TABLE "objects"
 
 Sector* Sector::current_ = 0;
 
 Sector::Sector(const std::string& filename)
   : player(0)
 {
+  // make sure squirrel has an "objects" table
+  script_manager->run_script(
+      "if(! (\"" OBJECTS_TABLE "\" in this)) {"
+      "  " OBJECTS_TABLE " <- {};"
+      "}", "");
+  
   if (debug) std::cout << "Creating new Sector" << std::endl;
   collision_engine = new CollisionEngine();
 
@@ -274,38 +285,86 @@ Sector::add(GameObject* obj)
 void
 Sector::remove_object_from_squirrel(GameObject* object)
 {
-  script_manager->remove_object(object->get_name());
+  using namespace Scripting;
+
+  // get objects table
+  HSQUIRRELVM v = script_manager->get_vm();
+  sq_pushroottable(v);
+  sq_pushstring(v, OBJECTS_TABLE, -1);
+  if(SQ_FAILED(sq_get(v, -2)))
+  {
+    std::ostringstream msg;
+    msg << "Couldn't get objects table '" << OBJECTS_TABLE << "'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  // remove object from table
+  sq_pushstring(v, object->get_name().c_str(), object->get_name().size());
+  if(SQ_FAILED(sq_deleteslot(v, -2, SQFalse) < 0)) {
+    std::ostringstream msg;
+    msg << "Couldn't remove squirrel object for '" << object->get_name()
+        << "'";
+    throw SquirrelError(v, msg.str());
+  }
+  
+  // pop objects and root table
+  sq_pop(v, 2);
+}
+
+// tries to find out the "real" class of an gameobject by some dynamic casting
+// and creates a matching squirrel instance for that object
+static inline void create_squirrel_instance(HSQUIRRELVM v, GameObject* object)
+{
+  ScriptableObject* script_obj = dynamic_cast<ScriptableObject*> (object);
+  if(script_obj) {
+    create_squirrel_instance(v, new Scripting::ScriptableObject(script_obj),
+                             true);
+    return;
+  }
+  
+  TestObject* tobj = dynamic_cast<TestObject*> (object);
+  if(tobj) {
+    create_squirrel_instance(v, new Scripting::TestObject(tobj), true);
+    return;
+  }                                                                             
+
+  Player* player = dynamic_cast<Player*> (object);
+  if(player) {
+    create_squirrel_instance(v, new Scripting::Player(player), true);
+    return;
+  }
+
+  create_squirrel_instance(v, new Scripting::GameObject(object), true);
 }
 
 void
 Sector::expose_object_to_squirrel(GameObject* object)
 {
-  // FIXME: Grumbel: I don't consider this brute-force exposing a good
-  // idea, should be up to the scripter if we ones to keep a refrence
-  // to an object or not
-  ScriptableObject* script_obj = dynamic_cast<ScriptableObject*> (object);
-  if(script_obj) {
-    script_manager->expose_object(new Scripting::ScriptableObject(script_obj),
-                                  object->get_name(), true);
-    return;
+  using namespace Scripting;
+
+  // get objects table
+  HSQUIRRELVM v = script_manager->get_vm();
+  sq_pushroottable(v);
+  sq_pushstring(v, OBJECTS_TABLE, -1);
+  if(SQ_FAILED(sq_get(v, -2)))
+  {
+    std::ostringstream msg;
+    msg << "Couldn't get objects table '" << OBJECTS_TABLE << "'";
+    throw SquirrelError(v, msg.str());
+  }
+  
+  // create squirrel instance and register in table
+  sq_pushstring(v, object->get_name().c_str(), object->get_name().size());
+  create_squirrel_instance(v, object);
+  if(SQ_FAILED(sq_createslot(v, -3)))
+  {
+    std::ostringstream msg;
+    msg << "Couldn't register object in objects taböe";
+    throw SquirrelError(v, msg.str());
   }
 
-  TestObject* tobj = dynamic_cast<TestObject*> (object);
-  if(tobj) {
-    script_manager->expose_object(new Scripting::TestObject(tobj),
-                                  object->get_name(), true);
-    return;
-  }
-
-  Player* player = dynamic_cast<Player*> (object);
-  if(player) {
-    script_manager->expose_object(new Scripting::Player(player),
-                                  object->get_name(), true);
-    return;
-  }
-
-  script_manager->expose_object(new Scripting::GameObject(object),
-                                object->get_name(), true);
+  // pop roottable and objects table
+  sq_pop(v, 2);
 }
 
 GameObject*

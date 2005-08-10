@@ -10,6 +10,12 @@
 #include "scripting/wrapper.hpp"
 #include "scripting/wrapper_util.hpp"
 
+/**
+ * This class is responsible for managing all running squirrel threads
+ * (called coroutines by others)
+ * It contains functions for loading and starting script, keeps a list of
+ * suspended scripts and receives wakeup events for them
+ */
 class ScriptManager
 {
 public:
@@ -22,29 +28,7 @@ public:
   void run_script(const std::string& string, const std::string& sourcename);
   void run_script(std::istream& in, const std::string& sourcename);
 
-  template<typename T>
-  void expose_object(T* object, const std::string& name, bool free)
-  {
-    // part1 of registration of the instance in the root table
-    sq_pushroottable(v);
-    sq_pushstring(v, name.c_str(), -1);
-
-    sq_pushroottable(v);
-    SquirrelWrapper::create_squirrel_instance(v, object, free);
-    sq_remove(v, -2);
-    
-    // register instance in root table
-    if(sq_createslot(v, -3) < 0) {
-      std::ostringstream msg;
-      msg << "Couldn't register object '" << name << "' in squirrel root table";
-      throw SquirrelError(v, msg.str());
-    }
-
-    sq_pop(v, 1);
-  }
-  void remove_object(const std::string& name);
-
-  HSQUIRRELVM get_vm()
+  HSQUIRRELVM get_vm() const
   {
     return v;
   }

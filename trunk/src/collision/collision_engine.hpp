@@ -40,7 +40,7 @@ public:
   void draw(DrawingContext& dc);
   void update(float delta);
   void update(CollisionObject& obj, float delta);
-  void collision(CollisionObject& a, CollisionObject& b, const CollisionData &result, float delta);
+  void collision(const CollisionData &result);
 
   CollisionObject* add(CollisionObject *obj);
   void remove(CollisionObject *obj);

@@ -98,7 +98,7 @@ public:
   int get_max_energy() const;
   void hit(int points);
   
-  void collision(const CollisionData& data, CollisionObject& other);
+  void collision(const CollisionData& data);
 
   Entity* find_useable_entity();
 

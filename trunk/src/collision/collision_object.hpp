@@ -54,7 +54,7 @@ private:
 
   GameObject* game_object;
 
-  Signal_v2<const CollisionData &, CollisionObject &> collision;
+  Signal_v1<const CollisionData &> collision;
 
   Rectf primitive;
   TileMap* tilemap;
@@ -63,7 +63,7 @@ private:
   bool is_unstuck_movable;
 
 public:
-  CollisionObject(const Rectf& rect_);
+  CollisionObject(GameObject* object, const Rectf& rect_);
   CollisionObject(TileMap* tilemap_);
 
   virtual ~CollisionObject();
@@ -108,7 +108,7 @@ public:
   void set_unstuck(bool s) { is_unstuckable = s; }
   void set_unstuck_movable(bool s) { is_unstuck_movable = s; }
 
-  Signal_v2<const CollisionData &, CollisionObject &>& sig_collision() { return collision; }
+  Signal_v1<const CollisionData &>& sig_collision() { return collision; }
 
   friend class CollisionEngine;
 };

@@ -101,6 +101,9 @@ Parser::parse(std::istream& stream, const std::string& filename)
   parser->lexer = new Lexer(stream);
 
   parser->token = parser->lexer->getNextToken();
+  if(parser->token != Lexer::TOKEN_OPEN_PAREN)
+    throw ParseError(parser.get(), "file doesn't start with '('");
+
   std::auto_ptr<Lisp> result (parser->parse());
   if(parser->token != Lexer::TOKEN_EOF) {
     if(parser->token == Lexer::TOKEN_CLOSE_PAREN)
