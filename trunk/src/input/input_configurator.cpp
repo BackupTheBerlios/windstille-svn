@@ -159,7 +159,7 @@ InputConfigurator::handle_event(const SDL_Event& event)
       break;
 
     case SDL_JOYAXISMOTION:
-      if (items.back().mode == ConfigureItem::CONFIGURE_AXIS)
+      if (items.back().mode == ConfigureItem::CONFIGURE_AXIS && (event.jaxis.value > 16384 || event.jaxis.value < -16384))
         { // FIXME: This doesn't work with analog Axis!
           InputManagerSDL::current()->bind_joystick_axis(items.back().event_id, event.jaxis.which, event.jaxis.axis);
           out << "(joystick-axis (device " << int(event.jaxis.which) << ")\n"

@@ -36,6 +36,7 @@ public:
   float  angle;
   float  speed;
   float  max_speed;
+  float  turn_speed;
 };
 
 /** */

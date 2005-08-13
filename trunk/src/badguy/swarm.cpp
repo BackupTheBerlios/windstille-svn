@@ -57,7 +57,9 @@ Swarm::Swarm(const lisp::Lisp* lisp)
       i->angle = rnd.drand(-M_PI, M_PI);
       i->speed = rnd.drand(50.0f, 200.0f);
 
-      i->max_speed = rnd.drand(150.0f, 200.0f);
+      i->max_speed = rnd.drand(100.0f, 200.0f);
+
+      i->turn_speed = i->max_speed/30.0f;
 
       i->last_pos = i->pos;
     }
@@ -87,6 +89,14 @@ Swarm::draw(SceneContext& sc)
   sc.highlight().draw(array);
 }
 
+static float normalize(float angle)
+{
+  // brings angle into [0,2*M_PI[ range
+  float ret = fmod(fmod(angle, 2*M_PI) + 2*M_PI, 2*M_PI);
+  assert(ret >= 0 && ret < 2*M_PI);
+  return ret;
+}
+
 void
 Swarm::update(float delta)
 {
@@ -103,29 +113,29 @@ Swarm::update(float delta)
       float dy = target.y - i->pos.y;
 
       float target_angle   = atan2f(dy, dx);
-      float relative_angle = target_angle - i->angle;
+      float relative_angle = normalize(target_angle - i->angle);
       
-
-      if (sqrt(dx*dx + dy*dy) > 50.0f) // swarm range
+      if (sqrt(dx*dx + (dy*dy)*2.0f) > 50.0f) // swarm range
         {
-          if (fabs(relative_angle) < 1.0f)
+          if (fabs(relative_angle) < 0.3f)
             {
               //i->angle += rnd.drand(-1.0f, 1.0f) * delta;
               if (i->speed < i->max_speed) 
-                i->speed += 10.0f * delta;
+                i->speed += 100.0f * delta;
             }
           else
             {
-              if (fmod(relative_angle, 2*M_PI) > 0 && fmod(relative_angle, 2*M_PI) < M_PI)
-                i->angle += turn_speed * delta;
+              if (relative_angle <= M_PI)
+                i->angle += i->turn_speed * delta;
               else
-                i->angle -= turn_speed * delta;
+                i->angle -= i->turn_speed * delta;
             }
         }
       else
         {
-          //i->angle += rnd.drand(-15.0f, 15.0f) * delta;
+          i->angle += rnd.drand(-15.0f, 15.0f) * delta;
           //i->speed += 150.0f - fabs(i->angle);
+          i->speed = rnd.drand(50.0f, 100.0f);
         }
 
       i->pos.x += i->speed * cos(i->angle) * delta;

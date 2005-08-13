@@ -23,7 +23,7 @@ Properties::Properties(const Lisp* lisp)
           {    
             const Lisp* name = child->get_list_elem(0);
             if(name->get_type() != Lisp::TYPE_SYMBOL)
-              throw std::runtime_error("property has no string as name");
+              throw std::runtime_error("property has no symbol as name");
             properties.insert(std::make_pair(
                                              std::string(name->get_symbol()), ListEntry(child)));
           }
