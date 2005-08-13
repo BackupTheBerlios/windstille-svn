@@ -40,6 +40,11 @@ void conversation_show();
 int  conversation_get_selection();
 void wait_for_conversation(HSQUIRRELVM v) __suspend;
 
+void add_objective(const std::string& name, const std::string& text);
+void objective_complete(const std::string& name);
+bool is_objective_given(const std::string& name);
+bool is_objective_complete(const std::string& name);
+
 bool run_before(HSQUIRRELVM vm);
 
 // for testing

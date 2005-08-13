@@ -360,6 +360,50 @@ static int wait_for_conversation_wrapper(HSQUIRRELVM v)
   return sq_suspendvm(v);
 }
 
+static int add_objective_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  const char* arg1;
+  sq_getstring(v, 3, &arg1);
+  
+  Scripting::add_objective(arg0, arg1);
+  
+  return 0;
+}
+
+static int objective_complete_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  Scripting::objective_complete(arg0);
+  
+  return 0;
+}
+
+static int is_objective_given_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  bool return_value = Scripting::is_objective_given(arg0);
+  
+  sq_pushbool(v, return_value);
+  return 1;
+}
+
+static int is_objective_complete_wrapper(HSQUIRRELVM v)
+{
+  const char* arg0;
+  sq_getstring(v, 2, &arg0);
+  
+  bool return_value = Scripting::is_objective_complete(arg0);
+  
+  sq_pushbool(v, return_value);
+  return 1;
+}
+
 static int run_before_wrapper(HSQUIRRELVM v)
 {
   HSQUIRRELVM arg0 = v;
@@ -772,6 +816,38 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'wait_for_conversation'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "add_objective", -1);
+  sq_newclosure(v, &add_objective_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'add_objective'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "objective_complete", -1);
+  sq_newclosure(v, &objective_complete_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'objective_complete'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "is_objective_given", -1);
+  sq_newclosure(v, &is_objective_given_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'is_objective_given'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "is_objective_complete", -1);
+  sq_newclosure(v, &is_objective_complete_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'is_objective_complete'";
     throw SquirrelError(v, msg.str());
   }
 

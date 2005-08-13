@@ -29,9 +29,16 @@
 #include "fonts.hpp"
 #include "pda.hpp"
 
-Dialog_Entry::Dialog_Entry(const std::string& arg_character, const std::string& arg_text)
+DialogEntry::DialogEntry(const std::string& arg_character, const std::string& arg_text)
   : character(arg_character),
     text(arg_text)
+{
+}
+
+ObjectiveEntry::ObjectiveEntry(const std::string& arg_name, const std::string& arg_text)
+  : name(arg_name),
+    text(arg_text),
+    complete(false)
 {
 }
 
@@ -89,8 +96,8 @@ PDA::update(float delta)
     case PDA_INVENTORY:
       show_inventory();
       break;
-    case PDA_MISSIONS:
-      show_missions();
+    case PDA_OBJECTIVES:
+      show_objectives();
       break;
     case PDA_DIALOGS:
       show_dialogs();
@@ -114,31 +121,78 @@ PDA::update(float delta)
 void
 PDA::add_dialog(const std::string& character, const std::string& text)
 {
-  dialogs.push_back(Dialog_Entry(character, text));
+  dialogs.push_back(DialogEntry(character, text));
+}
+
+void
+PDA::add_objective(const std::string& name, const std::string& text)
+{
+  objectives.push_back(ObjectiveEntry(name, text));
+}
+
+void
+PDA::objective_complete(const std::string& name)
+{
+  for (std::vector<ObjectiveEntry>::iterator i = objectives.begin(); i != objectives.end(); ++i) {
+    if (i->name == name)
+      i->complete = true;
+      return;
+  }
+}
+
+bool
+PDA::is_objective_given(const std::string& name)
+{
+  for (std::vector<ObjectiveEntry>::iterator i = objectives.begin(); i != objectives.end(); ++i) {
+    if (i->name == name)
+      return true;
+  }
+  
+  return false;
+}
+
+bool
+PDA::is_objective_complete(const std::string& name)
+{
+  for (std::vector<ObjectiveEntry>::iterator i = objectives.begin(); i != objectives.end(); ++i) {
+    if (i->name == name && i->complete)
+      return true;
+  }
+  
+  return false;
 }
 
 void
 PDA::show_inventory()
 {
   new_text = "<large>Personal Digital Assistant</large>\n";
-  new_text += "<b>inventory</b> - missions - dialogs\n\n";
+  new_text += "<b>inventory</b> - objectives - dialogs\n\n";
 }
 
 void
-PDA::show_missions()
+PDA::show_objectives()
 {
   new_text = "<large>Personal Digital Assistant</large>\n";
-  new_text += "inventory - <b>missions</b> - dialogs\n\n";
-
+  new_text += "inventory - <b>objectives</b> - dialogs\n\n";
+  
+  for (std::vector<ObjectiveEntry>::reverse_iterator i = objectives.rbegin(); i != objectives.rend(); ++i) {
+    new_text += i->name;
+    new_text += ": ";
+    if (i->complete)
+      new_text += "complete\n";
+    else
+      new_text += "incomplete\n";
+    new_text += i->text + "\n\n";
+  }
 }
 
 void
 PDA::show_dialogs()
 {
   new_text = "<large>Personal Digital Assistant</large>\n";
-  new_text += "inventory - missions - <b>dialogs</b>\n\n";
+  new_text += "inventory - objectives - <b>dialogs</b>\n\n";
   
-  for (std::vector<Dialog_Entry>::reverse_iterator i = dialogs.rbegin(); i != dialogs.rend(); ++i) {
+  for (std::vector<DialogEntry>::reverse_iterator i = dialogs.rbegin(); i != dialogs.rend(); ++i) {
     new_text += i->character;
     new_text += ": ";
     new_text += i->text + '\n';

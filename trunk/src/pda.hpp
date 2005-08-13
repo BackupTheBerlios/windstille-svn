@@ -28,13 +28,23 @@
 
 class TextArea;
 
-class Dialog_Entry
+class DialogEntry
 {
 public:
-  Dialog_Entry(const std::string& arg_character, const std::string& arg_text);
+  DialogEntry(const std::string& arg_character, const std::string& arg_text);
   
   std::string character;
   std::string text;
+};
+
+class ObjectiveEntry
+{
+public:
+  ObjectiveEntry(const std::string& arg_name, const std::string& arg_text);
+  
+  std::string name;
+  std::string text;
+  bool complete;
 };
 
 /** */
@@ -48,18 +58,25 @@ public:
   bool is_active() const {return active;}
   void set_active(bool arg_active) {active = arg_active;}
   void add_dialog(const std::string& character, const std::string& text);
+  
+  void add_objective(const std::string& name, const std::string& text);
+  void objective_complete(const std::string& name);
+  bool is_objective_given(const std::string& name);
+  bool is_objective_complete(const std::string& name);
 
 private:
   void show_inventory();
-  void show_missions();
+  void show_objectives();
   void show_dialogs();
   
   TextArea* text_area;
   bool active;
-  std::vector<Dialog_Entry> dialogs;
+  std::vector<DialogEntry> dialogs;
+  std::vector<ObjectiveEntry> objectives;   
+  
   std::string new_text;  
   std::string old_text;
-  enum pda_state { PDA_INVENTORY, PDA_MISSIONS, PDA_DIALOGS } state;
+  enum pda_state { PDA_INVENTORY, PDA_OBJECTIVES, PDA_DIALOGS } state;
 };
 
 #endif
