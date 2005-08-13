@@ -46,7 +46,7 @@ class Conversation;
 class GameSession : public Screen
 {
 public:
-  enum ControlState { DIALOG, GAME };
+  enum ControlState { DIALOG, GAME, CONVERSATION };
 private:
   SceneContext sc;
 
@@ -81,8 +81,7 @@ public:
   View* get_view() { return view; }
   PDA pda;
 
-  void set_dialog_state() { control_state = DIALOG; }
-  void set_game_state()   { control_state = GAME; }
+  void set_control_state(ControlState state) { control_state = state; }
 
   /** Switches the sector instantly without fadeout */
   void set_sector(const std::string& filename);

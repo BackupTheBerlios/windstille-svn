@@ -44,7 +44,6 @@ DialogManager::~DialogManager()
 void
 DialogManager::add_dialog(int alignment_, const std::string& portrait_, const std::string& text_)
 { 
-  progress  = 0;
   delay     = 0.0;
   alignment = alignment_;
   portrait  = Sprite(portrait_);
@@ -57,7 +56,6 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
 void
 DialogManager::add_caption(int alignment_, const std::string& text_)
 {
-  progress  = 0;
   delay     = 0.0;
   alignment = alignment_;
   text      = text_;
@@ -114,11 +112,6 @@ DialogManager::update(float delta)
   text_area->update(delta);
 
   delay += delta;
-  if (InputManager::get_controller().get_button_state(OK_BUTTON) 
-      && delay > 0.2 && progress * text_speed < text.size())
-    progress = int(text.size()) / text_speed;
-  else
-    progress += delta;
 
   InputEventLst events = InputManager::get_controller().get_events();
 	
@@ -126,11 +119,15 @@ DialogManager::update(float delta)
     {
       if ((*i).type == BUTTON_EVENT)
         {
-          if ((*i).button.name == OK_BUTTON && (*i).button.down == true
-              && int(progress * text_speed) > int(text.size()))
+          if ((*i).button.name == OK_BUTTON && (*i).button.down == true)
             {
-              GameSession::current()->set_game_state();
-              script_manager->fire_wakeup_event(ScriptManager::DIALOG_CLOSED);
+              if (text_area->is_progress_complete())
+                {
+                  GameSession::current()->set_control_state(GameSession::GAME);
+                  script_manager->fire_wakeup_event(ScriptManager::DIALOG_CLOSED);
+                }
+              else if (delay > 0.2)
+                text_area->set_progress_complete();
             } 
         }
     }

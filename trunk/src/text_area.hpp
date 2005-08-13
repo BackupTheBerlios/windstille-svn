@@ -49,6 +49,11 @@ public:
       with special tags */
   void set_font(TTFFont* font);
 
+  /** Skips letter by letter display */  
+  void set_progress_complete();
+  
+  bool is_progress_complete();
+
   void update(float delta);
   void draw();
 

@@ -38,12 +38,12 @@ void play_sound(const std::string& soundfile)
 void add_caption(int alignment, const std::string& text)
 {
   DialogManager::current()->add_caption(alignment, text);
-  GameSession::current()->set_dialog_state();
+  GameSession::current()->set_control_state(GameSession::DIALOG);
 }
 
 void end_caption()
 {
-  GameSession::current()->set_game_state();
+  GameSession::current()->set_control_state(GameSession::GAME);
 }
 
 void set_view(float x, float y)
@@ -74,7 +74,7 @@ void wait_for_dialog(HSQUIRRELVM vm)
 void dialog_show(int alignment, const std::string& character, const std::string& portrait, const std::string& text)
 {
   DialogManager::current()->add_dialog(alignment, portrait, text);
-  GameSession::current()->set_dialog_state();
+  GameSession::current()->set_control_state(GameSession::DIALOG);
   GameSession::current()->pda.add_dialog(character, text);
 }
 
@@ -140,16 +140,6 @@ void set_game_speed(float v)
   game_speed = v;
 }
 
-float get_text_speed()
-{
-  return text_speed;
-}
-
-void set_text_speed(float v)
-{
-  text_speed = v;
-}
-
 void conversation_add(const std::string& text)
 {
   Conversation::current()->add(text);
@@ -158,7 +148,7 @@ void conversation_add(const std::string& text)
 void conversation_show()
 {
   Conversation::current()->show();
-  GameSession::current()->set_dialog_state();
+  GameSession::current()->set_control_state(GameSession::CONVERSATION);
 }
 
 int  conversation_get_selection()

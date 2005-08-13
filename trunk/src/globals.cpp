@@ -24,7 +24,6 @@ std::string datadir;
 int TILE_SIZE    = 32;
 int TILE_RESOLUTION = 64;
 
-float text_speed = 15.0f;
 float game_speed = 1.0f;
 #ifdef DEBUG
 bool debug = true;

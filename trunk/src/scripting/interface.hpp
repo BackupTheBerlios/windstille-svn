@@ -59,9 +59,6 @@ bool get_debug();
 float get_game_speed();
 void  set_game_speed(float v);
 
-float get_text_speed();
-void  set_text_speed(float v);
-
 //Waits the specified time in seconds.
 void wait(HSQUIRRELVM vm, float time) __suspend;
 

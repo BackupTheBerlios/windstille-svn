@@ -35,7 +35,6 @@ private:
   
   Sprite portrait;
   std::string text;
-  float progress;
   float delay;
   TextArea* text_area;
 

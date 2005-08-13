@@ -49,6 +49,7 @@ public:
 
   int v_space;
   bool letter_by_letter;
+  bool progress_complete;
   std::vector<TextAreaCommand> commands;
 };
 
@@ -60,6 +61,7 @@ TextArea::TextArea(const Rectf& rect, bool letter_by_letter)
   // FIXME: freetype might provide info for vspacing, not sure
   impl->v_space = 2;
   impl->letter_by_letter = letter_by_letter;
+  impl->progress_complete = false;
   impl->passed_time = 0;
 }
 
@@ -124,6 +126,18 @@ TextArea::set_font(TTFFont* font)
 }
 
 void
+TextArea::set_progress_complete()
+{
+  impl->letter_by_letter = false;
+}
+
+bool
+TextArea::is_progress_complete()
+{
+  return impl->progress_complete;
+}
+
+void
 TextArea::draw()
 {
   assert(impl->font);
@@ -153,8 +167,13 @@ TextArea::draw()
   bool is_large = false;
   float eat_time = impl->passed_time;
   bool sinus = false;
-  for(std::vector<TextAreaCommand>::const_iterator i = impl->commands.begin(); i != impl->commands.end(); ++i)
+  bool break_writing = false;
+  std::vector<TextAreaCommand>::const_iterator i = impl->commands.begin();
+  for(; i != impl->commands.end(); ++i)
     {
+      if (break_writing)
+        break;
+        
       switch (i->type)
         {
         case TextAreaCommand::START:
@@ -239,7 +258,10 @@ TextArea::draw()
                   for(std::string::const_iterator j = i->content.begin(); j != i->content.end(); ++j)
                     {
                       if (impl->letter_by_letter && eat_time <= 0)
-                        break;
+                        {
+                          break_writing = true;
+                          break;
+                        }
                         
                       int x = x_pos;
                       int y = y_pos;
@@ -325,6 +347,9 @@ TextArea::draw()
           break;
         }
     }
+  if (i == impl->commands.end())
+    impl->progress_complete = true;
+    
   glEnd();
   glPopMatrix();
 }

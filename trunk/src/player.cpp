@@ -115,7 +115,8 @@ Player::update (float delta)
   controller = InputManager::get_controller();
 
   if (!console.is_active() && !GameSession::current()->pda.is_active()
-  && GameSession::current()->get_game_state() != GameSession::DIALOG)
+  && GameSession::current()->get_game_state() != GameSession::DIALOG
+  && GameSession::current()->get_game_state() != GameSession::CONVERSATION)
     {
       switch(state) {
         case STAND:

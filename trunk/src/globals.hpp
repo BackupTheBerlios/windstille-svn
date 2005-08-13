@@ -32,7 +32,6 @@ const float GRAVITY = 1500;
 /** datadir => /usr/local/share/games/windstille/ */
 extern std::string datadir;
 
-extern float text_speed;
 extern float game_speed;
 extern bool sound_disabled;
 

@@ -205,6 +205,8 @@ GameSession::update(float delta, const Controller& controller)
             {
             case DIALOG:
               dialog_manager->update(delta);
+              break;
+            case CONVERSATION:
               conversation->update(delta);
               break;
             case GAME:

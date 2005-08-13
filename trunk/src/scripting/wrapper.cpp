@@ -483,25 +483,6 @@ static int set_game_speed_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int get_text_speed_wrapper(HSQUIRRELVM v)
-{
-  
-  float return_value = Scripting::get_text_speed();
-  
-  sq_pushfloat(v, return_value);
-  return 1;
-}
-
-static int set_text_speed_wrapper(HSQUIRRELVM v)
-{
-  float arg0;
-  sq_getfloat(v, 2, &arg0);
-  
-  Scripting::set_text_speed(arg0);
-  
-  return 0;
-}
-
 static int wait_wrapper(HSQUIRRELVM v)
 {
   HSQUIRRELVM arg0 = v;
@@ -912,22 +893,6 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_game_speed'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  sq_pushstring(v, "get_text_speed", -1);
-  sq_newclosure(v, &get_text_speed_wrapper, 0);
-  if(SQ_FAILED(sq_createslot(v, -3))) {
-    std::ostringstream msg;
-    msg << "Couldn't register function'get_text_speed'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  sq_pushstring(v, "set_text_speed", -1);
-  sq_newclosure(v, &set_text_speed_wrapper, 0);
-  if(SQ_FAILED(sq_createslot(v, -3))) {
-    std::ostringstream msg;
-    msg << "Couldn't register function'set_text_speed'";
     throw SquirrelError(v, msg.str());
   }
 
