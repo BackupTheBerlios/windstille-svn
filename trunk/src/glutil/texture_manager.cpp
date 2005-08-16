@@ -36,11 +36,17 @@ TextureManager::get(const std::string& filename)
   if(i != textures.end())
     return i->second;
 
-  SDL_Surface* image = IMG_Load_RW(get_physfs_SDLRWops(filename), 1);
-  if(!image) {
-    std::ostringstream msg;
-    msg << "Couldn't load image '" << filename << "' :" << SDL_GetError();
-    throw std::runtime_error(msg.str());
+  SDL_Surface* image = 0;
+  try {
+    image = IMG_Load_RW(get_physfs_SDLRWops(filename), 1);
+    if(!image) {
+      std::ostringstream msg;
+      msg << "Couldn't load image '" << filename << "' :" << SDL_GetError();
+      throw std::runtime_error(msg.str());
+    }
+  } catch(std::exception& e) {
+    std::cerr << e.what() << std::endl;
+    return get("images/404.png");
   }
 
   Texture texture;
