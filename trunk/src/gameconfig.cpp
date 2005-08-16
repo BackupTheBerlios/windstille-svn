@@ -18,6 +18,8 @@ Config::Config()
   show_fps = false;
   sound_enabled = true;
   music_enabled = true;
+
+  antialiasing = 0;
 }
 
 Config::~Config()
@@ -44,6 +46,7 @@ Config::load()
     props.get("screen_height", screen_height);
     props.get("fullscreen", use_fullscreen);
     props.get("show_fps", show_fps);
+    props.get("anti-aliasing", antialiasing);
     props.get("sound_enabled", sound_enabled);
     props.get("music_enabled", music_enabled);
     props.print_unused_warnings("configfile");
@@ -66,6 +69,7 @@ Config::save()
 
     writer.write_int("screen_width", screen_width);
     writer.write_int("screen_height", screen_height);
+    writer.write_int("anti-aliasing", antialiasing);
     writer.write_bool("fullscreen", use_fullscreen);
     writer.write_bool("show_fps", show_fps);
     writer.write_bool("sound_enabled", sound_enabled);

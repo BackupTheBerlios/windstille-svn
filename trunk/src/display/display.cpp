@@ -207,6 +207,12 @@ Display::init()
   SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
   SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
 
+  if (config->antialiasing)
+    {
+      SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 ); // boolean value, either it's enabled or not
+      SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, config->antialiasing ); // 0, 2, or 4 for number of samples
+    }
+
   window = SDL_SetVideoMode(config->screen_width, config->screen_height,
                             0, SDL_OPENGL | (config->use_fullscreen ? SDL_FULLSCREEN : 0));
   if (!window)
@@ -226,6 +232,9 @@ Display::init()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslated(cl_pixelcenter_constant, cl_pixelcenter_constant, 0.0);
+
+  if (config->antialiasing)
+    glEnable(GL_MULTISAMPLE_ARB); 
 
   OpenGLState::init();
 }

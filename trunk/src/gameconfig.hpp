@@ -19,6 +19,8 @@ public:
 
   bool sound_enabled;
   bool music_enabled;
+
+  int antialiasing;
 };
 
 extern Config* config;

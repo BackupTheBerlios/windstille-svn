@@ -62,13 +62,14 @@ WindstilleMain::parse_command_line(int argc, char** argv)
 
   const int debug_flag = 256;
     
-  argp.set_help_indent(22);
+  argp.set_help_indent(24);
   argp.add_usage ("[LEVELFILE]");
   argp.add_doc   ("Windstille is a classic Jump'n Run game.");
 
   argp.add_group("Display Options:");
   argp.add_option('g', "geometry",   "WxH", "Change window size to WIDTH and HEIGHT");
   argp.add_option('f', "fullscreen", "", "Launch the game in fullscreen");
+  argp.add_option('a', "anti-aliasing", "NUM", "Enable NUMx Anti-Aliasing");
 
   argp.add_group("Sound Options:");
   argp.add_option('s', "disable-sound", "", "Disable sound");
@@ -80,12 +81,12 @@ WindstilleMain::parse_command_line(int argc, char** argv)
   argp.add_group("Misc Options:");
   argp.add_option('d', "datadir",    "DIR", "Fetch game data from DIR");
   argp.add_option(debug_flag, "debug",      "", "Turn on debug output");
-  argp.add_option('v', "version",       "", "Print Windstille Version");
+  argp.add_option('x', "version",       "", "Print Windstille Version");
   argp.add_option('h', "help",       "", "Print this help");
 
   argp.add_group("Demo Recording/Playback Options:");
   argp.add_option('r', "record",      "FILE", "Record input events to FILE");
-  argp.add_option('a', "record-video","DIR",  "Record a gameplay video to DIR");
+  argp.add_option('v', "record-video","DIR",  "Record a gameplay video to DIR");
   argp.add_option('p', "play",        "FILE", "Playback input events from FILE");
 
   argp.parse_args(argc, argv);
@@ -94,11 +95,18 @@ WindstilleMain::parse_command_line(int argc, char** argv)
     {
       switch (argp.get_key())
         {
+        case 'a':
+          if (sscanf(argp.get_argument().c_str(), "%d", &config->antialiasing) != 1)
+            {
+              throw std::runtime_error("Anti-Aliasing option '-a' requires argument of type {NUM}");
+            }
+          break;
+
         case 'r':
           recorder_file = argp.get_argument();
           break;
 
-        case 'a':
+        case 'x':
           screenshot_dir = argp.get_argument();
           break;
 
