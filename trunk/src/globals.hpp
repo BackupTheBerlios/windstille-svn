@@ -33,7 +33,6 @@ const float GRAVITY = 1500;
 extern std::string datadir;
 
 extern float game_speed;
-extern bool sound_disabled;
 
 extern bool debug;
 extern bool collision_debug;

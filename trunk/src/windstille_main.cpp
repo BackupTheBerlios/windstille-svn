@@ -136,11 +136,11 @@ WindstilleMain::parse_command_line(int argc, char** argv)
           break;
         
         case 's':
-          sound_disabled = true;
+          config->sound_enabled = false;
           break;
 
         case 'S':
-          sound_disabled = false;
+          config->sound_enabled = true;
           break;  
 
         case 'c':
