@@ -238,6 +238,12 @@ TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& col
   glEnd();
 }
 
+void
+TTFFont::draw_center(float x_pos, float y_pos, const std::string& str, const Color& color)
+{
+  draw(x_pos - get_width(str)/2, y_pos, str, color);
+}
+
 int
 TTFFont::get_width(const std::string& text) const
 {

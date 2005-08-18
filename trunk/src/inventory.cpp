@@ -26,6 +26,7 @@
 #include <iostream>
 #include <vector>
 #include "sprite2d/sprite.hpp"
+#include "fonts.hpp"
 #include "input/input_manager.hpp"
 #include "input/controller.hpp"
 #include "inventory.hpp"
@@ -33,10 +34,11 @@
 class InventoryItem
 {
 public:
+  std::string name;
   Sprite sprite;
   
-  InventoryItem(const std::string& filename)
-    : sprite(filename)
+  InventoryItem(const std::string& name, const std::string& filename)
+    : name(name), sprite(filename)
   {
   }
 };
@@ -79,11 +81,11 @@ Inventory::Inventory()
   impl->add_angle = 0.0f;
   impl->current_item = 0;
 
-  impl->items.push_back(InventoryItem("images/inventory/flashlight.sprite"));
-  impl->items.push_back(InventoryItem("images/inventory/stone.sprite"));
-  impl->items.push_back(InventoryItem("images/inventory/pda.sprite"));
-  impl->items.push_back(InventoryItem("images/inventory/granate.sprite"));
-  impl->items.push_back(InventoryItem("images/inventory/keycard.sprite"));
+  impl->items.push_back(InventoryItem("Flashlight",  "images/inventory/flashlight.sprite"));
+  impl->items.push_back(InventoryItem("Stone",       "images/inventory/stone.sprite"));
+  impl->items.push_back(InventoryItem("PDA",         "images/inventory/pda.sprite"));
+  impl->items.push_back(InventoryItem("5x Granates", "images/inventory/granate.sprite"));
+  impl->items.push_back(InventoryItem("Lv1 Keycard", "images/inventory/keycard.sprite"));
 }
 
 Inventory::~Inventory()
@@ -100,14 +102,20 @@ InventoryImpl::draw()
 
   for(int i = 0; i < int(items.size()); ++i)
     {
+      const InventoryItem& item = items[(i+current_item)%items.size()];
       Vector draw_pos = pos + Vector(128, 0).rotate(step_angle * i - M_PI/2 + add_angle);
 
       if (i == 0 && moving == 0)
-        slothighlight.draw(draw_pos);
+        {
+          slothighlight.draw(draw_pos);
+          Fonts::ttfdialog->draw_center(draw_pos.x, draw_pos.y - 64, item.name);
+        }
       else
-        slot.draw(draw_pos);
+        {
+          slot.draw(draw_pos);
+        }
 
-      items[(i+current_item)%items.size()].sprite.draw(draw_pos - Vector(32,32));
+      item.sprite.draw(draw_pos - Vector(32,32));
     }
 }
 
