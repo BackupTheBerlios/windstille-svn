@@ -22,10 +22,11 @@
 
 #include <vector>
 #include <string>
+#include "screen.hpp"
 
 /** Displays a list of text strings from which the user can select
     one, used to form multiple-choice dialogs */
-class Conversation
+class Conversation : public Screen
 {
 private:
   bool active;
@@ -41,7 +42,7 @@ public:
   Conversation();
 
   void draw();
-  void update(float delta);
+  void update(float delta, const Controller& controller);
 
   void add(const std::string& text);
   int  get_selection() const;

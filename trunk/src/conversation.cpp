@@ -74,13 +74,12 @@ Conversation::draw()
 }
 
 void
-Conversation::update(float delta)
+Conversation::update(float delta, const Controller& controller)
 {
   (void) delta;
   if (!active)
     return;
-    
-  Controller controller = InputManager::get_controller();
+
   const InputEventLst& events = controller.get_events();
 
   for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i)
@@ -106,7 +105,7 @@ Conversation::update(float delta)
             {
             case OK_BUTTON:
               active = false;
-              GameSession::current()->pda.add_dialog("Jane", choices[selection]);
+              GameSession::current()->get_pda().add_dialog("Jane", choices[selection]);
               choices.clear();
               GameSession::current()->set_control_state(GameSession::GAME);
               script_manager->fire_wakeup_event(ScriptManager::CONVERSATION_CLOSED);

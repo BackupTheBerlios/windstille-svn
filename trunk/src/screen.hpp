@@ -32,9 +32,15 @@ public:
   Screen();
   virtual ~Screen();
 
+  /** Draw the current screen */
   virtual void draw() =0;
+
+  /** Update the current screen by \a delta and with input from \a
+      controller */
   virtual void update(float delta, const Controller& controller) =0;
-  virtual void handle_event(const SDL_Event& event) =0;
+
+  /** Called once a new SDL_Event arrives */
+  virtual void handle_event(const SDL_Event& event) {}
 };
 
 #endif

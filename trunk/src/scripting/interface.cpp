@@ -75,27 +75,27 @@ void dialog_show(int alignment, const std::string& character, const std::string&
 {
   DialogManager::current()->add_dialog(alignment, portrait, text);
   GameSession::current()->set_control_state(GameSession::DIALOG);
-  GameSession::current()->pda.add_dialog(character, text);
+  GameSession::current()->get_pda().add_dialog(character, text);
 }
 
 void add_objective(const std::string& name, const std::string& text)
 {
-  GameSession::current()->pda.add_objective(name, text);
+  GameSession::current()->get_pda().add_objective(name, text);
 }
 
 void objective_complete(const std::string& name)
 {
-  GameSession::current()->pda.objective_complete(name);
+  GameSession::current()->get_pda().objective_complete(name);
 }
 
 bool is_objective_given(const std::string& name)
 {
-  return GameSession::current()->pda.is_objective_given(name);
+  return GameSession::current()->get_pda().is_objective_given(name);
 }
 
 bool is_objective_complete(const std::string& name)
 {
-  return GameSession::current()->pda.is_objective_given(name);
+  return GameSession::current()->get_pda().is_objective_given(name);
 }
 
 bool run_before(HSQUIRRELVM vm)

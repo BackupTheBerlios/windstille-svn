@@ -52,7 +52,7 @@ public:
   Items items;
   int current_item;
 
-  void update(float delta);
+  void update(float delta, const Controller& controller);
   void draw();
   
   void incr_current_item() { 
@@ -118,16 +118,14 @@ Inventory::draw()
 }
 
 void
-Inventory::update(float delta)
+Inventory::update(float delta, const Controller& controller)
 {
-  impl->update(delta);
+  impl->update(delta, controller);
 }
 
 void
-InventoryImpl::update(float delta)
+InventoryImpl::update(float delta, const Controller& controller)
 {
-  Controller controller = InputManager::get_controller();
- 
   float step_angle = (2*M_PI) / items.size();
   if (fabsf(add_angle) > step_angle)
     {

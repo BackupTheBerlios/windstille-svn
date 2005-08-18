@@ -26,6 +26,8 @@
 #ifndef HEADER_PDA_HPP
 #define HEADER_PDA_HPP
 
+#include "screen.hpp"
+
 class TextArea;
 
 class DialogEntry
@@ -48,13 +50,13 @@ public:
 };
 
 /** */
-class PDA
+class PDA : public Screen
 {
 public:
   PDA();
 
   void draw();
-  void update(float delta);
+  void update(float delta, const Controller& controller);
   bool is_active() const {return active;}
   void set_active(bool arg_active) {active = arg_active;}
   void add_dialog(const std::string& character, const std::string& text);

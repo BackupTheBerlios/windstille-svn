@@ -26,12 +26,13 @@
 #ifndef HEADER_WINDSTILLE_INVENTORY_HPP
 #define HEADER_WINDSTILLE_INVENTORY_HPP
 
+#include "screen.hpp"
 #include "sharedptr.hpp"
 
 class InventoryImpl;
 
 /** */
-class Inventory
+class Inventory : public Screen
 {
 private:
 public:
@@ -39,7 +40,7 @@ public:
   ~Inventory();
 
   void draw();
-  void update(float delta);
+  void update(float delta, const Controller& controller);
 
 private:
   SharedPtr<InventoryImpl> impl;

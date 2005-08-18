@@ -24,11 +24,12 @@
 #include <string>
 #include "sprite2d/sprite.hpp"
 #include "globals.hpp"
+#include "screen.hpp"
 
 class TextArea;
 
 /** */
-class DialogManager
+class DialogManager : public Screen
 {
 private:
   void create_text();
@@ -67,7 +68,7 @@ public:
   ~DialogManager();
 
   void draw();
-  void update(float delta);
+  void update(float delta, const Controller& controller);
 
   void add_dialog(int alignment, const std::string& portrait, const std::string& text);
   void add_caption(int alignment, const std::string& text);

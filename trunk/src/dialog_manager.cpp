@@ -107,13 +107,13 @@ DialogManager::draw()
 }
 
 void
-DialogManager::update(float delta)
+DialogManager::update(float delta, const Controller& controller)
 {
   text_area->update(delta);
 
   delay += delta;
 
-  InputEventLst events = InputManager::get_controller().get_events();
+  InputEventLst events = controller.get_events();
 	
   for (InputEventLst::iterator i = events.begin(); i != events.end(); ++i)
     {

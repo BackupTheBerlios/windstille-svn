@@ -68,6 +68,7 @@ private:
   void commit_removes();
   void expose_object_to_squirrel(GameObject* object);
   void remove_object_from_squirrel(GameObject* object);
+
 public:
   Sector(const std::string& filename);
   ~Sector();

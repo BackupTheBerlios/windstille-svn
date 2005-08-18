@@ -20,10 +20,11 @@
 #ifndef HEADER_ENERGYBAR_HXX
 #define HEADER_ENERGYBAR_HXX
 
+#include "screen.hpp"
 #include "sprite2d/sprite.hpp"
 
 /** */
-class EnergyBar
+class EnergyBar : public Screen
 {
 private:
   Sprite bar;
@@ -32,7 +33,7 @@ public:
   ~EnergyBar();
   
   void draw();
-  void update(float delta);
+  void update(float delta, const Controller& controller);
 private:
   EnergyBar (const EnergyBar&);
   EnergyBar& operator= (const EnergyBar&);

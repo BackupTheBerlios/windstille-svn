@@ -57,10 +57,12 @@ private:
 
   Sector*        sector;
   View*          view;
+
   EnergyBar*     energy_bar;
   DialogManager* dialog_manager;
   Conversation*  conversation;
   Inventory*     inventory;
+  PDA            pda;
 
   std::string filename;
 
@@ -81,7 +83,6 @@ public:
 
   SceneContext& get_scene_context() { return sc; }
   View* get_view() { return view; }
-  PDA pda;
 
   void set_control_state(ControlState state) { control_state = state; }
 
@@ -98,6 +99,8 @@ public:
   void draw_game();
   void update(float delta, const Controller& controller);
   void handle_event(const SDL_Event& event);
+
+  PDA& get_pda();
 
   void quit();
 };

@@ -203,15 +203,15 @@ GameSession::update(float delta, const Controller& controller)
           break;
 
         case RUNNING:
-          sector->update (delta);
-          energy_bar->update(delta);
+          sector->update(delta);
+          energy_bar->update(delta, controller);
           switch (control_state) 
             {
             case DIALOG:
-              dialog_manager->update(delta);
+              dialog_manager->update(delta, controller);
               break;
             case CONVERSATION:
-              conversation->update(delta);
+              conversation->update(delta, controller);
               break;
             case GAME:
               break;
@@ -219,11 +219,11 @@ GameSession::update(float delta, const Controller& controller)
           break;
         }
       
-      controller_help_window.update(delta);
-      pda.update(delta);
+      controller_help_window.update(delta, controller);
+      pda.update(delta, controller);
     }
   
-  inventory->update(delta);
+  inventory->update(delta, controller);
 
   if(keystate[SDLK_ESCAPE])
     quit();
@@ -327,6 +327,12 @@ GameSession::quit()
       fade_state = FADEOUT;
       next_action = QUIT_ACTION;
     }
+}
+
+PDA&
+GameSession::get_pda()
+{
+  return pda;
 }
 
 /* EOF */

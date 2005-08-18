@@ -26,18 +26,19 @@
 #ifndef HEADER_CONTROLLER_HELP_WINDOW_HPP
 #define HEADER_CONTROLLER_HELP_WINDOW_HPP
 
+#include "screen.hpp"
 #include "sharedptr.hpp"
 
 class ControllerHelpWindowImpl;
 
 /** */
-class ControllerHelpWindow
+class ControllerHelpWindow : public Screen
 {
 public:
   ControllerHelpWindow();
 
   void draw();
-  void update(float delta);
+  void update(float delta, const Controller& controller);
   void set_active(bool active);
   static ControllerHelpWindow* current() { return current_; }
 

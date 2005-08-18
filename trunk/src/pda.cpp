@@ -67,12 +67,11 @@ PDA::draw()
 }
 
 void
-PDA::update(float delta)
+PDA::update(float delta, const Controller& controller)
 {
   if (!active)
     return;
   
-  Controller controller = InputManager::get_controller();
   const InputEventLst& events = controller.get_events();
   for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i) {
     if (i->type == AXIS_EVENT && i->axis.name == X_AXIS) {
