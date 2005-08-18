@@ -10,6 +10,7 @@
 #include "fonts.hpp"
 #include "serialize.hpp"
 #include "camera.hpp"
+#include "pda.hpp"
 #include "controller_help_window.hpp"
 
 namespace Scripting

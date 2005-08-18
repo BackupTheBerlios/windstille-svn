@@ -32,10 +32,10 @@
 #include "squirrel/include/squirrel.h"
 #include "screen.hpp"
 #include "controller_help_window.hpp"
-#include "pda.hpp"
 #include "sprite2d/sprite.hpp"
 #include "globals.hpp"
 
+class PDA;
 class EnergyBar;
 class View;
 class Sector;
@@ -44,47 +44,23 @@ class DialogManager;
 class Conversation;
 class Inventory;
 
+class GameSessionImpl;
+
 class GameSession : public Screen
 {
 public:
   enum ControlState { DIALOG, GAME, CONVERSATION };
 private:
-  SceneContext sc;
-
-  float fadeout_value;
-
-  ControllerHelpWindow controller_help_window;
-
-  Sector*        sector;
-  View*          view;
-
-  EnergyBar*     energy_bar;
-  DialogManager* dialog_manager;
-  Conversation*  conversation;
-  Inventory*     inventory;
-  PDA            pda;
-
-  std::string filename;
-
-  bool pause;
-
-  enum { NO_ACTION, QUIT_ACTION, CHANGE_SECTOR_ACTION } next_action;
-  
-  enum { FADEIN, RUNNING, FADEOUT } fade_state;
-  ControlState control_state;
-
   static GameSession* current_; 
-
 public:
   static GameSession* current() { return current_; } 
 
   GameSession (const std::string& arg_filename);
   ~GameSession ();
 
-  SceneContext& get_scene_context() { return sc; }
-  View* get_view() { return view; }
+  View* get_view();
 
-  void set_control_state(ControlState state) { control_state = state; }
+  void set_control_state(ControlState state);
 
   /** Switches the sector instantly without fadeout */
   void set_sector(const std::string& filename);
@@ -92,17 +68,20 @@ public:
   /** Fades out then switches sectors and fades in again */
   void change_sector(const std::string& filename);
 
-  ControlState get_game_state() const { return control_state; }
-  const std::string& get_filename () const { return filename; }
+  ControlState get_game_state() const;
 
   void draw();
-  void draw_game();
   void update(float delta, const Controller& controller);
   void handle_event(const SDL_Event& event);
 
   PDA& get_pda();
 
   void quit();
+
+  const std::string& get_filename () const;
+
+private:
+  SharedPtr<GameSessionImpl> impl;
 };
 
 #endif

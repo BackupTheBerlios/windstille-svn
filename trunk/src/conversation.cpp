@@ -24,6 +24,7 @@
 #include "script_manager.hpp"
 #include "display/display.hpp"
 #include "conversation.hpp"
+#include "pda.hpp"
 #include "game_session.hpp"
 
 Conversation* Conversation::current_ = 0;

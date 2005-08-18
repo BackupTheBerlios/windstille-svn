@@ -25,6 +25,7 @@
 #include "player.hpp"
 #include "bomb.hpp"
 #include "globals.hpp"
+#include "pda.hpp"
 #include "sprite3d/manager.hpp"
 #include "glutil/surface_manager.hpp"
 #include "particles/particle_system.hpp"

@@ -59,66 +59,89 @@
 #include "glutil/surface_manager.hpp"
 #include "glutil/surface.hpp"
 #include "display/display.hpp"
+#include "pda.hpp"
 
 #include "game_session.hpp"
 
 GameSession* GameSession::current_ = 0; 
 
-GameSession::GameSession(const std::string& arg_filename)
-  : sector (0),
-    filename(arg_filename)
+class GameSessionImpl
 {
+public:
+  SceneContext sc;
+
+  float fadeout_value;
+
+  Sector* sector;
+  View    view;
+
+  std::string filename;
+
+  bool pause;
+
+  enum { NO_ACTION, QUIT_ACTION, CHANGE_SECTOR_ACTION } next_action;
+  
+  enum { FADEIN, RUNNING, FADEOUT } fade_state;
+  GameSession::ControlState control_state;
+
+  // GUI Elements
+  ControllerHelpWindow controller_help_window;
+  EnergyBar     energy_bar;
+  DialogManager dialog_manager;
+  Conversation  conversation;
+  Inventory     inventory;
+  PDA           pda;
+
+  GameSessionImpl() {
+    sector = 0;
+  }
+  ~GameSessionImpl() {
+    delete sector;
+  }
+
+  void draw();
+  void update(float delta, const Controller& controller);
+  void handle_event(const SDL_Event& event);
+};
+
+GameSession::GameSession(const std::string& arg_filename)
+  : impl(new GameSessionImpl())
+{
+  impl->filename = arg_filename;
+
   if (debug) std::cout << "Creating new GameSession" << std::endl;
   current_ = this;
 
-  view           = new View();  
-  energy_bar     = new EnergyBar();
-  dialog_manager = new DialogManager();
-  conversation   = new Conversation();
-  inventory      = new Inventory();
-
-  pause = false;
+  impl->pause = false;
   
   if (1)
     script_manager->run_script_file("scripts/init_script_vars.nut");
     
-  set_sector(filename);
+  set_sector(impl->filename);
 }
 
 GameSession::~GameSession()
 {
-  delete inventory;
-  delete energy_bar;
-  delete view;
-  delete dialog_manager;
-  delete conversation;
-  delete sector;
 }
 
 void
-GameSession::draw_game()
+GameSessionImpl::draw()
 {
-  view->draw(sc);
+  view.draw(sc);
 
   // Render the scene to the screen
   sc.render();
 
   // Draw HUD
-  energy_bar->draw();
-  inventory->draw();
+  energy_bar.draw();
+  inventory.draw();
 
-  if (control_state == DIALOG)
-    dialog_manager->draw(); 
+  if (control_state == GameSession::DIALOG)
+    dialog_manager.draw(); 
   
-  conversation->draw();
+  conversation.draw();
   controller_help_window.draw();
   pda.draw();
-}
-
-void
-GameSession::draw()
-{
-  draw_game();
 
   switch (fade_state)
     {
@@ -145,7 +168,7 @@ GameSession::draw()
 }
 
 void
-GameSession::update(float delta, const Controller& controller)
+GameSessionImpl::update(float delta, const Controller& controller)
 {  
   if (controller.button_was_pressed(PDA_BUTTON))
     pda.set_active(!pda.is_active());
@@ -171,7 +194,7 @@ GameSession::update(float delta, const Controller& controller)
       game_time += delta;
       script_manager->update();
       
-      view->update(delta);
+      view.update(delta);
   
       switch (fade_state)
         {
@@ -187,7 +210,7 @@ GameSession::update(float delta, const Controller& controller)
               switch(next_action)
                 {
                 case CHANGE_SECTOR_ACTION:
-                  set_sector(filename);
+                  GameSession::current()->set_sector(filename);
                   break;
 
                 case QUIT_ACTION:
@@ -204,16 +227,16 @@ GameSession::update(float delta, const Controller& controller)
 
         case RUNNING:
           sector->update(delta);
-          energy_bar->update(delta, controller);
+          energy_bar.update(delta, controller);
           switch (control_state) 
             {
-            case DIALOG:
-              dialog_manager->update(delta, controller);
+            case GameSession::DIALOG:
+              dialog_manager.update(delta, controller);
               break;
-            case CONVERSATION:
-              conversation->update(delta, controller);
+            case GameSession::CONVERSATION:
+              conversation.update(delta, controller);
               break;
-            case GAME:
+            case GameSession::GAME:
               break;
             }
           break;
@@ -223,48 +246,48 @@ GameSession::update(float delta, const Controller& controller)
       pda.update(delta, controller);
     }
   
-  inventory->update(delta, controller);
+  inventory.update(delta, controller);
 
   if(keystate[SDLK_ESCAPE])
-    quit();
+    GameSession::current()->quit();
 }
 
 void
 GameSession::change_sector(const std::string& arg_filename)
 {
-  filename = arg_filename;
+  impl->filename = arg_filename;
  
   sound_manager->stop_music();
 
-  fade_state    = FADEOUT;
-  fadeout_value = 0;
-  next_action   = CHANGE_SECTOR_ACTION;
+  impl->fade_state    = GameSessionImpl::FADEOUT;
+  impl->fadeout_value = 0;
+  impl->next_action   = GameSessionImpl::CHANGE_SECTOR_ACTION;
 }
 
 void
 GameSession::set_sector(const std::string& arg_filename)
 {
-  delete sector;
-  sector = new Sector(filename);
+  delete impl->sector;
+  impl->sector = new Sector(impl->filename);
  
-  GameObject::set_world(sector);
+  GameObject::set_world(impl->sector);
 
   //FIXME: does the TestObject class still need to exist?
   //sector->add(new TestObject());
   
-  sector->spawn_player("default");
-  sector->activate();
+  impl->sector->spawn_player("default");
+  impl->sector->activate();
     
-  fade_state    = FADEIN;
-  fadeout_value = 0;
-  control_state = GAME;
-  next_action   = NO_ACTION;
+  impl->fade_state    = GameSessionImpl::FADEIN;
+  impl->fadeout_value = 0;
+  impl->control_state = GAME;
+  impl->next_action   = GameSessionImpl::NO_ACTION;
 
   if (debug) std::cout << "Finished changing sector" << std::endl;
 }
 
 void
-GameSession::handle_event(const SDL_Event& event)
+GameSessionImpl::handle_event(const SDL_Event& event)
 {
   switch(event.type)
   {
@@ -320,19 +343,61 @@ GameSession::handle_event(const SDL_Event& event)
 void
 GameSession::quit()
 {
-  if (fade_state != FADEOUT)
+  if (impl->fade_state != GameSessionImpl::FADEOUT)
     {
-      fadeout_value = 0;
+      impl->fadeout_value = 0;
       sound_manager->stop_music();
-      fade_state = FADEOUT;
-      next_action = QUIT_ACTION;
+      impl->fade_state  = GameSessionImpl::FADEOUT;
+      impl->next_action = GameSessionImpl::QUIT_ACTION;
     }
 }
 
 PDA&
 GameSession::get_pda()
 {
-  return pda;
+  return impl->pda;
+}
+
+void
+GameSession::draw()
+{
+  impl->draw();
+}
+
+void
+GameSession::update(float delta, const Controller& controller)
+{
+  impl->update(delta, controller);
+}
+
+void
+GameSession::handle_event(const SDL_Event& event)
+{
+  impl->handle_event(event);
+}
+
+View*
+GameSession::get_view() 
+{
+  return &impl->view; 
+}
+
+void
+GameSession::set_control_state(ControlState state) 
+{
+  impl->control_state = state; 
+}
+
+GameSession::ControlState
+GameSession::get_game_state() const 
+{
+  return impl->control_state; 
+}
+
+const std::string&
+GameSession::get_filename() const 
+{
+ return impl->filename; 
 }
 
 /* EOF */
