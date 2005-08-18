@@ -82,18 +82,22 @@ public:
   enum { NO_ACTION, QUIT_ACTION, CHANGE_SECTOR_ACTION } next_action;
   
   enum { FADEIN, RUNNING, FADEOUT } fade_state;
-  GameSession::ControlState control_state;
 
   // GUI Elements
   ControllerHelpWindow controller_help_window;
   EnergyBar     energy_bar;
+
+  // Active GUI Elements
   DialogManager dialog_manager;
   Conversation  conversation;
   Inventory     inventory;
   PDA           pda;
 
+  Screen* current_gui;
+
   GameSessionImpl() {
     sector = 0;
+    current_gui = 0;
   }
   ~GameSessionImpl() {
     delete sector;
@@ -134,14 +138,10 @@ GameSessionImpl::draw()
 
   // Draw HUD
   energy_bar.draw();
-  inventory.draw();
-
-  if (control_state == GameSession::DIALOG)
-    dialog_manager.draw(); 
-  
-  conversation.draw();
   controller_help_window.draw();
-  pda.draw();
+
+  if (current_gui)
+    current_gui->draw();
 
   switch (fade_state)
     {
@@ -171,7 +171,10 @@ void
 GameSessionImpl::update(float delta, const Controller& controller)
 {  
   if (controller.button_was_pressed(PDA_BUTTON))
-    pda.set_active(!pda.is_active());
+    if (current_gui == &pda)
+      current_gui = 0;
+    else
+      current_gui = &pda;
 
   if (controller.button_was_pressed(PAUSE_BUTTON))
     pause = !pause;
@@ -228,25 +231,13 @@ GameSessionImpl::update(float delta, const Controller& controller)
         case RUNNING:
           sector->update(delta);
           energy_bar.update(delta, controller);
-          switch (control_state) 
-            {
-            case GameSession::DIALOG:
-              dialog_manager.update(delta, controller);
-              break;
-            case GameSession::CONVERSATION:
-              conversation.update(delta, controller);
-              break;
-            case GameSession::GAME:
-              break;
-            }
+          if (current_gui)
+            current_gui->update(delta, controller);
           break;
         }
       
       controller_help_window.update(delta, controller);
-      pda.update(delta, controller);
     }
-  
-  inventory.update(delta, controller);
 
   if(keystate[SDLK_ESCAPE])
     GameSession::current()->quit();
@@ -280,7 +271,6 @@ GameSession::set_sector(const std::string& arg_filename)
     
   impl->fade_state    = GameSessionImpl::FADEIN;
   impl->fadeout_value = 0;
-  impl->control_state = GAME;
   impl->next_action   = GameSessionImpl::NO_ACTION;
 
   if (debug) std::cout << "Finished changing sector" << std::endl;
@@ -385,19 +375,26 @@ GameSession::get_view()
 void
 GameSession::set_control_state(ControlState state) 
 {
-  impl->control_state = state; 
+  switch(state)
+    {
+    case DIALOG:
+      impl->current_gui = &impl->dialog_manager;
+      break;
+
+    case CONVERSATION:
+      impl->current_gui = &impl->conversation;
+      break;
+
+    case GAME:
+      impl->current_gui = 0;
+      break;
+    }
 }
 
-GameSession::ControlState
-GameSession::get_game_state() const 
+bool
+GameSession::is_active() const
 {
-  return impl->control_state; 
-}
-
-const std::string&
-GameSession::get_filename() const 
-{
- return impl->filename; 
+  return (impl->current_gui == 0);
 }
 
 /* EOF */

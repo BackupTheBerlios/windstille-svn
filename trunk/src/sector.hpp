@@ -37,6 +37,7 @@ class Entity;
 class Sector
 {
 private:
+  std::string filename;
   std::string name;
   std::string music;
   std::string init_script;
@@ -74,6 +75,8 @@ public:
   ~Sector();
 
   static Sector* current() { return current_; }
+
+  const std::string& get_filename () const;
 
   void draw(SceneContext& gc);
   void update(float delta);

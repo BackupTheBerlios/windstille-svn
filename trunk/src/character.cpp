@@ -69,7 +69,7 @@ Character::draw (SceneContext& sc)
 void
 Character::use()
 {
-  std::string filename = basename(GameSession::current()->get_filename());
+  std::string filename = basename(Sector::current()->get_filename());
   filename.erase(filename.find('.'));
   filename = "scripts/" + filename + "/" + name + ".nut";
 

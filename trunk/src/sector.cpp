@@ -54,8 +54,15 @@
 
 Sector* Sector::current_ = 0;
 
-Sector::Sector(const std::string& filename)
-  : player(0)
+const std::string&
+Sector::get_filename () const
+{
+  return filename;
+}
+
+Sector::Sector(const std::string& arg_filename)
+  : filename(arg_filename),
+    player(0)    
 {
   // make sure squirrel has an "objects" table
   script_manager->run_script(

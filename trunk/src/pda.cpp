@@ -43,8 +43,7 @@ ObjectiveEntry::ObjectiveEntry(const std::string& arg_name, const std::string& a
 }
 
 PDA::PDA()
-  : active(false),
-    state(PDA_INVENTORY)
+  : state(PDA_INVENTORY)
 { 
   text_area = 0;
 }
@@ -52,9 +51,6 @@ PDA::PDA()
 void
 PDA::draw()
 {
-  if (!active)
-    return;
-    
   if (text_area)
     {
       const Rectf& rect = text_area->get_rect().grow(8.0f);
@@ -69,9 +65,6 @@ PDA::draw()
 void
 PDA::update(float delta, const Controller& controller)
 {
-  if (!active)
-    return;
-  
   const InputEventLst& events = controller.get_events();
   for(InputEventLst::const_iterator i = events.begin(); i != events.end(); ++i) {
     if (i->type == AXIS_EVENT && i->axis.name == X_AXIS) {

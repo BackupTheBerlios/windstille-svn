@@ -33,6 +33,7 @@ enum InputEventName
     SECONDARY_BUTTON, // used to cancel a dialog or for jumping
     TERTIARY_BUTTON,  // used to cancel a dialog or for jumping
     PDA_BUTTON,       // display the PDA
+    INVENTORY_BUTTON, // display inventory button
     
     PAUSE_BUTTON,     // used to pause the game
     AIM_BUTTON,       // used to draw the gun and aim

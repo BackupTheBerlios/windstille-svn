@@ -27,6 +27,7 @@ ControllerDef::ControllerDef()
   add_button("tertiary-button",  TERTIARY_BUTTON);
 
   add_button("pda-button", PDA_BUTTON);
+  add_button("inventory-button", INVENTORY_BUTTON);
 
   add_button("aim-button",       AIM_BUTTON);
   add_button("pause-button",     PAUSE_BUTTON);

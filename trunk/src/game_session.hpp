@@ -60,6 +60,10 @@ public:
 
   View* get_view();
 
+  /** Return true when the gameplay is currently active, return false
+      if PDA, Conversation or other things are active */
+  bool is_active() const;
+
   void set_control_state(ControlState state);
 
   /** Switches the sector instantly without fadeout */
@@ -68,8 +72,6 @@ public:
   /** Fades out then switches sectors and fades in again */
   void change_sector(const std::string& filename);
 
-  ControlState get_game_state() const;
-
   void draw();
   void update(float delta, const Controller& controller);
   void handle_event(const SDL_Event& event);
@@ -77,8 +79,6 @@ public:
   PDA& get_pda();
 
   void quit();
-
-  const std::string& get_filename () const;
 
 private:
   SharedPtr<GameSessionImpl> impl;

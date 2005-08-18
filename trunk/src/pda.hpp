@@ -57,8 +57,6 @@ public:
 
   void draw();
   void update(float delta, const Controller& controller);
-  bool is_active() const {return active;}
-  void set_active(bool arg_active) {active = arg_active;}
   void add_dialog(const std::string& character, const std::string& text);
   
   void add_objective(const std::string& name, const std::string& text);
@@ -72,7 +70,6 @@ private:
   void show_dialogs();
   
   TextArea* text_area;
-  bool active;
   std::vector<DialogEntry> dialogs;
   std::vector<ObjectiveEntry> objectives;   
   
