@@ -106,6 +106,10 @@ public:
     return *this;
   }
 
+  /** Takes angle in radian and returns a copy of the vector rotated
+      by \a angle */
+  Vector rotate(float angle) const;
+
   /// Scalar product of 2 vectors
   float operator*(const Vector& other) const
     {

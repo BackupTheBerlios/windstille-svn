@@ -55,6 +55,7 @@
 #include "conversation.hpp"
 #include "collision/collision_engine.hpp"
 #include "test_object.hpp"
+#include "inventory.hpp"
 #include "glutil/surface_manager.hpp"
 #include "glutil/surface.hpp"
 #include "display/display.hpp"
@@ -74,6 +75,7 @@ GameSession::GameSession(const std::string& arg_filename)
   energy_bar     = new EnergyBar();
   dialog_manager = new DialogManager();
   conversation   = new Conversation();
+  inventory      = new Inventory();
 
   pause = false;
   
@@ -85,6 +87,7 @@ GameSession::GameSession(const std::string& arg_filename)
 
 GameSession::~GameSession()
 {
+  delete inventory;
   delete energy_bar;
   delete view;
   delete dialog_manager;
@@ -102,6 +105,7 @@ GameSession::draw_game()
 
   // Draw HUD
   energy_bar->draw();
+  inventory->draw();
 
   if (control_state == DIALOG)
     dialog_manager->draw(); 
@@ -219,6 +223,8 @@ GameSession::update(float delta, const Controller& controller)
       pda.update(delta);
     }
   
+  inventory->update(delta);
+
   if(keystate[SDLK_ESCAPE])
     quit();
 }

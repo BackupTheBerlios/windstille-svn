@@ -50,6 +50,8 @@ sources =
         entity.hpp
         elevator.hpp
         elevator.cpp
+        inventory.cpp
+        inventory.hpp
         ttf_font.cpp
         ttf_font.hpp
         field.hpp

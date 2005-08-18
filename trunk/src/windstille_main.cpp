@@ -190,6 +190,8 @@ WindstilleMain::main(int argc, char** argv)
       {
         if (!controller_file.empty())
           InputManager::init(controller_file);
+        else if (PHYSFS_exists("controller.cfg"))
+          InputManager::init("controller.cfg");
         else
           InputManager::init("controller/keyboard.scm");
       }

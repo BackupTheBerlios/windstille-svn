@@ -42,6 +42,7 @@ class Sector;
 class Player;
 class DialogManager;
 class Conversation;
+class Inventory;
 
 class GameSession : public Screen
 {
@@ -59,6 +60,7 @@ private:
   EnergyBar*     energy_bar;
   DialogManager* dialog_manager;
   Conversation*  conversation;
+  Inventory*     inventory;
 
   std::string filename;
 

@@ -38,4 +38,11 @@ std::ostream& operator<<(std::ostream& s, const Vector& v)
   return s;
 }
 
+Vector
+Vector::rotate(float angle) const
+{
+  float len = norm();
+  return Vector(len * cos(angle), len * sin(angle));
+}
+
 /* EOF */
