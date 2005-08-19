@@ -61,7 +61,6 @@ Nightvision::draw(SceneContext& sc)
 
   if (1)
     {
-      // FIXME: Use raw OpenGL here and offset the texture coordinates
       VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), 10000,
                                                                        sc.light().get_modelview());
       array->set_mode(GL_QUADS);
@@ -110,6 +109,11 @@ Nightvision::draw(SceneContext& sc)
 
   if (1)
     {
+      // FIXME: might be better to copy the highlight over to the
+      // color layer, however that would require some changes to the
+      // DrawingContext structure
+      sc.highlight().clear();
+
       sc.highlight().push_modelview();
       sc.highlight().set_modelview(Matrix::identity());
       nightvision.set_alpha(0.5f);

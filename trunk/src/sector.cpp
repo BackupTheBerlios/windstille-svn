@@ -42,6 +42,7 @@
 #include "elevator.hpp"
 #include "nightvision.hpp"
 #include "character.hpp"
+#include "laser_pointer.hpp"
 #include "badguy/swarm.hpp"
 #include "badguy/hedgehog.hpp"
 #include "badguy/spider_mine.hpp"
@@ -80,7 +81,7 @@ Sector::Sector(const std::string& arg_filename)
     throw std::runtime_error("No interactive-tilemap available");
 
   // add interactive to collision engine
-  collision_engine->add (new CollisionObject (interactive_tilemap));
+  collision_engine->add(new CollisionObject(interactive_tilemap));
 }
 
 Sector::~Sector()
@@ -178,6 +179,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new VRDummy(lisp));
   } else if (name == "swarm") {
     add(new Swarm(lisp));
+  } else if (name == "laserpointer") {
+    add(new LaserPointer());
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }

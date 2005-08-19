@@ -80,11 +80,13 @@ ScreenManager::run()
           InputManager::update(delta);
 
           console.update(step);
-          if (overlay_screen)
-            overlay_screen->update(step, InputManager::get_controller());
-          else
-            screen->update(step, InputManager::get_controller());
-                
+          if (!console.is_active())
+            {
+              if (overlay_screen)
+                overlay_screen->update(step, InputManager::get_controller());
+              else
+                screen->update(step, InputManager::get_controller());
+            }
           InputManager::clear();
   
           delta -= step;

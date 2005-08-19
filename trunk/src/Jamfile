@@ -67,6 +67,8 @@ sources =
         globals.hpp
         graphic_context_state.cpp
         graphic_context_state.hpp
+        laser_pointer.hpp
+        laser_pointer.cpp
         math.hpp
         nightvision.cpp
         nightvision.hpp

@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <vector>
+#include "game_session.hpp"
 #include "sprite2d/sprite.hpp"
 #include "fonts.hpp"
 #include "input/input_manager.hpp"
@@ -174,6 +175,15 @@ InventoryImpl::update(float delta, const Controller& controller)
   else if (moving == 1)
     {
       add_angle += 3 * delta;
+    }
+
+  if (moving == 0)
+    {
+      if (controller.button_was_pressed(USE_BUTTON) ||
+          controller.button_was_pressed(INVENTORY_BUTTON))
+        {
+          GameSession::current()->set_control_state(GameSession::GAME);
+        }
     }
 }
 

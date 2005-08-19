@@ -170,21 +170,6 @@ GameSessionImpl::draw()
 void
 GameSessionImpl::update(float delta, const Controller& controller)
 {  
-  if (controller.button_was_pressed(PDA_BUTTON))
-    {
-      if (current_gui == &pda)
-        current_gui = 0;
-      else
-        current_gui = &pda;
-    }
-  else if (controller.button_was_pressed(INVENTORY_BUTTON))
-    {
-      if (current_gui == &inventory)
-        current_gui = 0;
-      else
-        current_gui = &inventory;
-    }
-
   if (controller.button_was_pressed(PAUSE_BUTTON))
     pause = !pause;
 
@@ -244,6 +229,21 @@ GameSessionImpl::update(float delta, const Controller& controller)
         }
       
       controller_help_window.update(delta, controller);
+    }
+
+  if (controller.button_was_pressed(PDA_BUTTON))
+    {
+      if (current_gui == &pda)
+        current_gui = 0;
+      else
+        current_gui = &pda;
+    }
+  else if (controller.button_was_pressed(INVENTORY_BUTTON))
+    {
+      if (current_gui == &inventory)
+        current_gui = 0;
+      else
+        current_gui = &inventory;
     }
 
   if(keystate[SDLK_ESCAPE])
