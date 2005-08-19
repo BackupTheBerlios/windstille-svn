@@ -192,27 +192,28 @@ TileMap::raycast(const Vector& pos, float angle)
   float tDeltaX = (direction.x == 0) ? 0 : (TILE_SIZE / direction.x);
   float tDeltaY = (direction.y == 0) ? 0 : (TILE_SIZE / direction.y);
 
+  float t = 0;
+
   while(x >= 0 && x < get_width() &&
         y >= 0 && y < get_height())
     {
       Tile* tile = field(x, y);  
       if (tile && tile->colmap)
         {
-          if ((tMaxX - tDeltaX) < (tMaxY - tDeltaY))
-            return pos + Vector((tMaxX - tDeltaX) * direction.x, (tMaxX - tDeltaX) * direction.y);
-          else
-            return pos + Vector((tMaxY - tDeltaY) * direction.x, (tMaxY - tDeltaY) * direction.y);
+          return pos + Vector(t * direction.x, t * direction.y);
           //return Vector(x * TILE_SIZE, y * TILE_SIZE);
         }
 
       // move one tile
       if (tMaxX < tMaxY) 
         {
+          t = tMaxX;
           tMaxX += tDeltaX;
           x = x + step_x;
         }
       else 
         {
+          t = tMaxY;
           tMaxY += tDeltaY;
           y = y + step_y;
         }
