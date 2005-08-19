@@ -2,11 +2,11 @@
 (windstille-controller
  (x-axis
   (keyboard-axis (minus "left") (plus "right"))
-  (joystick-axis (device 0)  (axis 2)))
+  (joystick-axis (device 0)  (axis 0)))
 
  (y-axis
   (keyboard-axis (minus "up") (plus "down"))
-  (joystick-axis (device 0)  (axis 2)))
+  (joystick-axis (device 0)  (axis 1)))
  
  (primary-button
   (keyboard-button (key "s"))
@@ -31,6 +31,9 @@
  (pause-button
   (keyboard-button (key "p"))
   (joystick-button (device 0)  (button 9)))
+
+ (inventory-button
+  (keyboard-button (key "e")))
  )
 
 

@@ -171,10 +171,19 @@ void
 GameSessionImpl::update(float delta, const Controller& controller)
 {  
   if (controller.button_was_pressed(PDA_BUTTON))
-    if (current_gui == &pda)
-      current_gui = 0;
-    else
-      current_gui = &pda;
+    {
+      if (current_gui == &pda)
+        current_gui = 0;
+      else
+        current_gui = &pda;
+    }
+  else if (controller.button_was_pressed(INVENTORY_BUTTON))
+    {
+      if (current_gui == &inventory)
+        current_gui = 0;
+      else
+        current_gui = &inventory;
+    }
 
   if (controller.button_was_pressed(PAUSE_BUTTON))
     pause = !pause;
@@ -187,9 +196,7 @@ GameSessionImpl::update(float delta, const Controller& controller)
     game_speed *= 1.0 + delta;
   if(keystate[SDLK_KP5])
     game_speed = 1.0;
-
-  InputManager::update(delta);
-  
+ 
   delta *= game_speed;
 
   if (!pause)

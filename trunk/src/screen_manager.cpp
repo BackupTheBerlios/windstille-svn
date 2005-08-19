@@ -77,6 +77,8 @@ ScreenManager::run()
 
       while (delta > step)
         {
+          InputManager::update(delta);
+
           console.update(step);
           if (overlay_screen)
             overlay_screen->update(step, InputManager::get_controller());

@@ -229,7 +229,7 @@ Player::update_stand()
       return;
     }
     
-  if(controller.get_button_state(JUMP_BUTTON)) {
+  if(controller.button_was_pressed(JUMP_BUTTON)) {
     set_jump_up_begin();
     return;
   }
