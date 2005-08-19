@@ -117,6 +117,8 @@ Player::stop_listening()
 void 
 Player::update (float delta)
 {
+  laser_pointer->update(delta);
+
   controller = InputManager::get_controller();
 
   laser_pointer->set_angle(laser_pointer->get_angle() + controller.get_axis_state(Y_AXIS) * delta);

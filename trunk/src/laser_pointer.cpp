@@ -49,9 +49,11 @@ static float find_max(float pos, float v)
   if (v == 0) 
     return 0;
   else if (v < 0)
-    return fmodf(fmodf(fabsf(pos), TILE_SIZE) + TILE_SIZE, TILE_SIZE)/fabsf(v);
+    return fmodf(fmodf(pos, TILE_SIZE) + TILE_SIZE, TILE_SIZE)/fabsf(v);
   else // if (v > 0)
-    return fmodf(fmodf(pos, TILE_SIZE) + TILE_SIZE, TILE_SIZE)/v;
+    {
+      return fmodf(fmodf(-pos, TILE_SIZE) + TILE_SIZE, TILE_SIZE)/v;
+    }
 }
 
 void
@@ -82,12 +84,12 @@ LaserPointer::draw(SceneContext& sc)
   while(x >= 0 && x < tilemap->get_width() &&
         y >= 0 && y < tilemap->get_height())
     {
-      sc.color().fill_rect(Rectf(Vector(x * TILE_SIZE, y * TILE_SIZE), Size(TILE_SIZE, TILE_SIZE)), 
-                           Color(1.0, 1.0, 1.0, 0.5), 500);
+      //sc.color().fill_rect(Rectf(Vector(x * TILE_SIZE, y * TILE_SIZE), Size(TILE_SIZE, TILE_SIZE)), 
+      //                     Color(1.0, 1.0, 1.0, 0.5), 500);
 
       if (tilemap->get_pixel(x, y))
         {
-            //return Vector(x * TILE_SIZE, y * TILE_SIZE);
+          //return Vector(x * TILE_SIZE, y * TILE_SIZE);
           goto done;
         }
 
@@ -116,22 +118,23 @@ LaserPointer::draw(SceneContext& sc)
   array->set_blend_func(GL_SRC_ALPHA, GL_ONE);
 
   array->color(Color(1.0f, 0.0f, 0.0f, 1.0f));
-  array->texcoord(pos.x/400.0f, progress);
+  array->texcoord(0, progress);
   array->vertex(pos.x, pos.y);
 
   array->color(Color(1.0f, 0.0f, 0.0f, 1.0f));
-  array->texcoord(target.x/400.0f, progress);
+  array->texcoord((target - pos).norm()/256.0f, progress);
   array->vertex(target.x, target.y);
+   
+  if (0)
+    {
+      array->color(Color(1.0f, 1.0f, 0.0f, 1.0f));
+      array->texcoord(pos.x/200.0f, progress);
+      array->vertex(pos.x, pos.y);
 
-
-  array->color(Color(1.0f, 1.0f, 0.0f, 1.0f));
-  array->texcoord(pos.x/400.0f, progress);
-  array->vertex(pos.x, pos.y);
-
-  array->color(Color(1.0f, 1.0f, 0.0f, 1.0f));
-  array->texcoord(target.x/400.0f, progress);
-  array->vertex(pos.x + cos(angle) * 100.0f, pos.y + sin(angle) * 100.0f);
-
+      array->color(Color(1.0f, 1.0f, 0.0f, 1.0f));
+      array->texcoord(target.x/200.0f, progress);
+      array->vertex(pos.x + cos(angle) * 100.0f, pos.y + sin(angle) * 100.0f);
+    }
 
   sc.highlight().draw(array);
   laserpointer.set_blend_func(GL_SRC_ALPHA, GL_ONE);

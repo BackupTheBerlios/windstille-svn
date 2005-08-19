@@ -173,14 +173,16 @@ TileMap::is_ground (float x, float y)
     return 0;
 }
 
-static float find_max(float pos, float tilesize, float v)
+static float find_max(float pos, float v)
 {
   if (v == 0) 
     return 0;
   else if (v < 0)
-    return fmodf(fabs(pos), tilesize)/fabsf(v);
+    return fmodf(fmodf(pos, TILE_SIZE) + TILE_SIZE, TILE_SIZE)/fabsf(v);
   else // if (v > 0)
-    return fmodf(pos, tilesize)/v;
+    {
+      return fmodf(fmodf(-pos, TILE_SIZE) + TILE_SIZE, TILE_SIZE)/v;
+    }
 }
 
 Vector
@@ -195,11 +197,11 @@ TileMap::raycast(const Vector& pos, float angle)
   int step_x = (direction.x > 0) ? 1 : -1;
   int step_y = (direction.y > 0) ? 1 : -1;
 
-  float tMaxX = find_max(pos.x, TILE_SIZE, direction.x);
-  float tMaxY = find_max(pos.y, TILE_SIZE, direction.y);
+  float tMaxX = find_max(pos.x, direction.x);
+  float tMaxY = find_max(pos.y, direction.y);
 
-  float tDeltaX = (direction.x == 0) ? 0 : (TILE_SIZE / direction.x);
-  float tDeltaY = (direction.y == 0) ? 0 : (TILE_SIZE / direction.y);
+  float tDeltaX = (direction.x == 0) ? 0 : fabsf(TILE_SIZE / direction.x);
+  float tDeltaY = (direction.y == 0) ? 0 : fabsf(TILE_SIZE / direction.y);
 
   float t = 0;
 
@@ -210,7 +212,6 @@ TileMap::raycast(const Vector& pos, float angle)
       if (tile && tile->colmap)
         {
           return pos + Vector(t * direction.x, t * direction.y);
-          //return Vector(x * TILE_SIZE, y * TILE_SIZE);
         }
 
       // move one tile
@@ -229,7 +230,7 @@ TileMap::raycast(const Vector& pos, float angle)
     }
 
   // Ray got out of the map
-  return Vector(x * TILE_SIZE, y * TILE_SIZE);
+  return pos + Vector(t * direction.x, t * direction.y);
 }
 
 /* EOF */
