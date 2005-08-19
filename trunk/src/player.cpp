@@ -30,6 +30,7 @@
 #include "glutil/surface_manager.hpp"
 #include "particles/particle_system.hpp"
 #include "collision/collision_engine.hpp"
+#include "laser_pointer.hpp"
 #include "game_session.hpp"
 #include "console.hpp"
 
@@ -45,6 +46,7 @@ Player::Player () :
   grenade("3dsprites/grenade.wsprite"),
   state(STAND)
 {
+  laser_pointer = new LaserPointer();
   sprite = Sprite3D("3dsprites/heroken.wsprite");
   pos.x = 320;
   pos.y = 200;
@@ -70,6 +72,7 @@ Player::Player () :
 
 Player::~Player()
 {
+  delete laser_pointer;
 }
 
 void
@@ -90,6 +93,7 @@ Player::draw (SceneContext& sc)
   
   //BoneID id = sprite.get_bone_id("Hand.R");
   //grenade->draw(sc, sprite.get_bone_matrix(id));
+  laser_pointer->draw(sc);
 }
 
 void
@@ -114,6 +118,11 @@ void
 Player::update (float delta)
 {
   controller = InputManager::get_controller();
+
+  if (controller.get_axis_state(Y_AXIS) < 0)
+    laser_pointer->set_angle(laser_pointer->get_angle() - 1.0 * delta);
+  else if (controller.get_axis_state(Y_AXIS) > 0)
+    laser_pointer->set_angle(laser_pointer->get_angle() + 1.0 * delta);
 
   if (GameSession::current()->is_active())
     {

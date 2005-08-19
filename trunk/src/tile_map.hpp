@@ -55,6 +55,10 @@ public:
   int get_height () const { return field.get_height (); }
 
   int get_tile_size () const { return TILE_SIZE; }
+
+  /** Shoots a ray from \a pos into direction \a angle, returns the
+      position were the ray collides with the tilemap */
+  Vector raycast(const Vector& pos, float angle);
 };
 
 #endif

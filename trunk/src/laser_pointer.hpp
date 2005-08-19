@@ -34,6 +34,7 @@ class LaserPointer : public GameObject
 private:
   Texture noise;
   float   progress;
+  float   angle;
 
 public:
   LaserPointer();
@@ -42,6 +43,8 @@ public:
   void draw(SceneContext& sc);
   void update(float delta);
 
+  float get_angle() const;
+  void  set_angle(float angle);
 private:
   LaserPointer (const LaserPointer&);
   LaserPointer& operator= (const LaserPointer&);

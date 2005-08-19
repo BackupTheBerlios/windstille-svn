@@ -25,6 +25,8 @@
 
 #include "display/vertex_array_drawing_request.hpp"
 #include "player.hpp"
+#include "collision/collision_engine.hpp"
+#include "sector.hpp"
 #include "laser_pointer.hpp"
 
 LaserPointer::LaserPointer()
@@ -44,24 +46,22 @@ void
 LaserPointer::draw(SceneContext& sc)
 {
   Vector pos = Player::current()->get_pos();
+  pos.y -= 80;
+  Vector target = Sector::current()->get_collision_engine()->raycast(pos, angle);
 
-  VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(pos - Vector(0, 64), 10000,
+  VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0,0), 10000,
                                                                    sc.highlight().get_modelview());
   array->set_mode(GL_LINE_STRIP);
   array->set_texture(noise);
   array->set_blend_func(GL_SRC_ALPHA, GL_ONE);
 
   array->color(Color(1.0f, 0.0f, 0.0f, 1.0f));
-  array->texcoord(0/400.0f, progress);
-  array->vertex(0, 0);
+  array->texcoord(pos.x/400.0f, progress);
+  array->vertex(pos.x, pos.y);
 
   array->color(Color(1.0f, 0.0f, 0.0f, 1.0f));
-  array->texcoord(300/400.0f, progress);
-  array->vertex(300, 0);
-
-  array->color(Color(1.0f, 0.0f, 0.0f, 0.0f));
-  array->texcoord(400/400.0f, progress);
-  array->vertex(400, 0);
+  array->texcoord(target.x/400.0f, progress);
+  array->vertex(target.x, target.y);
 
   sc.highlight().draw(array);
 }
@@ -70,6 +70,18 @@ void
 LaserPointer::update(float delta)
 {
   progress += 0.1 * delta;
+}
+
+float
+LaserPointer::get_angle() const
+{
+  return angle;
+}
+
+void
+LaserPointer::set_angle(float a)
+{
+  angle = a;
 }
 
 /* EOF */

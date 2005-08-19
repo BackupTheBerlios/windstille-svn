@@ -30,6 +30,7 @@
 #include "glutil/surface.hpp"
 
 class Controller;
+class LaserPointer;
 
 class Player : public Entity
 {
@@ -48,6 +49,7 @@ private:
   CollisionObject* c_object;
   Slot slot;
 
+  LaserPointer* laser_pointer;
 public:
   enum State
   {

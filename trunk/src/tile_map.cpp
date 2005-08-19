@@ -24,6 +24,7 @@
 #include "globals.hpp"
 #include "view.hpp"
 #include "display/vertex_array_drawing_request.hpp"
+#include "collision/collision_engine.hpp"
 #include "lisp/properties.hpp"
 
 TileMap::TileMap(const lisp::Lisp* lisp)
@@ -171,6 +172,54 @@ TileMap::is_ground (float x, float y)
     return field(x_pos, y_pos)->get_colmap();
   else
     return 0;
+}
+
+Vector
+TileMap::raycast(const Vector& pos, float angle)
+{
+  // Ray position in Tile units
+  int x = static_cast<int>(pos.x / TILE_SIZE);
+  int y = static_cast<int>(pos.y / TILE_SIZE);
+
+  Vector direction(cos(angle), sin(angle));
+
+  int step_x = (direction.x > 0) ? 1 : -1;
+  int step_y = (direction.y > 0) ? 1 : -1;
+
+  float tMaxX = (direction.x == 0) ? 0 : fmodf(pos.x, TILE_SIZE)/direction.x;
+  float tMaxY = (direction.y == 0) ? 0 : fmodf(pos.y, TILE_SIZE)/direction.y;
+
+  float tDeltaX = (direction.x == 0) ? 0 : (TILE_SIZE / direction.x);
+  float tDeltaY = (direction.y == 0) ? 0 : (TILE_SIZE / direction.y);
+
+  while(x >= 0 && x < get_width() &&
+        y >= 0 && y < get_height())
+    {
+      Tile* tile = field(x, y);  
+      if (tile && tile->colmap)
+        {
+          if ((tMaxX - tDeltaX) < (tMaxY - tDeltaY))
+            return pos + Vector((tMaxX - tDeltaX) * direction.x, (tMaxX - tDeltaX) * direction.y);
+          else
+            return pos + Vector((tMaxY - tDeltaY) * direction.x, (tMaxY - tDeltaY) * direction.y);
+          //return Vector(x * TILE_SIZE, y * TILE_SIZE);
+        }
+
+      // move one tile
+      if (tMaxX < tMaxY) 
+        {
+          tMaxX += tDeltaX;
+          x = x + step_x;
+        }
+      else 
+        {
+          tMaxY += tDeltaY;
+          y = y + step_y;
+        }
+    }
+
+  // Ray got out of the map
+  return Vector(x * TILE_SIZE, y * TILE_SIZE);
 }
 
 /* EOF */

@@ -713,5 +713,19 @@ CollisionEngine::collide_tilemap(CollisionObject& a, CollisionObject& b, float d
   return result;
 }
 
+Vector
+CollisionEngine::raycast(const Vector& pos, float angle)
+{
+  for(Objects::iterator i = objects.begin(); i != objects.end(); ++i)
+    {
+      if ((*i)->get_type() == CollisionObject::TILEMAP)
+        {
+          return (*i)->tilemap->raycast(pos, angle);
+        }
+    }
+
+  return Vector(0, 0);
+}
+
 /* EOF */
 
