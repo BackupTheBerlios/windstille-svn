@@ -119,10 +119,7 @@ Player::update (float delta)
 {
   controller = InputManager::get_controller();
 
-  if (controller.get_axis_state(Y_AXIS) < 0)
-    laser_pointer->set_angle(laser_pointer->get_angle() - 1.0 * delta);
-  else if (controller.get_axis_state(Y_AXIS) > 0)
-    laser_pointer->set_angle(laser_pointer->get_angle() + 1.0 * delta);
+  laser_pointer->set_angle(laser_pointer->get_angle() + controller.get_axis_state(Y_AXIS) * delta);
 
   if (GameSession::current()->is_active())
     {

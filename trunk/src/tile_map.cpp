@@ -167,11 +167,20 @@ TileMap::is_ground (float x, float y)
       return 0;
     }
 
-
-  if (field (x_pos, y_pos))
+  if (field(x_pos, y_pos))
     return field(x_pos, y_pos)->get_colmap();
   else
     return 0;
+}
+
+static float find_max(float pos, float tilesize, float v)
+{
+  if (v == 0) 
+    return 0;
+  else if (v < 0)
+    return fmodf(fabs(pos), tilesize)/fabsf(v);
+  else // if (v > 0)
+    return fmodf(pos, tilesize)/v;
 }
 
 Vector
@@ -181,13 +190,13 @@ TileMap::raycast(const Vector& pos, float angle)
   int x = static_cast<int>(pos.x / TILE_SIZE);
   int y = static_cast<int>(pos.y / TILE_SIZE);
 
-  Vector direction(cos(angle), sin(angle));
+  Vector direction(cos(angle) * 100.0f, sin(angle) * 100.0f);
 
   int step_x = (direction.x > 0) ? 1 : -1;
   int step_y = (direction.y > 0) ? 1 : -1;
 
-  float tMaxX = (direction.x == 0) ? 0 : fmodf(pos.x, TILE_SIZE)/direction.x;
-  float tMaxY = (direction.y == 0) ? 0 : fmodf(pos.y, TILE_SIZE)/direction.y;
+  float tMaxX = find_max(pos.x, TILE_SIZE, direction.x);
+  float tMaxY = find_max(pos.y, TILE_SIZE, direction.y);
 
   float tDeltaX = (direction.x == 0) ? 0 : (TILE_SIZE / direction.x);
   float tDeltaY = (direction.y == 0) ? 0 : (TILE_SIZE / direction.y);
@@ -205,7 +214,7 @@ TileMap::raycast(const Vector& pos, float angle)
         }
 
       // move one tile
-      if (tMaxX < tMaxY) 
+      if (tMaxX < tMaxY)
         {
           t = tMaxX;
           tMaxX += tDeltaX;

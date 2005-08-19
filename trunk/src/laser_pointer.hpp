@@ -33,6 +33,7 @@ class LaserPointer : public GameObject
 {
 private:
   Texture noise;
+  Sprite  laserpointer;
   float   progress;
   float   angle;
 

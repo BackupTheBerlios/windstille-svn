@@ -27,11 +27,13 @@
 #include "player.hpp"
 #include "collision/collision_engine.hpp"
 #include "sector.hpp"
+#include "tile_map.hpp"
 #include "laser_pointer.hpp"
 
 LaserPointer::LaserPointer()
 {
   noise = Texture("images/noise2.png");
+  laserpointer = Sprite("images/laserpointer.sprite");
   noise.set_wrap(GL_REPEAT);
   noise.set_filter(GL_LINEAR);
   
@@ -42,16 +44,74 @@ LaserPointer::~LaserPointer()
 {
 }
 
+static float find_max(float pos, float v)
+{
+  if (v == 0) 
+    return 0;
+  else if (v < 0)
+    return fmodf(fmodf(fabsf(pos), TILE_SIZE) + TILE_SIZE, TILE_SIZE)/fabsf(v);
+  else // if (v > 0)
+    return fmodf(fmodf(pos, TILE_SIZE) + TILE_SIZE, TILE_SIZE)/v;
+}
+
 void
 LaserPointer::draw(SceneContext& sc)
 {
+  TileMap* tilemap = Sector::current()->get_tilemap();
   Vector pos = Player::current()->get_pos();
   pos.y -= 80;
-  Vector target = Sector::current()->get_collision_engine()->raycast(pos, angle);
+  Vector target; // = Sector::current()->get_collision_engine()->raycast(pos, angle);
 
+  // Ray position in Tile units
+  int x = static_cast<int>(pos.x / TILE_SIZE);
+  int y = static_cast<int>(pos.y / TILE_SIZE);
+
+  Vector direction(cos(angle) * 100.0f, sin(angle) * 100.0f);
+
+  int step_x = (direction.x > 0) ? 1 : -1;
+  int step_y = (direction.y > 0) ? 1 : -1;
+
+  float tMaxX = find_max(pos.x, direction.x);
+  float tMaxY = find_max(pos.y, direction.y);
+
+  float tDeltaX = (direction.x == 0) ? 0 : fabsf(TILE_SIZE / direction.x);
+  float tDeltaY = (direction.y == 0) ? 0 : fabsf(TILE_SIZE / direction.y);
+
+  float t = 0;
+
+  while(x >= 0 && x < tilemap->get_width() &&
+        y >= 0 && y < tilemap->get_height())
+    {
+      sc.color().fill_rect(Rectf(Vector(x * TILE_SIZE, y * TILE_SIZE), Size(TILE_SIZE, TILE_SIZE)), 
+                           Color(1.0, 1.0, 1.0, 0.5), 500);
+
+      if (tilemap->get_pixel(x, y))
+        {
+            //return Vector(x * TILE_SIZE, y * TILE_SIZE);
+          goto done;
+        }
+
+      // move one tile
+      if (tMaxX < tMaxY)
+        {
+          t = tMaxX;
+          tMaxX += tDeltaX;
+          x = x + step_x;
+        }
+      else 
+        {
+          t = tMaxY;
+          tMaxY += tDeltaY;
+          y = y + step_y;
+        }
+    }
+  
+ done:
+  target = pos + Vector(t * direction.x, t * direction.y);
+  
   VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0,0), 10000,
                                                                    sc.highlight().get_modelview());
-  array->set_mode(GL_LINE_STRIP);
+  array->set_mode(GL_LINES);
   array->set_texture(noise);
   array->set_blend_func(GL_SRC_ALPHA, GL_ONE);
 
@@ -63,7 +123,19 @@ LaserPointer::draw(SceneContext& sc)
   array->texcoord(target.x/400.0f, progress);
   array->vertex(target.x, target.y);
 
+
+  array->color(Color(1.0f, 1.0f, 0.0f, 1.0f));
+  array->texcoord(pos.x/400.0f, progress);
+  array->vertex(pos.x, pos.y);
+
+  array->color(Color(1.0f, 1.0f, 0.0f, 1.0f));
+  array->texcoord(target.x/400.0f, progress);
+  array->vertex(pos.x + cos(angle) * 100.0f, pos.y + sin(angle) * 100.0f);
+
+
   sc.highlight().draw(array);
+  laserpointer.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+  sc.highlight().draw(laserpointer, target);
 }
 
 void
