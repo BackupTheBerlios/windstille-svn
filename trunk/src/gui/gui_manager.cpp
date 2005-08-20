@@ -41,14 +41,14 @@ GUIManager::GUIManager()
   grid->pack(new Button("3", grid), 2, 0);
 
   grid->pack(new Button("4", grid), 0, 1);
-  grid->pack(new Button("5", grid), 1, 1);
-  grid->pack(new Button("6", grid), 2, 1);
+  grid->pack(new Button("5", grid), 1, 1, 2, 2);
+  //grid->pack(new Button("6", grid), 2, 1);
 
-  grid->pack(new Button("7", grid), 0, 2);
-  grid->pack(new Button("8", grid), 1, 2);
-  grid->pack(new Button("9", grid), 2, 2);
+  grid->pack(new Button("7", grid), 0, 2, 1, 2);
+  //grid->pack(new Button("8", grid), 1, 2);
+  //grid->pack(new Button("9", grid), 2, 2);
 
-  grid->pack(new Button("Cl", grid), 0, 3);
+  //grid->pack(new Button("Cl", grid), 0, 3);
   grid->pack(new Button("0",  grid), 1, 3);
   grid->pack(new Button("Ok", grid), 2, 3);
 }

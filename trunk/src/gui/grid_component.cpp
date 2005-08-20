@@ -33,7 +33,9 @@ namespace GUI {
 GridComponent::GridComponent(const Rectf& rect, int weight, int height, Component* parent)
   : Component(rect, parent),
     grid(weight, height),
-    child_active(false) 
+    pos(0, 0),
+    child_active(false)
+
 {
 }
 
@@ -50,11 +52,12 @@ GridComponent::draw()
   for(int y = 0; y < grid.get_height(); ++y)
     for(int x = 0; x < grid.get_width(); ++x)
       {
-        if (grid(x, y))
+        if (grid(x, y).component && !grid(x, y).has_parent())
           {
             if (x == pos.x && y == pos.y)
-              Display::fill_rect(grid(x, y)->get_screen_rect(), Color(1.0f, 1.0f, 1.0f, 0.5f));
-            grid(x, y)->draw();
+              Display::fill_rect(grid(x, y).component->get_screen_rect(), Color(1.0f, 1.0f, 1.0f, 0.5f));
+            
+            grid(x, y).component->draw();
           }
       }
 }
@@ -65,12 +68,12 @@ GridComponent::update(float delta, const Controller& controller)
   for(int y = 0; y < grid.get_height(); ++y)
     for(int x = 0; x < grid.get_width(); ++x)
       {
-        if (grid(x, y)) 
+        if (grid(x, y).component && !grid(x, y).has_parent())
           {
             if (child_active && pos.x == x && pos.y == y)
-              grid(x, y)->update(delta, controller);
+              grid(x, y).component->update(delta, controller);
             else
-              grid(x, y)->update(delta, Controller());
+              grid(x, y).component->update(delta, Controller());
           }
       }
 
@@ -93,59 +96,105 @@ GridComponent::update(float delta, const Controller& controller)
             {
               if (i->axis.pos < 0)
                 {
-                  pos.x -= 1;
-                  if (pos.x < 0)
-                    pos.x = grid.get_width()-1;
+                  move_left();
                 }
               else if (i->axis.pos > 0)
                 {
-                  pos.x += 1;
-                  if (pos.x >= grid.get_width())
-                    pos.x = 0;
+                  move_right();
                 }
             }
           else if (i->axis.name == Y_AXIS)
             {
               if (i->axis.pos < 0)
                 {
-                  pos.y -= 1;
-                  if (pos.y < 0)
-                    pos.y = grid.get_height()-1;
+                  move_down();
                 }
               else if (i->axis.pos > 0)
                 {
-                  pos.y += 1;
-                  if (pos.y >= grid.get_height())
-                    pos.y = 0;
+                  move_up();
                 }
-            }            
+            }
         }
     }
 }
 
 void
-GridComponent::pack(Component* component, int x, int y)
+GridComponent::move_up()
+{
+  pos.y += grid(pos.x, pos.y).span.height;
+  if (pos.y >= grid.get_height())
+    pos.y = 0;
+
+  if (grid(pos.x, pos.y).has_parent())
+    pos = grid(pos.x, pos.y).parent;
+}
+
+void
+GridComponent::move_down()
+{
+  pos.y -= 1;
+  if (pos.y < 0)
+    pos.y = grid.get_height()-1;
+
+  if (grid(pos.x, pos.y).has_parent())
+    pos = grid(pos.x, pos.y).parent;
+}
+
+void
+GridComponent::move_left()
+{
+  pos.x -= 1;
+  if (pos.x < 0)
+    pos.x = grid.get_width()-1;  
+
+  if (grid(pos.x, pos.y).has_parent())
+    pos = grid(pos.x, pos.y).parent;
+}
+
+void
+GridComponent::move_right()
+{
+  pos.x += grid(pos.x, pos.y).span.width;
+  if (pos.x >= grid.get_width())
+    pos.x = 0;
+
+  if (grid(pos.x, pos.y).has_parent())
+    pos = grid(pos.x, pos.y).parent;
+}
+
+void
+GridComponent::pack(Component* component, int x, int y, int colspan, int rowspan)
 {
   assert(x >= 0);
   assert(y >= 0);
   assert(x < grid.get_width());
   assert(y < grid.get_height());
 
-  if (grid(x, y) != 0)
+  if (grid(x, y).component != 0)
     {
       std::cout << "Warning component already at: " << x << ", " << y << ", ignoring" << std::endl;
     }
   else
     {
       Rectf rect = get_screen_rect();
-      grid(x, y) = component;
+      if (colspan == 1 && rowspan == 1)
+        grid(x, y) = ComponentBox(component, Size(colspan, rowspan));
+      else
+        {
+          for(int iy = 0; iy < rowspan; ++iy)
+            for(int ix = 0; ix < colspan; ++ix)
+              {
+                grid(x + ix, y + iy) = ComponentBox(component, Size(0, 0), Point(x, y));
+              }
+          grid(x, y) = ComponentBox(component, Size(colspan, rowspan));
+        }
 
       float padding = 15.0f;
 
-      component->set_screen_rect(Rectf(Vector(rect.left + x * (rect.get_width()/grid.get_width()) + padding,
+      component->set_screen_rect(Rectf(Vector(rect.left + x * (rect.get_width() /grid.get_width())  + padding,
                                               rect.top  + y * (rect.get_height()/grid.get_height()) + padding),
-                                       Sizef(rect.get_width()/grid.get_width() - 2*padding,
-                                             rect.get_height()/grid.get_height() - 2*padding)));
+                                       Sizef((rect.get_width()/grid.get_width())   * colspan - 2*padding,
+                                             (rect.get_height()/grid.get_height()) * rowspan - 2*padding)));
     }
 }
 
