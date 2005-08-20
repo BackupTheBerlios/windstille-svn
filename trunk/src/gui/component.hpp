@@ -23,34 +23,41 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_WINDSTILLE_LASER_POINTER_HPP
-#define HEADER_WINDSTILLE_LASER_POINTER_HPP
+#ifndef HEADER_WINDSTILLE_GUI_COMPONENT_HPP
+#define HEADER_WINDSTILLE_GUI_COMPONENT_HPP
 
-#include "game_object.hpp"
+#include "math/rect.hpp"
 
-/** Simple class that generates a laser for pointing at objects */
-class LaserPointer : public GameObject
+class Controller;
+
+namespace GUI {
+
+/** */
+class Component
 {
-private:
-  Texture noise;
-  Sprite  laserpointer;
-  Sprite  laserpointer_light;
-  float   progress;
-  float   angle;
+protected:
+  Rectf rect;
+  Component* parent;
+  bool active;
 
 public:
-  LaserPointer();
-  ~LaserPointer();
+  Component(const Rectf& rect, Component* parent);
+  virtual ~Component();
+  
+  bool is_active() const;
+  void set_active(bool a);
 
-  void draw(SceneContext& sc);
-  void update(float delta);
+  virtual void draw() =0;
+  virtual void update(float delta, const Controller& controller) =0;
 
-  float get_angle() const;
-  void  set_angle(float angle);
+  Rectf get_screen_rect() const;
+  void  set_screen_rect(const Rectf& rect);
 private:
-  LaserPointer (const LaserPointer&);
-  LaserPointer& operator= (const LaserPointer&);
+  Component (const Component&);
+  Component& operator= (const Component&);
 };
+
+} // namespace GUI
 
 #endif
 

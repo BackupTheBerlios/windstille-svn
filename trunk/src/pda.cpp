@@ -43,7 +43,7 @@ ObjectiveEntry::ObjectiveEntry(const std::string& arg_name, const std::string& a
 }
 
 PDA::PDA()
-  : state(PDA_INVENTORY)
+  : state(PDA_OBJECTIVES)
 { 
   text_area = 0;
 }
@@ -71,11 +71,11 @@ PDA::update(float delta, const Controller& controller)
       if (i->axis.pos > 0) {
         state = static_cast<pda_state>(state + 1);
         if (state > PDA_DIALOGS)
-          state = PDA_INVENTORY;
+          state = PDA_OBJECTIVES;
       }
       else if (i->axis.pos < 0) {
         state = static_cast<pda_state>(state - 1);
-        if (state < PDA_INVENTORY)
+        if (state < PDA_OBJECTIVES)
           state = PDA_DIALOGS;
       }
     }
@@ -85,9 +85,6 @@ PDA::update(float delta, const Controller& controller)
   int height = 400;
   
   switch (state) {
-    case PDA_INVENTORY:
-      show_inventory();
-      break;
     case PDA_OBJECTIVES:
       show_objectives();
       break;
@@ -155,17 +152,10 @@ PDA::is_objective_complete(const std::string& name)
 }
 
 void
-PDA::show_inventory()
-{
-  new_text = "<large>Personal Digital Assistant</large>\n";
-  new_text += "<b>inventory</b> - objectives - dialogs\n\n";
-}
-
-void
 PDA::show_objectives()
 {
   new_text = "<large>Personal Digital Assistant</large>\n";
-  new_text += "inventory - <b>objectives</b> - dialogs\n\n";
+  new_text += "<b>objectives</b> - dialogs\n\n";
   
   for (std::vector<ObjectiveEntry>::reverse_iterator i = objectives.rbegin(); i != objectives.rend(); ++i) {
     new_text += i->name;
@@ -182,7 +172,7 @@ void
 PDA::show_dialogs()
 {
   new_text = "<large>Personal Digital Assistant</large>\n";
-  new_text += "inventory - objectives - <b>dialogs</b>\n\n";
+  new_text += "objectives - <b>dialogs</b>\n\n";
   
   for (std::vector<DialogEntry>::reverse_iterator i = dialogs.rbegin(); i != dialogs.rend(); ++i) {
     new_text += i->character;

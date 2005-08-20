@@ -42,6 +42,8 @@ Player* Player::current_ = 0;
 
 Player::Player () :
   light("images/light3.sprite"),
+  flashlight("images/flashlightlight.sprite"),
+  flashlighthighlight("images/flashlighthighlight.sprite"),
   //sprite ("3dsprites/heroken.wsprite"),
   grenade("3dsprites/grenade.wsprite"),
   state(STAND)
@@ -78,10 +80,17 @@ Player::~Player()
 void
 Player::draw (SceneContext& sc)
 {
-  light.set_blend_func(GL_SRC_ALPHA, GL_ONE);
-  light.set_scale(4.0f);
+  //light.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+  //light.set_scale(4.0f);
 
-  //sc.light().draw(light, pos, 100.0f);
+  flashlight.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+  flashlight.set_scale(2.0f);
+
+  flashlighthighlight.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+  flashlighthighlight.set_scale(2.0f);
+
+  sc.highlight().draw(flashlighthighlight, pos - Vector(40, 80), 100.0f);
+  sc.light().draw(flashlight, pos - Vector(40, 80), 100.0f);
   sprite.draw(sc.color(), pos, 100);
 
   Entity* obj = find_useable_entity();

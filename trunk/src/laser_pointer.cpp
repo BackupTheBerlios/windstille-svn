@@ -34,6 +34,8 @@ LaserPointer::LaserPointer()
 {
   noise = Texture("images/noise2.png");
   laserpointer = Sprite("images/laserpointer.sprite");
+  laserpointer_light = Sprite("images/laserpointer_light.sprite");
+  laserpointer_light.set_blend_func(GL_SRC_ALPHA, GL_ONE);
   noise.set_wrap(GL_REPEAT);
   noise.set_filter(GL_LINEAR);
   
@@ -124,21 +126,11 @@ LaserPointer::draw(SceneContext& sc)
   array->color(Color(1.0f, 0.0f, 0.0f, 1.0f));
   array->texcoord((target - pos).norm()/256.0f, progress);
   array->vertex(target.x, target.y);
-   
-  if (0)
-    {
-      array->color(Color(1.0f, 1.0f, 0.0f, 1.0f));
-      array->texcoord(pos.x/200.0f, progress);
-      array->vertex(pos.x, pos.y);
-
-      array->color(Color(1.0f, 1.0f, 0.0f, 1.0f));
-      array->texcoord(target.x/200.0f, progress);
-      array->vertex(pos.x + cos(angle) * 100.0f, pos.y + sin(angle) * 100.0f);
-    }
 
   sc.highlight().draw(array);
   laserpointer.set_blend_func(GL_SRC_ALPHA, GL_ONE);
   sc.highlight().draw(laserpointer, target);
+  sc.light().draw(laserpointer_light, target);
 }
 
 void

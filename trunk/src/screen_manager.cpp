@@ -34,7 +34,10 @@
 #include "input/input_manager.hpp"
 #include "input/input_configurator.hpp"
 #include "sound/sound_manager.hpp"
+#include "gui/gui_manager.hpp"
 #include "screen_manager.hpp"
+
+using GUI::GUIManager;
 
 ScreenManager screen_manager; 
 
@@ -162,6 +165,10 @@ ScreenManager::poll_events()
             {    
               switch (event.key.keysym.sym)
                 {               
+                case SDLK_F8:
+                  set_overlay(new GUIManager());
+                  break;
+
                 case SDLK_F9:
                   set_overlay(new InputConfigurator());
                   break;

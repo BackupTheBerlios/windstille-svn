@@ -23,35 +23,56 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_WINDSTILLE_LASER_POINTER_HPP
-#define HEADER_WINDSTILLE_LASER_POINTER_HPP
+#include "input/controller.hpp"
+#include "button.hpp"
+#include "screen_manager.hpp"
+#include "grid_component.hpp"
+#include "gui_manager.hpp"
 
-#include "game_object.hpp"
+namespace GUI {
 
-/** Simple class that generates a laser for pointing at objects */
-class LaserPointer : public GameObject
+GUIManager::GUIManager()
 {
-private:
-  Texture noise;
-  Sprite  laserpointer;
-  Sprite  laserpointer_light;
-  float   progress;
-  float   angle;
+  GridComponent* grid = new GridComponent(Rectf(100, 100, 700, 500), 3, 4, NULL);
+  component = grid;
 
-public:
-  LaserPointer();
-  ~LaserPointer();
+  grid->pack(new Button("1", grid), 0, 0);
+  grid->pack(new Button("2", grid), 1, 0);
+  grid->pack(new Button("3", grid), 2, 0);
 
-  void draw(SceneContext& sc);
-  void update(float delta);
+  grid->pack(new Button("4", grid), 0, 1);
+  grid->pack(new Button("5", grid), 1, 1);
+  grid->pack(new Button("6", grid), 2, 1);
 
-  float get_angle() const;
-  void  set_angle(float angle);
-private:
-  LaserPointer (const LaserPointer&);
-  LaserPointer& operator= (const LaserPointer&);
-};
+  grid->pack(new Button("7", grid), 0, 2);
+  grid->pack(new Button("8", grid), 1, 2);
+  grid->pack(new Button("9", grid), 2, 2);
 
-#endif
+  grid->pack(new Button("Cl", grid), 0, 3);
+  grid->pack(new Button("0",  grid), 1, 3);
+  grid->pack(new Button("Ok", grid), 2, 3);
+}
+
+GUIManager::~GUIManager()
+{
+  delete component;
+}
+
+void
+GUIManager::draw()
+{
+  component->draw();
+}
+
+void
+GUIManager::update(float delta, const Controller& controller)
+{
+  component->update(delta, controller);
+
+  if (controller.button_was_pressed(CANCEL_BUTTON))
+    screen_manager.set_overlay(0);
+}
+
+} // namespace GUI
 
 /* EOF */

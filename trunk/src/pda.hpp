@@ -65,7 +65,6 @@ public:
   bool is_objective_complete(const std::string& name);
 
 private:
-  void show_inventory();
   void show_objectives();
   void show_dialogs();
   
@@ -75,7 +74,7 @@ private:
   
   std::string new_text;  
   std::string old_text;
-  enum pda_state { PDA_INVENTORY, PDA_OBJECTIVES, PDA_DIALOGS } state;
+  enum pda_state { PDA_OBJECTIVES, PDA_DIALOGS } state;
 };
 
 #endif

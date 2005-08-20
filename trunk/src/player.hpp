@@ -38,6 +38,8 @@ private:
   Controller controller;
 
   Sprite   light;
+  Sprite   flashlight;
+  Sprite   flashlighthighlight;
   Sprite3D sprite;
   Sprite3D grenade;
 
