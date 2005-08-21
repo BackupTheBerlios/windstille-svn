@@ -40,6 +40,7 @@ LaserPointer::LaserPointer()
   noise.set_filter(GL_LINEAR);
   
   progress = 0.0f;
+  angle = 0.0f;
 }
 
 LaserPointer::~LaserPointer()
