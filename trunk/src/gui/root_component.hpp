@@ -45,6 +45,7 @@ public:
 
   void set_child(Component* child);
 
+  bool is_active() const;
 private:
   RootComponent (const RootComponent&);
   RootComponent& operator= (const RootComponent&);

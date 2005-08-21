@@ -42,6 +42,7 @@ void
 RootComponent::set_child(Component* child_)
 {
   child = child_;
+  child->set_active(true);
 }
 
 void
@@ -54,6 +55,12 @@ void
 RootComponent::update(float delta, const Controller& controller)
 {
   child->update(delta, controller);
+}
+
+bool
+RootComponent::is_active() const
+{
+  return child->is_active();
 }
 
 } // namespace GUI

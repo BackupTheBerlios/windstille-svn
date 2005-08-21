@@ -79,7 +79,7 @@ GridComponent::update(float delta, const Controller& controller)
 
   for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
     {
-      if (i->type == BUTTON_EVENT)
+      if (i->type == BUTTON_EVENT && i->button.down)
         {
           if (i->button.name == OK_BUTTON)
             {

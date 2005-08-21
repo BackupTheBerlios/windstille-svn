@@ -44,8 +44,8 @@ public:
   Component(const Rectf& rect, Component* parent);
   virtual ~Component();
   
-  bool is_active() const;
-  void set_active(bool a);
+  virtual bool is_active() const;
+  virtual void set_active(bool a);
 
   virtual void on_activation() {}
   virtual void draw() =0;
