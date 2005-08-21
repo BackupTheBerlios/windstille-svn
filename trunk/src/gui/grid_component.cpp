@@ -87,7 +87,7 @@ GridComponent::update(float delta, const Controller& controller)
             }
           else if (i->button.name == CANCEL_BUTTON)
             {
-              
+              set_active(false);
             }
         }
       else if (i->type == AXIS_EVENT)
@@ -121,45 +121,61 @@ GridComponent::update(float delta, const Controller& controller)
 void
 GridComponent::move_up()
 {
+  grid(pos.x, pos.y).component->set_active(false);
+
   pos.y += grid(pos.x, pos.y).span.height;
   if (pos.y >= grid.get_height())
     pos.y = 0;
 
   if (grid(pos.x, pos.y).has_parent())
     pos = grid(pos.x, pos.y).parent;
+
+  grid(pos.x, pos.y).component->set_active(true);
 }
 
 void
 GridComponent::move_down()
 {
+  grid(pos.x, pos.y).component->set_active(false);
+
   pos.y -= 1;
   if (pos.y < 0)
     pos.y = grid.get_height()-1;
 
   if (grid(pos.x, pos.y).has_parent())
     pos = grid(pos.x, pos.y).parent;
+
+  grid(pos.x, pos.y).component->set_active(true);
 }
 
 void
 GridComponent::move_left()
 {
+  grid(pos.x, pos.y).component->set_active(false);
+
   pos.x -= 1;
   if (pos.x < 0)
     pos.x = grid.get_width()-1;  
 
   if (grid(pos.x, pos.y).has_parent())
     pos = grid(pos.x, pos.y).parent;
+
+  grid(pos.x, pos.y).component->set_active(true);
 }
 
 void
 GridComponent::move_right()
 {
+  grid(pos.x, pos.y).component->set_active(false);
+
   pos.x += grid(pos.x, pos.y).span.width;
   if (pos.x >= grid.get_width())
     pos.x = 0;
 
   if (grid(pos.x, pos.y).has_parent())
     pos = grid(pos.x, pos.y).parent;
+
+  grid(pos.x, pos.y).component->set_active(true);
 }
 
 void
@@ -196,6 +212,12 @@ GridComponent::pack(Component* component, int x, int y, int colspan, int rowspan
                                        Sizef((rect.get_width()/grid.get_width())   * colspan - 2*padding,
                                              (rect.get_height()/grid.get_height()) * rowspan - 2*padding)));
     }
+}
+
+void
+GridComponent::on_activation()
+{
+  grid(pos.x, pos.y).component->set_active(true);
 }
 
 } // namespace GUI

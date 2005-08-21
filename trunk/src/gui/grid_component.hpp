@@ -72,6 +72,8 @@ public:
 
   void move_left();
   void move_right();
+
+  void on_activation();
 private:
   GridComponent (const GridComponent&);
   GridComponent& operator= (const GridComponent&);

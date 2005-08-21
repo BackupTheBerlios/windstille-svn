@@ -23,51 +23,37 @@
 **  02111-1307, USA.
 */
 
-#include "display/display.hpp"
-#include "fonts.hpp"
-#include "input/controller.hpp"
-#include "button.hpp"
+#include "root_component.hpp"
 
 namespace GUI {
 
-Button::Button(const std::string& label_, Component* parent)
-  : Component(Rectf(), parent),
-    label(label_)
+RootComponent::RootComponent(const Rectf& rect)
+  : Component(rect, 0),
+    child(0)
 {
+  set_active(true);
 }
 
-Button::~Button()
+RootComponent::~RootComponent()
 {
-}
-
-void
-Button::draw()
-{
-  Display::fill_rect(rect, Color(0.0f, 0.0f, 0.0f, 0.5f));
-  Display::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.5f));
-  Fonts::ttfdialog->draw_center(rect.left + rect.get_width()/2, rect.top + rect.get_height()/2,
-                                label,
-                                is_active()
-                                ? Color(1.0f, 1.0f, 1.0f, 1.0f) 
-                                : Color(1.0f, 1.0f, 1.0f, 0.5f));
 }
 
 void
-Button::update(float delta, const Controller& controller)
+RootComponent::set_child(Component* child_)
 {
-  for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
-    {
-      if (i->type == BUTTON_EVENT)
-        {
-          if (i->button.name == OK_BUTTON)
-            {
-            }
-          else if (i->button.name == CANCEL_BUTTON)
-            {            
-              set_active(false);
-            }
-        }
-    }  
+  child = child_;
+}
+
+void
+RootComponent::draw()
+{
+  child->draw();
+}
+
+void
+RootComponent::update(float delta, const Controller& controller)
+{
+  child->update(delta, controller);
 }
 
 } // namespace GUI

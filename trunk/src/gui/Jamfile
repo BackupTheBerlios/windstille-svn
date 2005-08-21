@@ -11,6 +11,8 @@ sources =
   grid_component.cpp
   tab_component.hpp
   tab_component.cpp
+  root_component.hpp
+  root_component.cpp
 ;
 
 TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;

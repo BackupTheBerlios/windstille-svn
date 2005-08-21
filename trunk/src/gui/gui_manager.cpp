@@ -25,6 +25,7 @@
 
 #include "input/controller.hpp"
 #include "button.hpp"
+#include "root_component.hpp"
 #include "screen_manager.hpp"
 #include "grid_component.hpp"
 #include "tab_component.hpp"
@@ -34,10 +35,11 @@ namespace GUI {
 
 GUIManager::GUIManager()
 {
-  if (0)
-    {
-  GridComponent* grid = new GridComponent(Rectf(100, 100, 700, 500), 3, 4, NULL);
-  component = grid;
+  root = new RootComponent(Rectf(0,0,800,600));
+
+  TabComponent* tab = new TabComponent(Rectf(100, 100, 700, 500), root);
+
+  GridComponent* grid = new GridComponent(Rectf(100, 130, 700, 500), 3, 4, tab);
 
   grid->pack(new Button("1", grid), 0, 0);
   grid->pack(new Button("2", grid), 1, 0);
@@ -54,34 +56,33 @@ GUIManager::GUIManager()
   //grid->pack(new Button("Cl", grid), 0, 3);
   grid->pack(new Button("0",  grid), 1, 3);
   grid->pack(new Button("Ok", grid), 2, 3);
-    }
-  else
-    {
-      TabComponent* tab = new TabComponent(Rectf(100, 100, 700, 500), NULL);
-      tab->pack("My Button",   new Button("Map Test", tab));
-      tab->pack("Your Button", new Button("Inventory", tab));
-      component = tab;
-    }
+
+  tab->pack("My Button",   new Button("Map Test", tab));
+  tab->pack("DaGrid", grid);
+
+  root->set_child(tab);
 }
 
 GUIManager::~GUIManager()
 {
-  delete component;
+  delete root;
 }
 
 void
 GUIManager::draw()
 {
-  component->draw();
+  root->draw();
 }
 
 void
 GUIManager::update(float delta, const Controller& controller)
 {
-  component->update(delta, controller);
+  root->update(delta, controller);
 
-  if (controller.button_was_pressed(CANCEL_BUTTON))
-    screen_manager.set_overlay(0);
+  if (!root->is_active())
+    {
+      screen_manager.set_overlay(0);
+    }
 }
 
 } // namespace GUI

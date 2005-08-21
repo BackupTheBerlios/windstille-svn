@@ -23,53 +23,35 @@
 **  02111-1307, USA.
 */
 
-#include "display/display.hpp"
-#include "fonts.hpp"
-#include "input/controller.hpp"
-#include "button.hpp"
+#ifndef HEADER_WINDSTILLE_GUI_ROOT_COMPONENT_HPP
+#define HEADER_WINDSTILLE_GUI_ROOT_COMPONENT_HPP
+
+#include "component.hpp"
 
 namespace GUI {
 
-Button::Button(const std::string& label_, Component* parent)
-  : Component(Rectf(), parent),
-    label(label_)
+/** */
+class RootComponent : public Component
 {
-}
+private:
+  Component* child;
 
-Button::~Button()
-{
-}
+public:
+  RootComponent(const Rectf& rect);
+  ~RootComponent();
 
-void
-Button::draw()
-{
-  Display::fill_rect(rect, Color(0.0f, 0.0f, 0.0f, 0.5f));
-  Display::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.5f));
-  Fonts::ttfdialog->draw_center(rect.left + rect.get_width()/2, rect.top + rect.get_height()/2,
-                                label,
-                                is_active()
-                                ? Color(1.0f, 1.0f, 1.0f, 1.0f) 
-                                : Color(1.0f, 1.0f, 1.0f, 0.5f));
-}
+  void draw();
+  void update(float delta, const Controller& controller);
 
-void
-Button::update(float delta, const Controller& controller)
-{
-  for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
-    {
-      if (i->type == BUTTON_EVENT)
-        {
-          if (i->button.name == OK_BUTTON)
-            {
-            }
-          else if (i->button.name == CANCEL_BUTTON)
-            {            
-              set_active(false);
-            }
-        }
-    }  
-}
+  void set_child(Component* child);
+
+private:
+  RootComponent (const RootComponent&);
+  RootComponent& operator= (const RootComponent&);
+};
 
 } // namespace GUI
+
+#endif
 
 /* EOF */

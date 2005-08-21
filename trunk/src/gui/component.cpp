@@ -47,6 +47,8 @@ Component::is_active() const
 void
 Component::set_active(bool a)
 {
+  if (!active && a)
+    on_activation();
   active = a;
 }
 

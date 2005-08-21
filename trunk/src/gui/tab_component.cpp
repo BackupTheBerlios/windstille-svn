@@ -50,7 +50,7 @@ TabComponent::draw()
     {
       Rectf tab_rect(Vector(rect.left + tab_width * i + 10,
                             rect.top),
-                     Sizef(tab_width - 20, Fonts::ttfdialog->get_height()));
+                     Sizef(tab_width - 20, Fonts::ttfdialog->get_height() + 6));
 
       if (i == current_tab)
         Display::fill_rect(tab_rect, Color(1.0f, 1.0f, 1.0f, 0.5f));
@@ -61,7 +61,10 @@ TabComponent::draw()
 
       Fonts::ttfdialog->draw_center(rect.left + tab_width * i + tab_width/2,
                                     rect.top + Fonts::ttfdialog->get_height(),
-                                    tabs[i].label);
+                                    tabs[i].label,
+                                    tabs[current_tab].component->is_active()
+                                    ? Color(1.0f, 1.0f, 1.0f, 0.5f) 
+                                    : Color(1.0f, 1.0f, 1.0f, 1.0f));
     }
 
   tabs[current_tab].component->draw();
@@ -72,45 +75,53 @@ TabComponent::update(float delta, const Controller& controller)
 {
   if (tabs.empty()) return;
 
-  tabs[current_tab].component->update(delta, Controller());
-
-  for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
+  if (tabs[current_tab].component->is_active())
     {
-      if (i->type == BUTTON_EVENT)
+      tabs[current_tab].component->update(delta, controller);
+    }
+  else
+    {
+      tabs[current_tab].component->update(delta, Controller());
+
+      for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
         {
-          if (i->button.name == OK_BUTTON)
+          if (i->type == BUTTON_EVENT)
             {
-            }
-          else if (i->button.name == CANCEL_BUTTON)
-            {            
-            }
-        }
-      else if (i->type == AXIS_EVENT)
-        {
-          if (i->axis.name == X_AXIS)
-            {
-              if (i->axis.pos < 0)
+              if (i->button.name == OK_BUTTON)
                 {
-                  if (current_tab == 0)
-                    current_tab = tabs.size() - 1;
-                  else
-                    current_tab -= 1;
+                  tabs[current_tab].component->set_active(true);
                 }
-              else if (i->axis.pos > 0)
-                {
-                  if (current_tab == int(tabs.size()) - 1)
-                    current_tab = 0;
-                  else
-                    current_tab += 1;
+              else if (i->button.name == CANCEL_BUTTON)
+                {            
                 }
             }
-          else if (i->axis.name == Y_AXIS)
+          else if (i->type == AXIS_EVENT)
             {
-              if (i->axis.pos < 0)
+              if (i->axis.name == X_AXIS)
                 {
+                  if (i->axis.pos < 0)
+                    {
+                      if (current_tab == 0)
+                        current_tab = tabs.size() - 1;
+                      else
+                        current_tab -= 1;
+                    }
+                  else if (i->axis.pos > 0)
+                    {
+                      if (current_tab == int(tabs.size()) - 1)
+                        current_tab = 0;
+                      else
+                        current_tab += 1;
+                    }
                 }
-              else if (i->axis.pos > 0)
+              else if (i->axis.name == Y_AXIS)
                 {
+                  if (i->axis.pos < 0)
+                    {
+                    }
+                  else if (i->axis.pos > 0)
+                    {
+                    }
                 }
             }
         }
@@ -124,10 +135,10 @@ TabComponent::pack(const std::string& name, Component* component)
 
   int padding = 6;
   component->set_screen_rect(Rectf(rect.left + padding,
-                                   rect.top  + padding + Fonts::ttfdialog->get_height(),
+                                   rect.top  + padding + Fonts::ttfdialog->get_height() + 10,
                                    rect.right  - padding,
                                    rect.bottom - padding
-                                  ));
+                                   ));
 }
 
 } // namespace GUI

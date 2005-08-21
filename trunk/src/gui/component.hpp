@@ -47,11 +47,13 @@ public:
   bool is_active() const;
   void set_active(bool a);
 
+  virtual void on_activation() {}
   virtual void draw() =0;
   virtual void update(float delta, const Controller& controller) =0;
 
   Rectf get_screen_rect() const;
   void  set_screen_rect(const Rectf& rect);
+
 private:
   Component (const Component&);
   Component& operator= (const Component&);

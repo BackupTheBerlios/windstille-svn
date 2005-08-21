@@ -26,16 +26,17 @@
 #ifndef HEADER_WINDSTILLE_GUI_GUI_MANAGER_HPP
 #define HEADER_WINDSTILLE_GUI_GUI_MANAGER_HPP
 
-#include "component.hpp"
 #include "screen.hpp"
 
 namespace GUI {
+
+class RootComponent;
 
 /** */
 class GUIManager : public Screen
 {
 private:
-  Component* component;
+  RootComponent* root;
 
 public:
   GUIManager();
