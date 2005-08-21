@@ -15,6 +15,8 @@ sources =
   list_view.cpp
   tab_component.hpp
   tab_component.cpp
+  text_view.hpp
+  text_view.cpp
   root_component.hpp
   root_component.cpp
 ;
