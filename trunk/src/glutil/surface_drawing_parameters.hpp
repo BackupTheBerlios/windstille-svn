@@ -26,6 +26,7 @@
 #ifndef HEADER_GLUTIL_SURFACE_DRAWING_PARAMETERS_HPP
 #define HEADER_GLUTIL_SURFACE_DRAWING_PARAMETERS_HPP
 
+#include <GL/gl.h>
 #include "math/vector.hpp"
 #include "color.hpp"
 

@@ -29,6 +29,7 @@
 #include "screen_manager.hpp"
 #include "grid_component.hpp"
 #include "tab_component.hpp"
+#include "automap.hpp"
 #include "gui_manager.hpp"
 
 namespace GUI {
@@ -57,8 +58,8 @@ GUIManager::GUIManager()
   grid->pack(new Button("0",  grid), 1, 3);
   grid->pack(new Button("Ok", grid), 2, 3);
 
-  tab->pack("My Button",   new Button("Map Test", tab));
-  tab->pack("DaGrid", grid);
+  tab->pack("Auto Map",  new Automap(Rectf(100, 130, 700, 500), tab));
+  tab->pack("Grid Test", grid);
 
   root->set_child(tab);
 }

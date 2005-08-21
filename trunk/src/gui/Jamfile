@@ -1,6 +1,8 @@
 SubDir TOP src gui ;
 
 sources = 
+  automap.hpp
+  automap.cpp
   button.hpp
   button.cpp
   component.hpp
