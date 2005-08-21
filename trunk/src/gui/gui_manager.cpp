@@ -27,12 +27,15 @@
 #include "button.hpp"
 #include "screen_manager.hpp"
 #include "grid_component.hpp"
+#include "tab_component.hpp"
 #include "gui_manager.hpp"
 
 namespace GUI {
 
 GUIManager::GUIManager()
 {
+  if (0)
+    {
   GridComponent* grid = new GridComponent(Rectf(100, 100, 700, 500), 3, 4, NULL);
   component = grid;
 
@@ -51,6 +54,14 @@ GUIManager::GUIManager()
   //grid->pack(new Button("Cl", grid), 0, 3);
   grid->pack(new Button("0",  grid), 1, 3);
   grid->pack(new Button("Ok", grid), 2, 3);
+    }
+  else
+    {
+      TabComponent* tab = new TabComponent(Rectf(100, 100, 700, 500), NULL);
+      tab->pack("My Button",   new Button("Map Test", tab));
+      tab->pack("Your Button", new Button("Inventory", tab));
+      component = tab;
+    }
 }
 
 GUIManager::~GUIManager()

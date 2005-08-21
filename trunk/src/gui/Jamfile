@@ -9,6 +9,8 @@ sources =
   gui_manager.cpp
   grid_component.hpp
   grid_component.cpp
+  tab_component.hpp
+  tab_component.cpp
 ;
 
 TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;
