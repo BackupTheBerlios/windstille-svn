@@ -23,6 +23,9 @@
 **  02111-1307, USA.
 */
 
+#include "display/display.hpp"
+#include "input/controller.hpp"
+#include "fonts.hpp"
 #include "list_view.hpp"
 
 namespace GUI {
@@ -40,19 +43,95 @@ ListView::~ListView()
 void
 ListView::draw()
 {
-  
+  TTFFont* font = Fonts::ttfdialog;
+
+  float x = rect.left;
+  float y = rect.top + font->get_height();
+  float padding = 10;
+
+  for(int i = 0; i < int(columns.size()); ++i)
+    {
+      // FIXME: Poor mans outline effect
+      font->draw_center(x + columns[i].width/2 + 1, y - 1, columns[i].title);
+      font->draw_center(x + columns[i].width/2 - 1, y - 1, columns[i].title);
+      font->draw_center(x + columns[i].width/2 + 1, y + 1, columns[i].title);
+      font->draw_center(x + columns[i].width/2 - 1, y + 1, columns[i].title);
+      font->draw_center(x + columns[i].width/2, y, columns[i].title, Color(0.0f, 0.0f, 0.0f));
+      x += columns[i].width;
+    }
+
+  for(int j = 0; j < int(items.size()); ++j)
+    {
+      x = rect.left;
+
+      if (j == current_item)
+        Display::fill_rect(Rectf(x, y,
+                                 rect.right, y + font->get_height()), 
+                           is_active() ? Color(0.5f, 0.5f, 1.0f, 0.8f) : Color(0.5f, 0.5f, 1.0f, 0.3f));
+
+      y += font->get_height();
+          
+      for(int i = 0; i < int(items[j].columns.size()) && i < int(columns.size()); ++i)
+        {
+          font->draw(x + padding, y, items[j].columns[i]);
+            
+          x += columns[i].width;
+        }
+    }
 }
 
 void
 ListView::update(float delta, const Controller& controller)
 {
-  
+   for(InputEventLst::const_iterator i = controller.get_events().begin(); 
+       i != controller.get_events().end(); ++i) 
+    {
+      if (i->type == BUTTON_EVENT && i->button.down)
+        {
+          if (i->button.name == OK_BUTTON)
+            {
+              // do something with item (scripting callback)
+            }
+          else if (i->button.name == CANCEL_BUTTON)
+            {
+              set_active(false);
+            }
+        }
+      else if (i->type == AXIS_EVENT)
+        {
+          if (i->axis.name == Y_AXIS)
+            {
+              if (i->axis.pos > 0)
+                {
+                  if (current_item == int(items.size()) - 1)
+                    current_item = 0;
+                  else
+                    current_item += 1;
+                }
+              else if (i->axis.pos < 0)
+                {
+                  if (current_item == 0)
+                    current_item = items.size() - 1;
+                  else
+                    current_item -= 1;
+                }
+            }
+        }
+    }
 }
 
 void
-ListView::add_column(const std::string& name)
+ListView::add_column(const std::string& title, float width)
 {
-  headers.push_back(name);
+  Column column;
+
+  column.title = title;
+  if (width == -1)
+    column.width = 150;
+  else
+    column.width = width;
+
+  columns.push_back(column);
 }
 
 void

@@ -29,6 +29,7 @@
 #include "screen_manager.hpp"
 #include "grid_component.hpp"
 #include "tab_component.hpp"
+#include "list_view.hpp"
 #include "text_view.hpp"
 #include "automap.hpp"
 #include "gui_manager.hpp"
@@ -65,11 +66,22 @@ GUIManager::GUIManager()
   tab->pack("Auto Map",  new Automap(Rectf(100, 130, 700, 500), tab));
   tab->pack("Grid Test", grid);
 
+  ListView* list_view = new ListView(Rectf(), tab);
+  list_view->add_column("Date");
+  list_view->add_column("Name");
+  list_view->add_column("Subject");
+
+  list_view->add_item(ListView::Item("2005-10-08", "John Doh", "Re: Buying a goldmine"));
+  list_view->add_item(ListView::Item("2005-13-08", "Jane Doh", "Re: What the f***"));
+  list_view->add_item(ListView::Item("2005-13-09", "Testo Test", "Testing Email"));
+
+  tab->pack("ListView", list_view);
+
   root->set_child(tab);
   text_view->set_text("Hello World\n<large>Blabla</large> more textt and more and"
                       "more for testing all for testing even more and more blabla blabla"
                       "more for testing all for testing even more and more blabla blabla"
-                      "blabla blabla blabltest und ende.");
+                      "blabla blabla blabltest ende.");
 }
 
 GUIManager::~GUIManager()

@@ -36,9 +36,29 @@ namespace GUI {
 class ListView : public Component
 {
 private:
-  typedef std::vector<std::string> Item;
+  struct Column {
+    std::string title;
+    float       width;
+  };
+  
+public:
+  struct Item {
+    std::vector<std::string> columns;
+
+    Item(const std::string& el1, 
+         const std::string& el2,
+         const std::string& el3)
+    {
+      columns.push_back(el1);
+      columns.push_back(el2);
+      columns.push_back(el3);
+    }
+  };
+
+private:
   typedef std::vector<Item> Items;
-  Item    headers;
+  typedef std::vector<Column> Columns;
+  Columns columns;
   Items   items;
   int     current_item;
 
@@ -49,7 +69,8 @@ public:
   void draw();
   void update(float delta, const Controller& controller);
 
-  void add_column(const std::string& name);
+  /** if width is -1 it will be automatically spaced */
+  void add_column(const std::string& name, float width = -1);
   void add_item(const Item& item);
   
 private:
