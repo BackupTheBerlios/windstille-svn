@@ -27,6 +27,8 @@ sources =
         bomb.hpp
 	box.cpp
  	box.hpp
+        border_font_effect.hpp
+        border_font_effect.cpp
         camera.cpp
         camera.hpp
         character.cpp
@@ -51,6 +53,7 @@ sources =
         entity.hpp
         elevator.hpp
         elevator.cpp
+        font_effect.hpp
         inventory.cpp
         inventory.hpp
         ttf_font.cpp

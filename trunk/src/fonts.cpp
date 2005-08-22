@@ -18,6 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "globals.hpp"
+#include "border_font_effect.hpp"
 #include "fonts.hpp"
 
 TTFFont* Fonts::ttffont = 0;
@@ -27,8 +28,12 @@ TTFFont* Fonts::ttfdialog = 0;
 void
 Fonts::init()
 {
-  ttffont = new TTFFont("fonts/VeraMono.ttf", 12);
-  ttfdialog  = new TTFFont("fonts/Vera.ttf", 20);
+  BorderFontEffect* border_effect = new BorderFontEffect(1);
+
+  ttffont   = new TTFFont("fonts/VeraMono.ttf", 12);
+  ttfdialog = new TTFFont("fonts/Vera.ttf", 20, border_effect);
+
+  delete border_effect;
 }
 
 void

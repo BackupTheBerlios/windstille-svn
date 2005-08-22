@@ -32,6 +32,8 @@
 #include "math/rect.hpp"
 #include "glutil/texture.hpp"
 
+class FontEffect;
+
 class TTFCharacter
 {
 public:
@@ -43,6 +45,8 @@ public:
       uv-coordinates */
   Rectf uv;
 
+  /** Amount of pixels that the cursor will advance after having
+      printed this character */
   int advance;
 
   TTFCharacter(const Rect& pos, const Rectf& uv, int advance);
@@ -57,14 +61,20 @@ public:
   static void init();
   static void deinit();
 
-  TTFFont(const std::string& file, int size);
+  TTFFont(const std::string& file, int size, FontEffect* effect = 0);
   ~TTFFont();
 
+  /** */
   int get_height() const;
 
   /** Returns the width of a given piece of text, doesn't take
       newlines into account */
   int get_width(const std::string& text) const;
+
+  /** Returns the height as given in the constructor, this does *not*
+      take into account any possible resize effects done by
+      FontEffoct */
+  int get_size() const;
 
   Texture get_texture() const;
 

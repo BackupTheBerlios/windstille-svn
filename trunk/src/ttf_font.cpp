@@ -36,6 +36,7 @@
 #include "glutil/texture_manager.hpp"
 #include "blitter.hpp"
 #include "ttf_font.hpp"
+#include "font_effect.hpp"
 #include "util.hpp"
 
 TTFCharacter::TTFCharacter(const Rect& pos_,
@@ -57,7 +58,12 @@ public:
       256 characters, no full unicode */
   std::vector<TTFCharacter> characters;
 
+  /** The original size of the font in pixels */
   int size;
+
+  /** The amount of pixels to advance in y direction after a finished
+      line, this can be transformed by FontEffect */
+  int height;
 
   /** OpenGL Texture which holds all the characters */
   Texture texture;
@@ -65,42 +71,12 @@ public:
 
 FT_Library TTFFontImpl::library;
 
-void 
-blit_ftbitmap(SDL_Surface* target, const FT_Bitmap& brush, int x_pos, int y_pos)
-{
-  SDL_LockSurface(target);
-  
-  int start_x = std::max(0, -x_pos);
-  int start_y = std::max(0, -y_pos);
-  
-  int end_x = std::min(brush.width, target->w  - x_pos);
-  int end_y = std::min(brush.rows,  target->h - y_pos);
-
-  unsigned char* target_buf = static_cast<unsigned char*>(target->pixels);
-
-  int target_pitch = target->pitch;
-
-  for (int y = start_y; y < end_y; ++y)
-    for (int x = start_x; x < end_x; ++x)
-      {
-        int target_pos = (y + y_pos) * target_pitch + 4*(x + x_pos);
-        int brush_pos  = y * brush.pitch + x;
-            
-        target_buf[target_pos + 0] = 255;
-        target_buf[target_pos + 1] = 255;
-        target_buf[target_pos + 2] = 255;
-        target_buf[target_pos + 3] = brush.buffer[brush_pos];
-      }
-    
-  SDL_UnlockSurface(target);
-}
-
-TTFFont::TTFFont(const std::string& filename, int size)
+TTFFont::TTFFont(const std::string& filename, int size_, FontEffect* effect)
   : impl(new TTFFontImpl())
 {
-  assert(size > 0);
+  assert(size_ > 0);
 
-  impl->size = size;
+  impl->size = size_;
 
   IFileStream fin(filename);
   std::istreambuf_iterator<char> first(fin), last;
@@ -114,7 +90,7 @@ TTFFont::TTFFont(const std::string& filename, int size)
       throw std::runtime_error("Couldn't load font: '" + filename + "'");
     }
   
-  FT_Set_Pixel_Sizes( face, size, size);
+  FT_Set_Pixel_Sizes(face, impl->size, impl->size);
 
   FT_Select_Charmap(face,  FT_ENCODING_UNICODE);
 
@@ -133,6 +109,8 @@ TTFFont::TTFFont(const std::string& filename, int size)
   int x_pos = 1;
   int y_pos = 1;
 
+  impl->height = effect ? effect->get_height(impl->size) : impl->size;
+
   // We limit ourself to 256 characters for the momemnt
   for(int glyph_index = 0; glyph_index < 256; glyph_index += 1)
     {
@@ -142,30 +120,36 @@ TTFFont::TTFFont(const std::string& filename, int size)
           throw std::runtime_error("couldn't load char");
         }
       
-      blit_ftbitmap(pixelbuffer, face->glyph->bitmap, x_pos, y_pos);
-      generate_border(pixelbuffer, x_pos, y_pos, 
-                      face->glyph->bitmap.width, face->glyph->bitmap.rows);
+      if (!effect)
+        blit_ftbitmap(pixelbuffer, face->glyph->bitmap, x_pos, y_pos);
+      else
+        effect->blit(pixelbuffer, face->glyph->bitmap, x_pos, y_pos);
+
+      int glyph_width  = effect ? effect->get_glyph_width(face->glyph->bitmap.width) : face->glyph->bitmap.width;
+      int glyph_height = effect ? effect->get_glyph_height(face->glyph->bitmap.rows) : face->glyph->bitmap.rows;
+
+      generate_border(pixelbuffer, x_pos, y_pos, glyph_width, glyph_height);
 
       Rect pos(Point(face->glyph->bitmap_left,  -face->glyph->bitmap_top), 
-               Size (face->glyph->bitmap.width, face->glyph->bitmap.rows));
+               Size(glyph_width, glyph_height));
 
       Rectf uv(x_pos/float(pixelbuffer->w),
                y_pos/float(pixelbuffer->h),
-               (x_pos + face->glyph->bitmap.width)/float(pixelbuffer->w),
-               (y_pos + face->glyph->bitmap.rows)/float(pixelbuffer->h));
+               (x_pos + glyph_width)/float(pixelbuffer->w),
+               (y_pos + glyph_height)/float(pixelbuffer->h));
       
       impl->characters.push_back(TTFCharacter(pos, uv,
                                               face->glyph->advance.x >> 6));
 
       // we leave a one pixel border around the letters which we fill with generate_border
-      x_pos += face->glyph->bitmap.width + 2;
-      if (x_pos + size + 2 > pixelbuffer->w)
+      x_pos += glyph_width + 2;
+      if (x_pos + impl->height + 2 > pixelbuffer->w)
         {
-          y_pos += size + 2;
+          y_pos += impl->height + 2;
           x_pos = 1;
         }
 
-      if (y_pos + size + 2 > pixelbuffer->h)
+      if (y_pos + impl->height + 2 > pixelbuffer->h)
         throw std::runtime_error("Font Texture to small");
     }
   FT_Done_Face(face);
