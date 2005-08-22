@@ -27,6 +27,7 @@
 #include "ttf_font.hpp"
 #include "text_area.hpp"
 #include "baby_xml.hpp"
+#include "fonts.hpp"
 #include "text_area.hpp"
 
 struct TextAreaCommand 
@@ -56,7 +57,7 @@ public:
 TextArea::TextArea(const Rectf& rect, bool letter_by_letter)
   : impl(new TextAreaImpl)
 {
-  impl->font = 0;
+  impl->font = Fonts::ttfdialog;
   impl->rect    = rect;
   // FIXME: freetype might provide info for vspacing, not sure
   impl->v_space = 2;
@@ -68,6 +69,12 @@ TextArea::TextArea(const Rectf& rect, bool letter_by_letter)
 TextArea::~TextArea()
 {
   delete impl;
+}
+
+void
+TextArea::set_rect(const Rectf& rect)
+{
+  impl->rect = rect;
 }
 
 void

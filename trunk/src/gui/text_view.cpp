@@ -28,7 +28,8 @@
 namespace GUI {
 
 TextView::TextView(const Rectf& rect, Component* component)
-  : Component(rect, component)
+  : Component(rect, component),
+    text_area(rect, false)
 {
 }
 
@@ -39,16 +40,26 @@ TextView::~TextView()
 void
 TextView::draw()
 {
+  text_area.draw();
 }
 
 void
 TextView::update(float delta, const Controller& controller)
 {
+  text_area.update(delta);
+}
+
+void
+TextView::set_screen_rect(const Rectf& rect)
+{
+  Component::set_screen_rect(rect);
+  text_area.set_rect(rect);
 }
 
 void
 TextView::set_text(const std::string& text)
 {
+  text_area.set_text(text);
 }
 
 } // namespace GUI

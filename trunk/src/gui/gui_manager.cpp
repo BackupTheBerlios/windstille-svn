@@ -29,6 +29,7 @@
 #include "screen_manager.hpp"
 #include "grid_component.hpp"
 #include "tab_component.hpp"
+#include "text_view.hpp"
 #include "automap.hpp"
 #include "gui_manager.hpp"
 
@@ -47,7 +48,10 @@ GUIManager::GUIManager()
   grid->pack(new Button("3", grid), 2, 0);
 
   grid->pack(new Button("4", grid), 0, 1);
-  grid->pack(new Button("5", grid), 1, 1, 2, 2);
+  //grid->pack(new Button("5", grid), 1, 1, 2, 2);
+  TextView* text_view = new TextView(Rectf(), grid);
+  grid->pack(text_view, 1, 1, 2, 2);
+
   //grid->pack(new Button("6", grid), 2, 1);
 
   grid->pack(new Button("7", grid), 0, 2, 1, 2);
@@ -62,6 +66,10 @@ GUIManager::GUIManager()
   tab->pack("Grid Test", grid);
 
   root->set_child(tab);
+  text_view->set_text("Hello World\n<large>Blabla</large> more textt and more and"
+                      "more for testing all for testing even more and more blabla blabla"
+                      "more for testing all for testing even more and more blabla blabla"
+                      "blabla blabla blabltest und ende.");
 }
 
 GUIManager::~GUIManager()

@@ -42,6 +42,8 @@ public:
   TextArea(const Rectf& rect, bool letter_by_letter);
   ~TextArea();
 
+  void set_rect(const Rectf& rect);
+
   /** Sets the text to be displayed in the text box */
   void set_text(const std::string& str);
 

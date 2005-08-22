@@ -26,6 +26,7 @@
 #ifndef HEADER_WINDSTILLE_GUI_TEXT_VIEW_HPP
 #define HEADER_WINDSTILLE_GUI_TEXT_VIEW_HPP
 
+#include "text_area.hpp"
 #include "component.hpp"
 
 namespace GUI {
@@ -34,6 +35,8 @@ namespace GUI {
 class TextView : public Component
 {
 private:
+  TextArea text_area;
+
 public:
   TextView(const Rectf& rect, Component* component);
   ~TextView();
@@ -41,6 +44,7 @@ public:
   void draw();
   void update(float delta, const Controller& controller);
 
+  void  set_screen_rect(const Rectf& rect);
   void set_text(const std::string& text);
   
 private:
