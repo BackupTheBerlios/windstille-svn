@@ -29,6 +29,7 @@
 #include "gameconfig.hpp"
 #include "glutil/opengl_state.hpp"
 #include "display.hpp"
+#include <GL/glext.h>
 
 SDL_Surface* window       = 0;
 
