@@ -470,7 +470,7 @@ Player::update_jump_begin()
 void
 Player::set_jump_air()
 {
-  velocity.y = -400;
+  velocity.y = -450;
   sprite.set_next_action("JumpLandSofttoRun");
   state = JUMP_AIR;
 }
