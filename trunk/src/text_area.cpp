@@ -23,6 +23,8 @@
 **  02111-1307, USA.
 */
 
+#include <assert.h>
+
 #include "glutil/opengl_state.hpp"
 #include "ttf_font.hpp"
 #include "text_area.hpp"
