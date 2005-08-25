@@ -132,9 +132,8 @@ SceneContext::render()
       
   if (impl->render_mask & LIGHTMAPSCREEN)
     {
-      glEnable(GL_SCISSOR_TEST);
-      glScissor(0, Display::get_height() - impl->lightmap.get_height(), 
-                impl->lightmap.get_width(), impl->lightmap.get_height());
+      Display::push_cliprect(Rect(Point(0, 0),
+                                  Size(impl->lightmap.get_width(), impl->lightmap.get_height())));
 
       glPushMatrix();
       glScalef(1.0f/LIGHTMAP_DIV, 1.0f/LIGHTMAP_DIV, 1.0f);
@@ -155,7 +154,7 @@ SceneContext::render()
                             impl->lightmap.get_width(), impl->lightmap.get_height());
       }
 
-      glDisable(GL_SCISSOR_TEST);
+      Display::pop_cliprect();
     }
 
   if (impl->render_mask & COLORMAP)

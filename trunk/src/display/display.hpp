@@ -26,12 +26,17 @@
 #ifndef HEADER_DISPLAY_DISPLAY_HPP
 #define HEADER_DISPLAY_DISPLAY_HPP
 
+#include <vector>
+#include <SDL.h>
 #include "math/rect.hpp"
 #include "color.hpp"
 
 class Display
 {
 private:
+  static std::vector<Rect> cliprects;
+  static SDL_Surface* window;
+
 public:
   static void fill_rect(const Rectf& rect, const Color& color);
   static void draw_rect(const Rectf& rect, const Color& color);
@@ -48,6 +53,9 @@ public:
   static int  get_height();
 
   static void set_fullscreen(bool fullscreen);
+
+  static void push_cliprect(const Rect& rect);
+  static void pop_cliprect();
 
   static void init();
 };

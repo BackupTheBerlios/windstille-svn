@@ -31,7 +31,7 @@ Fonts::init()
   BorderFontEffect* border_effect = new BorderFontEffect(1);
 
   ttffont   = new TTFFont("fonts/VeraMono.ttf", 12);
-  ttfdialog = new TTFFont("fonts/Vera.ttf", 20, border_effect);
+  ttfdialog = new TTFFont("fonts/Vera.ttf", 20);
 
   delete border_effect;
 }

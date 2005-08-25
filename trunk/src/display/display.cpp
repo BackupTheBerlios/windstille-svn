@@ -31,7 +31,8 @@
 #include "display.hpp"
 #include <GL/glext.h>
 
-SDL_Surface* window       = 0;
+SDL_Surface* Display::window       = 0;
+std::vector<Rect> Display::cliprects;
 
 void
 Display::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
@@ -303,6 +304,47 @@ Display::fill_circle(const Vector& pos, float radius, const Color& color)
     }
   glVertex2f(radius + pos.x, pos.y);
   glEnd();
+}
+
+void
+Display::push_cliprect(const Rect& rect_)
+{
+  Rect rect = rect_;
+
+  if (!cliprects.empty())
+    {
+      rect.left   = std::max(rect.left, cliprects.back().left);
+      rect.top    = std::max(rect.top,  cliprects.back().top);
+
+      rect.right  = std::min(rect.right,  cliprects.back().right);
+      rect.bottom = std::min(rect.bottom, cliprects.back().bottom);
+    }
+
+  cliprects.push_back(rect);
+
+  glScissor(rect.left, get_height() - rect.top - rect.get_height(),
+            rect.get_width(), rect.get_height());
+  glEnable(GL_SCISSOR_TEST);
+}
+
+void
+Display::pop_cliprect()
+{
+  assert(cliprects.size() >= 1);
+
+  cliprects.pop_back();
+
+  if (!cliprects.empty())
+    {
+      const Rect& rect = cliprects.back();
+
+      glScissor(rect.left, get_height() - rect.top - rect.get_height(),
+                rect.get_width(), rect.get_height());
+    }
+  else
+    {
+      glDisable(GL_SCISSOR_TEST);
+    }
 }
 
 /* EOF */
