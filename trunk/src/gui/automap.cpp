@@ -27,6 +27,7 @@
 #include "input/controller.hpp"
 #include "sector.hpp"
 #include "tile_map.hpp"
+#include "display/display.hpp"
 #include "automap.hpp"
 
 namespace GUI {
@@ -34,7 +35,7 @@ namespace GUI {
 Automap::Automap(const Rectf& rect, Component* parent)
   : Component(rect, parent),
     pos(0.0f, 0.0f),
-    zoom(1.0f)
+    zoom(6.0f)
 {
   TileMap* tilemap = Sector::current()->get_tilemap();
   
@@ -87,10 +88,12 @@ Automap::~Automap()
 void
 Automap::draw()
 {
+  Display::push_cliprect(Rect(get_screen_rect()));
   surface.draw(SurfaceDrawingParameters()
                .set_pos(Vector(rect.left, rect.top) + pos)
                .set_color(Color(1.0f, 1.0f, 1.0f, is_active() ? 0.8f : 0.5f))
                .set_scale(zoom));
+  Display::pop_cliprect();
 }
 
 void
