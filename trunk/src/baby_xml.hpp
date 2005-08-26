@@ -34,17 +34,24 @@
 class BabyXML
 {
 public:
-  class Node
+  struct Attribute
   {
-  public:
-    enum Type { TEXT, START_TAG, END_TAG, ENTITY } type;
-
-    std::string content;
-    Node() {}
-    Node(Type type_, const std::string& content_ = std::string()) : type(type_), content(content_) {}
+    std::string name;
+    std::string value;
   };
 
-  enum State { START, END } state;
+  struct Node
+  {
+    enum Type { NONE, TEXT, START_TAG, END_TAG, ENTITY };
+    typedef std::vector<Attribute> Attributes;
+
+    Type type;
+    std::string content;
+    Attributes attributes;
+
+    Node() : type(NONE) {}
+    Node(Type type_, const std::string& content_ = std::string()) : type(type_), content(content_) {}
+  };
 
   typedef std::vector<Node> Nodes;
   typedef Nodes::iterator       iterator;
@@ -55,6 +62,8 @@ public:
   /** Parse the given \a text and construct the nodes from it */
   BabyXML(const std::string& text);
   ~BabyXML();
+
+  void add_node(const Node& node);
 
   iterator begin() { return nodes.begin(); }
   iterator end()   { return nodes.end(); }
