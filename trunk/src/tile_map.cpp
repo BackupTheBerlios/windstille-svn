@@ -18,6 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <sstream>
+#include <physfs.h>
 #include "tile_map.hpp"
 #include "tile.hpp"
 #include "tile_factory.hpp"
@@ -42,27 +43,59 @@ TileMap::TileMap(const lisp::Lisp* lisp)
   props.get("height", height);
   if(width <= 0 || height <= 0) {
     throw std::runtime_error(
-        "Invalid width or height defined or "
-        "data defined before width and height");  
+                             "Invalid width or height defined or "
+                             "data defined before width and height");  
   }
-  Field<int> tmpfield(width, height);
-  props.get("data", tmpfield.get_vector());
-  props.print_unused_warnings("tilemap");
-  
+ 
   if(width <= 0 || height <= 0) {
     throw std::runtime_error(
-        "Invalid width or height defined or "
-        "data defined before width and height");
+                             "Invalid width or height defined or "
+                             "data defined before width and height");
   }
-  
-  field = Field<Tile*>(width, height);
-  for (int y = 0; y < field.get_height (); ++y) 
-  {
-    for (int x = 0; x < field.get_width (); ++x)
+
+  std::string data_filename;
+  if (props.get("data-file", data_filename))
     {
-      field(x, y) = TileFactory::current()->create(tmpfield(x, y));
+      PHYSFS_file* file = PHYSFS_openRead(data_filename.c_str());
+      if (!file)
+        {
+          throw std::runtime_error("Couldn't open tiledata file: " + data_filename);
+        }
+      
+      for(int y = 0; y < height; ++y)
+        for(int x = 0; x < width; ++x)
+          {
+            uint16_t result;
+            if(PHYSFS_readULE16(file, &result) == 0) {
+              std::ostringstream msg;
+              msg << "Problem reading uint16 value: " << PHYSFS_getLastError();
+              throw std::runtime_error(msg.str());
+            }
+
+            field(x, y) = TileFactory::current()->create(result);
+          }
+
+      PHYSFS_close(file);
     }
-  }
+  else // read data directly from the levelfile
+    {
+      Field<int> tmpfield(width, height);
+
+      props.get("data", tmpfield.get_vector());
+
+  
+      field = Field<Tile*>(width, height);
+      for (int y = 0; y < field.get_height (); ++y) 
+        {
+          for (int x = 0; x < field.get_width (); ++x)
+            {
+              field(x, y) = TileFactory::current()->create(tmpfield(x, y));
+            }
+        }
+    }
+
+  props.print_unused_warnings("tilemap");
+
 
   if(field.size() == 0)
     throw std::runtime_error("No tiles defined in tilemap");  

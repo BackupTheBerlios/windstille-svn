@@ -99,7 +99,7 @@ public:
   GameSessionImpl() {
     sector = 0;
     current_gui = 0;
-    cutscene_mode = true;
+    cutscene_mode = false;
   }
   ~GameSessionImpl() {
     delete sector;
