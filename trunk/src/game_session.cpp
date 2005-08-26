@@ -78,6 +78,7 @@ public:
   std::string filename;
 
   bool pause;
+  bool cutscene_mode;
 
   enum { NO_ACTION, QUIT_ACTION, CHANGE_SECTOR_ACTION } next_action;
   
@@ -98,6 +99,7 @@ public:
   GameSessionImpl() {
     sector = 0;
     current_gui = 0;
+    cutscene_mode = true;
   }
   ~GameSessionImpl() {
     delete sector;
@@ -136,9 +138,20 @@ GameSessionImpl::draw()
   // Render the scene to the screen
   sc.render();
 
-  // Draw HUD
-  energy_bar.draw();
-  controller_help_window.draw();
+  if (!cutscene_mode)
+    {
+      // Draw HUD
+      energy_bar.draw();
+      controller_help_window.draw();
+    }
+  else
+    {
+      int border_size = 75;
+      Display::fill_rect(Rect(Point(0, 0), Size(Display::get_width(), border_size)), 
+                         Color(0.0f, 0.0f, 0.0f, 1.0f));
+      Display::fill_rect(Rect(Point(0, Display::get_height() - border_size), Size(Display::get_width(), border_size)), 
+                         Color(0.0f, 0.0f, 0.0f, 1.0f));
+    }
 
   if (current_gui)
     current_gui->draw();
@@ -402,6 +415,12 @@ bool
 GameSession::is_active() const
 {
   return (impl->current_gui == 0);
+}
+
+void
+GameSession::set_cutscene_mode(bool t)
+{
+  impl->cutscene_mode = t;
 }
 
 /* EOF */
