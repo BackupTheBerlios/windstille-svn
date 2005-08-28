@@ -4,13 +4,18 @@
   (version 1)
   (name   "")
   (music  "music/techdemo.ogg")
-  (ambient-color .666 .666 .666)
+  (ambient-color .4 .4 .4)
   (init-script "levels/newformat2.nut")
   (spawnpoint
     (name "default")
     (pos 300 650)
   )
   (objects
+   (vrdummy
+    (name "VRDummy")
+    (pos 600 600)
+    )
+
     (scriptable-object
       (name "Block0Sign")
       (pos 550 370)
@@ -188,10 +193,14 @@
     (character
       (name "bob")
       (pos 320 831)
+      (z-pos -50)
+      (action "Bar")
+      (sprite3d "models/characters/bob/bob.wsprite")
     )
     (character
       (name "frank")
       (pos 200 831)
+      (sprite3d "3dsprites/sophie.wsprite")
     )
     (spider-mine
       (name "spider2")
@@ -206,6 +215,11 @@
 ;      (sprite "images/objects/box.sprite")
 ;      (pos 1100 750)
 ;    )
+    (scriptable-object
+      (sprite "images/objects/bar.sprite")
+      (pos 256 746)
+      (z-pos 100))
+
     (scriptable-object
       (sprite "images/objects/vrdoor-color.sprite")
       (highlight "images/objects/vrdoor-highlight.sprite")
