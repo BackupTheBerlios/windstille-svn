@@ -3,7 +3,7 @@
   (version 2)
   (name   "")
   (music  "")
-  (ambient-color .666 .666 .666)
+  (ambient-color .4 .4 .4)
   (objects
   (tilemap (name "background") (width 100) (height 30) (z-pos 0)
     (data
@@ -71,6 +71,32 @@
       0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
       0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
      ))
+
+    (scriptable-object
+      (sprite    "images/objects/apartmentlamp.sprite")
+      (highlight "images/objects/apartmentlamp_highlight.sprite")
+      (light     "images/objects/apartmentlamp_light.sprite")
+      (pos 1280 64))
+
+    (scriptable-object
+      (sprite    "images/objects/apartmentlamp.sprite")
+      (highlight "images/objects/apartmentlamp_highlight.sprite")
+      (light     "images/objects/apartmentlamp_light.sprite")
+      (pos 768 64))
+
+
+    (scriptable-object
+      (sprite    "images/objects/apartmentlamp.sprite")
+      (highlight "images/objects/apartmentlamp_highlight.sprite")
+      (light     "images/objects/apartmentlamp_light.sprite")
+      (pos 256 64))
+
+    (scriptable-object
+      (name "Painting1")
+      (pos 72 135)
+        (z-pos 100)
+      (sprite "images/objects/painting1.sprite")
+      (active #t))
 
     (scriptable-object
       (name "Painting1")
