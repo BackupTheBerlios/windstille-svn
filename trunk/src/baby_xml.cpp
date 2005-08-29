@@ -70,6 +70,9 @@ public:
             break;
           }
       }
+
+    if (!content.empty())
+      xml->add_node(BabyXML::Node(BabyXML::Node::TEXT, content));
   }
 
   void skip_space()
@@ -240,6 +243,13 @@ public:
 
   char look_ahead()
   {
+    if (cursor >= int(text.size()))
+      {
+        std::ostringstream str;
+        str << "Syntax Error:" << line_no << ":" << column_no << ": Premature end of text";
+        throw std::runtime_error(str.str());
+      }
+
     return text[cursor];
   }
 
@@ -279,7 +289,8 @@ BabyXML::add_node(const Node& node)
 
 int main()
 {
-  BabyXML xml("<strong size='10'>Hello &lt; World&gt; <b>&quot;blabla&quot;</b> Blablub</strong>");
+  // BabyXML xml("<strong size='10'>Hello &lt; World&gt; <b>&quot;blabla&quot;</b> Blablub</strong>");
+  BabyXML xml("Hello ");
 
   for(BabyXML::iterator i = xml.begin(); i != xml.end(); ++i)
     {

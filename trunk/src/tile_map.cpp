@@ -62,6 +62,8 @@ TileMap::TileMap(const lisp::Lisp* lisp)
           throw std::runtime_error("Couldn't open tiledata file: " + data_filename);
         }
       
+      field = Field<Tile*>(width, height);
+
       for(int y = 0; y < height; ++y)
         for(int x = 0; x < width; ++x)
           {
@@ -82,7 +84,6 @@ TileMap::TileMap(const lisp::Lisp* lisp)
       Field<int> tmpfield(width, height);
 
       props.get("data", tmpfield.get_vector());
-
   
       field = Field<Tile*>(width, height);
       for (int y = 0; y < field.get_height (); ++y) 
