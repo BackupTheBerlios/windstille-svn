@@ -39,15 +39,19 @@ Character::Character(const lisp::Lisp* lisp)
   use_verb = "Talk";
 
   std::string sprite3d_filename = "3dsprites/heroken.wsprite";
+  std::string action_name;
 
   lisp::Properties props(lisp);
   props.get("name", name);
   props.get("pos", pos);
   props.get("sprite3d", sprite3d_filename);
+  props.get("action", action_name);
   props.print_unused_warnings("character");
   
   sprite = Sprite3D(sprite3d_filename);
-  //sprite.set_action("Stand");
+
+  if (!action_name.empty())
+    sprite.set_action(action_name);
 }
 
 Character::~Character()
