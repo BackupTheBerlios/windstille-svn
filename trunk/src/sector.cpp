@@ -76,6 +76,8 @@ Sector::Sector(const std::string& arg_filename)
 
   current_ = this;
   interactive_tilemap = 0;
+  interactivebackground_tilemap = 0;
+
   parse_file(filename);
   if (!interactive_tilemap)
     throw std::runtime_error("No interactive-tilemap available");
@@ -153,6 +155,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(tilemap);
     if (tilemap->get_name() == "interactive")
       interactive_tilemap = tilemap;
+    else if (tilemap->get_name() == "interactivebackground")
+      interactivebackground_tilemap = tilemap;
   } else if(name == "background") {
     // TODO
   } else if(name == "trigger") {

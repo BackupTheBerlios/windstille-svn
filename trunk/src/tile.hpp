@@ -25,6 +25,14 @@
 #include "glutil/texture.hpp"
 #include "math/rect.hpp"
 
+enum TileType {
+  TILE_EMPTY  = 0,
+  TILE_SOLID  = (1 << 0),
+  TILE_STAIRS = (1 << 1),
+  TILE_LEFT   = (1 << 2),
+  TILE_RIGHT  = (1 << 3)
+};
+
 /** A Tile is a surface or sprite together with information for
  *  collision detection (aka colmap). The collision map is at a
  *  resolution of 8x8 bits. Position information is handled in the
@@ -35,8 +43,10 @@ public:
   /** The id of the Tile by which the tilemap refers to it */
   int id; 
 
-  Rectf color_rect;
-  int   color_packer;
+  // FIXME: Using a surface here might be a worthy consideration, just
+  // need to find a way to properly bucket-sort the request
+  Rectf   color_rect;
+  int     color_packer;
   Texture texture;
 
   /** bitmap that holds the collision attributes for this tile */

@@ -39,6 +39,9 @@ CollisionObject::CollisionObject(GameObject* game_object, const Rectf& rect_)
   velocity           = Vector(0,0);
   pos                = Vector(0,0);
   game_object        = game_object;
+
+  is_domains    = DOMAIN_PLAYER  | DOMAIN_ENEMY;
+  check_domains = DOMAIN_TILEMAP | DOMAIN_PLAYER | DOMAIN_ENEMY;
 }
 
 CollisionObject::CollisionObject(TileMap* tilemap_)
@@ -50,6 +53,9 @@ CollisionObject::CollisionObject(TileMap* tilemap_)
   velocity           = Vector(0,0);
   pos                = Vector(0,0);
   game_object        = 0;
+
+  is_domains    = DOMAIN_TILEMAP;
+  check_domains = DOMAIN_PLAYER | DOMAIN_ENEMY;
 }
 
 CollisionObject::~CollisionObject()
@@ -115,6 +121,30 @@ GameObject*
 CollisionObject::get_game_object() const
 {
   return game_object;
+}
+
+unsigned int
+CollisionObject::get_is_domains() const
+{
+  return is_domains;
+}
+
+void
+CollisionObject::set_is_domains(unsigned int d)
+{
+  is_domains = d;
+}
+
+unsigned int
+CollisionObject::get_check_domains() const
+{
+  return check_domains;
+}
+
+void
+CollisionObject::set_check_domains(unsigned int d)
+{
+  check_domains = d;
 }
 
 /* EOF */

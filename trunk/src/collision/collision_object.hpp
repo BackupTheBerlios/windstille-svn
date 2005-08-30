@@ -62,7 +62,19 @@ private:
   bool is_unstuckable;
   bool is_unstuck_movable;
 
+  unsigned int is_domains;
+  unsigned int check_domains;
+
 public:
+  /** Domains provide a way to logically seperate objects from each
+      other, so that for example enemies don't check collisions
+      against other enemies, but only against the player */
+  enum Domains {
+    DOMAIN_TILEMAP = (1 << 0),
+    DOMAIN_PLAYER  = (1 << 1), 
+    DOMAIN_ENEMY   = (1 << 2)
+  };
+
   CollisionObject(GameObject* object, const Rectf& rect_);
   CollisionObject(TileMap* tilemap_);
 
@@ -107,6 +119,14 @@ public:
   
   void set_unstuck(bool s) { is_unstuckable = s; }
   void set_unstuck_movable(bool s) { is_unstuck_movable = s; }
+
+  /** Domains which this object 'is' */
+  unsigned int get_is_domains() const;
+  void         set_is_domains(unsigned int d);
+
+  /** Domains against which the collision object should check */
+  unsigned int get_check_domains() const;
+  void         set_check_domains(unsigned int d);
 
   Signal_v1<const CollisionData &>& sig_collision() { return collision; }
 

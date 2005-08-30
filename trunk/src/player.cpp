@@ -26,6 +26,7 @@
 #include "bomb.hpp"
 #include "globals.hpp"
 #include "pda.hpp"
+#include "tile.hpp"
 #include "sprite3d/manager.hpp"
 #include "glutil/surface_manager.hpp"
 #include "particles/particle_system.hpp"
@@ -70,6 +71,8 @@ Player::Player () :
   slot = c_object->sig_collision().connect(this, &Player::collision);
 
   Sector::current()->get_collision_engine()->add(c_object);
+
+  z_pos = 100.0f;
 }
 
 Player::~Player()
@@ -89,9 +92,16 @@ Player::draw (SceneContext& sc)
   flashlighthighlight.set_blend_func(GL_SRC_ALPHA, GL_ONE);
   flashlighthighlight.set_scale(2.0f);
 
-  sc.highlight().draw(flashlighthighlight, pos - Vector(40, 80), 100.0f);
-  sc.light().draw(flashlight, pos - Vector(40, 80), 100.0f);
-  sprite.draw(sc.color(), pos, 100);
+  if (1)
+    { // draw the 'stand-on' tile
+      sc.highlight().fill_rect(Rect(Point(int(pos.x)/32 * 32, (int(pos.y)/32 + 1) * 32),
+                                    Size(32, 32)),
+                               Color(1.0f, 0.0f, 0.0f, 0.5f), 10000.0f);
+    }
+
+  //sc.highlight().draw(flashlighthighlight, pos - Vector(40, 80), 100.0f);
+  //sc.light().draw(flashlight, pos - Vector(40, 80), 100.0f);
+  sprite.draw(sc.color(), pos, z_pos);
 
   Entity* obj = find_useable_entity();
   if (obj)
@@ -175,6 +185,15 @@ Player::update (float delta)
         case JUMP_UP_LAND:
           update_jump_up_land();
           break;
+        case PULL_GUN:
+          update_pull_gun();
+          break;
+        case STAIRS_DOWN:
+          update_stairs_down(delta);
+          break;
+        case STAIRS_UP:
+          update_stairs_up(delta);
+          break;
         default:
           assert(false);
           break;
@@ -204,8 +223,44 @@ void
 Player::update_walk_stand()
 {
   if (controller.get_axis_state(Y_AXIS) > 0) {
-    set_ducking();
-    return;
+    TileMap* tilemap = Sector::current()->get_tilemap2();
+    if (tilemap)
+      {
+        unsigned int col = tilemap->get_pixel(int(pos.x)/32, (int(pos.y)/32 + 1));
+
+        if ((col & TILE_STAIRS) && (get_direction() == WEST && (col & TILE_LEFT) ||
+                                    get_direction() == EAST && (col & TILE_RIGHT)))
+          {
+            std::cout << "Stair mode" << std::endl;
+            state = STAIRS_DOWN;
+            //c_object->get_check_domains() & (~CollisionObject::DOMAIN_TILEMAP));
+            Sector::current()->get_collision_engine()->remove(c_object);
+            z_pos = -10.0f;
+            return;
+          }
+        else
+          {
+            set_ducking();
+            return;
+          }
+      }
+  } else if (controller.get_axis_state(Y_AXIS) < 0) {
+    TileMap* tilemap = Sector::current()->get_tilemap2();
+    if (tilemap)
+      {
+        unsigned int col = tilemap->get_pixel(int(pos.x)/32 + ((get_direction() == WEST) ? -1 : +1),
+                                              (int(pos.y)/32));
+
+        if ((col & TILE_STAIRS) && (get_direction() == EAST && (col & TILE_LEFT) ||
+                                    get_direction() == WEST && (col & TILE_RIGHT)))
+          {
+            state = STAIRS_UP;
+            //c_object->get_check_domains() & (~CollisionObject::DOMAIN_TILEMAP));
+            Sector::current()->get_collision_engine()->remove(c_object);
+            z_pos = -10.0f;
+            return;
+          }
+      }    
   }
 
   if(state == STAND)
@@ -213,7 +268,69 @@ Player::update_walk_stand()
   else
     update_walk();
 }
-  
+
+void
+Player::update_stairs_up(float delta)
+{
+  if (get_direction() == WEST)
+    {
+      c_object->set_pos(c_object->get_pos() + Vector(-WALK_SPEED, -WALK_SPEED) * delta * 0.7f);
+    }
+  else
+    {
+      c_object->set_pos(c_object->get_pos() + Vector(WALK_SPEED, -WALK_SPEED) * delta * 0.7f);
+    }
+
+  if (!(controller.get_axis_state(Y_AXIS) < 0)) {
+     Sector::current()->get_collision_engine()->add(c_object);
+     set_stand();
+     z_pos = 100.0f;
+  }
+
+  if (0)
+    {
+      TileMap* tilemap = Sector::current()->get_tilemap2();
+      if (tilemap)
+        {
+          unsigned int col = tilemap->get_pixel(int(pos.x)/32, (int(pos.y)/32 + 1));
+          if ((col & TILE_SOLID) && !(col & TILE_STAIRS))
+            {
+              Sector::current()->get_collision_engine()->add(c_object);
+              set_stand();
+            }
+        }
+    }
+
+  velocity = Vector(0, 0);
+}
+
+void
+Player::update_stairs_down(float delta)
+{
+  if (get_direction() == WEST)
+    {
+      c_object->set_pos(c_object->get_pos() + Vector(-WALK_SPEED, WALK_SPEED) * delta * 0.7f);
+    }
+  else
+    {
+      c_object->set_pos(c_object->get_pos() + Vector(WALK_SPEED, WALK_SPEED) * delta * 0.7f);
+    }
+
+  TileMap* tilemap = Sector::current()->get_tilemap2();
+  if (tilemap)
+    {
+      unsigned int col = tilemap->get_pixel(int(pos.x)/32, (int(pos.y)/32 + 1));
+      if ((col & TILE_SOLID) && !(col & TILE_STAIRS))
+        {
+          Sector::current()->get_collision_engine()->add(c_object);
+          set_stand();
+          z_pos = 100.0f;
+        }
+    }
+
+  velocity = Vector(0, 0);
+}
+
 Entity*
 Player::find_useable_entity()
 {
@@ -246,22 +363,30 @@ Player::update_stand()
       return;
     }
     
-  if(controller.button_was_pressed(JUMP_BUTTON)) {
-    set_jump_up_begin();
-    return;
-  }
-
-  if (controller.get_axis_state(X_AXIS) < 0) {
-    if(get_direction() == WEST)
-      set_walk(WEST);
-    else
-      set_turnaround();
-  } else if (controller.get_axis_state(X_AXIS) > 0) {
-    if(get_direction() == EAST)
-      set_walk(EAST);
-    else
-      set_turnaround();
-  }
+  if(controller.button_was_pressed(JUMP_BUTTON)
+     && controller.get_axis_state(Y_AXIS) > 1.0f) 
+    {
+      set_jump_up_begin();
+    } 
+  else if (controller.button_was_pressed(AIM_BUTTON))
+    {
+      sprite.set_action("PullGun");
+      state = PULL_GUN;
+    }
+  else if (controller.get_axis_state(X_AXIS) < 0) 
+    {
+      if(get_direction() == WEST)
+        set_walk(WEST);
+      else
+        set_turnaround();
+    }
+  else if (controller.get_axis_state(X_AXIS) > 0) 
+    {
+      if(get_direction() == EAST)
+        set_walk(EAST);
+      else
+        set_turnaround();
+    }
 }
 
 void
@@ -547,6 +672,16 @@ Player::update_jump_up_land()
     set_stand();
     return;
   }
+}
+
+void
+Player::update_pull_gun()
+{
+  if (!controller.get_button_state(AIM_BUTTON))
+    {
+      sprite.set_next_action("Stand");      
+      state = STAND;
+    }
 }
 
 Direction

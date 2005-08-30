@@ -51,8 +51,26 @@ CollisionEngine::draw(DrawingContext& dc)
 void
 CollisionEngine::collision(const CollisionData &result)
 {
-  result.object1->sig_collision() (result);
-  result.object2->sig_collision() (result.invert());
+  if (result.object2->get_is_domains() & result.object1->get_check_domains())
+    {
+      result.object1->sig_collision()(result);
+    }
+  else
+    {
+      std::cout << (result.object2->get_is_domains() & result.object1->get_check_domains()) << std::endl;
+    }
+  
+  unsigned int res1 = result.object1->get_is_domains() & result.object2->get_check_domains();
+
+  if (res1)
+    {
+      result.object2->sig_collision()(result.invert());
+    }
+  else
+    {
+      std::cout << "obj1: " << result.object1->get_is_domains() << std::endl;
+      std::cout << "obj2: " << result.object2->get_check_domains() << std::endl;
+    }
 }
 
 void
@@ -279,7 +297,8 @@ CollisionEngine::update(float delta)
 	{
 	  for(Objects::iterator j = i + 1; j != objects.end(); ++j)
 	    {
-	      if (i != j)
+	      if (i != j && (((*i)->get_is_domains() & (*j)->get_check_domains()) ||
+                             ((*j)->get_is_domains() & (*i)->get_check_domains())))
 		{
 		  CollisionData r = collide(**i, **j, frame);
 		  if(r.state!=CollisionData::NONE)

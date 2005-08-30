@@ -62,6 +62,7 @@ public:
     DUCKED,
     ACCELERATE,
     RUN,
+    PULL_GUN,
     SLOWDOWN,
     STAND_TO_LISTEN,
     LISTEN,
@@ -70,7 +71,9 @@ public:
     JUMP_LAND,
     JUMP_UP_BEGIN,
     JUMP_UP_AIR,
-    JUMP_UP_LAND
+    JUMP_UP_LAND,
+    STAIRS_UP,
+    STAIRS_DOWN
   };
 
 private:
@@ -83,6 +86,7 @@ private:
   Foot jump_foot;
   
   double reload_time;
+  float  z_pos;
   static Player* current_;
 public:
   Player ();
@@ -140,6 +144,10 @@ private:
   void update_jump_up_air();
   void set_jump_up_land();
   void update_jump_up_land();
+
+  void update_pull_gun();
+  void update_stairs_up(float delta);
+  void update_stairs_down(float delta);
 
   /**
    * Sets an action for the sprite. In contrast to sprite->set_action this

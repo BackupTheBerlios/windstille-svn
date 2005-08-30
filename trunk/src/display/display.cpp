@@ -230,7 +230,8 @@ Display::init()
 
 #define cl_pixelcenter_constant 0.375
 
-  glOrtho(0.0, window->w, window->h, 0.0, -1000.0, 1000.0);
+  //glOrtho(0.0, window->w, window->h, 0.0, -1000.0, 1000.0);
+  glOrtho(0.0, 800, 600, 0.0, -1000.0, 1000.0);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslated(cl_pixelcenter_constant, cl_pixelcenter_constant, 0.0);

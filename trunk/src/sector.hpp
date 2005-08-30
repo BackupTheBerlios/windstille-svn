@@ -56,6 +56,7 @@ private:
 
   /** The TileMap with which the player interacts */
   TileMap* interactive_tilemap;
+  TileMap* interactivebackground_tilemap;
 
   CollisionEngine* collision_engine;
 
@@ -106,6 +107,7 @@ public:
 
   std::vector<GameObject*>* get_objects() { return &objects; }
   TileMap* get_tilemap() const { return interactive_tilemap; }
+  TileMap* get_tilemap2() const { return interactivebackground_tilemap; }
   void     set_tilemap(TileMap* t);
   Player* get_player() const
   {
