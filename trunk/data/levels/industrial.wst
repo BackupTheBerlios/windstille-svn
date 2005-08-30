@@ -4,7 +4,49 @@
   (name   "")
   (music  "")
   (ambient-color .4 .4 .4)
+  (spawnpoint
+    (name "default")
+    (pos 400 650)
+  )
   (objects
+    (swarm 
+        (pos 300 600)
+        (count 10))
+
+    ;; Smoke
+    (particle-system
+     (lifetime   2.0)
+     (count      35)
+     (pos       0 0)
+
+     (z-pos  1000)
+     (spawn-point 386 736)
+     (velocity    50 60)
+     (cone   -110 -80)
+     (gravity -1.5 0.5)
+     (size   0.05 1.0)
+     (drawer (surface-drawer (image "images/particles/smoke2.png")))
+     (distribution (point-distribution))
+     )
+
+
+    ;; Smoke
+    (particle-system
+     (lifetime   1.5)
+     (count      35)
+     (pos       0 0)
+
+     (z-pos  1000)
+     (spawn-point 900 736)
+     (velocity    150 160)
+     (cone   -110 -80)
+     (gravity -1.5 0.5)
+     (size   0.15 0.5)
+     (drawer (surface-drawer (image "images/particles/smoke2.png")))
+     (distribution (point-distribution))
+     )
+
+
     (scriptable-object
       (name "Lamp")
       (pos 256 736)
@@ -13,6 +55,12 @@
       (light "images/streetlamp-light.sprite")
       (active #t))
 
+   (character
+      (name "bob")
+      (sprite3d "3dsprites/barkeeper.wsprite")
+      (pos 768 736)
+    )
+ 
     (scriptable-object
       (name "Lamp")
       (pos 768 736)
