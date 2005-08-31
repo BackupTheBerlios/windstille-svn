@@ -23,21 +23,104 @@
 **  02111-1307, USA.
 */
 
+#include <iostream>
+#include "tile.hpp"
+#include "tile_map.hpp"
 #include "stair_contact.hpp"
 
-StairContact::StairContact()
+StairContact::StairContact(TileMap* tilemap_, const Point& pos_)
+  : tilemap(tilemap_), pos(pos_), advancement(0.0f)
 {
-}
+  unsigned int col = tilemap->get_pixel(pos.x, pos.y);
+  if (!(col & TILE_STAIRS))
+    std::cout << "Warning: StairContact: Given tile is no stair tile" << std::endl;
 
-void
-StairContact::set_velocity(float a)
-{
-  
+  tile_type = col;
 }
 
 void
 StairContact::update(float delta)
 {
+  // shouldn't be needed!?
+}
+
+void
+StairContact::advance(float s)
+{
+  if (s == 0)
+    return;
+
+  s /= 32.0f;
+
+  //std::cout << "Advance: (" << pos.x << ", " << pos.y << ") " << advancement << " " << s << std::endl;
+  
+  float step = (s > 0.0f) ? 1.0f : -1.0f;
+
+  // advancement must happen tile by tile  
+  while ((fabs(s) > fabs(step)) && is_active())
+    {
+      advancement += step;
+      s -= step;
+
+      // increment tile position, based on tile direction
+      // can be up/down, left/rigth
+      advance_or_not();
+    }
+
+  advancement += s;
+  advance_or_not();
+}
+
+void
+StairContact::advance_or_not()
+{
+  if (tile_type & TILE_LEFT)
+    {
+      if (advancement < -0.5f)
+        {
+          pos.x -= 1;
+          pos.y += 1;
+          advancement += 1.0f;
+        }
+      else if (advancement > 0.5f)
+        {
+          pos.x += 1;
+          pos.y -= 1;
+          advancement -= 1.0f;
+        }
+    }
+  else if (tile_type & TILE_RIGHT)
+    {
+      if (advancement < -0.5f)
+        {
+          pos.x += 1;
+          pos.y -= 1;
+          advancement += 1.0f;
+        }
+      else if (advancement > 0.5f)
+        {
+          pos.x -= 1;
+          pos.y += 1;
+          advancement -= 1.0f;
+        }
+    }
+}
+
+Vector
+StairContact::get_pos() const
+{
+  if (tile_type & TILE_RIGHT)
+    return Vector(pos.x * 32 + 16 + 32 * advancement,
+                  pos.y * 32 + 16 + 32 * advancement);
+  else // (tile_type & TILE_LEFT)
+    return Vector(pos.x * 32 + 16 + 32 * advancement,
+                  pos.y * 32 + 16 - 32 * advancement);
+}
+
+bool
+StairContact::is_active() const
+{
+  return (tilemap->get_pixel(pos.x, pos.y) & TILE_STAIRS);
 }
 
 /* EOF */

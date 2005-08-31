@@ -9,6 +9,9 @@ sources =
   collision_object.hpp
   collision_test.cpp
   collision_test.hpp
+  contact.hpp
+  stair_contact.hpp
+  stair_contact.cpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;

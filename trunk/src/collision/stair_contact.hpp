@@ -28,17 +28,43 @@
 
 #include "contact.hpp"
 
+class TileMap;
+
 /** A special contact to walk stairs up or down */
 class StairContact : public Contact
 {
 private:
+  /** The tilemap with which the contact interacts */
+  TileMap* tilemap;
+
+  /** Current position in unit of tiles */
+  Point pos;
+
+  /** Amount of how much we are away from the center of the tile, its
+      in range [-0.5, 0.5], else we move on to the next tile.
+      advancement is in sync with the x-axis, y-axis depend on
+      direction */
+  float advancement;
+
+  unsigned int tile_type;
+
 public:
-  StairContact();
+  StairContact(TileMap* tilemap, const Point& p);
   
-  void set_velocity(float a);
   void update(float delta);
 
+  /** Move the contact forward or backward across the stairs */
+  void advance(float s);
+
+  /** Get the current position in world coordinates */
+  Vector get_pos() const;
+
+  /** Return false when the given contact has left the stairs */
+  bool is_active() const;
+
 private:
+  void advance_or_not();
+
   StairContact (const StairContact&);
   StairContact& operator= (const StairContact&);
 };

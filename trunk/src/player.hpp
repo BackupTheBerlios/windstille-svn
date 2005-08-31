@@ -30,6 +30,7 @@
 #include "glutil/surface.hpp"
 
 class Controller;
+class Contact;
 class LaserPointer;
 
 class Player : public Entity
@@ -52,6 +53,8 @@ private:
   Slot slot;
 
   LaserPointer* laser_pointer;
+  Contact* contact;
+
 public:
   enum State
   {
@@ -146,8 +149,7 @@ private:
   void update_jump_up_land();
 
   void update_pull_gun();
-  void update_stairs_up(float delta);
-  void update_stairs_down(float delta);
+  void update_stairs(float delta);
 
   /**
    * Sets an action for the sprite. In contrast to sprite->set_action this

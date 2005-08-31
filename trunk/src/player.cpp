@@ -32,6 +32,7 @@
 #include "particles/particle_system.hpp"
 #include "collision/collision_engine.hpp"
 #include "laser_pointer.hpp"
+#include "collision/stair_contact.hpp"
 #include "game_session.hpp"
 #include "console.hpp"
 
@@ -73,6 +74,8 @@ Player::Player () :
   Sector::current()->get_collision_engine()->add(c_object);
 
   z_pos = 100.0f;
+
+  contact = 0;
 }
 
 Player::~Player()
@@ -134,7 +137,7 @@ Player::stop_listening()
 }
 
 void 
-Player::update (float delta)
+Player::update(float delta)
 {
   laser_pointer->update(delta);
 
@@ -189,10 +192,8 @@ Player::update (float delta)
           update_pull_gun();
           break;
         case STAIRS_DOWN:
-          update_stairs_down(delta);
-          break;
         case STAIRS_UP:
-          update_stairs_up(delta);
+          update_stairs(delta);
           break;
         default:
           assert(false);
@@ -226,11 +227,15 @@ Player::update_walk_stand()
     TileMap* tilemap = Sector::current()->get_tilemap2();
     if (tilemap)
       {
-        unsigned int col = tilemap->get_pixel(int(pos.x)/32, (int(pos.y)/32 + 1));
+        Point p(int(pos.x)/32, (int(pos.y)/32 + 1));
+        unsigned int col = tilemap->get_pixel(p.x, p.y);
 
         if ((col & TILE_STAIRS) && (get_direction() == WEST && (col & TILE_LEFT) ||
                                     get_direction() == EAST && (col & TILE_RIGHT)))
           {
+            delete contact;
+            contact = new StairContact(tilemap, p);
+
             std::cout << "Stair mode" << std::endl;
             state = STAIRS_DOWN;
             //c_object->get_check_domains() & (~CollisionObject::DOMAIN_TILEMAP));
@@ -248,12 +253,15 @@ Player::update_walk_stand()
     TileMap* tilemap = Sector::current()->get_tilemap2();
     if (tilemap)
       {
-        unsigned int col = tilemap->get_pixel(int(pos.x)/32 + ((get_direction() == WEST) ? -1 : +1),
-                                              (int(pos.y)/32));
+        Point p(int(pos.x)/32 + ((get_direction() == WEST) ? -1 : +1), (int(pos.y)/32));
+        unsigned int col = tilemap->get_pixel(p.x, p.y);
 
         if ((col & TILE_STAIRS) && (get_direction() == EAST && (col & TILE_LEFT) ||
                                     get_direction() == WEST && (col & TILE_RIGHT)))
           {
+            delete contact;
+            contact = new StairContact(tilemap, p);
+
             state = STAIRS_UP;
             //c_object->get_check_domains() & (~CollisionObject::DOMAIN_TILEMAP));
             Sector::current()->get_collision_engine()->remove(c_object);
@@ -270,65 +278,25 @@ Player::update_walk_stand()
 }
 
 void
-Player::update_stairs_up(float delta)
+Player::update_stairs(float delta)
 {
-  if (get_direction() == WEST)
-    {
-      c_object->set_pos(c_object->get_pos() + Vector(-WALK_SPEED, -WALK_SPEED) * delta * 0.7f);
-    }
-  else
-    {
-      c_object->set_pos(c_object->get_pos() + Vector(WALK_SPEED, -WALK_SPEED) * delta * 0.7f);
-    }
+  assert(contact);
 
-  if (!(controller.get_axis_state(Y_AXIS) < 0)) {
-     Sector::current()->get_collision_engine()->add(c_object);
-     set_stand();
-     z_pos = 100.0f;
-  }
-
-  if (0)
-    {
-      TileMap* tilemap = Sector::current()->get_tilemap2();
-      if (tilemap)
-        {
-          unsigned int col = tilemap->get_pixel(int(pos.x)/32, (int(pos.y)/32 + 1));
-          if ((col & TILE_SOLID) && !(col & TILE_STAIRS))
-            {
-              Sector::current()->get_collision_engine()->add(c_object);
-              set_stand();
-            }
-        }
-    }
+  if (controller.get_axis_state(X_AXIS) < 0 ||
+      controller.get_axis_state(Y_AXIS) > 0)
+    contact->advance(-WALK_SPEED * delta * 0.7f);
+  else if (controller.get_axis_state(X_AXIS) > 0 ||
+           controller.get_axis_state(Y_AXIS) < 0)
+    contact->advance(WALK_SPEED * delta * 0.7f);
 
   velocity = Vector(0, 0);
-}
+  c_object->set_pos(contact->get_pos());
 
-void
-Player::update_stairs_down(float delta)
-{
-  if (get_direction() == WEST)
+  if (!contact->is_active())
     {
-      c_object->set_pos(c_object->get_pos() + Vector(-WALK_SPEED, WALK_SPEED) * delta * 0.7f);
+      Sector::current()->get_collision_engine()->add(c_object);
+      state = STAND;
     }
-  else
-    {
-      c_object->set_pos(c_object->get_pos() + Vector(WALK_SPEED, WALK_SPEED) * delta * 0.7f);
-    }
-
-  TileMap* tilemap = Sector::current()->get_tilemap2();
-  if (tilemap)
-    {
-      unsigned int col = tilemap->get_pixel(int(pos.x)/32, (int(pos.y)/32 + 1));
-      if ((col & TILE_SOLID) && !(col & TILE_STAIRS))
-        {
-          Sector::current()->get_collision_engine()->add(c_object);
-          set_stand();
-          z_pos = 100.0f;
-        }
-    }
-
-  velocity = Vector(0, 0);
 }
 
 Entity*
