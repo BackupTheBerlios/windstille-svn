@@ -12,6 +12,8 @@ sources =
   contact.hpp
   stair_contact.hpp
   stair_contact.cpp
+  ladder_contact.hpp
+  ladder_contact.cpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
