@@ -20,14 +20,14 @@
 #ifndef HEADER_PARTICLES_DRAWER_HXX
 #define HEADER_PARTICLES_DRAWER_HXX
 
-class SceneContext;
+class DrawingContext;
 class ParticleSystem;
 
 class Drawer
 {
 public:
   virtual ~Drawer() {}
-  virtual void draw(SceneContext& sc, ParticleSystem& psys) =0;
+  virtual void draw(DrawingContext& sc, ParticleSystem& psys) =0;
 };
 
 #endif

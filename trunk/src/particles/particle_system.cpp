@@ -57,6 +57,8 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   color_start = Color(1.0f, 1.0f, 1.0f, 1.0f);
   color_stop  = Color(   0,    0,    0,    0);
 
+  layer = SceneContext::COLORMAP;
+
   // Set stuff from Lisp
   lisp::Properties props(lisp);
 
@@ -110,6 +112,21 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   Vector p_speed;
   if (props.get("velocity", p_speed))
     set_velocity(p_speed.x, p_speed.y);
+
+  {
+    std::string layer_str;
+    if (props.get("layer", layer_str))
+      {
+        if (layer_str == "highlight")
+          layer = SceneContext::HIGHLIGHTMAP;
+        else if (layer_str == "light")
+          layer = SceneContext::LIGHTMAP;
+        else if (layer_str == "color")
+          layer = SceneContext::COLORMAP;
+        else
+          std::cout << "ParticleSystem: Unknown layer type: '" << layer_str << "'" << std::endl;
+      }
+  }
 
   {
     const lisp::Lisp* drawer_lisp = 0;
@@ -223,7 +240,7 @@ ParticleSystem::draw(SceneContext& sc)
 {
   if (drawer)
     {
-      drawer->draw(sc, *this);
+      drawer->draw(sc.get_layer(layer), *this);
     }
   else
     {

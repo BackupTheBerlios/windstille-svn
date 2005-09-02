@@ -38,7 +38,7 @@ public:
   
   void set_texture(Surface surface);
   void set_blendfuncs(GLenum blendfunc_src, GLenum blendfunc_dst);
-  void draw(SceneContext& sc, ParticleSystem& psys);
+  void draw(DrawingContext& sc, ParticleSystem& psys);
 };
 
 #endif

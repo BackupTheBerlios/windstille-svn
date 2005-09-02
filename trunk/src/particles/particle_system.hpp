@@ -56,6 +56,7 @@ class ParticleSystem : public Entity
 public:
   typedef std::vector<Particle> Particles;
   typedef Particles::iterator iterator;
+
 private:
   Particles particles;
 
@@ -79,6 +80,9 @@ private:
   float cone_stop;
 
   float bunching;
+
+  /** Type of layer to which this particle system gets drawn */
+  unsigned int layer;
 
 public:
   float size_start;

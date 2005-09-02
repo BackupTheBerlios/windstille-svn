@@ -79,6 +79,9 @@ public:
 
   void set_render_mask(unsigned int mask);
   unsigned int get_render_mask();
+
+  DrawingContext& get_layer(unsigned int t);
+
 private:
   SceneContextImpl* impl;
 

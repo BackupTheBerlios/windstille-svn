@@ -35,10 +35,10 @@ SparkDrawer::SparkDrawer(const lisp::Lisp* lisp)
 }
 
 void
-SparkDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
+SparkDrawer::draw(DrawingContext& dc, ParticleSystem& psys) 
 {
   VertexArrayDrawingRequest* buffer = new VertexArrayDrawingRequest(Vector(0, 0), psys.get_z_pos(),
-                                                                    sc.color().get_modelview());
+                                                                    dc.get_modelview());
   if (width == 1.0f)
     {
       buffer->set_mode(GL_LINES);
@@ -76,7 +76,7 @@ SparkDrawer::draw(SceneContext& sc, ParticleSystem& psys)
         }
     }
 
-  sc.color().draw(buffer);
+  dc.draw(buffer);
 }
 
 /* EOF */

@@ -88,11 +88,11 @@ SurfaceDrawer::set_blendfuncs(GLenum blendfunc_src, GLenum blendfunc_dest)
 }
 
 void
-SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys) 
+SurfaceDrawer::draw(DrawingContext& dc, ParticleSystem& psys) 
 {          
   VertexArrayDrawingRequest* buffer 
     = new VertexArrayDrawingRequest(Vector(psys.get_x_pos(), psys.get_y_pos()), psys.get_z_pos(),
-                                    sc.color().get_modelview());
+                                    dc.get_modelview());
 
   buffer->set_mode(GL_QUADS);
   buffer->set_texture(surface.get_texture());
@@ -142,7 +142,7 @@ SurfaceDrawer::draw(SceneContext& sc, ParticleSystem& psys)
         }
     }
 
-  sc.color().draw(buffer);
+  dc.draw(buffer);
 }
 
 /* EOF */
