@@ -53,12 +53,8 @@ sources =
         entity.hpp
         elevator.hpp
         elevator.cpp
-        font_effect.hpp
-        inventory.cpp
-        inventory.hpp
-        ttf_font.cpp
-        ttf_font.hpp
         field.hpp
+        font_effect.hpp
         fonts.cpp
         fonts.hpp
         gameconfig.hpp
@@ -71,6 +67,10 @@ sources =
         globals.hpp
         graphic_context_state.cpp
         graphic_context_state.hpp
+        grenade.cpp
+        grenade.hpp
+        inventory.cpp
+        inventory.hpp        
         laser_pointer.hpp
         laser_pointer.cpp
         math.hpp
@@ -113,6 +113,8 @@ sources =
         timer.cpp
         trigger.cpp
         trigger.hpp
+        ttf_font.cpp
+        ttf_font.hpp        
         util.cpp
         util.hpp
         view.cpp

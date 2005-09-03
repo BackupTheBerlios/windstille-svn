@@ -18,18 +18,23 @@ Physics::~Physics()
 void
 Physics::register_collobj(CollisionObject& object)
 {
+  printf("RegisterObject: %p\n", &object);
   slots.push_back(object.sig_collision().connect(this, &Physics::collision));
 }
 
 void
 Physics::collision(const CollisionData& data)
 {
+  printf("collision %p - %p\n", data.object1, data.object2);
   GameObject* other_object = data.object2->get_game_object();
+  
+  // XXX just for testing, to avoid all the collisions
+  data.object1->set_velocity(data.object1->get_velocity() * -1);
+  //data.object2->set_velocity(data.object2->get_velocity() * -1);
   if(other_object == 0)
     return;
-
-  data.object1->set_velocity(Vector(0, 0));
-  data.object2->set_velocity(Vector(0, 0));
+  
+  return;
 
   const Physics* physics = dynamic_cast<const Physics*> (other_object);
   if(physics)
@@ -89,6 +94,7 @@ Physics::update(float elapsed_time)
   
   Vector acceleration = force / mass;
   velocity() += acceleration * elapsed_time;
+  pos() += velocity() * elapsed_time;
 
   force = Vector(0, 0);
 }

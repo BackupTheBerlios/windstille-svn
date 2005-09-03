@@ -35,6 +35,7 @@
 #include "collision/stair_contact.hpp"
 #include "game_session.hpp"
 #include "console.hpp"
+#include "grenade.hpp"
 
 static const int MAX_ENERGY = 16;
 static const float WALK_SPEED = 128.0;
@@ -338,6 +339,12 @@ Player::update_stand()
     } 
   else if (controller.button_was_pressed(AIM_BUTTON))
     {
+      // TODO remove me later, just here for testing
+      Grenade* grenade = new Grenade();
+      grenade->set_pos(get_pos() + Vector(50, -300));
+      grenade->set_velocity(Vector(20, -10));
+      Sector::current()->add(grenade);
+      
       sprite.set_action("PullGun");
       state = PULL_GUN;
     }

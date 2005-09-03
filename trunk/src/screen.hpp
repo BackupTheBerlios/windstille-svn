@@ -40,7 +40,7 @@ public:
   virtual void update(float delta, const Controller& controller) =0;
 
   /** Called once a new SDL_Event arrives */
-  virtual void handle_event(const SDL_Event& event) {}
+  virtual void handle_event(const SDL_Event& ) {}
 };
 
 #endif
