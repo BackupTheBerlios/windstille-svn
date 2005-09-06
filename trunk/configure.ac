@@ -135,7 +135,9 @@ fi
 AC_CHECK_FT2(,,AC_MSG_ERROR([Please install freetype2]))
 
 NP_FINDLIB([PHYSFS], [physfs], [physfs >= 1.0.0],
-        NP_LANG_PROGRAM([#include <physfs.h>
+        NP_LANG_PROGRAM([
+#include <stdio.h>
+#include <physfs.h>
 #if PHYSFS_VER_MAJOR < 1
 # error PHYSFS is too old
 #endif]),
