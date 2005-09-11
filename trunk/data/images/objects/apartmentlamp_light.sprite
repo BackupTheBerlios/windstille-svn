@@ -2,6 +2,6 @@
   (action
     (name "default")
     (images "apartmentlamp_light.png")
-    (offset -400 -90)
+    (offset -400 -100)
   )
 )
