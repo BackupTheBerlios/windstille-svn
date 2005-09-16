@@ -86,10 +86,6 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   if (props.get("cycles",  p_cycles))
     set_cycles(p_cycles);
 
-  Vector p_spawn_point;
-  if (props.get("spawn-point", p_spawn_point))
-    set_spawn_point(p_spawn_point.x, p_spawn_point.y);
-
   Vector p_pos;
   if (props.get("pos", p_pos))
     set_pos(p_pos.x, p_pos.y);
@@ -253,8 +249,8 @@ ParticleSystem::spawn(Particle& particle)
 {
   randomizer->set_pos(particle);
 
-  particle.x   += (parent ? parent->get_pos().x : 0) + spawn_x_pos;
-  particle.y   += (parent ? parent->get_pos().y : 0) + spawn_y_pos;
+  particle.x   += (parent ? parent->get_pos().x : 0) + x_pos;
+  particle.y   += (parent ? parent->get_pos().y : 0) + y_pos;
 
   float direction = rnd.drand(cone_start, cone_stop);
   float speed     = rnd.drand(speed_start, speed_stop);
@@ -318,13 +314,6 @@ ParticleSystem::set_pos(float x, float y)
 {
   x_pos = x;
   y_pos = y;
-}
-
-void
-ParticleSystem::set_spawn_point(float x, float y)
-{
-  spawn_x_pos = x;
-  spawn_y_pos = y;
 }
 
 void

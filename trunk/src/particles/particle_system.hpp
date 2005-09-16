@@ -70,9 +70,6 @@ private:
   float y_pos;
   float z_pos;
 
-  float spawn_x_pos;
-  float spawn_y_pos;
-
   float gravity_x;
   float gravity_y;
   
@@ -123,8 +120,6 @@ public:
 
   /** The position from which the particles spawn, x,y are in world
       coordinates */
-  void set_spawn_point(float x, float y);
-
   void set_pos(float x, float y);
   
   /** Causes all particles to spawn from a single point */
