@@ -37,6 +37,7 @@ Character::Character(const lisp::Lisp* lisp)
 {
   set_useable(true);
   use_verb = "Talk";
+  z_pos = 100.0f;
 
   std::string sprite3d_filename = "3dsprites/heroken.wsprite";
   std::string action_name;
@@ -44,6 +45,7 @@ Character::Character(const lisp::Lisp* lisp)
   lisp::Properties props(lisp);
   props.get("name", name);
   props.get("pos", pos);
+  props.get("z-pos", z_pos);
   props.get("sprite3d", sprite3d_filename);
   props.get("action", action_name);
   props.print_unused_warnings("character");
@@ -67,7 +69,7 @@ Character::update(float delta)
 void
 Character::draw (SceneContext& sc)
 {
-  sprite.draw(sc.color(), pos, 100);
+  sprite.draw(sc.color(), pos, z_pos);
 }
 
 void
