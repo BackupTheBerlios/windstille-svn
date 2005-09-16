@@ -47,6 +47,7 @@ DialogManager::add_dialog(int alignment_, const std::string& portrait_, const st
   delay     = 0.0;
   alignment = alignment_;
   portrait  = Sprite(portrait_);
+  portrait.set_scale(0.65f);
   text      = text_;
   caption = false;
   
