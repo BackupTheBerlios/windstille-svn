@@ -58,18 +58,20 @@ ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
   if (use_verb != "")
     set_useable(true);
   
-  if(spritename == "")
-    throw std::runtime_error("No sprite name specified in ScriptableObject");
-  sprite = Sprite(spritename);
+  if(spritename != "")
+    sprite = Sprite(spritename);
   
   if (highlightname != "")
-    highlight = Sprite(highlightname);
+    {
+      highlight = Sprite(highlightname);
+      highlight.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+    }
 
   if (lightname != "")
-    light = Sprite(lightname);
-
-  highlight.set_blend_func(GL_SRC_ALPHA, GL_ONE);
-  light.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+    {
+      light = Sprite(lightname);
+      light.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+    }
     
   flash_delta = game_time;
   target_x = pos.x;
@@ -83,25 +85,32 @@ ScriptableObject::~ScriptableObject()
 void
 ScriptableObject::draw(SceneContext& sc)
 {
+  Vector tmp_pos = pos;
+
+  if (parent)
+    tmp_pos += parent->get_pos();
+
   if (flash_speed != 0)
     flash();
 
   if (sprite)
-    sc.color().draw(sprite, pos, z_pos);
+    sc.color().draw(sprite, tmp_pos, z_pos);
   
   if (highlight) 
-    sc.highlight().draw(highlight, pos, z_pos);
+    sc.highlight().draw(highlight, tmp_pos, z_pos);
 
   if (light) 
     {
-      sc.light().draw(light, pos, z_pos);
+      sc.light().draw(light, tmp_pos, z_pos);
     }
 }
 
 void
 ScriptableObject::update(float delta)
 {
-  sprite.update(delta);
+  if (sprite)
+    sprite.update(delta);
+
   if (highlight)
     highlight.update(delta);
 
