@@ -28,6 +28,7 @@ class Character : public Entity
 {
 private:
   Sprite3D sprite;
+  float z_pos;
     
 public:
   Character(const lisp::Lisp* lisp);
