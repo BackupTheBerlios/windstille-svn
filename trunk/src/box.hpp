@@ -17,8 +17,8 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef BOX_HXX
-#define BOX_HXX
+#ifndef HEADER_WINDSTILLE_BOX_HXX
+#define HEADER_WINDSTILLE_BOX_HXX
 
 #include "entity.hpp"
 #include "lisp/lisp.hpp"

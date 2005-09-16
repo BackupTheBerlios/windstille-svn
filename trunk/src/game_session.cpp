@@ -31,7 +31,7 @@
 #include <sqstdio.h> 
 #include <sqstdaux.h> 
 
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "sector.hpp"
 #include "console.hpp"
 #include "game_object.hpp"

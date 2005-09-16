@@ -31,3 +31,4 @@ void file_to_string(const std::string& filename, std::string& str)
     }
 }
 
+/* EOF */

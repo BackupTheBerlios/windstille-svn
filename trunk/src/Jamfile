@@ -3,6 +3,7 @@ SubDir TOP src ;
 SubInclude TOP src badguy ;
 SubInclude TOP src collision ;
 SubInclude TOP src display ;
+SubInclude TOP src font ;
 SubInclude TOP src glutil ;
 SubInclude TOP src gui ;
 SubInclude TOP src input ;
@@ -27,8 +28,6 @@ sources =
         bomb.hpp
 	box.cpp
  	box.hpp
-        border_font_effect.hpp
-        border_font_effect.cpp
         camera.cpp
         camera.hpp
         character.cpp
@@ -54,9 +53,6 @@ sources =
         elevator.hpp
         elevator.cpp
         field.hpp
-        font_effect.hpp
-        fonts.cpp
-        fonts.hpp
         gameconfig.hpp
         gameconfig.cpp
         game_object.cpp
@@ -113,8 +109,6 @@ sources =
         timer.cpp
         trigger.cpp
         trigger.hpp
-        ttf_font.cpp
-        ttf_font.hpp        
         util.cpp
         util.hpp
         view.cpp
@@ -131,6 +125,8 @@ Application windstille
     :   $(badguy_objects)
     
         $(display_objects)
+
+        $(font_objects)
 
         $(glutil_objects)
 

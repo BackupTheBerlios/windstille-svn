@@ -26,10 +26,10 @@
 #include <assert.h>
 
 #include "glutil/opengl_state.hpp"
-#include "ttf_font.hpp"
+#include "font/ttf_font.hpp"
 #include "text_area.hpp"
 #include "baby_xml.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "text_area.hpp"
 
 struct TextAreaCommand 

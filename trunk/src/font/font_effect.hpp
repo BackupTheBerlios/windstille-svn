@@ -23,8 +23,8 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_FONT_EFFECT_HPP
-#define HEADER_FONT_EFFECT_HPP
+#ifndef HEADER_WINDSTILLE_FONT_EFFECT_HPP
+#define HEADER_WINDSTILLE_FONT_EFFECT_HPP
 
 #include <SDL.h>
 #include <ft2build.h>

@@ -222,6 +222,10 @@ static float find_max(float pos, float v)
 Vector
 TileMap::raycast(const Vector& pos, float angle)
 {
+  ////////////////////////////////////////////
+  // FIXME: This code is buggy, use code from LaserPointer instead
+  ///////////////////////////////////////////////
+  
   // Ray position in Tile units
   int x = static_cast<int>(pos.x / TILE_SIZE);
   int y = static_cast<int>(pos.y / TILE_SIZE);
