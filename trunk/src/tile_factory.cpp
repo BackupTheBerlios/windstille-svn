@@ -133,7 +133,7 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
     }
  
   try {
-    int num_tiles = (image->w/TILE_RESOLUTION) * (image->h/TILE_RESOLUTION);
+    int num_tiles = width * height; //(image->w/TILE_RESOLUTION) * (image->h/TILE_RESOLUTION);
     if (int(colmap.size()) != num_tiles)
       {
         std::ostringstream str;
@@ -151,9 +151,9 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
       }
     
     int i = 0;
-    for (int y = 0; y < image->h; y += TILE_RESOLUTION)
+    for (int y = 0; y < height*TILE_RESOLUTION; y += TILE_RESOLUTION)
       {
-        for (int x = 0; x < image->w; x += TILE_RESOLUTION)
+        for (int x = 0; x < width*TILE_RESOLUTION; x += TILE_RESOLUTION)
           {
             int id = ids[i];
             int collider = colmap[i];
@@ -163,7 +163,7 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
             if(id < (int) tiles.size() && tiles[id] != 0)
               {
                 std::ostringstream msg;
-                msg << "Dusplicate tile id: " << id;
+                msg << "Duplicate tile id: " << filename << " " << id;
                 throw std::runtime_error(msg.str());
               } 
             if (id >= int(tiles.size()))
