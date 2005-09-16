@@ -311,7 +311,7 @@ Player::find_useable_entity()
         {
           //FIXME use proper collision detection
           if (object->get_pos().x > pos.x - 32 && object->get_pos().x < pos.x + 32
-              && object->get_pos().y > pos.y - 128 && object->get_pos().y < pos.y + 32)
+              && object->get_pos().y > pos.y - 256 && object->get_pos().y < pos.y + 256)
             {
               return object;
             }
