@@ -17,10 +17,9 @@
     (particle-system
      (lifetime   2.0)
      (count      35)
-     (pos       0 0)
 
      (z-pos  1000)
-     (spawn-point 386 736)
+     (pos 386 736)
      (velocity    50 60)
      (cone   -110 -80)
      (gravity -1.5 0.5)
@@ -34,10 +33,9 @@
     (particle-system
      (lifetime   1.5)
      (count      35)
-     (pos       0 0)
 
      (z-pos  1000)
-     (spawn-point 900 736)
+     (pos 900 736)
      (velocity    150 160)
      (cone   -110 -80)
      (gravity -1.5 0.5)
@@ -57,7 +55,7 @@
 
    (character
       (name "bob")
-      (sprite3d "3dsprites/barkeeper.wsprite")
+      (sprite3d "models/characters/bob/bob.wsprite")
       (pos 768 736)
     )
  

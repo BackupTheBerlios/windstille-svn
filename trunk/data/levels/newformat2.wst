@@ -27,11 +27,10 @@
     (particle-system
      (lifetime   1.0)
      (count      15)
-     (pos       0 0)
      (bunching 0.8)
 
      (z-pos  1000)
-     (spawn-point 128 800)
+     (pos 128 800)
      (velocity    150 200)
      (cone   -10 10)
      (gravity -0.5 -1.5)
@@ -44,9 +43,8 @@
     (particle-system
      (lifetime   0.6)
      (count      250)
-     (pos       0 0)
      (z-pos  1000)
-     (spawn-point 532 640)
+     (pos 532 640)
      (velocity    150 200)
      (cone   70 110)
      (gravity 0 5)
@@ -59,9 +57,8 @@
     (particle-system
      (lifetime   .2)
      (count      50)
-     (pos       0 0)
      (z-pos  1000)
-     (spawn-point 532 836)
+     (pos 532 836)
      (velocity    50 100)
      (cone   -110 -70)
      (gravity 0 5)
@@ -73,9 +70,8 @@
     ;; Fire sparks
     (particle-system
      (drawer (spark-drawer (color 1.0 0.5 0.5)))
-     (pos 0 0)
      (z-pos 900)
-     (spawn-point 768 832)
+     (pos 768 832)
      (velocity 300 550)
      (cone -115 -65)
      (gravity 0  5)
@@ -83,14 +79,13 @@
     
     ;; Fire smoke
     (particle-system
-     (spawn-point 768 832)
+     (pos 768 832)
      (lifetime 8)
      (count 30)
      (z-pos -200)
      (drawer (surface-drawer (image "images/particles/smoke2.png")
                              (blendfunc-src "src_alpha")
                              (blendfunc-dst "one_minus_src_alpha")))
-     (pos 0 0)
      (velocity 70 100)
      (cone -115 -65)
      (gravity 0 -1)
@@ -100,11 +95,10 @@
     ;; Burning player
     (particle-system
      (name "player_flames")
-     (spawn-point 0 0)
+     (pos 0 0)
      (count 40)
      (z-pos 1000)
      (lifetime   .5)
-     (pos 0 0)
      (velocity 100 200)
      (color-begin 1.0 1.0 1.0 0.5)
      (cone -95 -85)
@@ -118,10 +112,9 @@
     (particle-system
      (name "player_flames2")
      (lifetime   .5)
-     (spawn-point 0 0)
+     (pos 0 0)
      (count 40)
      (z-pos -100)
-     (pos 0 0)
      (velocity 100 200)
      (cone -95 -85)
      (gravity 0 0)
@@ -132,13 +125,27 @@
                              (blendfunc-src "src_alpha")
                              (blendfunc-dst "one"))))
 
+    ;; Fire Light
+    (particle-system
+     (pos 768 800)
+     (lifetime 1.0)
+     (count 20)
+     (layer "light")
+     (z-pos 1000)
+     (velocity 200 300)
+     (cone -95 -85)
+     (gravity 0 0)
+     (distribution (line-distribution (x1 -50) (y1 0) (x2 50) (y2 0)))
+     (drawer (surface-drawer (image "images/particles/fire_light.png")
+                             (blendfunc-src "src_alpha")
+                             (blendfunc-dst "one"))))
     
     ;; Fire itself
     (particle-system
-     (spawn-point 768 832)
+     (pos 768 832)
      (count 50)
      (z-pos 1000)
-     (pos 0 0)
+     (layer "highlight")
      (velocity 200 300)
      (cone -95 -85)
      (gravity 0 0)
@@ -148,10 +155,9 @@
                              (blendfunc-dst "one"))))
 
     (particle-system
-     (spawn-point 768 832)
+     (pos 768 832)
      (count 50)
      (z-pos -10)
-     (pos 0 0)
      (velocity 200 300)
      (cone -95 -85)
      (gravity 0 0)
@@ -224,7 +230,7 @@
       (sprite "images/objects/vrdoor-color.sprite")
       (highlight "images/objects/vrdoor-highlight.sprite")
       (pos 384 704)
-      (script "set_sector(\"levels/newformat2.wst\")")
+      (script "set_sector(\"levels/industrial.wst\")")
       (use-verb "Enter")
     )
 

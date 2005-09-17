@@ -65,7 +65,7 @@ function bye()
     dialog.show("See you again some time");
 }
 
-dialog <- Dialog(0, "Bob", "images/portrait.sprite");
+dialog <- Dialog(0, "Bob", "images/portraits/bob.sprite");
 if (is_objective_given("Kill spider"))
   explain_job();
 else if (bob_knows_you_mercenary)

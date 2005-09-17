@@ -1,7 +1,7 @@
 
 /* play_sound("sounds/speech/vr_intro.ogg"); */
 println("Dislaying dialog");
-add_dialog(TOP, "Frank", "images/portrait.sprite", 
+add_dialog(TOP, "Frank", "images/portraits/sophie.sprite", 
        "<sin>Welcome</sin> to the <large>VR training program</large>. Here you " +
        "will learn the <sin>basic manoeuvering</sin> abilities of <large>your</large> " +
        "powersuit,<sleep> jumping,<sleep> running, <sleep> climbing<sleep> and shooting. " +
