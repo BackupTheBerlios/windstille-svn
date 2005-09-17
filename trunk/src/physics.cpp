@@ -25,11 +25,7 @@ Physics::register_collobj(CollisionObject& object)
 void
 Physics::collision(const CollisionData& data)
 {
-  printf("collision %p - %p\n", data.object1, data.object2);
   GameObject* other_object = data.object2->get_game_object();
-  
-  if(other_object == 0)
-    return;
 
   const Physics* physics = dynamic_cast<const Physics*> (other_object);
   if(physics)
@@ -60,8 +56,8 @@ Physics::elastic_collision(const CollisionData& data, const Physics& other)
   new_v += other_collision_vel * (2 * other.mass);
   new_v /= mass + other.mass;
 
-  // velocity += new_v - collision_vel
-  force += (new_v - collision_vel) * mass / data.delta;
+  velocity() += new_v - collision_vel;  
+  //force += (new_v - collision_vel) * mass / data.delta;
 
   // TODO apply friction here?
 }
@@ -73,8 +69,8 @@ Physics::bounce_collision(const CollisionData& data)
   Vector collision_vel
     = data.direction * (velocity() * data.direction);
 
-  // velocity -= collision_vel * (1.0 + bounciness)
-  force -= collision_vel * (1.0f + bounciness) * mass / data.delta;
+  velocity() -= collision_vel * (1.0 + bounciness);
+  //force -= collision_vel * (1.0f + bounciness) * mass / data.delta;
 
   // TODO apply friction
 }
@@ -82,8 +78,6 @@ Physics::bounce_collision(const CollisionData& data)
 void
 Physics::update(float elapsed_time)
 {
-  // take a look at verlet integration, might work better than euler here
- 
   // add gravity force (TODO make it configurable per Sector)
   force += Vector(0, 9.81 * mass);
 

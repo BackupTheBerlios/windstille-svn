@@ -240,6 +240,7 @@ WindstilleMain::main(int argc, char** argv)
   delete dictionaryManager;
   dictionaryManager = 0;
   
+  SDL_Quit();
   PHYSFS_deinit();
 
   return 0;
