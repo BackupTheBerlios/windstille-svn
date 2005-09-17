@@ -24,7 +24,7 @@
 
 #include <assert.h>
 #include "math/rect.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "game_session.hpp"
 #include "input/input_manager.hpp"
 #include "script_manager.hpp"

@@ -26,7 +26,7 @@
 #include "input/input_manager.hpp"
 #include "display/display.hpp"
 #include "text_area.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "controller_help_window.hpp"
 
 ControllerHelpWindow* ControllerHelpWindow::current_ = 0;

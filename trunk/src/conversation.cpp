@@ -19,7 +19,7 @@
 
 #include "input/controller.hpp"
 #include "input/input_manager.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "math/rect.hpp"
 #include "script_manager.hpp"
 #include "display/display.hpp"

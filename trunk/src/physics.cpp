@@ -28,23 +28,20 @@ Physics::collision(const CollisionData& data)
   printf("collision %p - %p\n", data.object1, data.object2);
   GameObject* other_object = data.object2->get_game_object();
   
-  // XXX just for testing, to avoid all the collisions
-  data.object1->set_velocity(data.object1->get_velocity() * -1);
-  //data.object2->set_velocity(data.object2->get_velocity() * -1);
   if(other_object == 0)
     return;
-  
-  return;
 
   const Physics* physics = dynamic_cast<const Physics*> (other_object);
   if(physics)
   {
     elastic_collision(data, *physics);
+    data.object1->set_velocity(velocity());
     return;
   }
 
   // assume fix object...
   bounce_collision(data);
+  data.object1->set_velocity(velocity());
 }
 
 void

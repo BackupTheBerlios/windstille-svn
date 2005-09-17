@@ -27,7 +27,7 @@
 #include <vector>
 #include "game_session.hpp"
 #include "sprite2d/sprite.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "input/input_manager.hpp"
 #include "input/controller.hpp"
 #include "inventory.hpp"

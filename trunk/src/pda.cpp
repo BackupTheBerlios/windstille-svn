@@ -26,7 +26,7 @@
 #include "input/input_manager.hpp"
 #include "display/display.hpp"
 #include "text_area.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "pda.hpp"
 
 DialogEntry::DialogEntry(const std::string& arg_character, const std::string& arg_text)

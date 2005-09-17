@@ -7,7 +7,7 @@
 #include "conversation.hpp"
 #include "script_manager.hpp"
 #include "sector.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "serialize.hpp"
 #include "camera.hpp"
 #include "pda.hpp"

@@ -18,7 +18,7 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "game_session.hpp"
 #include "input/controller.hpp"
 #include "input/input_manager.hpp"

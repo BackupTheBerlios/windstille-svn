@@ -22,7 +22,7 @@
 #include "display/display.hpp"
 #include "windstille_main.hpp"
 #include "screen.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "globals.hpp"
 #include "console.hpp"
 #include "gameconfig.hpp"

@@ -29,7 +29,7 @@
 #include "display/display.hpp"
 #include "globals.hpp"
 #include "screen.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "gameconfig.hpp"
 #include "input/input_manager.hpp"
 #include "input/input_configurator.hpp"

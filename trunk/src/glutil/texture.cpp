@@ -43,6 +43,7 @@ public:
   TextureImpl()
   {
     glGenTextures(1, &handle);
+    assert_gl("creating texture handle."); 
   }
 
   TextureImpl::~TextureImpl()
@@ -99,15 +100,12 @@ Texture::Texture(SDL_Surface* image, GLint glformat)
   if(format->BitsPerPixel != 24 && format->BitsPerPixel != 32)
     throw std::runtime_error("image has not 24 or 32 bit color depth");
 
-  assert_gl("creating texture handle.");
-
   try 
     {
       GLint maxt;
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxt);
       if(image->w > maxt || image->h > maxt)
         {
-          
           throw std::runtime_error("Texture size not supported");
         }
 
