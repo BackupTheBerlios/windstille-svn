@@ -25,7 +25,7 @@
   (joystick-button (device 0)  (button 0)))
 
  (aim-button
-  (keyboard-button (key "shift"))
+  (keyboard-button (key "k"))
   (joystick-button (device 0)  (button 7)))
  
  (pause-button
