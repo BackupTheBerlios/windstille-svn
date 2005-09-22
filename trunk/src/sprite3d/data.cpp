@@ -156,10 +156,16 @@ Data::Data(const std::string& filename)
           = new AttachementPointPosition[attachement_point_count];
         for(uint16_t a = 0; a < attachement_point_count; ++a) {
           AttachementPointPosition& point = frame.attachement_points[a];
-          for(int i = 0; i < 3; ++i)
-            point.pos[i] = read_float(file);
-          for(int i = 0; i < 4; ++i)
-            point.quat[i] = read_float(file);
+
+          point.pos.x = read_float(file);
+          point.pos.y = read_float(file);
+          point.pos.z = read_float(file);
+
+          point.quat.w = -read_float(file);
+          point.quat.x = read_float(file);
+          point.quat.y = read_float(file);
+          point.quat.z = read_float(file);
+          point.quat.normalize();
         }
       }
     }

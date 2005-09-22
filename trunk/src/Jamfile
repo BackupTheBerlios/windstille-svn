@@ -76,6 +76,8 @@ sources =
         physics.hpp
         pda.cpp
         pda.hpp
+        pistol.cpp
+        pistol.hpp
         player.cpp
         player.hpp
         random.cpp

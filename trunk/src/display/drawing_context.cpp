@@ -21,7 +21,7 @@
 #include <iostream>
 #include <iosfwd>
 #include <GL/gl.h>
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "sprite2d/sprite.hpp"
 #include "drawing_context.hpp"
 #include "glutil/opengl_state.hpp"
@@ -157,7 +157,7 @@ DrawingContext::draw(const Surface surface, const SurfaceDrawingParameters& para
 }
 
 void
-DrawingContext::draw(Surface surface, float x, float y, float z, float a)
+DrawingContext::draw(Surface surface, float x, float y, float z, float )
 {
   draw(new SurfaceDrawingRequest(surface,
                                  SurfaceDrawingParameters().set_pos(Vector(x, y)),
@@ -226,6 +226,12 @@ DrawingContext::translate(float x, float y, float z)
   matrix[13] = y;
   matrix[14] = z;
 
+  modelview_stack.back() = modelview_stack.back().multiply(matrix);
+}
+
+void
+DrawingContext::mult(const Matrix& matrix)
+{
   modelview_stack.back() = modelview_stack.back().multiply(matrix);
 }
 

@@ -24,7 +24,7 @@
 */
 
 #include "input/controller.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "display/display.hpp"
 #include "tab_component.hpp"
 

@@ -70,7 +70,7 @@ ScreenManager::run()
     {
       /// Amount of time the world moves forward each update(), this is
       /// independed of the number of frames and always constant
-      static const float step = 10/1000.0f;
+      static const float step = .001;
 
       Uint32 now = SDL_GetTicks();
       float delta = static_cast<float>(now - ticks) / 1000.0f + overlap_delta;

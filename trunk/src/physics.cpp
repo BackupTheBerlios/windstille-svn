@@ -5,8 +5,8 @@
 Physics::Physics(Entity* entity)
   : entity(entity)
 {
-  mass = 1.0;
-  bounciness = 0.0;
+  mass = 200.0;
+  bounciness = 1.0;
   air_friction = 0.0;
   contact_friction = 0.0;
 }
@@ -18,7 +18,6 @@ Physics::~Physics()
 void
 Physics::register_collobj(CollisionObject& object)
 {
-  printf("RegisterObject: %p\n", &object);
   slots.push_back(object.sig_collision().connect(this, &Physics::collision));
 }
 
@@ -81,7 +80,7 @@ Physics::update(float elapsed_time)
   // add gravity force (TODO make it configurable per Sector)
   force += Vector(0, 9.81 * mass);
 
-  force -= velocity() * air_friction;
+  //force -= velocity() * air_friction;
   
   Vector acceleration = force / mass;
   velocity() += acceleration * elapsed_time;

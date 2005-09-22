@@ -107,7 +107,7 @@ ControllerHelpWindow::draw()
 }
 
 void
-ControllerHelpWindow::update(float delta, const Controller& controller)
+ControllerHelpWindow::update(float delta, const Controller& )
 {
   impl->text_area->update(delta);
 }

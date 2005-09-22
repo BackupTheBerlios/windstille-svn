@@ -26,13 +26,17 @@
 
 class Sector;
 
+/**
+ * This is the base class for all in-game objects. The sector class keeps a list
+ * of all GameObject and periodically calls draw() and update() for them.
+ */
 class GameObject : public RefCounter
 {
 private:
   static Sector* world;
   
 protected:
-  bool removable;
+  bool remove_flag;
 
   /**
    * name of the GameObject. Note: You should not change it anymore once the
@@ -43,28 +47,55 @@ protected:
   /** If a object is 'active = false' it will neither be drawn or updated */
   bool active;
 public:
-  GameObject() : removable(false), active(true) {}
+  GameObject() : remove_flag(false), active(true) {}
   virtual ~GameObject() {}
 
-
+  /**
+   * Set the remove flag to true which will result in the object being removed
+   * from the world till the next frame
+   */
   void remove()
   {
-    removable = true;
+    remove_flag = true;
   }
+  /**
+   * Returns the state of the remove flag
+   */
   bool is_removable() const
   {
-    return removable;
+    return remove_flag;
   }
 
+  /**
+   * return the name of the object
+   * The name is guaranteed to stay the same during the whole lifetime of
+   * the object
+   */
   const std::string& get_name() const
   {
     return name;
   }
 
+  /**
+   * Activate or Deactivate an object. A deactivated object is not updated
+   * or drawn until it is activated again
+   */
   void set_active(bool a) { active = a; }
+  /**
+   * Returns true if the object is active, false if it is inactive
+   */
   bool is_active() const { return active; }
 
+  /**
+   * The object should draw itself when this function is called
+   */
   virtual void draw (SceneContext& context) = 0;
+  /**
+   * This function is called from time to time to give the object a chance to
+   * update it's state. elapsed_time is the time that elapsed since the last
+   * update call in seconds. It is possible that there are multiple objects
+   * between 2 draw() calls or multiple draw() calls between 2 updates
+   */
   virtual void update (float elapsed_time) = 0;
     
   static void set_world (Sector* w) { world = w; }

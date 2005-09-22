@@ -25,7 +25,7 @@
 
 #include "display/display.hpp"
 #include "input/controller.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "list_view.hpp"
 
 namespace GUI {
@@ -81,7 +81,7 @@ ListView::draw()
 }
 
 void
-ListView::update(float delta, const Controller& controller)
+ListView::update(float , const Controller& controller)
 {
    for(InputEventLst::const_iterator i = controller.get_events().begin(); 
        i != controller.get_events().end(); ++i) 

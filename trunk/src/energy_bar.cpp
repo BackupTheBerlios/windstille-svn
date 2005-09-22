@@ -53,7 +53,7 @@ EnergyBar::draw()
 }
 
 void
-EnergyBar::update(float delta, const Controller& controller)
+EnergyBar::update(float delta, const Controller& )
 {
   bar.update(delta);
 }

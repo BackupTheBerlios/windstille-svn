@@ -24,7 +24,7 @@
 */
 
 #include "display/display.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "input/controller.hpp"
 #include "button.hpp"
 
@@ -53,7 +53,7 @@ Button::draw()
 }
 
 void
-Button::update(float delta, const Controller& controller)
+Button::update(float , const Controller& controller)
 {
   for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
     {

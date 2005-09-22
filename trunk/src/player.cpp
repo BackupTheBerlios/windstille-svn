@@ -16,6 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#include <config.h>
 
 #include "tile_map.hpp"
 #include "sector.hpp"
@@ -36,6 +37,7 @@
 #include "game_session.hpp"
 #include "console.hpp"
 #include "grenade.hpp"
+#include "pistol.hpp"
 
 static const int MAX_ENERGY = 16;
 static const float WALK_SPEED = 128.0;
@@ -47,11 +49,9 @@ Player::Player () :
   light("images/light3.sprite"),
   flashlight("images/flashlightlight.sprite"),
   flashlighthighlight("images/flashlighthighlight.sprite"),
-  //sprite ("3dsprites/heroken.wsprite"),
-  grenade("3dsprites/grenade.wsprite"),
   state(STAND)
 {
-  laser_pointer = new LaserPointer();
+  //laser_pointer = new LaserPointer();
   sprite = Sprite3D("3dsprites/heroken.wsprite");
   pos.x = 320;
   pos.y = 200;
@@ -77,11 +77,13 @@ Player::Player () :
   z_pos = 100.0f;
 
   contact = 0;
+  weapon = new Pistol();
+  laser_pointer = ((Pistol*) weapon)->laser_pointer;
 }
 
 Player::~Player()
 {
-  delete laser_pointer;
+  //delete laser_pointer;
 }
 
 void
@@ -114,9 +116,14 @@ Player::draw (SceneContext& sc)
       sc.highlight().draw(use_str, obj->get_pos().x, obj->get_pos().y - 150, 1000);
     }
   
-  //BoneID id = sprite.get_bone_id("Hand.R");
-  //grenade->draw(sc, sprite.get_bone_matrix(id));
-  laser_pointer->draw(sc);
+  Sprite3D::PointID id = sprite.get_attachement_point_id("Weapon");
+  sc.push_modelview();
+  sc.translate(pos.x, pos.y);
+  sc.mult_modelview(sprite.get_attachement_point_matrix(id));
+
+  weapon->draw(sc);
+
+  sc.pop_modelview();
 }
 
 void
@@ -140,6 +147,7 @@ Player::stop_listening()
 void 
 Player::update(float delta)
 {
+  weapon->update(delta);
   laser_pointer->update(delta);
 
   controller = InputManager::get_controller();
@@ -206,7 +214,6 @@ Player::update(float delta)
   velocity.y += GRAVITY * delta;
 
   sprite.update(delta);
-  grenade.update(delta);
 
   c_object->set_velocity (velocity);
 

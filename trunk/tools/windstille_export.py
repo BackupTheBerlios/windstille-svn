@@ -47,19 +47,37 @@ SPEED_MULTIPLIER = 9.8
 FORMAT_VERSION = 2
 
 def matrix2quaternion(m):
-  s = math.sqrt(abs(m[0][0] + m[1][1] + m[2][2] + m[3][3]))
-  if s == 0.0:
-    x = abs(m[2][1] - m[1][2])
-    y = abs(m[0][2] - m[2][0])
-    z = abs(m[1][0] - m[0][1])
-    if   (x >= y) and (x >= z): return 1.0, 0.0, 0.0, 0.0
-    elif (y >= x) and (y >= z): return 0.0, 1.0, 0.0, 0.0
-    else:                       return 0.0, 0.0, 1.0, 0.0
-  return quaternion_normalize([
-    -(m[2][1] - m[1][2]) / (2.0 * s),     -(m[0][2] - m[2][0]) / (2.0 * s),
-    -(m[1][0] - m[0][1]) / (2.0 * s),
-    0.5 * s,
-    ])
+  tr = 1.0 + m[0][0] + m[1][1] + m[2][2]
+  if tr > .00001:
+    s = math.sqrt(tr)
+    w = s / 2.0
+    s = 0.5 / s
+    x = (m[1][2] - m[2][1]) * s
+    y = (m[2][0] - m[0][2]) * s
+    z = (m[0][1] - m[1][0]) * s
+  elif m[0][0] > m[1][1] and m[0][0] > m[2][2]:
+    s = math.sqrt(1.0 + m[0][0] - m[1][1] - m[2][2])
+    x = s / 2.0
+    s = 0.5 / s
+    y = (m[0][1] + m[1][0]) * s
+    z = (m[2][0] + m[0][2]) * s
+    w = (m[1][2] - m[2][1]) * s
+  elif m[1][1] > m[2][2]:
+    s = math.sqrt(1.0 + m[1][1] - m[0][0] - m[2][2])
+    y = s / 2.0
+    s = 0.5 / s
+    x = (m[0][1] + m[1][0]) * s
+    z = (m[1][2] + m[2][1]) * s
+    w = (m[2][0] - m[0][2]) * s
+  else:
+    s = math.sqrt(1.0 + m[2][2] - m[0][0] - m[1][1])
+    z = s / 2.0
+    s = 0.5 / s
+    x = (m[2][0] + m[0][2]) * s
+    y = (m[1][2] + m[2][1]) * s
+    w = (m[0][1] - m[1][0]) * s
+    
+  return w, x, y, z
 
 def quaternion_normalize(q):
   l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
@@ -211,13 +229,13 @@ class WindstilleExporter:
           t[0] *= ZOOM
           t[1] *= ZOOM
           t[2] *= ZOOM
-          self.file.write(struct.pack("=fff", t[1], -t[2], t[0]))
+          self.file.write(struct.pack("=fff", t[1], -t[2], -t[0]))
 
       # attachement points
       for obj in self.attachement_objects:
         m = obj.matrixWorld
         loc = (m[3][0] * ZOOM, m[3][1] * ZOOM, m[3][2] * ZOOM)
-        self.file.write(struct.pack("=fff", loc[0], loc[1], loc[2]))
+        self.file.write(struct.pack("=fff", loc[1], -loc[2], -loc[0]))
         quat = matrix2quaternion(m)
         self.file.write(struct.pack("=ffff", quat[0], quat[1], quat[2], quat[3]))
 
@@ -313,9 +331,9 @@ class WindstilleExporter:
 
     # normals
     for face in data.faces:
-      bodydata += struct.pack("=fff", face.normal[1], -face.normal[2], face.normal[0])
+      bodydata += struct.pack("=fff", face.normal[1], -face.normal[2], -face.normal[0])
       if len(face.v) == 4:
-        bodydata += struct.pack("=fff", face.normal[1], -face.normal[2], face.normal[0])
+        bodydata += struct.pack("=fff", face.normal[1], -face.normal[2], -face.normal[0])
 
     # uv coords per vertex
     for uv in uvs:

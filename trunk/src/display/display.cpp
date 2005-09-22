@@ -29,6 +29,7 @@
 #include "gameconfig.hpp"
 #include "glutil/opengl_state.hpp"
 #include "display.hpp"
+#include "util.hpp"
 #include <GL/glext.h>
 
 SDL_Surface* Display::window       = 0;
@@ -231,13 +232,15 @@ Display::init()
 #define cl_pixelcenter_constant 0.375
 
   //glOrtho(0.0, window->w, window->h, 0.0, -1000.0, 1000.0);
-  glOrtho(0.0, 800, 600, 0.0, -1000.0, 1000.0);
+  glOrtho(0.0, 800, 600, 0.0, 1000.0, -1000.0);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslated(cl_pixelcenter_constant, cl_pixelcenter_constant, 0.0);
 
   if (config->antialiasing)
     glEnable(GL_MULTISAMPLE_ARB); 
+
+  assert_gl("setup projection");
 
   OpenGLState::init();
 }

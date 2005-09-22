@@ -39,7 +39,7 @@ StairContact::StairContact(TileMap* tilemap_, const Point& pos_)
 }
 
 void
-StairContact::update(float delta)
+StairContact::update(float )
 {
   // shouldn't be needed!?
 }

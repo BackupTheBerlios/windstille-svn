@@ -26,7 +26,7 @@
 #include "display/display.hpp"
 #include "math/rect.hpp"
 #include "controller_def.hpp"
-#include "fonts.hpp"
+#include "font/fonts.hpp"
 #include "screen_manager.hpp"
 #include "input/input_manager_sdl.hpp"
 #include "input_configurator.hpp"
@@ -90,7 +90,7 @@ InputConfigurator::draw()
 }
 
 void
-InputConfigurator::update(float delta, const Controller& controller)
+InputConfigurator::update(float , const Controller& )
 {
   
 }

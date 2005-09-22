@@ -23,6 +23,8 @@
 #include <GL/gl.h>
 #include "ref.hpp"
 #include "glutil/texture.hpp"
+#include "math/vector3.hpp"
+#include "math/quaternion.hpp"
 
 namespace sprite3d
 {
@@ -88,8 +90,8 @@ struct MeshVertices
 
 struct AttachementPointPosition
 {
-  float pos[3]; // x, y, z
-  float quat[4]; // w, x, y, z
+  Vector3 pos; // x, y, z
+  Quaternion quat; // w, x, y, z
 };
 
 struct ActionFrame

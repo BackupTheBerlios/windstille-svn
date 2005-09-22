@@ -276,7 +276,7 @@ GameSession::change_sector(const std::string& arg_filename)
 }
 
 void
-GameSession::set_sector(const std::string& arg_filename)
+GameSession::set_sector(const std::string& )
 {
   delete impl->sector;
   impl->sector = new Sector(impl->filename);

@@ -15,8 +15,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 #include <config.h>
+
 #include "sprite3d/sprite3d.hpp"
 
 #include <vector>
@@ -182,72 +182,21 @@ Sprite3D::get_attachement_point_id(const std::string& name) const
   return data->get_attachement_point_id(name); 
 }
 
-static inline void set_matrix_from_quat(Matrix& m, float w,
-    float x, float y, float z)
-{
-  //row1
-  m.matrix[0] = 1.0f - 2*y*y - 2*z*z;
-  m.matrix[4] = 2*x*y - 2*w*z;
-  m.matrix[8] = 2*x*z + 2*w*y;
-  m.matrix[12] = 0.0f;
-
-  //row2
-  m.matrix[1] = 2*x*y + 2*w*z;
-  m.matrix[5] = 1.0f - 2*x*x - 2*z*z;
-  m.matrix[9] = 2*y*z - 2*w*x;
-  m.matrix[13] = 0.0f;
-
-  //row3
-  m.matrix[2] = 2*x*z - 2*w*y;
-  m.matrix[6] = 2*y*z + 2*w*x;
-  m.matrix[10] = 1.0f - 2*x*x - 2*y*y;
-  m.matrix[14] = 0.0f;
-
-  //row4
-  m.matrix[3] = 0.0f;
-  m.matrix[7] = 0.0f;
-  m.matrix[11] = 0.0f;
-  m.matrix[15] = 1.0f;
-}
-
 Matrix
 Sprite3D::get_attachement_point_matrix(PointID id) const
 {
-  float t_1 = 1.0 - blend_time;
   const AttachementPointPosition& point1 
 	  = frame1.action->frames[frame1.frame].attachement_points[id];
   const AttachementPointPosition& point2 
 	  = frame2.action->frames[frame2.frame].attachement_points[id];
 
-  float pos[3];
-  float quat[4];
-  if(frame1.rot) {
-    pos[0] = -point1.pos[0] * t_1;
-    pos[1] = point1.pos[1] * t_1;
-    pos[2] = -point1.pos[2] * t_1;   
-  } else {
-    for(int i = 0; i < 3; ++i)
-      pos[i] = point1.pos[i] * t_1;
-    for(int i = 0; i < 4; ++i)
-      quat[i] = point1.quat[i] * t_1;
-  }
-  if(frame2.rot) {
-    pos[0] += -point2.pos[0] * blend_time;
-    pos[1] += point2.pos[1] * blend_time;
-    pos[2] += -point2.pos[2] * blend_time;
-  } else {
-    for(int i = 0; i < 3; ++i)
-      pos[i] += point2.pos[i] * blend_time;
-    for(int i = 0; i < 4; ++i)
-      quat[i] += point2.quat[i] * blend_time;
-  }
+  Vector3 pos = point1.pos + (point2.pos - point1.pos) * blend_time;
+  Quaternion quat = point1.quat.slerp(point2.quat, blend_time);
+  
+  Matrix result = pos.to_matrix();
+  result = result.multiply(quat.to_matrix());
 
-  Matrix m      = Matrix::identity();
-  m.matrix[12] += pos[0];
-  m.matrix[13] += pos[1];
-  m.matrix[14] += pos[2];
-
-  return m;
+  return result;
 }
 
 class Sprite3DDrawingRequest : public DrawingRequest
@@ -324,9 +273,14 @@ Sprite3D::draw(DrawingContext& dc, const Vector& pos, float z_pos) const
 }
 
 void
-Sprite3D::draw(DrawingContext& dc, const Matrix& matrix, float z_pos) const
+Sprite3D::draw(DrawingContext& dc, const Matrix& , float ) const
 {
   dc.draw(new Sprite3DDrawingRequest(this, Vector(0, 0), 0.0f, dc.get_modelview()));
+}
+
+static inline float interpolate(float v1, float v2, float t)
+{
+  return v1 + (v2 - v1) * t;
 }
 
 void
@@ -362,7 +316,6 @@ Sprite3D::draw(const Vector& pos, const Matrix& modelview) const
   const ActionFrame& aframe1 = frame1.action->frames[frame1.frame];
   const ActionFrame& aframe2 = frame2.action->frames[frame2.frame];
   
-  float t_1 = 1.0 - blend_time;
   for(uint16_t m = 0; m < data->mesh_count; ++m) 
     {
       const Mesh& mesh = data->meshs[m];
@@ -376,22 +329,26 @@ Sprite3D::draw(const Vector& pos, const Matrix& modelview) const
       float verts[mesh.vertex_count * 3];
       if(frame1.rot == frame2.rot) {
         for(uint16_t v = 0; v < mesh.vertex_count*3; ++v) {
-          verts[v] 
-            = vertices1.vertices[v] * t_1 + vertices2.vertices[v] * blend_time;
+          float v1 = vertices1.vertices[v];
+          float v2 = vertices2.vertices[v];
+          verts[v] = interpolate(v1, v2, blend_time);
         }
       } else {
         // need to manually rotate 180 degree here because frames have different
         // rot values (=> x=-x, y=y, z=-z)
-        for(uint16_t v = 0; v < mesh.vertex_count; ++v) {
-          verts[v*3] 
-            = vertices1.vertices[v*3] * t_1 
-            - vertices2.vertices[v*3] * blend_time;
-          verts[v*3+1]
-            = vertices1.vertices[v*3+1] * t_1 
-            + vertices2.vertices[v*3+1] * blend_time;
-          verts[v*3+2]
-            = vertices1.vertices[v*3+2] * t_1
-            - vertices2.vertices[v*3+2] * blend_time;
+        for(uint16_t v = 0; v < mesh.vertex_count*3; ) {
+          // X coord
+          float v1 = vertices1.vertices[v];
+          float v2 = -vertices2.vertices[v];
+          verts[v++] = interpolate(v1, v2, blend_time);
+          // Y coord
+          v1 = vertices1.vertices[v];
+          v2 = vertices2.vertices[v];
+          verts[v++] = interpolate(v1, v2, blend_time);
+          // Z coord
+          v1 = vertices1.vertices[v];
+          v2 = -vertices2.vertices[v];                            
+          verts[v++] = interpolate(v1, v2, blend_time);          
         }
       }
 

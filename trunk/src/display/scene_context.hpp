@@ -63,6 +63,8 @@ public:
   /** Set the scaling of the drawing context */
   void scale(float x, float y);
 
+  void mult_modelview(const Matrix& matrix);
+
   void push_modelview();
   void pop_modelview();
   void reset_modelview();

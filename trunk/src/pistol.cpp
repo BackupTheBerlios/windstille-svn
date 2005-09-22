@@ -1,7 +1,7 @@
-//  $Id: vector.cpp 2642 2005-06-26 13:38:53Z matzebraun $
-//
-//  SuperTux -  A Jump'n Run
-//  Copyright (C) 2004 Matthias Braun <matze@braunis.de
+//  $Id$
+// 
+//  Windstille - A Jump'n Shoot Game
+//  Copyright (C) 2005 Matthias Braun <matze@braunis.de>
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -12,46 +12,45 @@
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
-//
+// 
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 #include <config.h>
-#include <cmath>
-#include <iostream>
-#include "math/vector.hpp"
+
+#include "laser_pointer.hpp"
+#include "pistol.hpp"
+
+Pistol::Pistol()
+  : laser_pointer(0)
+{
+  laser_pointer = new LaserPointer();
+  sprite = Sprite3D("models/objects/pistol/pistol.wsprite");
+}
+
+Pistol::~Pistol()
+{
+  delete laser_pointer;
+}
 
 void
-Vector::normalize()
+Pistol::draw(SceneContext& sc)
 {
-  float mag = magnitude();
-  x /= mag;
-  y /= mag;
+  sprite.draw(sc.color(), Vector(0, 0), 1000);
+  if(laser_pointer)
+    laser_pointer->draw(sc);
 }
 
-Vector Vector::unit() const
+void
+Pistol::update(float elapsed_time)
 {
-  return *this / magnitude();
+  if(laser_pointer)
+    laser_pointer->update(elapsed_time);
+
+  sprite.update(elapsed_time);
 }
 
-float
-Vector::magnitude() const
+void
+Pistol::fire(bool )
 {
-  return sqrt(x*x + y*y);
 }
-
-std::ostream& operator<<(std::ostream& s, const Vector& v)
-{
-  s << "(" << v.x << ", " << v.y << ")";
-  return s;
-}
-
-Vector
-Vector::rotate(float angle) const
-{
-  float len = magnitude();
-  return Vector(len * cos(angle), len * sin(angle));
-}
-
-/* EOF */

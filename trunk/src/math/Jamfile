@@ -10,6 +10,8 @@ sources = matrix.hpp
           origin.hpp
           origin.cpp
           point.hpp
+          quaternion.hpp
+          quaternion.cpp
 ;
 
 TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;

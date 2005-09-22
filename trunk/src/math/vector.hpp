@@ -116,8 +116,9 @@ public:
       return x*other.x + y*other.y;
     }
 
-  float norm() const;
+  float magnitude() const;
   Vector unit() const;
+  void normalize();
 
   // ... add the other operators as needed, I'm too lazy now ...
 

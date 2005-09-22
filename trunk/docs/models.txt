@@ -10,20 +10,15 @@ Notes about blender models:
 - When looking at a character turned left from the side, coordinate axes are:
     z -> up
     y -> right
-    x -> back
+    x -> front
   (the exporter will convert these to windstille coordinates which are
    x->right, y -> down, z -> back)
-- Each blender object should use exactly 1 texture on all it's faces.
+- Each blender object should use the same texture on all it's faces.
+   (you can have multiple objects per model of course)
 - You should animate your models with armatures. The exporter will grab all
   defined actions for the armature and export these. You are only allowed to
-  have 1 armature object in the scene at the moment (but this armature can have
-  multiple bones of course)
-- Only for information you don't have to care about this: UVs in blender are
-    u -> right
-    v -> up
-  UVs in windstille are
-    u -> right
-    v -> down
+  have 1 armature object in the scene at the moment
+- Empty Objects whose names start with A: are exported as attachement points
 - Take a look at the console output to see warnings and errors from the script
 - You should specify additional attributes for the actions by creating a blender
   textobject with name "actionconfig". You can then specify lines like this
@@ -52,3 +47,10 @@ Notes about blender models:
 
     So you can easily zoom in and watch your animation in slow motion with
     these keys.
+
+(- Only for information you don't have to care about this: UVs in blender are
+    u -> right
+    v -> up
+  UVs in windstille are
+    u -> right
+    v -> down)
