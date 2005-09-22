@@ -32,8 +32,12 @@ TestObject::draw(SceneContext& sc)
   sprite.draw(sc.color(), pos, 100);
   for(std::vector<AttachedSprite>::iterator i = attached_sprites.begin();
       i != attached_sprites.end(); ++i) {
-    Matrix mat = sprite.get_attachement_point_matrix(i->attachpoint);
-    i->sprite.draw(sc.color(), mat, 100);
+    sc.push_modelview();
+    sc.translate(pos.x, pos.y);
+    sc.mult_modelview(sprite.get_attachement_point_matrix(i->attachpoint));
+    
+    i->sprite.draw(sc.color(), Vector(0, 0), 100);
+    sc.pop_modelview();
   }                                                                        
 }
 

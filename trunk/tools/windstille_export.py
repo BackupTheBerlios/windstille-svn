@@ -77,11 +77,18 @@ def matrix2quaternion(m):
     y = (m[1][2] + m[2][1]) * s
     w = (m[0][1] - m[1][0]) * s
     
-  return w, x, y, z
+  return quaternion_normalize([w, x, y, z])
 
 def quaternion_normalize(q):
   l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
   return q[0] / l, q[1] / l, q[2] / l, q[3] / l
+
+def quaternion_to_axisangle(q):
+  cos_a = q[0]
+  angle = math.acos(cos_a) * 2.0
+  sin_a = math.sqrt(1.0 - cos_a * cos_a)
+  if(sin_a < .0005 or sin_a > .0005): sin_a = 1
+  return angle, q[1]/sin_a, q[2]/sin_a, q[3]/sin_a
 
 # config entry (first_frame, last_frame, speed, samplerate, markers[])
 #  a marker is (name, frame)
@@ -237,7 +244,7 @@ class WindstilleExporter:
         loc = (m[3][0] * ZOOM, m[3][1] * ZOOM, m[3][2] * ZOOM)
         self.file.write(struct.pack("=fff", loc[1], -loc[2], -loc[0]))
         quat = matrix2quaternion(m)
-        self.file.write(struct.pack("=ffff", quat[0], quat[1], quat[2], quat[3]))
+        self.file.write(struct.pack("=ffff", quat[0], quat[2], quat[3], quat[1]))
 
     actionnum = 0
 

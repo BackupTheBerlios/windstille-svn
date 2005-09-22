@@ -53,4 +53,8 @@ Notes about blender models:
     v -> up
   UVs in windstille are
     u -> right
-    v -> down)
+    v -> down
+  Rotations from windstille rotation compared with blender rotations:
+    ws.x = blend.y
+    ws.y = blend.z
+    ws.z = blend.x )
