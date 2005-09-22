@@ -190,9 +190,24 @@ Sprite3D::get_attachement_point_matrix(PointID id) const
   const AttachementPointPosition& point2 
 	  = frame2.action->frames[frame2.frame].attachement_points[id];
 
-  Vector3 pos = point1.pos + (point2.pos - point1.pos) * blend_time;
-  Quaternion quat = point1.quat.slerp(point2.quat, blend_time);
-  
+  Quaternion rotquat = Quaternion(0, 0, 1, 0);
+  Quaternion quat1 = point1.quat;
+  Vector3 pos1 = point1.pos;
+  if(frame1.rot) {
+    quat1 = rotquat * quat1;
+    pos1.x = -pos1.x;
+    pos1.z = -pos1.z;
+  }
+  Quaternion quat2 = point2.quat;
+  Vector3 pos2 = point2.pos;
+  if(frame2.rot) {
+    quat2 = rotquat * quat2;
+    pos2.x = -pos2.x;
+    pos2.z = -pos2.z;
+  }
+
+  Vector3 pos = pos1 + (pos2 - pos1) * blend_time;
+  Quaternion quat = quat1.slerp(quat2, blend_time);
   Matrix result = pos.to_matrix();
   result = result.multiply(quat.to_matrix());
 

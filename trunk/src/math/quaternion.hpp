@@ -40,6 +40,12 @@ public:
   float magnitude() const;
   void normalize();
 
+  const Quaternion& operator*= (const Quaternion& o)
+  {
+    *this = *this * o;
+    return *this;
+  }
+
   Quaternion operator* (const Quaternion& o) const
   {
     return Quaternion(
