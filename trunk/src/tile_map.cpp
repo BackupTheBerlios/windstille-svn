@@ -27,6 +27,7 @@
 #include "display/vertex_array_drawing_request.hpp"
 #include "collision/collision_engine.hpp"
 #include "lisp/properties.hpp"
+#include <inttypes.h>
 
 TileMap::TileMap(const lisp::Lisp* lisp)
 {

@@ -21,6 +21,7 @@
 #include "glutil/surface.hpp"
 #include "glutil/opengl_state.hpp"
 #include "scene_context.hpp"
+#include <assert.h>
 
 // The lightmap has a resolution of screen.w/LIGHTMAP, screen.h/LIGHTMAP
 #define LIGHTMAP_DIV 4
