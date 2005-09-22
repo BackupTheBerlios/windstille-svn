@@ -22,6 +22,7 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 **  02111-1307, USA.
 */
+#include <config.h>
 
 #include "display/vertex_array_drawing_request.hpp"
 #include "player.hpp"
@@ -114,6 +115,7 @@ LaserPointer::draw(SceneContext& sc)
  done:
   target = pos + Vector(t * direction.x, t * direction.y);
   
+  Vector ray = target - pos;
   VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0,0), 10000,
                                                                    sc.highlight().get_modelview());
   array->set_mode(GL_LINES);
@@ -122,16 +124,16 @@ LaserPointer::draw(SceneContext& sc)
 
   array->color(Color(1.0f, 0.0f, 0.0f, 1.0f));
   array->texcoord(0, progress);
-  array->vertex(pos.x, pos.y);
+  array->vertex(0, 0);
 
   array->color(Color(1.0f, 0.0f, 0.0f, 1.0f));
   array->texcoord((target - pos).magnitude()/256.0f, progress);
-  array->vertex(target.x, target.y);
+  array->vertex(ray.x, ray.y);
 
   sc.highlight().draw(array);
   laserpointer.set_blend_func(GL_SRC_ALPHA, GL_ONE);
-  sc.highlight().draw(laserpointer, target);
-  sc.light().draw(laserpointer_light, target);
+  sc.highlight().draw(laserpointer, ray);
+  sc.light().draw(laserpointer_light, ray);
 }
 
 void
