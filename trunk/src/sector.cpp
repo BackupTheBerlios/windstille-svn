@@ -44,6 +44,7 @@
 #include "character.hpp"
 #include "laser_pointer.hpp"
 #include "badguy/swarm.hpp"
+#include "liquid.hpp"
 #include "badguy/hedgehog.hpp"
 #include "badguy/spider_mine.hpp"
 #include "box.hpp"
@@ -185,6 +186,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new Swarm(lisp));
   } else if (name == "laserpointer") {
     add(new LaserPointer());
+  } else if (name == "liquid") {
+    add(new Liquid(lisp));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }

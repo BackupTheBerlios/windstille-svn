@@ -23,8 +23,8 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_BABY_XML_HXX
-#define HEADER_BABY_XML_HXX
+#ifndef HEADER_WINDSTILLE_BABY_XML_HXX
+#define HEADER_WINDSTILLE_BABY_XML_HXX
 
 #include <string>
 #include <vector>

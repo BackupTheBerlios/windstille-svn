@@ -11,6 +11,11 @@
     (pos 300 650)
   )
   (objects
+   (liquid
+    (pos 128 768)
+    (width 20)
+    )
+
    (vrdummy
     (name "VRDummy")
     (pos 600 600)

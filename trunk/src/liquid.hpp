@@ -5,7 +5,7 @@
 **   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
 **    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
 **         \/          \/      \/    \/                         \/
-**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
 **
 **  This program is free software; you can redistribute it and/or
 **  modify it under the terms of the GNU General Public License
@@ -23,34 +23,33 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_WINDSTILLE_WINDSTILLE_MAIN_HPP
-#define HEADER_WINDSTILLE_WINDSTILLE_MAIN_HPP
+#ifndef HEADER_WINDSTILLE_LIQUID_HPP
+#define HEADER_WINDSTILLE_LIQUID_HPP
 
-#include "screen.hpp"
+#include <vector>
+#include "lisp/lisp.hpp"
+#include "entity.hpp"
 
-struct SDL_Surface;
-
-class WindstilleMain
+/** */
+class Liquid : public Entity
 {
-public:
-  std::string levelfile;
-  std::string controller_file;
-  std::string recorder_file;
-  std::string playback_file;
-  std::string screenshot_dir;
-  
-public:
-  WindstilleMain();
-  ~WindstilleMain();
+private:
+  std::vector<float> heightfield_store1;
+  std::vector<float> heightfield_store2;
 
-  int main(int argc, char** argv);
+  std::vector<float>* heightfield1;
+  std::vector<float>* heightfield2;
+
+public:
+  Liquid(const lisp::Lisp* lisp);
+  ~Liquid();
+
+  void draw(SceneContext& sc);
+  void update(float delta);
 
 private:
-  void init_sdl();
-  void init_physfs(const char* argv0);
-  void parse_command_line(int argc, char** argv);
-  void init_modules();
-  void deinit_modules();
+  Liquid (const Liquid&);
+  Liquid& operator= (const Liquid&);
 };
 
 #endif

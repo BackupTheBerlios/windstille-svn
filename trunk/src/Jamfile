@@ -69,6 +69,8 @@ sources =
         inventory.hpp        
         laser_pointer.hpp
         laser_pointer.cpp
+        liquid.hpp
+        liquid.cpp
         math.hpp
         nightvision.cpp
         nightvision.hpp
