@@ -34,6 +34,9 @@
 class Liquid : public Entity
 {
 private:
+  Texture texture;
+  float t;
+
   std::vector<float> heightfield_store1;
   std::vector<float> heightfield_store2;
 
