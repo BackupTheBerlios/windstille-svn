@@ -31,6 +31,7 @@ bool debug = true;
 bool debug = false;
 #endif
 bool collision_debug = false;
-bool sound_disabled = false;
+bool sound_disabled  = false;
+bool sprite3dview    = false;
 
 /* EOF */

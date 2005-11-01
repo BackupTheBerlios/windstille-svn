@@ -96,6 +96,8 @@ sources =
         sector.hpp
         spawnpoint.cpp
         spawnpoint.hpp
+        sprite3dview.hpp
+        sprite3dview.cpp
         sharedptr.hpp
         test_object.cpp
         test_object.hpp

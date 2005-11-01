@@ -87,6 +87,17 @@ Sprite3D::get_action() const
   return frame2.action->name;
 }
 
+std::vector<std::string>
+Sprite3D::get_actions() const
+{
+  std::vector<std::string> actions;
+  for(int i = 0; i < data->action_count; ++i)
+    {
+      actions.push_back(data->actions[i].name);
+    }
+  return actions;
+}
+
 void
 Sprite3D::set_next_action(const std::string& name, float speed)
 {

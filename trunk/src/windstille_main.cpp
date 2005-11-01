@@ -47,6 +47,7 @@
 #include "sprite3d/manager.hpp"
 #include "screen_manager.hpp"
 #include "command_line.hpp"
+#include "sprite3dview.hpp"
 #include "sprite2d/manager.hpp"
 
 WindstilleMain::WindstilleMain()
@@ -63,10 +64,14 @@ WindstilleMain::parse_command_line(int argc, char** argv)
   CommandLine argp;
 
   const int debug_flag = 256;
+  const int sprite3dview_flag = 257;
     
   argp.set_help_indent(24);
   argp.add_usage ("[LEVELFILE]");
   argp.add_doc   ("Windstille is a classic Jump'n Run game.");
+
+  argp.add_group("Mode Options:");
+  argp.add_option(sprite3dview_flag, "sprite3dview", "", "Launch Sprite3DView instead of the game");
 
   argp.add_group("Display Options:");
   argp.add_option('g', "geometry",   "WxH", "Change window size to WIDTH and HEIGHT");
@@ -122,6 +127,10 @@ WindstilleMain::parse_command_line(int argc, char** argv)
 
         case debug_flag:
           debug = 1;
+          break;
+
+        case sprite3dview_flag:
+          sprite3dview = true;
           break;
 
         case 'f':
@@ -208,15 +217,23 @@ WindstilleMain::main(int argc, char** argv)
     if (debug) std::cout << "Initialising TileFactory" << std::endl;
     TileFactory::init();
 
-    if (levelfile.empty())
+    if (sprite3dview)
       {
-        screen_manager.set_screen(new GameSession("levels/newformat2.wst"));
+        // Launching Sprite3DView instead of game
+        screen_manager.set_screen(new Sprite3DView());
       }
     else
       {
-        std::string leveldir = dirname(levelfile);
-        PHYSFS_addToSearchPath(leveldir.c_str(), true);
-        screen_manager.set_screen(new GameSession(basename(levelfile)));
+        if (levelfile.empty())
+          {
+            screen_manager.set_screen(new GameSession("levels/newformat2.wst"));
+          }
+        else
+          {
+            std::string leveldir = dirname(levelfile);
+            PHYSFS_addToSearchPath(leveldir.c_str(), true);
+            screen_manager.set_screen(new GameSession(basename(levelfile)));
+          }
       }
         
     console << "Press F1 to open the console" << std::endl;

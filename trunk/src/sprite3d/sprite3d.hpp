@@ -66,6 +66,11 @@ public:
    */
   const std::string& get_action() const;
 
+  /** 
+   * Return a list of all available actions
+   */
+  std::vector<std::string> get_actions() const;
+
   /**
    * Set the next action and vflip value to be played after the current action
    * has finished (or reached the point to be defined by abort_at_marker)

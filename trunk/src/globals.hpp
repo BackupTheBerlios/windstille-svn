@@ -36,6 +36,7 @@ extern float game_speed;
 
 extern bool debug;
 extern bool collision_debug;
+extern bool sprite3dview;
 
 enum GameMainState { RUN_GAME, LOAD_MENU, LOAD_GAME_SESSION, QUIT_GAME };
 
