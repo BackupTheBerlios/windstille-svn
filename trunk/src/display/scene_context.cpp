@@ -86,11 +86,11 @@ SceneContext::translate(float x, float y)
 
 /** Set the rotation of the drawing context */
 void
-SceneContext::rotate(float angel)
+SceneContext::rotate(float angel, float x, float y, float z)
 {
-  impl->color.rotate(angel);
-  impl->light.rotate(angel);
-  impl->highlight.rotate(angel);
+  impl->color.rotate(angel, x, y, z);
+  impl->light.rotate(angel, x, y, z);
+  impl->highlight.rotate(angel, x, y, z);
 }
 
 /** Set the scaling of the drawing context */

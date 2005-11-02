@@ -30,7 +30,8 @@
 #include "sprite3d/sprite3d.hpp"
 #include "screen.hpp"
 
-/** */
+/** A simple class to view 3d sprites and their different actions,
+    mostly usefull for debugging */
 class Sprite3DView : public Screen
 {
 private:
@@ -38,6 +39,10 @@ private:
   Sprite3D sprite;
   std::vector<std::string> actions;
   int current_action;
+
+  float rotx;
+  float roty;
+  float scale;
 
 public:
   Sprite3DView();

@@ -26,6 +26,9 @@
 #include <iostream>
 #include "gameconfig.hpp"
 #include "input/controller.hpp"
+#include "console.hpp"
+#include "font/ttf_font.hpp"
+#include "font/fonts.hpp"
 #include "sprite3dview.hpp"
 
 Sprite3DView::Sprite3DView()
@@ -35,12 +38,11 @@ Sprite3DView::Sprite3DView()
   sprite = Sprite3D("models/characters/jane/jane.wsprite");
   actions = sprite.get_actions();
 
-  for(std::vector<std::string>::iterator i = actions.begin(); i != actions.end(); ++i)
-    {
-      std::cout << "Action: " << *i << std::endl;
-    }
-  
   sprite.set_action(actions[current_action]);
+
+  rotx  = 0.0f;
+  roty  = 0.0f;
+  scale = 1.0f;
 }
 
 Sprite3DView::~Sprite3DView()
@@ -51,14 +53,47 @@ void
 Sprite3DView::draw()
 {
   sc.reset_modelview();
-  sc.translate(-config->screen_width/2, -config->screen_height/2 + 150);
-  sc.scale(2.0f, 2.0f);
+  //sc.translate(-config->screen_width/2, -config->screen_height/2 + 150);
+  //sc.scale(2.0f, 2.0f);
   
   sc.color().fill_screen(Color(0.5, 0.0, 0.5));
-  sprite.draw(sc.color(), Vector(config->screen_width/2, config->screen_height/2), 0); 
+
+  sc.push_modelview();
+  sc.translate(config->screen_width/2, config->screen_height/2 + 200);
+  sc.scale(3.0f, 3.0f);
+  sc.rotate(rotx, 0.0f, 1.0f, 0.0f);
+  sprite.draw(sc.color(), Vector(0,0), 0); 
+  sc.pop_modelview();
+
+  //Matrix matrix = sc.color().get_modelview();
+  //matrix.translate(-config->screen_width/2, -config->screen_height/2, 0);
+  //sprite.draw(sc.color(), matrix, 0.0f);
+
   sc.light().fill_screen(Color(1.0, 1.0, 1.0));
   //sc.color().draw("Hello World", 100, 100);
   sc.render();
+  
+  int x = 10;
+  int y =  Fonts::vera12->get_height() + 5;
+  int line_height = Fonts::vera12->get_height()+5;
+
+  for(int i = 0; i < int(actions.size()); ++i)
+    {
+      if (i == current_action)
+        Fonts::vera12->draw(x, y,
+                               actions[i], Color(1.0f, 1.0f, 1.0f));
+      else
+        Fonts::vera12->draw(x, y,
+                               actions[i], Color(0.7f, 0.7f, 0.7f));
+
+
+      y += line_height;
+      if (y > 580)
+        {
+          x += 200;
+          y =  Fonts::vera12->get_height() + 5;
+        }
+    }
 }
 
 void
@@ -85,9 +120,11 @@ Sprite3DView::update(float delta, const Controller& controller)
 
   if (last_action != current_action)
     {
-      std::cout << "Setting actions: " << actions[current_action] << std::endl;
       sprite.set_action(actions[current_action]);
     }
+
+  roty += delta * 30.0f;
+  rotx += delta * 30.0f;
 }
 
 /* EOF */

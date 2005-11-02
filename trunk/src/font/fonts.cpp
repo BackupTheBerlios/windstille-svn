@@ -21,8 +21,8 @@
 #include "border_font_effect.hpp"
 #include "fonts.hpp"
 
-TTFFont* Fonts::ttffont = 0;
-
+TTFFont* Fonts::ttffont   = 0;
+TTFFont* Fonts::vera12    = 0;
 TTFFont* Fonts::ttfdialog = 0;
 
 void
@@ -31,6 +31,7 @@ Fonts::init()
   BorderFontEffect* border_effect = new BorderFontEffect(1);
 
   ttffont   = new TTFFont("fonts/VeraMono.ttf", 12);
+  vera12      = new TTFFont("fonts/Vera.ttf", 12);
   ttfdialog = new TTFFont("fonts/Vera.ttf", 20);
 
   delete border_effect;
@@ -40,6 +41,7 @@ void
 Fonts::deinit()
 {
   delete ttffont;
+  delete vera12;
   delete ttfdialog;
 }
 

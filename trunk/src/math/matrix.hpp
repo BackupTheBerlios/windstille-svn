@@ -86,6 +86,11 @@ public:
 	//: Multiply two matrices.
 	Matrix multiply(const Matrix &matrix) const;
 
+	//: Multiply the matrix with the given scale/translate/rotate matrix
+	Matrix scale(float x, float y, float z);
+	Matrix translate(float x, float y, float z);
+	Matrix rotate(float angle, float x, float y, float z);
+
 //! Implementation:
 private:
 };
