@@ -34,7 +34,7 @@ class BackgroundGradient : public GameObject
 {
 private:
   std::vector<float> colors;
-
+  float z_pos; 
 public:
   BackgroundGradient(const lisp::Lisp* lisp);
   ~BackgroundGradient();

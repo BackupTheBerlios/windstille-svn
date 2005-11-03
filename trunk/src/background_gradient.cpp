@@ -29,7 +29,10 @@
 
 BackgroundGradient::BackgroundGradient(const lisp::Lisp* lisp)
 {
+  z_pos = 0.0;
+
   lisp::Properties props(lisp);
+  props.get("z-pos",  z_pos);
   props.get("colors", colors);
   if (colors.size() % (3 + 4 + 4 + 2) != 0)
     {
@@ -72,7 +75,7 @@ BackgroundGradient::draw(SceneContext& sc)
   Color bottomcolor(0.5f, 0.5f, 1.0f);
 
   Rect rect(0, 0, 800, 600);
-  VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), 0, 
+  VertexArrayDrawingRequest* array = new VertexArrayDrawingRequest(Vector(0, 0), z_pos, 
                                                                    sc.color().get_modelview());
 
   array->set_mode(GL_QUAD_STRIP);
