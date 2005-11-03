@@ -22,6 +22,8 @@ SubInclude TOP src tinygettext ;
 sources = 
         baby_xml.cpp
         baby_xml.hpp
+        background_gradient.cpp
+        background_gradient.hpp
         blitter.cpp
         blitter.hpp        
         bomb.cpp

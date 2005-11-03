@@ -26,6 +26,7 @@
 #include "windstille_getters.hpp"
 #include "globals.hpp"
 #include "display/scene_context.hpp"
+#include "background_gradient.hpp"
 #include "tile_map.hpp"
 #include "game_object.hpp"
 #include "player.hpp"
@@ -160,6 +161,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
       interactivebackground_tilemap = tilemap;
   } else if(name == "background") {
     // TODO
+  } else if (name == "background-gradient") {
+    add(new BackgroundGradient(lisp));
   } else if(name == "trigger") {
     add(new Trigger(lisp));
   } else if(name == "box") {
