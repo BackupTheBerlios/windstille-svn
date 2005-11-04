@@ -30,6 +30,12 @@
 
 namespace GUI {
 
+Button::Button(const lisp::Lisp* lisp, Component* parent)
+  : Component(parent)
+{
+  assert(0);
+}
+
 Button::Button(const std::string& label_, Component* parent)
   : Component(Rectf(), parent),
     label(label_)

@@ -23,48 +23,29 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_WINDSTILLE_GUI_TAB_COMPONENT_HPP
-#define HEADER_WINDSTILLE_GUI_TAB_COMPONENT_HPP
+#ifndef HEADER_COMPONENT_FACTORY_HPP
+#define HEADER_COMPONENT_FACTORY_HPP
 
 #include <string>
-#include <vector>
 #include "lisp/lisp.hpp"
-#include "component.hpp"
 
 namespace GUI {
 
+class Component;
+
 /** */
-class TabComponent : public Component
+class ComponentFactory
 {
 private:
-  struct Tab 
-  {
-    std::string label;
-    Component*  component;
-
-    Tab() : component(0) {}
-    
-    Tab(const std::string& label_, Component* c)
-      : label(label_), component(c) {}
-  };
-
-  typedef std::vector<Tab> Tabs;
-  Tabs tabs;
-
-  int current_tab;
-
 public:
-  TabComponent(const lisp::Lisp* lisp, Component* parent);
-  TabComponent(const Rectf& rect, Component* parent);
-  ~TabComponent();
+  ComponentFactory();
+  ~ComponentFactory();
 
-  void draw();
-  void update(float delta, const Controller& controller);
-
-  void pack(const std::string& name, Component* component);
+  Component* create(const std::string& name, const lisp::Lisp* lisp, Component* parent);
+  
 private:
-  TabComponent (const TabComponent&);
-  TabComponent& operator= (const TabComponent&);
+  ComponentFactory (const ComponentFactory&);
+  ComponentFactory& operator= (const ComponentFactory&);
 };
 
 } // namespace GUI

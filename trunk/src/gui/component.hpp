@@ -41,6 +41,7 @@ protected:
   bool active;
 
 public:
+  Component(Component* parent);
   Component(const Rectf& rect, Component* parent);
   virtual ~Component();
   

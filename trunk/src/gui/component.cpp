@@ -27,6 +27,12 @@
 
 namespace GUI {
 
+Component::Component(Component* parent)
+  : parent(parent),
+    active(false)
+{
+}
+
 Component::Component(const Rectf& rect_, Component* parent_)
   : rect(rect_),
     parent(parent_),

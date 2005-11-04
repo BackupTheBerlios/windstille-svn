@@ -32,6 +32,12 @@
 
 namespace GUI {
 
+Automap::Automap(const lisp::Lisp* lisp, Component* parent)
+  : Component(parent)
+{
+  assert(0);
+}
+
 Automap::Automap(const Rectf& rect, Component* parent)
   : Component(rect, parent),
     pos(0.0f, 0.0f),

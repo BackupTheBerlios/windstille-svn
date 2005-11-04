@@ -40,6 +40,7 @@ private:
   float   zoom;
 
 public:
+  Automap(const lisp::Lisp* lisp, Component* parent);
   Automap(const Rectf& rect, Component* parent);
   ~Automap();
 

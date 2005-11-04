@@ -30,6 +30,12 @@
 
 namespace GUI {
 
+TabComponent::TabComponent(const lisp::Lisp* lisp, Component* parent)
+  : Component(parent)
+{
+  assert(0);
+}
+
 TabComponent::TabComponent(const Rectf& rect, Component* parent)
   : Component(rect, parent)
 {

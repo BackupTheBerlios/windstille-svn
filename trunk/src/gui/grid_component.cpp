@@ -30,6 +30,12 @@
 
 namespace GUI {
 
+GridComponent::GridComponent(const lisp::Lisp* lisp, Component* parent)
+  : Component(parent)
+{
+  assert(0);  
+}
+
 GridComponent::GridComponent(const Rectf& rect, int weight, int height, Component* parent)
   : Component(rect, parent),
     grid(weight, height),

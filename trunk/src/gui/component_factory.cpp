@@ -23,52 +23,48 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_WINDSTILLE_GUI_TAB_COMPONENT_HPP
-#define HEADER_WINDSTILLE_GUI_TAB_COMPONENT_HPP
-
-#include <string>
-#include <vector>
-#include "lisp/lisp.hpp"
-#include "component.hpp"
+#include <stdexcept>
+#include "tab_component.hpp"
+#include "grid_component.hpp"
+#include "automap.hpp"
+#include "button.hpp"
+#include "component_factory.hpp"
 
 namespace GUI {
 
-/** */
-class TabComponent : public Component
+ComponentFactory::ComponentFactory()
 {
-private:
-  struct Tab 
-  {
-    std::string label;
-    Component*  component;
+}
 
-    Tab() : component(0) {}
-    
-    Tab(const std::string& label_, Component* c)
-      : label(label_), component(c) {}
-  };
+ComponentFactory::~ComponentFactory()
+{
+}
 
-  typedef std::vector<Tab> Tabs;
-  Tabs tabs;
-
-  int current_tab;
-
-public:
-  TabComponent(const lisp::Lisp* lisp, Component* parent);
-  TabComponent(const Rectf& rect, Component* parent);
-  ~TabComponent();
-
-  void draw();
-  void update(float delta, const Controller& controller);
-
-  void pack(const std::string& name, Component* component);
-private:
-  TabComponent (const TabComponent&);
-  TabComponent& operator= (const TabComponent&);
-};
+Component*
+ComponentFactory::create(const std::string& name, const lisp::Lisp* lisp, Component* parent)
+{
+  if (name == "tab")
+    {
+      return new TabComponent(lisp, parent);
+    }
+  else if (name == "automap")
+    {
+      return new Automap(lisp, parent);
+    }
+  else if (name == "grid")
+    {
+      return new GridComponent(lisp, parent);
+    }
+  else if (name == "button")
+    {
+      return new Button(lisp, parent);
+    }
+  else
+    {
+      throw std::runtime_error("Error: Unknown component");
+    }
+}
 
 } // namespace GUI
-
-#endif
 
 /* EOF */
