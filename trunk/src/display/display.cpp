@@ -352,4 +352,13 @@ Display::pop_cliprect()
     }
 }
 
+void
+Display::set_gamma(float r, float g, float b)
+{
+  if (SDL_SetGamma(r, g, b) == -1)
+    {
+      // Couldn't set gamma
+    }
+}
+
 /* EOF */

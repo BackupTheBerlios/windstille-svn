@@ -66,7 +66,8 @@ int display(HSQUIRRELVM) __custom;
 int println(HSQUIRRELVM) __custom;
 
 void set_console_font(const std::string& font, int size);
-
+void set_gamma(float g);
+void set_gamma_rgb(float r, float g, float b);
 }
 
 #endif

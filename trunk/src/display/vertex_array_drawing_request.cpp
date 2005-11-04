@@ -113,6 +113,12 @@ VertexArrayDrawingRequest::draw(int start, int end)
 }
 
 void
+VertexArrayDrawingRequest::vertex(const Vector& vec, float z)
+{
+  vertex(vec.x, vec.y, z);
+}
+
+void
 VertexArrayDrawingRequest::vertex(float x, float y, float z)
 {
   vertices.push_back(x + pos.x);

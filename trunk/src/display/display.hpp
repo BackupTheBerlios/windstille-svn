@@ -57,6 +57,8 @@ public:
   static void push_cliprect(const Rect& rect);
   static void pop_cliprect();
 
+  static void set_gamma(float r, float g, float b);
+
   static void init();
 };
 

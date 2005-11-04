@@ -11,6 +11,7 @@
 #include "serialize.hpp"
 #include "camera.hpp"
 #include "pda.hpp"
+#include "display/display.hpp"
 #include "controller_help_window.hpp"
 
 namespace Scripting
@@ -194,6 +195,16 @@ void set_console_font(const std::string& font, int size)
   } catch(std::exception& err) {
     console << err.what() << std::endl;
   }
+}
+
+void set_gamma(float g)
+{
+  Display::set_gamma(g, g, g);
+}
+
+void set_gamma_rgb(float r, float g, float b)
+{
+  Display::set_gamma(r, g, b);
 }
 
 }

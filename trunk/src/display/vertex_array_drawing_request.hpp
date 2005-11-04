@@ -47,6 +47,8 @@ public:
   void draw(int start, int end);
 
   void vertex(float x, float y, float z = 0.0f);
+  void vertex(const Vector& vec, float z = 0.0f);
+
   void texcoord(float u, float v);
   void color(const Color& color);
   void add_texcoords(const float* coords, size_t n);
