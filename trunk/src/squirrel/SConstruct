@@ -1,0 +1,11 @@
+import glob
+
+env = Environment(CCFLAGS = ['-Iinclude'])
+
+env.Library('squirrel',
+            glob.glob('squirrel/*.cpp') +
+            glob.glob('sqstdlib/*.cpp')  +
+            glob.glob('sqstdlib/*.c'))
+
+
+# EOF #
