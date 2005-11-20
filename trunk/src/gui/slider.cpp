@@ -34,7 +34,9 @@ Slider::Slider(Component* parent)
   : Component(parent),
     min(0),
     max(100),
-    step(10)
+    step(10),
+    pos (50),
+    horizontal(true)
 {
 }
 

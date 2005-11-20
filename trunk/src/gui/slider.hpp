@@ -38,6 +38,7 @@ private:
   int max;
   int step;
   int pos;
+  bool horizontal;
 
 public:
   Slider(Component* parent);
