@@ -25,6 +25,7 @@
 
 #include "input/controller.hpp"
 #include "button.hpp"
+#include "slider.hpp"
 #include "root_component.hpp"
 #include "screen_manager.hpp"
 #include "grid_component.hpp"
@@ -48,7 +49,7 @@ GUIManager::GUIManager()
   grid->pack(new Button("2", grid), 1, 0);
   grid->pack(new Button("3", grid), 2, 0);
 
-  grid->pack(new Button("4", grid), 0, 1);
+  grid->pack(new Slider(grid), 0, 1);
   //grid->pack(new Button("5", grid), 1, 1, 2, 2);
   TextView* text_view = new TextView(Rectf(), grid);
   grid->pack(text_view, 1, 1, 2, 2);

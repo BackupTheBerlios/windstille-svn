@@ -76,6 +76,7 @@ GridComponent::update(float delta, const Controller& controller)
       {
         if (grid(x, y).component && !grid(x, y).has_parent())
           {
+            // give input to current compontent, empty input to the rest
             if (child_active && pos.x == x && pos.y == y)
               grid(x, y).component->update(delta, controller);
             else
@@ -83,41 +84,49 @@ GridComponent::update(float delta, const Controller& controller)
           }
       }
 
-  for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
+  if (child_active && !grid(pos.x, pos.y).component->is_active())
     {
-      if (i->type == BUTTON_EVENT && i->button.down)
+      child_active = false;
+    }
+  else if (!child_active)
+    {
+      for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
         {
-          if (i->button.name == OK_BUTTON)
+          if (i->type == BUTTON_EVENT && i->button.down)
             {
-              child_active = true;
-            }
-          else if (i->button.name == CANCEL_BUTTON)
-            {
-              set_active(false);
-            }
-        }
-      else if (i->type == AXIS_EVENT)
-        {
-          if (i->axis.name == X_AXIS)
-            {
-              if (i->axis.pos < 0)
+              if (i->button.name == OK_BUTTON)
                 {
-                  move_left();
+                  child_active = true;
+                  grid(pos.x, pos.y).component->set_active(true);
                 }
-              else if (i->axis.pos > 0)
+              else if (i->button.name == CANCEL_BUTTON)
                 {
-                  move_right();
+                  set_active(false);
                 }
             }
-          else if (i->axis.name == Y_AXIS)
+          else if (i->type == AXIS_EVENT)
             {
-              if (i->axis.pos < 0)
+              if (i->axis.name == X_AXIS)
                 {
-                  move_down();
+                  if (i->axis.pos < 0)
+                    {
+                      move_left();
+                    }
+                  else if (i->axis.pos > 0)
+                    {
+                      move_right();
+                    }
                 }
-              else if (i->axis.pos > 0)
+              else if (i->axis.name == Y_AXIS)
                 {
-                  move_up();
+                  if (i->axis.pos < 0)
+                    {
+                      move_down();
+                    }
+                  else if (i->axis.pos > 0)
+                    {
+                      move_up();
+                    }
                 }
             }
         }
@@ -127,7 +136,7 @@ GridComponent::update(float delta, const Controller& controller)
 void
 GridComponent::move_up()
 {
-  grid(pos.x, pos.y).component->set_active(false);
+  //grid(pos.x, pos.y).component->set_active(false);
 
   pos.y += grid(pos.x, pos.y).span.height;
   if (pos.y >= grid.get_height())
@@ -136,13 +145,13 @@ GridComponent::move_up()
   if (grid(pos.x, pos.y).has_parent())
     pos = grid(pos.x, pos.y).parent;
 
-  grid(pos.x, pos.y).component->set_active(true);
+  //grid(pos.x, pos.y).component->set_active(true);
 }
 
 void
 GridComponent::move_down()
 {
-  grid(pos.x, pos.y).component->set_active(false);
+  //grid(pos.x, pos.y).component->set_active(false);
 
   pos.y -= 1;
   if (pos.y < 0)
@@ -151,13 +160,13 @@ GridComponent::move_down()
   if (grid(pos.x, pos.y).has_parent())
     pos = grid(pos.x, pos.y).parent;
 
-  grid(pos.x, pos.y).component->set_active(true);
+  //grid(pos.x, pos.y).component->set_active(true);
 }
 
 void
 GridComponent::move_left()
 {
-  grid(pos.x, pos.y).component->set_active(false);
+  //grid(pos.x, pos.y).component->set_active(false);
 
   pos.x -= 1;
   if (pos.x < 0)
@@ -166,13 +175,13 @@ GridComponent::move_left()
   if (grid(pos.x, pos.y).has_parent())
     pos = grid(pos.x, pos.y).parent;
 
-  grid(pos.x, pos.y).component->set_active(true);
+  //grid(pos.x, pos.y).component->set_active(true);
 }
 
 void
 GridComponent::move_right()
 {
-  grid(pos.x, pos.y).component->set_active(false);
+  //grid(pos.x, pos.y).component->set_active(false);
 
   pos.x += grid(pos.x, pos.y).span.width;
   if (pos.x >= grid.get_width())
@@ -181,7 +190,7 @@ GridComponent::move_right()
   if (grid(pos.x, pos.y).has_parent())
     pos = grid(pos.x, pos.y).parent;
 
-  grid(pos.x, pos.y).component->set_active(true);
+  //grid(pos.x, pos.y).component->set_active(true);
 }
 
 void

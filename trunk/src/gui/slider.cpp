@@ -23,59 +23,118 @@
 **  02111-1307, USA.
 */
 
-#include "display/display.hpp"
-#include "font/fonts.hpp"
 #include "input/controller.hpp"
-#include "button.hpp"
+#include "display/display.hpp"
+#include "color.hpp"
+#include "slider.hpp"
 
 namespace GUI {
 
-Button::Button(const lisp::Lisp* lisp, Component* parent)
-  : Component(parent)
-{
-  assert(0);
-}
-
-Button::Button(const std::string& label_, Component* parent)
-  : Component(Rectf(), parent),
-    label(label_)
+Slider::Slider(Component* parent)
+  : Component(parent),
+    min(0),
+    max(100),
+    step(10)
 {
 }
 
-Button::~Button()
+Slider::~Slider()
 {
+}
+
+int
+Slider::set_minimum(int min_)
+{
+  min = min_;
+}
+
+int
+Slider::set_maximum(int max_)
+{
+  max = max_;
 }
 
 void
-Button::draw()
+Slider::set_range(int min_, int max_)
+{
+  min = min_;
+  max = max_;
+}
+
+void
+Slider::set_step(int step_)
+{
+  step = step_;
+}
+
+void
+Slider::draw()
 {
   Display::fill_rect(rect, Color(0.0f, 0.0f, 0.0f, 0.5f));
   Display::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.5f));
-  Fonts::ttfdialog->draw_center(rect.left + rect.get_width()/2, rect.top + rect.get_height()/2,
-                                label,
-                                is_active()
-                                ? Color(1.0f, 1.0f, 1.0f, 1.0f) 
-                                : Color(1.0f, 1.0f, 1.0f, 0.5f));
+  
+  int width = 30;
+  Rectf slider_rect(Vector(rect.left + (rect.get_width()-width) * (pos/float(max - min)) ,
+                           rect.top + 2),
+                    Sizef(width, rect.get_height()-4));
+  if (is_active())
+    {
+      Display::fill_rect(slider_rect, Color(1.0f, 1.0f, 1.0f, 0.5f));
+      Display::draw_rect(slider_rect, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    }
+  else
+    {
+      Display::draw_rect(slider_rect, Color(1.0f, 1.0f, 1.0f, 0.5f));
+    }
 }
 
 void
-Button::update(float , const Controller& controller)
+Slider::update(float delta, const Controller& controller)
 {
-  set_active(false);
-
   for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
     {
       if (i->type == BUTTON_EVENT && i->button.down)
         {
           if (i->button.name == OK_BUTTON)
             {
+              
             }
-          else if (i->button.name == CANCEL_BUTTON)
-            {            
+          else if (i->button.name == CANCEL_BUTTON)           
+            {
               set_active(false);
             }
         }
-    }  
+      else if (i->type == AXIS_EVENT)
+        {
+          if (i->axis.name == X_AXIS)
+            {
+              if (i->axis.pos < 0)
+                {
+                  pos -= step;
+                  if (pos < min) 
+                    pos = min;
+                }
+              else if (i->axis.pos > 0)
+                {
+                  pos += step;
+                  if (pos > max) 
+                    pos = max;
+                }
+            }
+        }
+    }
+}
+
+int
+Slider::get_pos() const
+{
+  return pos;
+}
+
+void
+Slider::set_pos(int pos_)
+{
+  pos = pos_;
 }
 
 } // namespace GUI

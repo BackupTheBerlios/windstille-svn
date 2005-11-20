@@ -35,7 +35,7 @@ env.foo = 5
 env.ParseConfig('sdl-config --cflags --libs')
 env.ParseConfig('freetype-config --libs --cflags')
 
-env.Program('windstille', [
+env.Program('../windstille', [
 'baby_xml.cpp',
 'background_gradient.cpp',
 'blitter.cpp',
@@ -118,6 +118,7 @@ env.Program('windstille', [
 'gui/gui_manager.cpp',
 'gui/list_view.cpp',
 'gui/root_component.cpp',
+'gui/slider.cpp',
 'gui/tab_component.cpp',
 'gui/text_view.cpp',
 'input/controller.cpp',

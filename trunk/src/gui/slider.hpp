@@ -23,46 +23,44 @@
 **  02111-1307, USA.
 */
 
-#include "text_view.hpp"
+#ifndef HEADER_SLIDER_HPP
+#define HEADER_SLIDER_HPP
+
+#include "component.hpp"
 
 namespace GUI {
 
-TextView::TextView(const Rectf& rect, Component* component)
-  : Component(rect, component),
-    text_area(rect, false)
+/** */
+class Slider : public Component
 {
-}
+private:
+  int min;
+  int max;
+  int step;
+  int pos;
 
-TextView::~TextView()
-{
-}
-  
-void
-TextView::draw()
-{
-  text_area.draw();
-}
+public:
+  Slider(Component* parent);
+  ~Slider();
 
-void
-TextView::update(float delta, const Controller& controller)
-{
-  text_area.update(delta);
-  set_active(false);
-}
+  int  get_pos() const;
 
-void
-TextView::set_screen_rect(const Rectf& rect)
-{
-  Component::set_screen_rect(rect);
-  text_area.set_rect(rect);
-}
+  void set_pos(int pos);
+  int  set_minimum(int min);
+  int  set_maximum(int max);
+  void set_range(int min, int max);
+  void set_step(int step);
 
-void
-TextView::set_text(const std::string& text)
-{
-  text_area.set_text(text);
-}
+  void draw();
+  void update(float delta, const Controller& controller);
+
+private:
+  Slider (const Slider&);
+  Slider& operator= (const Slider&);
+};
 
 } // namespace GUI
+
+#endif
 
 /* EOF */
