@@ -24,7 +24,7 @@
 */
 
 #include "config.hpp"
-
+#include <boost/format.hpp>
 #include <config.h>
 #include <memory>
 #include <iostream>
@@ -367,13 +367,18 @@ Config::save()
 }
 
 void
-Config::debug_print()
+Config::debug_print(std::ostream& out)
 {
-  std::cout << "Config " << this << ":" << std::endl;
+  out << "Config " << this << ":" << std::endl;
   for(ConfigValues::iterator i = config_values.begin(); i != config_values.end(); ++i)
     {
-      std::cout << "  " << i->second->get_name() << " " << i->second->is_set() << std::endl;
-    }  
+      out << boost::format("  %|1$20| = %|2$-20| (set: %|3$|)") 
+        % i->second->get_name()
+        % (boost::format("'%|1s|'") % (*i->second))
+        % i->second->is_set() 
+          << std::endl;
+      
+    }
 }
 
 template<>

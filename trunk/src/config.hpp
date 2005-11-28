@@ -63,7 +63,9 @@ public:
     return do_save;
   }
 
-  virtual void write(lisp::Writer& writer) {}
+  virtual std::ostream& print(std::ostream& os) const =0;
+
+  virtual void write(lisp::Writer& writer) =0;
 };
 
 template<class T>
@@ -105,7 +107,16 @@ public:
   }
 
   void write(lisp::Writer& writer);
+
+  std::ostream& print(std::ostream& os) const {
+    return (os << data);
+  }
 };
+
+inline std::ostream& operator<<(std::ostream &o, const ConfigValueBase& value)
+{
+  return value.print(o);
+}
 
 class Config
 {
@@ -156,10 +167,11 @@ public:
   void set_int   (const std::string& name, int   value);
   void set_float (const std::string& name, float value);
 
-  void debug_print();
+  void debug_print(std::ostream& out);
 };
 
 extern Config config;
 
 #endif
 
+/* EOF */

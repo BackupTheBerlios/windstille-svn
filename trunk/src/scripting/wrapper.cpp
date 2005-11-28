@@ -540,6 +540,15 @@ static int set_gamma_rgb_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int show_config_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::show_config();
+  
+  return 0;
+}
+
 static int spawn_object_wrapper(HSQUIRRELVM v)
 {
   return Scripting::spawn_object(v);
@@ -965,6 +974,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_gamma_rgb'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "show_config", -1);
+  sq_newclosure(v, &show_config_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'show_config'";
     throw SquirrelError(v, msg.str());
   }
 
