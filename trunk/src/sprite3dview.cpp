@@ -24,8 +24,8 @@
 */
 
 #include <iostream>
-#include "gameconfig.hpp"
 #include "input/controller.hpp"
+#include "display/display.hpp"
 #include "console.hpp"
 #include "font/ttf_font.hpp"
 #include "font/fonts.hpp"
@@ -59,14 +59,14 @@ Sprite3DView::draw()
   sc.color().fill_screen(Color(0.5, 0.0, 0.5));
 
   sc.push_modelview();
-  sc.translate(config->screen_width/2, config->screen_height/2 + 200);
+  sc.translate(Display::get_width()/2, Display::get_height()/2 + 200);
   sc.scale(3.0f, 3.0f);
   sc.rotate(rotx, 0.0f, 1.0f, 0.0f);
   sprite.draw(sc.color(), Vector(0,0), 0); 
   sc.pop_modelview();
 
   //Matrix matrix = sc.color().get_modelview();
-  //matrix.translate(-config->screen_width/2, -config->screen_height/2, 0);
+  //matrix.translate(-Display::get_width()/2, -Display::get_height()/2, 0);
   //sprite.draw(sc.color(), matrix, 0.0f);
 
   sc.light().fill_screen(Color(1.0, 1.0, 1.0));

@@ -26,7 +26,7 @@
 #include "script_manager.hpp"
 #include "text_area.hpp"
 #include "display/display.hpp"
-#include "gameconfig.hpp"
+#include "config.hpp"
 
 DialogManager* DialogManager::current_ = 0;
 
@@ -76,17 +76,17 @@ DialogManager::draw()
   if(alignment & LEFT) {
     pos.x = outer_border_x;
   } else if(alignment & RIGHT) {
-    pos.x = config->screen_width - dialog_width - outer_border_x;
+    pos.x = Display::get_width() - dialog_width - outer_border_x;
   } else {
-    pos.x = (config->screen_width - dialog_width) / 2;
+    pos.x = (Display::get_width() - dialog_width) / 2;
   }
 
   if(alignment & TOP) {
     pos.y = outer_border_y;
   } else if(alignment & BOTTOM) {
-    pos.y = config->screen_height - dialog_height - outer_border_y;
+    pos.y = Display::get_height() - dialog_height - outer_border_y;
   } else {
-    pos.y = (config->screen_height - dialog_height) / 2;
+    pos.y = (Display::get_height() - dialog_height) / 2;
   }
 
   if (!caption) {
@@ -146,9 +146,9 @@ DialogManager::create_text()
   if(alignment & LEFT) {
     pos.x = outer_border_x;
   } else if(alignment & RIGHT) {
-    pos.x = config->screen_width - dialog_width - outer_border_x;
+    pos.x = Display::get_width() - dialog_width - outer_border_x;
   } else {
-    pos.x = (config->screen_width - dialog_width) / 2;
+    pos.x = (Display::get_width() - dialog_width) / 2;
   }
       
   int text_width
@@ -165,9 +165,9 @@ DialogManager::create_text()
   if(alignment & TOP) {
     pos.y = outer_border_y;
   } else if(alignment & BOTTOM) {
-    pos.y = config->screen_height - dialog_height - outer_border_y;
+    pos.y = Display::get_height() - dialog_height - outer_border_y;
   } else {
-    pos.y = (config->screen_height - dialog_height) / 2;
+    pos.y = (Display::get_height() - dialog_height) / 2;
   }
 
   text_rect.bottom = text_rect.top + text_rect.get_height();

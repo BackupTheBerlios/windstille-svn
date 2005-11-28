@@ -55,8 +55,8 @@ sources =
         elevator.hpp
         elevator.cpp
         field.hpp
-        gameconfig.hpp
-        gameconfig.cpp
+        config.hpp
+        config.cpp
         game_object.cpp
         game_object.hpp
         game_session.cpp

@@ -104,7 +104,7 @@ Sector::~Sector()
 void
 Sector::parse_file(const std::string& filename)
 {
-  if (debug) std::cout << "Parsing " << filename << std::endl;
+  if (debug) std::cout << "Sector:parse_file '" << filename << "'" << std::endl;
   using namespace lisp;
   
   std::auto_ptr<Lisp> root(Parser::parse(filename));

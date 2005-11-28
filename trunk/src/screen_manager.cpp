@@ -30,7 +30,7 @@
 #include "globals.hpp"
 #include "screen.hpp"
 #include "font/fonts.hpp"
-#include "gameconfig.hpp"
+#include "config.hpp"
 #include "input/input_manager.hpp"
 #include "input/input_configurator.hpp"
 #include "sound/sound_manager.hpp"
@@ -106,7 +106,7 @@ ScreenManager::run()
 
       console.draw();
 
-      if (config->show_fps)
+      if (config.get_bool("show-fps"))
         draw_fps();
 
       SDL_GL_SwapBuffers();
@@ -174,12 +174,12 @@ ScreenManager::poll_events()
                   break;
 
                 case SDLK_F10:
-                  config->show_fps = ! (config->show_fps);
+                  config.set_bool("show-fps", !config.get_bool("show_fps"));
                   break;
               
                 case SDLK_F11:
-                  config->use_fullscreen = ! (config->use_fullscreen);
-                  Display::set_fullscreen(config->use_fullscreen);
+                  config.set_bool("fullscreen", !config.get_bool("fullscreen"));
+                  Display::set_fullscreen(config.get_bool("fullscreen"));
                   break;
               
                 case SDLK_F12:

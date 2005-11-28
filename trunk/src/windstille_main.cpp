@@ -38,7 +38,7 @@
 #include "tile_factory.hpp"
 #include "script_manager.hpp"
 #include "tinygettext/gettext.hpp"
-#include "gameconfig.hpp"
+#include "config.hpp"
 #include "util.hpp"
 #include "font/ttf_font.hpp"
 #include "display/display.hpp"
@@ -46,7 +46,6 @@
 #include "glutil/texture_manager.hpp"
 #include "sprite3d/manager.hpp"
 #include "screen_manager.hpp"
-#include "command_line.hpp"
 #include "sprite3dview.hpp"
 #include "sprite2d/manager.hpp"
 
@@ -58,127 +57,12 @@ WindstilleMain::~WindstilleMain()
 {
 }
 
-void
-WindstilleMain::parse_command_line(int argc, char** argv)
-{
-  CommandLine argp;
-
-  const int debug_flag = 256;
-  const int sprite3dview_flag = 257;
-    
-  argp.set_help_indent(24);
-  argp.add_usage ("[LEVELFILE]");
-  argp.add_doc   ("Windstille is a classic Jump'n Run game.");
-
-  argp.add_group("Mode Options:");
-  argp.add_option(sprite3dview_flag, "sprite3dview", "", "Launch Sprite3DView instead of the game");
-
-  argp.add_group("Display Options:");
-  argp.add_option('g', "geometry",   "WxH", "Change window size to WIDTH and HEIGHT");
-  argp.add_option('f', "fullscreen", "", "Launch the game in fullscreen");
-  argp.add_option('a', "anti-aliasing", "NUM", "Enable NUMx Anti-Aliasing");
-
-  argp.add_group("Sound Options:");
-  argp.add_option('s', "disable-sound", "", "Disable sound");
-  argp.add_option('S', "enable-sound", "", "Enable sound");
-
-  argp.add_group("Controlls Options:");
-  argp.add_option('c', "controller", "FILE", "Use controller as defined in FILE");
-
-  argp.add_group("Misc Options:");
-  argp.add_option('d', "datadir",    "DIR", "Fetch game data from DIR");
-  argp.add_option(debug_flag, "debug",      "", "Turn on debug output");
-  argp.add_option('x', "version",       "", "Print Windstille Version");
-  argp.add_option('h', "help",       "", "Print this help");
-
-  argp.add_group("Demo Recording/Playback Options:");
-  argp.add_option('r', "record",      "FILE", "Record input events to FILE");
-  argp.add_option('v', "record-video","DIR",  "Record a gameplay video to DIR");
-  argp.add_option('p', "play",        "FILE", "Playback input events from FILE");
-
-  argp.parse_args(argc, argv);
-
-  while (argp.next())
-    {
-      switch (argp.get_key())
-        {
-        case 'a':
-          if (sscanf(argp.get_argument().c_str(), "%d", &config->antialiasing) != 1)
-            {
-              throw std::runtime_error("Anti-Aliasing option '-a' requires argument of type {NUM}");
-            }
-          break;
-
-        case 'r':
-          recorder_file = argp.get_argument();
-          break;
-
-        case 'x':
-          screenshot_dir = argp.get_argument();
-          break;
-
-        case 'p':
-          playback_file = argp.get_argument();
-          break;
-
-        case 'd':
-          datadir = argp.get_argument();
-          break;
-
-        case debug_flag:
-          debug = 1;
-          break;
-
-        case sprite3dview_flag:
-          sprite3dview = true;
-          break;
-
-        case 'f':
-          config->use_fullscreen = true;
-          break;
-
-        case 'g':
-          if (sscanf(argp.get_argument().c_str(), "%dx%d",
-                     &config->screen_width, &config->screen_height) == 2)
-            std::cout << "Geometry: " << config->screen_width
-                      << "x" << config->screen_height << std::endl;
-          else
-            throw std::runtime_error("Geometry option '-g' requires argument of type {WIDTH}x{HEIGHT}");
-          break;
-        
-        case 's':
-          config->sound_enabled = false;
-          break;
-
-        case 'S':
-          config->sound_enabled = true;
-          break;  
-
-        case 'c':
-          controller_file = argp.get_argument();
-          break;
-
-        case 'v':
-          std::cout << "Windstille " << PACKAGE_VERSION << std::endl;
-          exit(EXIT_SUCCESS);
-          break;
-
-        case 'h':
-          argp.print_help();
-          exit(EXIT_SUCCESS);
-          break;
-
-        case CommandLine::REST_ARG:
-          levelfile = argp.get_argument();
-          break;
-        }
-    }
-}
-
 int 
 WindstilleMain::main(int argc, char** argv)
 {
   try {
+    config.parse_args(argc, argv);
+
     init_physfs(argv[0]);
     init_sdl();
 
@@ -186,21 +70,14 @@ WindstilleMain::main(int argc, char** argv)
     dictionaryManager->set_charset("iso8859-1");
     dictionaryManager->add_directory("locale");
 
-    config = new Config();
-    config->load();
-  } catch(std::exception& e) {
-    std::cout << "std::exception: " << e.what() << std::endl;
-    return 1;
-  }
+    config.load();
 
-  try {
-    parse_command_line(argc, argv);
     init_modules();
 
-    if (playback_file.empty())
+    if (!config.get<std::string>("playback-file").is_set())
       {
-        if (!controller_file.empty())
-          InputManager::init(controller_file);
+        if (config.get<std::string>("controller-file").is_set())
+          InputManager::init(config.get<std::string>("controller-file").get());
         else if (PHYSFS_exists("controller.cfg"))
           InputManager::init("controller.cfg");
         else
@@ -208,11 +85,11 @@ WindstilleMain::main(int argc, char** argv)
       }
     else
       {
-        InputManager::init_playback(playback_file);
+        InputManager::init_playback(config.get_string("playback-file"));
       }
 
-    if (!recorder_file.empty())
-      InputManager::setup_recorder(recorder_file);
+    if (config.is_set("recorder-file"))
+      InputManager::setup_recorder(config.get_string("recorder-file"));
     
     if (debug) std::cout << "Initialising TileFactory" << std::endl;
     TileFactory::init();
@@ -224,15 +101,17 @@ WindstilleMain::main(int argc, char** argv)
       }
     else
       {
-        if (levelfile.empty())
+        if (!config.get<std::string>("levelfile").is_set())
           {
             screen_manager.set_screen(new GameSession("levels/newformat2.wst"));
           }
         else
           {
-            std::string leveldir = dirname(levelfile);
+            if (debug) std::cout << "Starting level: '" << config.get_string("levelfile") << "'" 
+                                 << std::endl;
+            std::string leveldir = dirname(config.get_string("levelfile"));
             PHYSFS_addToSearchPath(leveldir.c_str(), true);
-            screen_manager.set_screen(new GameSession(basename(levelfile)));
+            screen_manager.set_screen(new GameSession(basename(config.get_string("levelfile"))));
           }
       }
         
@@ -250,9 +129,7 @@ WindstilleMain::main(int argc, char** argv)
     std::cout << "Error catched something unknown?!" << std::endl;
   }
 
-  config->save();
-  delete config;
-  config = 0;
+  config.save();
 
   delete dictionaryManager;
   dictionaryManager = 0;
@@ -275,8 +152,8 @@ WindstilleMain::init_modules()
   if (debug) std::cout << "Initialising Fonts" << std::endl;
   Fonts::init(); 
   sound_manager = new SoundManager();
-  sound_manager->enable_sound(config->sound_enabled);
-  sound_manager->enable_music(config->music_enabled);
+  sound_manager->enable_sound(config.get_bool("sound"));
+  sound_manager->enable_music(config.get_bool("music"));
 
   if (debug) std::cout << "Initialising ScriptManager" << std::endl;
   texture_manager  = new TextureManager();
@@ -431,8 +308,14 @@ WindstilleMain::init_physfs(const char* argv0)
   PHYSFS_permitSymbolicLinks(1);
 
   //show search Path
-  for(char** i = PHYSFS_getSearchPath(); *i != NULL; i++)
-    printf("[%s] is in the search path.\n", *i);
+  if (debug)
+    {
+      std::cout << "SearchPath:" << std::endl;
+      char** search_path = PHYSFS_getSearchPath();
+      for(char** i = search_path; *i != NULL; i++)
+        std::cout << "  " << *i << std::endl;;
+      PHYSFS_freeList(search_path);
+    }
 }
 
 int main(int argc, char** argv)

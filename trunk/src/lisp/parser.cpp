@@ -39,7 +39,7 @@ public:
   ParseError(const Parser* parser, const std::string& message) throw()
   {
     std::ostringstream msg;
-    msg << "Parse error in '" << parser->filename << "' line "
+    msg << "Parse error in file '" << parser->filename << "' line "
       << parser->lexer->getLineNumber() << ": " << message;
     string = msg.str();
   }

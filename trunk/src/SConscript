@@ -27,7 +27,7 @@
 SConscript("squirrel/SConstruct")
 
 env = Environment(CC = 'gcc',
-                  CCFLAGS = ['-O2'])
+                  CCFLAGS = ['-O2', '-Wall', '-Werror', '-g'])
 
 # env.Copy(LIBS = ['a', 'b'])
 
@@ -53,7 +53,7 @@ env.Program('../windstille', [
 'elevator.cpp',
 'energy_bar.cpp',
 'entity.cpp',
-'gameconfig.cpp',
+'config.cpp',
 'game_object.cpp',
 'game_session.cpp',
 'globals.cpp',

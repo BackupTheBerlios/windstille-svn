@@ -31,14 +31,7 @@
 struct SDL_Surface;
 
 class WindstilleMain
-{
-public:
-  std::string levelfile;
-  std::string controller_file;
-  std::string recorder_file;
-  std::string playback_file;
-  std::string screenshot_dir;
-  
+{  
 public:
   WindstilleMain();
   ~WindstilleMain();
@@ -48,7 +41,6 @@ public:
 private:
   void init_sdl();
   void init_physfs(const char* argv0);
-  void parse_command_line(int argc, char** argv);
   void init_modules();
   void deinit_modules();
 };

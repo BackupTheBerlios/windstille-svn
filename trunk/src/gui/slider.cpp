@@ -47,13 +47,13 @@ Slider::~Slider()
 int
 Slider::set_minimum(int min_)
 {
-  min = min_;
+  return min = min_;
 }
 
 int
 Slider::set_maximum(int max_)
 {
-  max = max_;
+  return max = max_;
 }
 
 void
