@@ -328,13 +328,6 @@ Config::load()
         }
     }
 
-    /*
-      props.get("fullscreen",    use_fullscreen);
-      props.get("show_fps",      show_fps);
-      props.get("anti-aliasing", antialiasing);
-      props.get("sound_enabled", sound_enabled);
-      props.get("music_enabled", music_enabled);
-    */
     props.print_unused_warnings("configfile");
 
     // TODO read controller config

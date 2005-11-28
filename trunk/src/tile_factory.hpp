@@ -31,8 +31,6 @@ class TilePacker;
 class TileFactory
 {
 private:
-  // FIXME: Replace ths with a vector, map is potentially slow
-  //typedef std::map<int, Tile*> Tiles;
   typedef std::vector<Tile*> Tiles;
   Tiles tiles;
   typedef std::vector<TilePacker*> TilePackers;
@@ -40,6 +38,8 @@ private:
   int color_packer;
 
   static TileFactory* current_;
+
+  friend class TileDescription;
 public:
   static std::string tile_def_file;
 
@@ -56,6 +56,8 @@ public:
   Tile* create(int tile_id);
 
   Texture get_texture(int tile_id);
+
+  void add(int id, Tile* tile);
 
   /** Create the default TileFactor*/
   static void init();

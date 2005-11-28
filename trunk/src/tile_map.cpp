@@ -132,6 +132,7 @@ TileMap::draw (SceneContext& sc)
           continue;                                    
 
         int packer = tile->color_packer; 
+
         if(packer >= int(requests.size()))
           requests.resize(packer+1);
 
