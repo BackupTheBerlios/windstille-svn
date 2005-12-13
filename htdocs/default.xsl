@@ -41,7 +41,7 @@
             <td width="20%">
             </td>
             <td width="60%">
-              <h1><a href="http://www.nongnu.org/windstille/"><img border="0" src="images/windstille_small.png" alt="Windstille" /></a></h1>
+              <h1><a href="http://windstille.berlios.de/windstille/"><img border="0" src="images/windstille_small.png" alt="Windstille" /></a></h1>
             </td>
             <td width="20%">
               <div align="right">
