@@ -16,6 +16,16 @@
     (width 20)
     )
 
+   (liquid
+    (pos 832 832)
+    (width 4)
+    )
+
+   (liquid
+    (pos 1312 832)
+    (width 4)
+    )
+
    (vrdummy
     (name "VRDummy")
     (pos 600 600)
@@ -205,7 +215,7 @@
       (name "bob")
       (pos 320 831)
       (z-pos -50)
-      (action "Bar")
+      (action "Aim")
       (sprite3d "models/characters/bob/bob.wsprite")
     )
     (character

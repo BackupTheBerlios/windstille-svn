@@ -25,7 +25,6 @@
 ##
 
 import sys, os
-import sys, os
 sys.path.append('scons')
 
 def CheckSDL(context, version):
@@ -44,42 +43,70 @@ def CheckSDL(context, version):
         return ret
 
 def CheckPhysFS(context, version):
+    optionFile = env['CACHEDIR'] + 'libphysfs.cache.py'
+    opts = Options(optionFile)
+    opts.AddOptions(
+        ('CACHED_LIBPHYSFS',   'Whether libphysfs is available'),
+        ('CXXFLAGS_LIBPHYSFS', ''),
+        ('LINKFLAGS_LIBPHYSFS',''),
+        )
+    opts.Update(context.env)
+
     context.Message( 'Checking for PhysFS >= %s ...' % version )
-    if context.TryCompile("""
-    #include <physfs.h>
-    int main()
-    {
-       return 0;
-    }
-    """, '.c'):
-        context.Result(1)
-        return 1
+    if not context.env.has_key('CACHED_LIBPHYSFS'):
+        oldLIBS = context.env.get( 'LIBS', [] )
+        context.env.Append(LIBS = [ 'physfs' ])
+        ret = context.TryCompile("""
+        #include <physfs.h>
+        int main()
+        {
+           return 0;
+        }
+        """, '.c')
+        oldLIBS = context.env.get( 'LIBS', [] )
+        context.env.Replace(LIBS = oldLIBS)
+
+        if ret:
+            env['CACHED_LIBPHYSFS']  = '1'
+            env['CXXFLAGS_LIBPHYSFS']  = ''
+            env['LINKFLAGS_LIBPHYSFS'] = '-lphysfs'
+
+            opts.Save(optionFile, context.env)
+            context.Result(ret)
+            return ret
+        else:
+            context.Result(ret)
+        return ret
     else:
-        context.Result(0)
-        return 0
+        context.Result('ok (cached)')
+        return 1
 
 opts = Options(['options.cache', 'custom.py'])
 opts.Add('CXX', 'The C++ compiler')
 
 env = Environment(options=opts)
 
+env["CACHEDIR"] = "cache/"
+if not os.path.isdir(env['CACHEDIR']): os.mkdir(env['CACHEDIR'])
+
 # env.BuildDir('build2', '.')
 
-conf = Configure( env, custom_tests = { 'CheckSDL' : CheckSDL, 'CheckPhysFS' : CheckPhysFS } )
+if 'configure' in COMMAND_LINE_TARGETS:
+    conf = Configure( env, custom_tests = { 'CheckSDL' : CheckSDL, 'CheckPhysFS' : CheckPhysFS } )
 
-if not conf.CheckSDL('1.2.8'):
-    print 'We really need SDL!'
-    Exit(1)
+    if not conf.CheckSDL('1.2.8'):
+        print 'We really need SDL!'
+        Exit(1)
+        
+    if not conf.CheckPhysFS('1.0'):
+        print "libphysfs missing"
+        Exit(1)
 
-if not conf.CheckPhysFS('1.0'):
-    print "libphysfs missing"
-    Exit(1)
-
-env = conf.Finish() 
-
-Export('env')
-SConscript('tools/miniswig/SConscript')
-SConscript('src/SConscript')
-SConscript('src/scripting/SConscript')
+    env = conf.Finish() 
+else:
+    Export('env')
+    SConscript('tools/miniswig/SConscript')
+    SConscript('src/SConscript')
+    SConscript('src/scripting/SConscript')
 
 # EOF #

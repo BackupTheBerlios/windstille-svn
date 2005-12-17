@@ -45,16 +45,16 @@
      )
 
     (particle-system
-     (lifetime   8.0)
+     (lifetime   15.0)
      (count      70)
 
      (z-pos  1000)
      (pos 0 136)
-     (velocity 80 150)
+     (velocity 60 80)
      (cone    85 95)
      (gravity 0.0 0.0)
      (size   0.9 1.0)
-     (drawer (surface-drawer (image "images/particles/snow2.png")))
+     (drawer (surface-drawer (image "images/particles/snow.png")))
      (color-begin 1.0 1.0 1.0 1.0)
      (color-end 1.0 1.0 1.0 1.0)
      (distribution (line-distribution (x1 0) (y1 0) (x2 1024) (y2 0)))
