@@ -27,7 +27,7 @@
 #include "sector.hpp"
 #include "hedgehog.hpp"
 #include "lisp/properties.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 
 Hedgehog::Hedgehog(const lisp::Lisp* lisp)
   : sprite("images/hedgehog.sprite"),

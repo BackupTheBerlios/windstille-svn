@@ -25,7 +25,7 @@
 
 #include "lisp/properties.hpp"
 #include "random.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 #include "vrdummy.hpp"
 
 VRDummy::VRDummy(const lisp::Lisp* lisp)

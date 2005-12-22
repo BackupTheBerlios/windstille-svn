@@ -30,7 +30,7 @@ public:
   {}
   
   virtual void draw(SceneContext& context) = 0;
-  virtual void update(float elapsed_time) = 0;
+  virtual void update(float delta) = 0;
 
   virtual void fire(bool enable) = 0;
 };

@@ -92,11 +92,11 @@ public:
   virtual void draw (SceneContext& context) = 0;
   /**
    * This function is called from time to time to give the object a chance to
-   * update it's state. elapsed_time is the time that elapsed since the last
+   * update it's state. delta is the time that elapsed since the last
    * update call in seconds. It is possible that there are multiple objects
    * between 2 draw() calls or multiple draw() calls between 2 updates
    */
-  virtual void update (float elapsed_time) = 0;
+  virtual void update (float delta) = 0;
     
   static void set_world (Sector* w) { world = w; }
   Sector* get_world () const

@@ -52,7 +52,7 @@ public:
   /**
    * You should call this every frame
    */
-  void update(float elapsed_time);
+  void update(float delta);
   void draw(DrawingContext& sc, const Vector& pos, float z_pos) const;
   void draw(DrawingContext& sc, const Matrix& matrix, float z_pos) const;
   

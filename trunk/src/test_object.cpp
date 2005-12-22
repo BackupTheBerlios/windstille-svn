@@ -42,12 +42,12 @@ TestObject::draw(SceneContext& sc)
 }
 
 void
-TestObject::update(float elapsed_time)
+TestObject::update(float delta)
 {
-  sprite.update(elapsed_time);
+  sprite.update(delta);
   for(std::vector<AttachedSprite>::iterator i = attached_sprites.begin();
       i != attached_sprites.end(); ++i) {
-    i->sprite.update(elapsed_time);
+    i->sprite.update(delta);
   }
 }
 

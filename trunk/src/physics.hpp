@@ -10,7 +10,7 @@ public:
   Physics(Entity* entity);
   ~Physics();
 
-  void update(float elapsed_time);
+  void update(float delta);
   void register_collobj(CollisionObject& object);
 
   Vector& pos() const

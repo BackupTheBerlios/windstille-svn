@@ -27,7 +27,7 @@
 
 #include "lisp/lisp.hpp"
 #include "lisp/getters.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 #include "math/vector.hpp"
 #include "color.hpp"
 

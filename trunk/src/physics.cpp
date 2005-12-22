@@ -75,7 +75,7 @@ Physics::bounce_collision(const CollisionData& data)
 }
 
 void
-Physics::update(float elapsed_time)
+Physics::update(float delta)
 {
   // add gravity force (TODO make it configurable per Sector)
   force += Vector(0, 9.81 * mass);
@@ -83,8 +83,8 @@ Physics::update(float elapsed_time)
   //force -= velocity() * air_friction;
   
   Vector acceleration = force / mass;
-  velocity() += acceleration * elapsed_time;
-  pos() += velocity() * elapsed_time;
+  velocity() += acceleration * delta;
+  pos() += velocity() * delta;
 
   force = Vector(0, 0);
 }

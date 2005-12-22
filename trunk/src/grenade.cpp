@@ -48,10 +48,10 @@ Grenade::draw(SceneContext& sc)
 }
 
 void
-Grenade::update(float elapsed_time)
+Grenade::update(float delta)
 {
-  sprite.update(elapsed_time);
-  physics.update(elapsed_time);
+  sprite.update(delta);
+  physics.update(delta);
   c_object->set_pos(pos);
   c_object->set_velocity(velocity);
 }

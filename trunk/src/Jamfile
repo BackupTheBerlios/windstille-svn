@@ -121,8 +121,8 @@ sources =
         util.hpp
         view.cpp
         view.hpp
-        windstille_getters.hpp
-        windstille_getters.cpp
+        lisp_getters.hpp
+        lisp_getters.cpp
         windstille_main.cpp
         windstille_main.hpp
 ;

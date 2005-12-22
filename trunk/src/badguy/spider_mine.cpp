@@ -26,7 +26,7 @@
 
 #include "spider_mine.hpp"
 #include "lisp/properties.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 #include "player.hpp"
 #include "sprite2d/manager.hpp"
 

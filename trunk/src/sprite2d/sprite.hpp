@@ -28,7 +28,7 @@ public:
   Sprite(const sprite2d::Data* data);
   ~Sprite();
 
-  void update(float elapsed_time);
+  void update(float delta);
   void draw(const Vector& pos) const;
 
   void  set_action(const std::string& name);

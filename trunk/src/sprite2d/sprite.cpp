@@ -55,9 +55,9 @@ Sprite::~Sprite()
 }
 
 void
-Sprite::update(float elapsed_time)
+Sprite::update(float delta)
 {
-  float step = elapsed_time * speed * current_action->speed;
+  float step = delta * speed * current_action->speed;
   if(reverse)
     step = -step;
 

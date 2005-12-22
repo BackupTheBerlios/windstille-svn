@@ -14,7 +14,7 @@ public:
   virtual ~TestObject();
 
   void draw(SceneContext& context);
-  void update(float elapsed_time);
+  void update(float delta);
 
   void set_sprite(const std::string& filename);
   void set_action(const std::string& action);

@@ -274,17 +274,17 @@ Sprite3D::set_next_frame()
 }
 
 void
-Sprite3D::update(float elapsed_time)
+Sprite3D::update(float delta)
 {   
-  float time_delta = elapsed_time * frame1.action->speed * frame1.speed;
+  float time_delta = delta * frame1.action->speed * frame1.speed;
   if(frame1.speed < 0)
     time_delta = -time_delta;
   
   while(blend_time + time_delta >= 1.0) {
-    elapsed_time -= (1.0 - blend_time) / (frame1.action->speed * frame1.speed);
+    delta -= (1.0 - blend_time) / (frame1.action->speed * frame1.speed);
     set_next_frame();
 
-    time_delta = elapsed_time * frame1.action->speed * frame1.speed;
+    time_delta = delta * frame1.action->speed * frame1.speed;
     if(frame1.speed < 0)
       time_delta = -time_delta;
     blend_time = 0.0;
