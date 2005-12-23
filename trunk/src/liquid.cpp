@@ -24,7 +24,7 @@
 */
 
 #include "lisp/properties.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 #include "display/vertex_array_drawing_request.hpp"
 #include "random.hpp"
 #include "liquid.hpp"

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include "lisp/properties.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 
 SpawnPoint::SpawnPoint(const lisp::Lisp* lisp)
 {

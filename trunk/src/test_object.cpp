@@ -3,7 +3,7 @@
 #include "test_object.hpp"
 #include "sprite3d/manager.hpp"
 #include "lisp/properties.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 
 TestObject::TestObject(const lisp::Lisp* lisp)
 {

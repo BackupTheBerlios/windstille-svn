@@ -11,7 +11,7 @@
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
 #include "lisp/properties.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 #include "glutil/surface.hpp"
 #include "glutil/surface_manager.hpp"
 

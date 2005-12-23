@@ -25,7 +25,7 @@
 #include "color.hpp"
 #include "lisp/properties.hpp"
 #include "lisp/property_iterator.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 #include "spark_drawer.hpp"
 #include "surface_drawer.hpp"
 #include "randomizer.hpp"

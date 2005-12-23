@@ -85,7 +85,7 @@ env.Program('../windstille', [
 'trigger.cpp',
 'util.cpp',
 'view.cpp',
-'windstille_getters.cpp',
+'lisp_getters.cpp',
 'windstille_main.cpp',
 'badguy/badguy.cpp',
 'badguy/hedgehog.cpp',

@@ -28,7 +28,7 @@
 #include "collision/collision_engine.hpp"
 #include "sprite2d/manager.hpp"
 #include "lisp/properties.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 
 Elevator::Elevator(const lisp::Lisp* lisp)
 {

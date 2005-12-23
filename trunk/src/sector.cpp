@@ -23,7 +23,7 @@
 #include <stdexcept>
 #include "lisp/properties.hpp"
 #include "lisp/parser.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 #include "globals.hpp"
 #include "display/scene_context.hpp"
 #include "background_gradient.hpp"

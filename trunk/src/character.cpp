@@ -29,7 +29,7 @@
 #include "sprite3d/manager.hpp"
 #include "lisp/properties.hpp"
 #include "util.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 
 #include <exception>
 

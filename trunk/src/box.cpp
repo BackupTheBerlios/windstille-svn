@@ -22,7 +22,7 @@
 #include "globals.hpp"
 #include "lisp/lisp.hpp"
 #include "lisp/properties.hpp"
-#include "windstille_getters.hpp"
+#include "lisp_getters.hpp"
 #include "collision/collision_engine.hpp"
 #include "math/vector.hpp"
 #include "tile_map.hpp"
