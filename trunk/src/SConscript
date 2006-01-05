@@ -46,6 +46,7 @@ env.Program('../windstille', [
 'command_line.cpp',
 'command_line_generic.cpp',
 'console.cpp',
+'controller_def.cpp',
 'controller_help_window.cpp',
 'conversation.cpp',
 'dialog_manager.cpp',
