@@ -34,7 +34,7 @@ TestObject::draw(SceneContext& sc)
       i != attached_sprites.end(); ++i) {
     sc.push_modelview();
     sc.translate(pos.x, pos.y);
-    sc.mult_modelview(sprite.get_attachement_point_matrix(i->attachpoint));
+    sc.mult_modelview(sprite.get_attachment_point_matrix(i->attachpoint));
     
     i->sprite.draw(sc.color(), Vector(0, 0), 100);
     sc.pop_modelview();
@@ -91,7 +91,8 @@ TestObject::attach(const std::string& spritename,
 {
   AttachedSprite asprite;
   asprite.sprite = Sprite3D(spritename);
-  asprite.attachpoint = sprite.get_attachement_point_id(attachement_point);
+  asprite.attachpoint = sprite.get_attachment_point_id(attachement_point);
   attached_sprites.push_back(asprite);
 }
 
+/* EOF */

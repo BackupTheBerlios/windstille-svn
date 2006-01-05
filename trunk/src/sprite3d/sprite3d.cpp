@@ -190,18 +190,18 @@ Sprite3D::get_rot() const
 }
 
 Sprite3D::PointID
-Sprite3D::get_attachement_point_id(const std::string& name) const
+Sprite3D::get_attachment_point_id(const std::string& name) const
 {
-  return data->get_attachement_point_id(name); 
+  return data->get_attachment_point_id(name); 
 }
 
 Matrix
-Sprite3D::get_attachement_point_matrix(PointID id) const
+Sprite3D::get_attachment_point_matrix(PointID id) const
 {
-  const AttachementPointPosition& point1 
-	  = frame1.action->frames[frame1.frame].attachement_points[id];
-  const AttachementPointPosition& point2 
-	  = frame2.action->frames[frame2.frame].attachement_points[id];
+  const AttachmentPointPosition& point1 
+	  = frame1.action->frames[frame1.frame].attachment_points[id];
+  const AttachmentPointPosition& point2 
+	  = frame2.action->frames[frame2.frame].attachment_points[id];
 
   Quaternion rotquat = Quaternion(0, 0, 1, 0);
   Quaternion quat1 = point1.quat;

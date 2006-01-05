@@ -103,3 +103,4 @@ Quaternion::slerp(const Quaternion& o, float t) const
   return (*this * cos(theta)) + (v2 * sin(theta));
 }
 
+/* EOF */

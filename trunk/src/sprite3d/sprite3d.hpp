@@ -108,8 +108,8 @@ public:
   void set_rot(bool rot = true);
   bool get_rot() const;
 
-  PointID get_attachement_point_id(const std::string& name) const;
-  Matrix get_attachement_point_matrix(PointID id) const;
+  PointID get_attachment_point_id(const std::string& name) const;
+  Matrix  get_attachment_point_matrix(PointID id) const;
 
   /** true if the Sprite3D is valid and usable, false if not */
   bool is_valid() const;

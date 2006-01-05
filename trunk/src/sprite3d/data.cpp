@@ -11,8 +11,7 @@
 #include "glutil/texture_manager.hpp"
 #include "glutil/texture.hpp"
 
-namespace sprite3d
-{
+namespace sprite3d {
 
 static const int FORMAT_VERSION = 2;
 
@@ -76,7 +75,7 @@ Data::Data(const std::string& filename)
     uint16_t mesh_count = read_uint16_t(file);
     if(mesh_count == 0)
       throw std::runtime_error("Sprite3D contains no meshs");
-    uint16_t attachement_point_count = read_uint16_t(file);
+    uint16_t attachment_point_count = read_uint16_t(file);
     uint16_t action_count = read_uint16_t(file);
     if(action_count == 0)
       throw std::runtime_error("Sprite3D contains no actions");
@@ -89,7 +88,7 @@ Data::Data(const std::string& filename)
       std::string texturename = read_string(file, 64);
       texturename = dirname(filename) + basename(texturename);
       mesh.triangle_count = read_uint16_t(file);
-      mesh.vertex_count = read_uint16_t(file);
+      mesh.vertex_count   = read_uint16_t(file);
 
       mesh.texture = texture_manager->get(texturename);
 
@@ -110,11 +109,10 @@ Data::Data(const std::string& filename)
       }
     }
 
-    // read attachement points
-    attachement_points.resize(attachement_point_count);
-    for(uint16_t a = 0; a < attachement_point_count; ++a) {
-      AttachementPoint& point = attachement_points[a];
-      point.name = read_string(file, 64);
+    // read attachment points
+    attachment_points.reserve(attachment_point_count);
+    for(uint16_t a = 0; a < attachment_point_count; ++a) {
+      attachment_points.push_back(read_string(file, 64));
     }
 
     // read actions
@@ -150,18 +148,18 @@ Data::Data(const std::string& filename)
           }
         }
 
-        frame.attachement_points.resize(attachement_point_count);
-        for(uint16_t a = 0; a < attachement_point_count; ++a) {
-          AttachementPointPosition& point = frame.attachement_points[a];
+        frame.attachment_points.resize(attachment_point_count);
+        for(uint16_t a = 0; a < attachment_point_count; ++a) {
+          AttachmentPointPosition& point = frame.attachment_points[a];
 
           point.pos.x = read_float(file);
           point.pos.y = read_float(file);
           point.pos.z = read_float(file);
 
           point.quat.w = -read_float(file);
-          point.quat.x = read_float(file);
-          point.quat.y = read_float(file);
-          point.quat.z = read_float(file);
+          point.quat.x =  read_float(file);
+          point.quat.y =  read_float(file);
+          point.quat.z =  read_float(file);
           point.quat.normalize();
         }
       }
@@ -205,22 +203,19 @@ Data::get_marker(const Action* action, const std::string& name) const
 }
 
 uint16_t
-Data::get_attachement_point_id(const std::string& name) const
+Data::get_attachment_point_id(const std::string& name) const
 {
-  for(uint16_t a = 0; a < attachement_points.size(); ++a) {
-    if(attachement_points[a].name == name)
+  for(uint16_t a = 0; a < attachment_points.size(); ++a) {
+    if(attachment_points[a] == name)
       return a;
   }
 
   std::ostringstream msg;
-  msg << "No Attachement Point with name '" << name << "' defined";
+  msg << "No Attachment Point with name '" << name << "' defined";
   throw std::runtime_error(msg.str());
 }
 
-Mesh::Mesh()
-  : vertex_indices(0), tex_coords(0), normals(0)
-{
-}
+} // namespace sprite3d
 
-}
+/* EOF */
 
