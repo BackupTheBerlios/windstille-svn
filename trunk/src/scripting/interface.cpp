@@ -250,14 +250,17 @@ void cutscene_end()
 
 void fadeout()
 {
+  GameSession::current()->fadeout();
 }
 
 void fadeout_rgb(float r, float g, float b)
 {
+  GameSession::current()->fadeout(Color(r, g, b));
 }
 
 void fadein()
 {
+  GameSession::current()->fadein();
 }
 
 } // namespace Scripting
