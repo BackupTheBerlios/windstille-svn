@@ -69,7 +69,7 @@ Sprite3D::set_action(const std::string& actionname, float speed)
   if(speed >= 0) {
     next_frame.frame = 0;
   } else {
-    next_frame.frame = next_frame.action->frame_count - 1;
+    next_frame.frame = next_frame.action->frames.size() - 1;
   }
   next_frame.speed = speed;
   next_frame.rot = frame2.rot;
@@ -91,9 +91,11 @@ std::vector<std::string>
 Sprite3D::get_actions() const
 {
   std::vector<std::string> actions;
-  for(int i = 0; i < data->action_count; ++i)
+  for(std::vector<Action>::const_iterator i = data->actions.begin(); 
+      i != data->actions.begin(); 
+      ++i)
     {
-      actions.push_back(data->actions[i].name);
+      actions.push_back(i->name);
     }
   return actions;
 }
@@ -105,7 +107,7 @@ Sprite3D::set_next_action(const std::string& name, float speed)
   if(speed >= 0) {
     next_action.frame = 0;
   } else {
-    next_action.frame = next_action.action->frame_count - 1;
+    next_action.frame = next_action.action->frames.size() - 1;
   }
   next_action.speed = speed;
   next_action.rot = frame2.rot;
@@ -116,7 +118,7 @@ Sprite3D::set_next_action(const std::string& name, float speed)
   abort_at_frame.speed = frame->speed;
   abort_at_frame.rot = frame->rot;
   if(frame->speed >= 0) {
-    abort_at_frame.frame = frame->action->frame_count - 1;
+    abort_at_frame.frame = frame->action->frames.size() - 1;
   } else {
     abort_at_frame.frame = 0;
   }
@@ -264,10 +266,10 @@ Sprite3D::set_next_frame()
 
   frame2.action = frame1.action;
   if(frame1.speed < 0) {
-    frame2.frame = (frame1.frame + frame1.action->frame_count - 1)
-      % frame2.action->frame_count;
+    frame2.frame = (frame1.frame + frame1.action->frames.size() - 1)
+      % frame2.action->frames.size();
   } else {
-    frame2.frame = (frame1.frame + 1) % frame1.action->frame_count;
+    frame2.frame = (frame1.frame + 1) % frame1.action->frames.size();
   }
   frame2.speed = frame1.speed;
   frame2.rot = frame1.rot;
@@ -342,7 +344,7 @@ Sprite3D::draw(const Vector& pos, const Matrix& modelview) const
   const ActionFrame& aframe1 = frame1.action->frames[frame1.frame];
   const ActionFrame& aframe2 = frame2.action->frames[frame2.frame];
   
-  for(uint16_t m = 0; m < data->mesh_count; ++m) 
+  for(uint16_t m = 0; m < data->meshs.size(); ++m) 
     {
       const Mesh& mesh = data->meshs[m];
       const MeshVertices& vertices1 = aframe1.meshs[m];
@@ -382,10 +384,10 @@ Sprite3D::draw(const Vector& pos, const Matrix& modelview) const
 
       // draw mesh
       glVertexPointer(3, GL_FLOAT, 0, verts);
-      glNormalPointer(GL_FLOAT, 0, mesh.normals);
-      glTexCoordPointer(2, GL_FLOAT, 0, mesh.tex_coords);
+      glNormalPointer(GL_FLOAT, 0, &*mesh.normals.begin());
+      glTexCoordPointer(2, GL_FLOAT, 0, &*mesh.tex_coords.begin());
       glDrawElements(GL_TRIANGLES, mesh.triangle_count * 3, GL_UNSIGNED_SHORT,
-                     mesh.vertex_indices);
+                     &*mesh.vertex_indices.begin());
     }
 
   assert_gl("rendering 3d sprite");      

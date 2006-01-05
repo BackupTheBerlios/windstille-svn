@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <string>
 #include <GL/gl.h>
+#include <vector>
 #include "ref.hpp"
 #include "glutil/texture.hpp"
 #include "math/vector3.hpp"
@@ -50,30 +51,27 @@ public:
   const Marker& get_marker(const Action* action, const std::string& name) const;
   uint16_t get_attachement_point_id(const std::string& name) const;
 
-  uint16_t mesh_count;
-  Mesh* meshs;
-  uint16_t attachement_point_count;
-  AttachementPoint* attachement_points;
-  uint16_t action_count;
-  Action* actions;
+  std::vector<Mesh> meshs;
+  std::vector<AttachementPoint> attachement_points;
+  std::vector<Action> actions;
 
 private:
-  void clear();
-  
   Data (const Data&);
   Data& operator= (const Data&);
 };
 
+/** 
+ */
 struct Mesh
 {
   Mesh();
 
-  Texture texture;
-  uint16_t triangle_count;
-  uint16_t* vertex_indices;
-  float* tex_coords;
-  float* normals;
-  uint16_t vertex_count;
+  Texture   texture;
+  uint16_t  triangle_count;
+  std::vector<uint16_t> vertex_indices;
+  std::vector<float>    tex_coords;
+  std::vector<float>    normals;
+  uint16_t  vertex_count;
 };
 
 struct AttachementPoint
@@ -86,7 +84,7 @@ struct MeshVertices
   MeshVertices()
     : vertices(0)
   { }
-  float* vertices;
+  std::vector<float> vertices;
 };
 
 struct AttachementPointPosition
@@ -98,29 +96,29 @@ struct AttachementPointPosition
 struct ActionFrame
 {
   ActionFrame()
-    : meshs(0), attachement_points(0)
+    : meshs(0)
   { }
-  MeshVertices* meshs;
-  AttachementPointPosition* attachement_points;
+  std::vector<MeshVertices> meshs;
+  std::vector<AttachementPointPosition> attachement_points;
 };
 
 struct Marker
 {
   std::string name;
-  uint16_t frame;
+  uint16_t    frame;
 };
 
+/** 
+ */
 struct Action
 {
   Action()
     : markers(0), frames(0)
   { }
-  std::string name;
-  float speed;
-  uint16_t marker_count;
-  Marker* markers;
-  uint16_t frame_count;
-  ActionFrame* frames;
+  std::string  name;
+  float        speed;
+  std::vector<Marker> markers;
+  std::vector<ActionFrame> frames;
 };
 
 }
