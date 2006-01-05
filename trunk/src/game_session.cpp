@@ -78,8 +78,13 @@ public:
   std::string filename;
 
   bool pause;
+  
+  /** Amount of how far the cutscene bars are visible, 0.0 means not
+      visible, 1.0 fully visible. */
   float cutscene_value;
-  bool cutscene_mode;
+
+  /** True if cutscene is active, false otherwhise */
+  bool  cutscene_mode;
 
   enum { NO_ACTION, QUIT_ACTION, CHANGE_SECTOR_ACTION } next_action;
   
