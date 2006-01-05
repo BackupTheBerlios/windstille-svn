@@ -238,6 +238,28 @@ void show_config()
   config.debug_print(console);
 }
 
+void cutscene_begin()
+{
+  GameSession::current()->set_cutscene_mode(true);
+}
+
+void cutscene_end()
+{
+  GameSession::current()->set_cutscene_mode(false);
+}
+
+void fadeout()
+{
+}
+
+void fadeout_rgb(float r, float g, float b)
+{
+}
+
+void fadein()
+{
+}
+
 } // namespace Scripting
 
 /* EOF */

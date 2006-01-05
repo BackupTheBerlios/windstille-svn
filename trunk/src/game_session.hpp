@@ -76,6 +76,9 @@ public:
       most part to switch into a 16:9 viewmode with black borders */
   void set_cutscene_mode(bool t);
 
+  void fadeout(const Color& color);
+  void fadein();
+
   void draw();
   void update(float delta, const Controller& controller);
   void handle_event(const SDL_Event& event);

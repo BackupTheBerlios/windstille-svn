@@ -116,13 +116,12 @@ Player::draw (SceneContext& sc)
       sc.highlight().draw(use_str, obj->get_pos().x, obj->get_pos().y - 150, 1000);
     }
   
+  // Draw weapon at the 'Weapon' attachment point
   Sprite3D::PointID id = sprite.get_attachment_point_id("Weapon");
   sc.push_modelview();
   sc.translate(pos.x, pos.y);
   sc.mult_modelview(sprite.get_attachment_point_matrix(id));
-
   weapon->draw(sc);
-
   sc.pop_modelview();
 }
 

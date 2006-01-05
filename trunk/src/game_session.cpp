@@ -78,6 +78,7 @@ public:
   std::string filename;
 
   bool pause;
+  float cutscene_value;
   bool cutscene_mode;
 
   enum { NO_ACTION, QUIT_ACTION, CHANGE_SECTOR_ACTION } next_action;
@@ -99,7 +100,8 @@ public:
   GameSessionImpl() {
     sector = 0;
     current_gui = 0;
-    cutscene_mode = false;
+    cutscene_mode  = false;
+    cutscene_value = 0.0f;
   }
   ~GameSessionImpl() {
     delete sector;
@@ -144,13 +146,14 @@ GameSessionImpl::draw()
       energy_bar.draw();
       controller_help_window.draw();
     }
-  else
+
+  if (cutscene_mode || cutscene_value > 0.0f)
     {
-      int border_size = 75;
+      int border_size = static_cast<int>(75 * cutscene_value);
       Display::fill_rect(Rect(Point(0, 0), Size(Display::get_width(), border_size)), 
-                         Color(0.0f, 0.0f, 0.0f, 1.0f));
+                         Color(0.0f, 0.0f, 0.0f, cutscene_value));
       Display::fill_rect(Rect(Point(0, Display::get_height() - border_size), Size(Display::get_width(), border_size)), 
-                         Color(0.0f, 0.0f, 0.0f, 1.0f));
+                         Color(0.0f, 0.0f, 0.0f, cutscene_value));
     }
 
   if (current_gui)
@@ -183,6 +186,16 @@ GameSessionImpl::draw()
 void
 GameSessionImpl::update(float delta, const Controller& controller)
 {  
+  if (cutscene_mode)
+    cutscene_value += delta * 0.75f;
+  else
+    cutscene_value -= delta * 0.75f;
+
+  if (cutscene_value > 1.0f)
+    cutscene_value = 1.0f;
+  else if (cutscene_value < 0.0f)
+    cutscene_value = 0.0f;
+
   if (controller.button_was_pressed(PAUSE_BUTTON))
     pause = !pause;
 
@@ -420,7 +433,22 @@ GameSession::is_active() const
 void
 GameSession::set_cutscene_mode(bool t)
 {
-  impl->cutscene_mode = t;
+  if (t != impl->cutscene_mode)
+    {
+      impl->cutscene_mode  = t;
+    }
+}
+
+void
+GameSession::fadeout(const Color& color)
+{
+  
+}
+
+void
+GameSession::fadein()
+{
+  
 }
 
 /* EOF */

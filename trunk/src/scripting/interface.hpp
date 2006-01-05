@@ -96,6 +96,13 @@ void set_gamma_rgb(float r, float g, float b);
 
 void show_config();
 
+void cutscene_begin();
+void cutscene_end();
+
+void fadeout();
+void fadeout_rgb(float r, float g, float b);
+void fadein();
+
 } // namespace Scripting
 
 #endif
