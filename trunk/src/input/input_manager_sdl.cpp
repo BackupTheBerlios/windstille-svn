@@ -92,8 +92,6 @@ static bool has_suffix(const std::string& str, const std::string& suffix)
 void
 InputManagerSDL::parse_config(const lisp::Lisp* lisp)
 {
-  ControllerDef controller_def;
-  
   lisp::Properties cur(lisp);
   lisp::PropertyIterator<const lisp::Lisp*> iter = cur.get_iter();
 
@@ -114,7 +112,7 @@ InputManagerSDL::parse_config(const lisp::Lisp* lisp)
                   props.get("device", device);
                   props.get("button", button);
 
-                  bind_joystick_button(controller_def.get_definition(iter.item()).id,
+                  bind_joystick_button(controller_description.get_definition(iter.item()).id,
                                        device, button);
                 }
               else if (dev_iter.item() == "keyboard-button")
@@ -124,7 +122,7 @@ InputManagerSDL::parse_config(const lisp::Lisp* lisp)
                   lisp::Properties props(*dev_iter);
                   props.get("key", key);
 
-                  bind_keyboard_button(controller_def.get_definition(iter.item()).id,
+                  bind_keyboard_button(controller_description.get_definition(iter.item()).id,
                                        string_to_keyid(key));
                 }
               else
@@ -148,7 +146,7 @@ InputManagerSDL::parse_config(const lisp::Lisp* lisp)
                   props.get("device", device);
                   props.get("axis",   axis);
 
-                  bind_joystick_axis(controller_def.get_definition(iter.item()).id,
+                  bind_joystick_axis(controller_description.get_definition(iter.item()).id,
                                      device, axis);
                 }
               else if (dev_iter.item() == "keyboard-axis")
@@ -160,7 +158,7 @@ InputManagerSDL::parse_config(const lisp::Lisp* lisp)
                   props.get("minus", minus);
                   props.get("plus",  plus);
 
-                  bind_keyboard_axis(controller_def.get_definition(iter.item()).id, 
+                  bind_keyboard_axis(controller_description.get_definition(iter.item()).id, 
                                      string_to_keyid(minus), string_to_keyid(plus));
                 }
               else

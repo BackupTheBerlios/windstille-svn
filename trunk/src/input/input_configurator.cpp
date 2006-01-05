@@ -98,19 +98,17 @@ InputConfigurator::update(float , const Controller& )
 void
 InputConfigurator::print_item()
 {
-  ControllerDef def;
-
   if (!items.empty())
     {
       const ConfigureItem& item = items.back();
       
       if (item.mode == ConfigureItem::CONFIGURE_AXIS)
         {
-          out << "Configuring " << def.get_definition(item.event_id).name << ": " << std::endl;
+          out << "Configuring " << controller_description.get_definition(item.event_id).name << ": " << std::endl;
         }
       else if (item.mode == ConfigureItem::CONFIGURE_BUTTON)
         {
-          out << "Configuring " << def.get_definition(item.event_id).name << ": " << std::endl;
+          out << "Configuring " << controller_description.get_definition(item.event_id).name << ": " << std::endl;
         }
     }
 

@@ -3,6 +3,8 @@ SubDir TOP src input ;
 sources =
     controller.cpp
     controller.hpp
+    controller_description.cpp
+    controller_description.hpp
     input_event.hpp
     input_manager_sdl.cpp
     input_manager_sdl.hpp

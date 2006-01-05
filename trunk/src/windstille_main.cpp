@@ -74,6 +74,24 @@ WindstilleMain::main(int argc, char** argv)
 
     init_modules();
 
+    { // Fill controller_description with data
+      controller_description.add_button("primary-button",   PRIMARY_BUTTON);
+      controller_description.add_button("secondary-button", SECONDARY_BUTTON);
+      controller_description.add_button("tertiary-button",  TERTIARY_BUTTON);
+  
+      controller_description.add_button("pda-button", PDA_BUTTON);
+      controller_description.add_button("inventory-button", INVENTORY_BUTTON);
+
+      controller_description.add_button("aim-button",       AIM_BUTTON);
+      controller_description.add_button("pause-button",     PAUSE_BUTTON);
+
+      controller_description.add_axis("x-axis", X_AXIS);
+      controller_description.add_axis("y-axis", Y_AXIS);
+
+      controller_description.add_axis("x2-axis", X2_AXIS);
+      controller_description.add_axis("y2-axis", Y2_AXIS);
+    }
+
     if (!config.get<std::string>("playback-file").is_set())
       {
         if (config.get<std::string>("controller-file").is_set())

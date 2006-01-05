@@ -123,8 +123,10 @@ Sprite3DView::update(float delta, const Controller& controller)
       sprite.set_action(actions[current_action]);
     }
 
-  roty += delta * 30.0f;
-  rotx += delta * 30.0f;
+  roty += controller.get_axis_state(X2_AXIS) * 30.0f;
+  rotx += controller.get_axis_state(Y2_AXIS) * 30.0f;
+
+  std::cout << controller.get_axis_state(Y2_AXIS) << std::endl;
 }
 
 /* EOF */
