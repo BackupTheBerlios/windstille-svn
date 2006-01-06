@@ -34,7 +34,7 @@
 Sprite3DView::Sprite3DView()
 {
   current_action = 0;
-  //sprite = Sprite3D("models/characters/bob/bob.wsprite");
+
   sprite = Sprite3D("models/characters/jane/jane.wsprite");
   actions = sprite.get_actions();
 
@@ -50,6 +50,13 @@ Sprite3DView::~Sprite3DView()
 }
 
 void
+Sprite3DView::set_model(const std::string& filename)
+{
+  sprite  = Sprite3D(filename);
+  actions = sprite.get_actions();
+}
+
+void
 Sprite3DView::draw()
 {
   sc.reset_modelview();
@@ -62,6 +69,7 @@ Sprite3DView::draw()
   sc.translate(Display::get_width()/2, Display::get_height()/2 + 200);
   sc.scale(3.0f, 3.0f);
   sc.rotate(rotx, 0.0f, 1.0f, 0.0f);
+  sc.rotate(roty, 1.0f, 0.0f, 0.0f);
   sprite.draw(sc.color(), Vector(0,0), 0); 
   sc.pop_modelview();
 
@@ -118,15 +126,15 @@ Sprite3DView::update(float delta, const Controller& controller)
         current_action -= 1;
     }
 
-  if (last_action != current_action)
+  if (last_action != current_action && !actions.empty())
     {
       sprite.set_action(actions[current_action]);
     }
 
-  roty += controller.get_axis_state(X2_AXIS) * 30.0f;
-  rotx += controller.get_axis_state(Y2_AXIS) * 30.0f;
+  rotx += controller.get_axis_state(X2_AXIS) * 50.0f * delta;
+  roty += controller.get_axis_state(Y2_AXIS) * 50.0f * delta;
 
-  std::cout << controller.get_axis_state(Y2_AXIS) << std::endl;
+  //std::cout << controller.get_axis_state(Y2_AXIS) << std::endl;
 }
 
 /* EOF */

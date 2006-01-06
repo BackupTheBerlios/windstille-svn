@@ -19,65 +19,129 @@
 
 #include "player.hpp"
 #include "sector.hpp"
+#include "script_manager.hpp"
 #include "display/display.hpp"
 #include "camera.hpp"
 
 Camera* Camera::current_ = 0;
 
-Camera::Camera()
-  : pos(0, 0),
-    active(true)
+/**
+ * Simple linear interpolation to move along a given vector path
+ * FIXME: Could add curves and different speed per vertex
+ */
+Vector interpolate_path(const std::vector<Vector>& path, float length)
 {
+  float length_so_far = 0.0f;
+  for(std::vector<Vector>::size_type i = 0; i < path.size()-1; ++i)
+    {
+      Vector segment = path[i+1] - path[i];
+      float segment_length = segment.length();
+
+      if (length_so_far + segment_length > length)
+        {
+          float factor = (length - length_so_far) / segment_length;
+          return path[i] + segment * factor;
+        }
+      length_so_far += segment_length;
+    }
+  return path.back();
+}
+
+Camera::Camera()
+  : pos(0, 0)
+{
+  path_pos = 0;
   current_ = this;
+  mode     = CAMERA_FOLLOW_PLAYER;
 }
 
 void
-Camera::update(float )
+Camera::update(float delta)
 {
-  if (!active)
-    return;
-    
-  int hscroll_threshold = 100;
-  int vscroll_threshold = 150;
+  switch (mode)
+    {
+    case CAMERA_INACTIVE:
+      // do nothing
+      break;
 
-  Vector tpos = Player::current()->get_pos();
+    case CAMERA_FOLLOW_PLAYER:
+      {
+        int hscroll_threshold = 100;
+        int vscroll_threshold = 150;
 
-  float dist = tpos.x - pos.x;
-  if (dist > hscroll_threshold)
-    pos.x = tpos.x - hscroll_threshold;
-  else if (dist < - hscroll_threshold)
-    pos.x = tpos.x + hscroll_threshold;
+        Vector tpos = Player::current()->get_pos();
 
-  dist = tpos.y - pos.y;
-  if (dist > vscroll_threshold)
-    pos.y = tpos.y - vscroll_threshold;
-  else if (dist < -vscroll_threshold)
-    pos.y = tpos.y + vscroll_threshold;
+        float dist = tpos.x - pos.x;
+        if (dist > hscroll_threshold)
+          pos.x = tpos.x - hscroll_threshold;
+        else if (dist < - hscroll_threshold)
+          pos.x = tpos.x + hscroll_threshold;
 
-  int start_x = Display::get_width()/2;
-  int end_x   = Sector::current()->get_width() - Display::get_width()/2;
+        dist = tpos.y - pos.y;
+        if (dist > vscroll_threshold)
+          pos.y = tpos.y - vscroll_threshold;
+        else if (dist < -vscroll_threshold)
+          pos.y = tpos.y + vscroll_threshold;
 
-  int start_y = Display::get_height()/2;
-  int end_y   = Sector::current()->get_height() - Display::get_height()/2;
+        int start_x = Display::get_width()/2;
+        int end_x   = Sector::current()->get_width() - Display::get_width()/2;
 
-  if (pos.x < start_x)
-    pos.x = start_x;
+        int start_y = Display::get_height()/2;
+        int end_y   = Sector::current()->get_height() - Display::get_height()/2;
 
-  if (pos.y < start_y)
-    pos.y = start_y;
+        if (pos.x < start_x)
+          pos.x = start_x;
 
-  if (pos.x > end_x)
-    pos.x = end_x;
+        if (pos.y < start_y)
+          pos.y = start_y;
 
-  if (pos.y > end_y)
-    pos.y = end_y;
+        if (pos.x > end_x)
+          pos.x = end_x;
+
+        if (pos.y > end_y)
+          pos.y = end_y;
+      }
+      break;
+
+    case CAMERA_FOLLOW_PATH:
+      {
+        assert(!path.empty());
+        path_pos += delta * 50.0f;
+
+        Vector p = interpolate_path(path, path_pos);
+        if (p == path.back())
+          {
+            script_manager->fire_wakeup_event(ScriptManager::CAMERA_DONE);
+            set_mode(CAMERA_INACTIVE);
+          }
+        set_pos(p.x, p.y);
+      }
+      break;
+    }
 }
 
 void
 Camera::set_pos(float x, float y)
 {
-  pos.x = x + Display::get_width()/2;
-  pos.y = y + Display::get_height()/2;
+  // Casting here isn't really necessary, but should about some
+  // pixel-jitter when scrolling with subpixel values and pixel
+  // precise images
+  pos.x = static_cast<int>(x + Display::get_width()/2);
+  pos.y = static_cast<int>(y + Display::get_height()/2);
+}
+
+void
+Camera::set_path(const std::vector<Vector>& path_)
+{
+  path     = path_;
+  path_pos = 0;
+  mode     = CAMERA_FOLLOW_PATH;
+}
+
+void
+Camera::set_mode(Mode mode_)
+{
+  mode = mode_;
 }
 
 /* EOF */

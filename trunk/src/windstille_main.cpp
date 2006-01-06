@@ -92,7 +92,6 @@ WindstilleMain::main(int argc, char** argv)
       controller_description.add_axis("y2-axis", Y2_AXIS);
     }
 
-    if (!config.get<std::string>("playback-file").is_set())
       {
         if (config.get<std::string>("controller-file").is_set())
           InputManager::init(config.get<std::string>("controller-file").get());
@@ -101,21 +100,24 @@ WindstilleMain::main(int argc, char** argv)
         else
           InputManager::init("controller/keyboard.scm");
       }
-    else
-      {
-        InputManager::init_playback(config.get_string("playback-file"));
-      }
 
-    if (config.is_set("recorder-file"))
-      InputManager::setup_recorder(config.get_string("recorder-file"));
-    
     if (debug) std::cout << "Initialising TileFactory" << std::endl;
     TileFactory::init();
 
     if (sprite3dview)
       {
+        Sprite3DView* sprite3dview = new Sprite3DView();
+
+        if (config.get<std::string>("levelfile").is_set())
+          {
+            // FIXME: Looks a little hacky, doesn't it?
+            std::string leveldir = dirname(config.get_string("levelfile"));
+            PHYSFS_addToSearchPath(leveldir.c_str(), true);
+            sprite3dview->set_model(basename(config.get_string("levelfile")));
+          }
+            
         // Launching Sprite3DView instead of game
-        screen_manager.set_screen(new Sprite3DView());
+        screen_manager.set_screen(sprite3dview);
       }
     else
       {

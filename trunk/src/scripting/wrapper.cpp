@@ -275,6 +275,46 @@ static int caption_end_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int camera_set_active_wrapper(HSQUIRRELVM v)
+{
+  SQBool arg0;
+  sq_getbool(v, 2, &arg0);
+  
+  Scripting::camera_set_active(arg0);
+  
+  return 0;
+}
+
+static int camera_begin_path_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::camera_begin_path();
+  
+  return 0;
+}
+
+static int camera_add_point_wrapper(HSQUIRRELVM v)
+{
+  float arg0;
+  sq_getfloat(v, 2, &arg0);
+  float arg1;
+  sq_getfloat(v, 3, &arg1);
+  
+  Scripting::camera_add_point(arg0, arg1);
+  
+  return 0;
+}
+
+static int camera_end_path_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::camera_end_path();
+  
+  return 0;
+}
+
 static int set_view_wrapper(HSQUIRRELVM v)
 {
   float arg0;
@@ -283,16 +323,6 @@ static int set_view_wrapper(HSQUIRRELVM v)
   sq_getfloat(v, 3, &arg1);
   
   Scripting::set_view(arg0, arg1);
-  
-  return 0;
-}
-
-static int set_camera_active_wrapper(HSQUIRRELVM v)
-{
-  SQBool arg0;
-  sq_getbool(v, 2, &arg0);
-  
-  Scripting::set_camera_active(arg0);
   
   return 0;
 }
@@ -337,6 +367,15 @@ static int wait_for_fade_wrapper(HSQUIRRELVM v)
   HSQUIRRELVM arg0 = v;
   
   Scripting::wait_for_fade(arg0);
+  
+  return sq_suspendvm(v);
+}
+
+static int wait_for_camera_wrapper(HSQUIRRELVM v)
+{
+  HSQUIRRELVM arg0 = v;
+  
+  Scripting::wait_for_camera(arg0);
   
   return sq_suspendvm(v);
 }
@@ -831,19 +870,43 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
+  sq_pushstring(v, "camera_set_active", -1);
+  sq_newclosure(v, &camera_set_active_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'camera_set_active'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "camera_begin_path", -1);
+  sq_newclosure(v, &camera_begin_path_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'camera_begin_path'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "camera_add_point", -1);
+  sq_newclosure(v, &camera_add_point_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'camera_add_point'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "camera_end_path", -1);
+  sq_newclosure(v, &camera_end_path_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'camera_end_path'";
+    throw SquirrelError(v, msg.str());
+  }
+
   sq_pushstring(v, "set_view", -1);
   sq_newclosure(v, &set_view_wrapper, 0);
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'set_view'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  sq_pushstring(v, "set_camera_active", -1);
-  sq_newclosure(v, &set_camera_active_wrapper, 0);
-  if(SQ_FAILED(sq_createslot(v, -3))) {
-    std::ostringstream msg;
-    msg << "Couldn't register function'set_camera_active'";
     throw SquirrelError(v, msg.str());
   }
 
@@ -876,6 +939,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'wait_for_fade'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "wait_for_camera", -1);
+  sq_newclosure(v, &wait_for_camera_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'wait_for_camera'";
     throw SquirrelError(v, msg.str());
   }
 

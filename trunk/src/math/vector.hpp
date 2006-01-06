@@ -117,6 +117,8 @@ public:
     }
 
   float magnitude() const;
+  float length() const { return magnitude(); }
+
   Vector unit() const;
   void normalize();
 

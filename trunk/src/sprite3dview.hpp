@@ -51,6 +51,8 @@ public:
   void draw();
   void update(float delta, const Controller& controller);
 
+  void set_model(const std::string& filename);
+
 private:
   Sprite3DView (const Sprite3DView&);
   Sprite3DView& operator= (const Sprite3DView&);

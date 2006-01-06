@@ -51,10 +51,6 @@ public:
   void add_button(const std::string& name, int id);
   void add_axis  (const std::string& name, int id); 
 
-  int get_button_count() const;
-  int get_axis_count() const;
-  int get_keyboard_count() const;
-
   const InputEventDefinition& get_definition(int id) const;
   const InputEventDefinition& get_definition(const std::string& name) const;
 };

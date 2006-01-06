@@ -19,6 +19,7 @@
 
 #include "sprite3d/sprite3d.hpp"
 
+#include <assert.h>
 #include <vector>
 #include <stdint.h>
 #include <sstream>
@@ -36,22 +37,24 @@
 using namespace sprite3d;
 
 Sprite3D::Sprite3D()
-  : data(0), actions_switched(false)
+  : data(0), 
+    actions_switched(false)
 {
 }
 
 Sprite3D::Sprite3D(const std::string& filename)
-  : data(sprite3d_manager->create_data(filename)), actions_switched(false)
+  : data(sprite3d_manager->create_data(filename)),
+    actions_switched(false)
 {
-  frame1.action = &data->actions[0];
-  frame1.frame = 0;
-  frame1.rot   = false;
-  frame1.speed = 1.0;
-  frame2       = frame1;
+  frame1.action         = &data->actions[0];
+  frame1.frame          = 0;
+  frame1.rot            = false;
+  frame1.speed          = 1.0;
+  frame2                = frame1;
   abort_at_frame.action = 0;
-  next_frame.action  = 0;
-  next_action.action = 0;
-  blend_time = 0.0;
+  next_frame.action     = 0;
+  next_action.action    = 0;
+  blend_time            = 0.0;
 
   blend_sfactor = GL_ONE;
   blend_dfactor = GL_ZERO;
@@ -64,6 +67,7 @@ Sprite3D::~Sprite3D()
 void
 Sprite3D::set_action(const std::string& actionname, float speed)
 {
+  assert(data);
   next_frame.action = & data->get_action(actionname);
   // set to last action so that next set_next_frame call will result in frame 0
   if(speed >= 0) {
@@ -92,7 +96,7 @@ Sprite3D::get_actions() const
 {
   std::vector<std::string> actions;
   for(std::vector<Action>::const_iterator i = data->actions.begin(); 
-      i != data->actions.begin(); 
+      i != data->actions.end(); 
       ++i)
     {
       actions.push_back(i->name);

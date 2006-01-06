@@ -92,9 +92,10 @@ public:
   void clear_bindings();
 
   std::string keyid_to_string(SDLKey id);
-  SDLKey string_to_keyid(const std::string& str);
+  SDLKey      string_to_keyid(const std::string& str);
 
   void on_event(const SDL_Event& event);
+
 private:
   void on_key_event(const SDL_KeyboardEvent& key);
   void on_joy_button_event(const SDL_JoyButtonEvent& button);

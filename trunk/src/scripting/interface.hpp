@@ -46,8 +46,12 @@ void caption_add(int alignment, const std::string& text);
 void caption_clear();
 void caption_end();
 
+void camera_set_active(bool active);
+void camera_begin_path();
+void camera_add_point(float x, float y);
+void camera_end_path();
+
 void set_view(float x, float y);
-void set_camera_active(bool active);
 void set_controller_help_active(bool active);
 
 // dialog alignment constants
@@ -61,6 +65,7 @@ static const int BOTTOM  = 0x20;
 void dialog_show(int alignment, const std::string& character, const std::string& portrait, const std::string& text);
 void wait_for_dialog(HSQUIRRELVM vm) __suspend;
 void wait_for_fade(HSQUIRRELVM vm) __suspend;
+void wait_for_camera(HSQUIRRELVM vm) __suspend;
 
 void conversation_add(const std::string& text);
 void conversation_show();

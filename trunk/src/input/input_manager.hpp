@@ -25,7 +25,6 @@
 #include "controller.hpp"
 #include "input_event.hpp"
 
-class InputRecorder;
 class InputManagerImpl;
 
 /** */
@@ -33,21 +32,17 @@ class InputManager
 {
 private:
   static InputManagerImpl* impl;
-  static InputRecorder* recorder;
+
 public:
   /** Init the InputManager with the data found in \a filename */
   static void init(const std::string& filename = std::string());
 
-  /** Init the playback of a previously recorded file */
-  static void init_playback(const std::string& filenam);
   static void deinit();
-
-  /** Record all input events to \a filename */
-  static void setup_recorder(const std::string& filename);
 
   static void update(float delta);
   static const Controller& get_controller();
   static void clear();
+
 private:
   InputManager(const InputManager&);
   InputManager& operator=(const InputManager&);

@@ -20,15 +20,23 @@
 #ifndef HEADER_CAMERA_HXX
 #define HEADER_CAMERA_HXX
 
-/** This class manages the virtual camera movement, it follows the
-    player, allows the player to watch around, might zoom out if
-    interesting stuff happens out of the screen and such
+/** 
+ * This class manages the virtual camera movement, it follows the
+ * player, allows the player to watch around, might zoom out if
+ * interesting stuff happens out of the screen and such
  */
 class Camera
 {
+public:
+  enum Mode { CAMERA_INACTIVE, CAMERA_FOLLOW_PLAYER, CAMERA_FOLLOW_PATH };
+
 private:
+  Mode mode;
+
   Vector pos;
-  bool active;
+  
+  std::vector<Vector> path;
+  float path_pos;
 
   static Camera* current_;
 public:
@@ -36,10 +44,17 @@ public:
 
   Camera();
 
-  void update(float delta);
+  void   update(float delta);
   Vector get_pos() const { return pos; }
-  void set_pos(float x, float y);
-  void set_active(bool arg_active) { active = arg_active; }
+  void   set_pos(float x, float y);
+
+  void   set_mode(Mode mode_);
+
+  /**
+   * Set Camera to follow the given path
+   */
+  void   set_path(const std::vector<Vector>& path_);
+
 private:
   Camera (const Camera&);
   Camera& operator= (const Camera&);

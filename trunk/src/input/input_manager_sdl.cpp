@@ -135,6 +135,7 @@ InputManagerSDL::parse_config(const lisp::Lisp* lisp)
         {
           lisp::Properties dev_prop(*iter);
           lisp::PropertyIterator<const lisp::Lisp*> dev_iter = dev_prop.get_iter();
+
           while(dev_iter.next())
             {
               if (dev_iter.item() == "joystick-axis")
@@ -216,9 +217,13 @@ InputManagerSDL::on_key_event(const SDL_KeyboardEvent& event)
       else if (event.keysym.sym == i->plus)
         {
           if (event.state)
-            add_axis_event(i->event, 1.0f);
+            {
+              add_axis_event(i->event, 1.0f);
+            }
           else if (!keystate[i->minus])
-            add_axis_event(i->event, 0.0f);
+            {
+              add_axis_event(i->event, 0.0f);
+            }
         }
     }
 }

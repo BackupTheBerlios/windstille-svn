@@ -84,9 +84,30 @@ void set_view(float x, float y)
   Camera::current()->set_pos(x, y);
 }
 
-void set_camera_active(bool active)
+
+std::vector<Vector> camera_path;
+void camera_begin_path()
 {
-  Camera::current()->set_active(active);
+  camera_path.clear();
+}
+
+void camera_add_point(float x, float y)
+{
+  camera_path.push_back(Vector(x, y));
+}
+
+void camera_end_path()
+{
+  Camera::current()->set_path(camera_path);
+}
+
+void camera_set_active(bool active)
+{
+  // FIXME: This function is only for backward compability
+  if (active)
+    Camera::current()->set_mode(Camera::CAMERA_FOLLOW_PLAYER);
+  else
+    Camera::current()->set_mode(Camera::CAMERA_INACTIVE);
 }
 
 void set_controller_help_active(bool active)
@@ -102,6 +123,11 @@ void wait(HSQUIRRELVM vm, float time)
 void wait_for_dialog(HSQUIRRELVM vm)
 {
   script_manager->set_wakeup_event(vm, ScriptManager::DIALOG_CLOSED);
+}
+
+void wait_for_camera(HSQUIRRELVM vm)
+{
+  script_manager->set_wakeup_event(vm, ScriptManager::CAMERA_DONE);
 }
 
 void wait_for_fade(HSQUIRRELVM vm)

@@ -27,25 +27,18 @@
 #include "lisp/lisp.hpp"
 #include "lisp/properties.hpp"
 #include "input_manager_sdl.hpp"
-#include "input_manager_player.hpp"
 #include "input_manager_impl.hpp"
-#include "input_recorder.hpp"
 #include "input_manager.hpp"
 
 InputManagerImpl* InputManager::impl = 0;
-InputRecorder* InputManager::recorder = 0;
-
-void
-InputManager::init_playback(const std::string& filename)
-{
-  impl = new InputManagerPlayer(filename);
-}
 
 void
 InputManager::init(const std::string& filename)
 {
   std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
   lisp::Properties rootp(root.get());
+
+  std::cout << "InputManager: " << filename << std::endl;
 
   const lisp::Lisp* controller = 0;
   if(rootp.get("windstille-controller", controller) == false) {
@@ -55,15 +48,6 @@ InputManager::init(const std::string& filename)
   }
   
   impl = new InputManagerSDL(controller);
-}
-
-void
-InputManager::setup_recorder(const std::string& filename)
-{
-  if (recorder)
-    delete recorder;
-
-  recorder = new InputRecorder(filename);
 }
 
 void 
@@ -77,8 +61,6 @@ InputManager::update(float delta)
 {
   assert(impl);
   impl->update(delta);
-  if (recorder)
-    recorder->record(get_controller());
 }
 
 const Controller&
