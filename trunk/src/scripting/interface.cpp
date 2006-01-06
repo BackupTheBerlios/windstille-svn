@@ -63,13 +63,18 @@ void play_sound(const std::string& soundfile)
   sound_manager->play(soundfile);
 }
 
-void add_caption(int alignment, const std::string& text)
+void caption_clear()
+{
+  DialogManager::current()->add_caption(0, "");
+}
+
+void caption_add(int alignment, const std::string& text)
 {
   DialogManager::current()->add_caption(alignment, text);
   GameSession::current()->set_control_state(GameSession::DIALOG);
 }
 
-void end_caption()
+void caption_end()
 {
   GameSession::current()->set_control_state(GameSession::GAME);
 }
@@ -97,6 +102,11 @@ void wait(HSQUIRRELVM vm, float time)
 void wait_for_dialog(HSQUIRRELVM vm)
 {
   script_manager->set_wakeup_event(vm, ScriptManager::DIALOG_CLOSED);
+}
+
+void wait_for_fade(HSQUIRRELVM vm)
+{
+  script_manager->set_wakeup_event(vm, ScriptManager::FADE_DONE);
 }
 
 void dialog_show(int alignment, const std::string& character, const std::string& portrait, const std::string& text)
@@ -248,19 +258,14 @@ void cutscene_end()
   GameSession::current()->set_cutscene_mode(false);
 }
 
-void fadeout()
+void internal_fadeout_rgb(float time, float r, float g, float b)
 {
-  GameSession::current()->fadeout();
+  GameSession::current()->fadeout(time, Color(r, g, b));
 }
 
-void fadeout_rgb(float r, float g, float b)
+void internal_fadein(float time)
 {
-  GameSession::current()->fadeout(Color(r, g, b));
-}
-
-void fadein()
-{
-  GameSession::current()->fadein();
+  GameSession::current()->fadein(time);
 }
 
 } // namespace Scripting

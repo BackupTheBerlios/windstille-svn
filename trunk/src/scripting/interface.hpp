@@ -42,8 +42,9 @@ void stop_music(float fadetime);
 
 void play_sound(const std::string& soundfile);
 
-void add_caption(int alignment, const std::string& text);
-void end_caption();
+void caption_add(int alignment, const std::string& text);
+void caption_clear();
+void caption_end();
 
 void set_view(float x, float y);
 void set_camera_active(bool active);
@@ -59,6 +60,7 @@ static const int BOTTOM  = 0x20;
 
 void dialog_show(int alignment, const std::string& character, const std::string& portrait, const std::string& text);
 void wait_for_dialog(HSQUIRRELVM vm) __suspend;
+void wait_for_fade(HSQUIRRELVM vm) __suspend;
 
 void conversation_add(const std::string& text);
 void conversation_show();
@@ -99,9 +101,8 @@ void show_config();
 void cutscene_begin();
 void cutscene_end();
 
-void fadeout();
-void fadeout_rgb(float r, float g, float b);
-void fadein();
+void internal_fadeout_rgb(float time, float r, float g, float b);
+void internal_fadein(float time);
 
 } // namespace Scripting
 

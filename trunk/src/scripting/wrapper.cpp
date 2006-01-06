@@ -245,23 +245,32 @@ static int play_sound_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int add_caption_wrapper(HSQUIRRELVM v)
+static int caption_add_wrapper(HSQUIRRELVM v)
 {
   int arg0;
   sq_getinteger(v, 2, &arg0);
   const char* arg1;
   sq_getstring(v, 3, &arg1);
   
-  Scripting::add_caption(arg0, arg1);
+  Scripting::caption_add(arg0, arg1);
   
   return 0;
 }
 
-static int end_caption_wrapper(HSQUIRRELVM v)
+static int caption_clear_wrapper(HSQUIRRELVM v)
 {
   (void) v;
   
-  Scripting::end_caption();
+  Scripting::caption_clear();
+  
+  return 0;
+}
+
+static int caption_end_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::caption_end();
   
   return 0;
 }
@@ -319,6 +328,15 @@ static int wait_for_dialog_wrapper(HSQUIRRELVM v)
   HSQUIRRELVM arg0 = v;
   
   Scripting::wait_for_dialog(arg0);
+  
+  return sq_suspendvm(v);
+}
+
+static int wait_for_fade_wrapper(HSQUIRRELVM v)
+{
+  HSQUIRRELVM arg0 = v;
+  
+  Scripting::wait_for_fade(arg0);
   
   return sq_suspendvm(v);
 }
@@ -567,16 +585,7 @@ static int cutscene_end_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int fadeout_wrapper(HSQUIRRELVM v)
-{
-  (void) v;
-  
-  Scripting::fadeout();
-  
-  return 0;
-}
-
-static int fadeout_rgb_wrapper(HSQUIRRELVM v)
+static int internal_fadeout_rgb_wrapper(HSQUIRRELVM v)
 {
   float arg0;
   sq_getfloat(v, 2, &arg0);
@@ -584,17 +593,20 @@ static int fadeout_rgb_wrapper(HSQUIRRELVM v)
   sq_getfloat(v, 3, &arg1);
   float arg2;
   sq_getfloat(v, 4, &arg2);
+  float arg3;
+  sq_getfloat(v, 5, &arg3);
   
-  Scripting::fadeout_rgb(arg0, arg1, arg2);
+  Scripting::internal_fadeout_rgb(arg0, arg1, arg2, arg3);
   
   return 0;
 }
 
-static int fadein_wrapper(HSQUIRRELVM v)
+static int internal_fadein_wrapper(HSQUIRRELVM v)
 {
-  (void) v;
+  float arg0;
+  sq_getfloat(v, 2, &arg0);
   
-  Scripting::fadein();
+  Scripting::internal_fadein(arg0);
   
   return 0;
 }
@@ -795,19 +807,27 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
-  sq_pushstring(v, "add_caption", -1);
-  sq_newclosure(v, &add_caption_wrapper, 0);
+  sq_pushstring(v, "caption_add", -1);
+  sq_newclosure(v, &caption_add_wrapper, 0);
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
-    msg << "Couldn't register function'add_caption'";
+    msg << "Couldn't register function'caption_add'";
     throw SquirrelError(v, msg.str());
   }
 
-  sq_pushstring(v, "end_caption", -1);
-  sq_newclosure(v, &end_caption_wrapper, 0);
+  sq_pushstring(v, "caption_clear", -1);
+  sq_newclosure(v, &caption_clear_wrapper, 0);
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
-    msg << "Couldn't register function'end_caption'";
+    msg << "Couldn't register function'caption_clear'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "caption_end", -1);
+  sq_newclosure(v, &caption_end_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'caption_end'";
     throw SquirrelError(v, msg.str());
   }
 
@@ -848,6 +868,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'wait_for_dialog'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "wait_for_fade", -1);
+  sq_newclosure(v, &wait_for_fade_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'wait_for_fade'";
     throw SquirrelError(v, msg.str());
   }
 
@@ -1051,27 +1079,19 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
-  sq_pushstring(v, "fadeout", -1);
-  sq_newclosure(v, &fadeout_wrapper, 0);
+  sq_pushstring(v, "internal_fadeout_rgb", -1);
+  sq_newclosure(v, &internal_fadeout_rgb_wrapper, 0);
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
-    msg << "Couldn't register function'fadeout'";
+    msg << "Couldn't register function'internal_fadeout_rgb'";
     throw SquirrelError(v, msg.str());
   }
 
-  sq_pushstring(v, "fadeout_rgb", -1);
-  sq_newclosure(v, &fadeout_rgb_wrapper, 0);
+  sq_pushstring(v, "internal_fadein", -1);
+  sq_newclosure(v, &internal_fadein_wrapper, 0);
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
-    msg << "Couldn't register function'fadeout_rgb'";
-    throw SquirrelError(v, msg.str());
-  }
-
-  sq_pushstring(v, "fadein", -1);
-  sq_newclosure(v, &fadein_wrapper, 0);
-  if(SQ_FAILED(sq_createslot(v, -3))) {
-    std::ostringstream msg;
-    msg << "Couldn't register function'fadein'";
+    msg << "Couldn't register function'internal_fadein'";
     throw SquirrelError(v, msg.str());
   }
 

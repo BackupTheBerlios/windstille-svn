@@ -42,6 +42,7 @@ public:
   TextArea(const Rectf& rect, bool letter_by_letter);
   ~TextArea();
 
+  /** Set the rectangle into which the TextArea should fill its text */
   void set_rect(const Rectf& rect);
 
   /** Sets the text to be displayed in the text box */
@@ -59,7 +60,12 @@ public:
   void update(float delta);
   void draw();
 
+  /** Return the rectangle that TextArea fills its text into */
   Rectf get_rect() const;
+
+  /** Return the position of the last character in the TextArea,
+      usefull to display a blinking cursor or things like that */
+  Vector get_cursor_pos() const;
 private:
   TextAreaImpl* impl;
 };

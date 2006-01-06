@@ -105,6 +105,13 @@ DialogManager::draw()
   }
   
   text_area->draw();
+
+  if (text_area->is_progress_complete())
+    {
+      const Vector& pos = text_area->get_cursor_pos();
+      Rectf cursor(pos.x + 8, pos.y + 8, pos.x + 24, pos.y + 24);
+      Display::fill_rect(cursor, Color(1.0, 1.0, 1.0, fabs(sin(SDL_GetTicks() / 1000.0f * M_PI * 3.0f))));
+    }
 }
 
 void

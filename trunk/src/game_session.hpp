@@ -76,8 +76,10 @@ public:
       most part to switch into a 16:9 viewmode with black borders */
   void set_cutscene_mode(bool t);
 
-  void fadeout(const Color& color = Color());
-  void fadein();
+  /** \a time Time in seconds till the fade is complete 
+      \a color Color to which the screen should fade */
+  void fadeout(float time, const Color& color);
+  void fadein(float time);
 
   void draw();
   void update(float delta, const Controller& controller);

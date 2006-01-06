@@ -71,7 +71,7 @@ public:
   SceneContext sc;
 
   float fadeout_value;
-
+  float fade_time;
   Sector* sector;
   View    view;
 
@@ -112,6 +112,7 @@ public:
     fade_color = Color(0.0f, 0.0f, 0.0f, 1.0f);
     fade_state = FADEOUT;
     fadeout_value = 1.0f;
+    fade_time = 1.0f;
   }
   ~GameSessionImpl() {
     delete sector;
@@ -224,10 +225,11 @@ GameSessionImpl::update(float delta, const Controller& controller)
             {
               fade_state = RUNNING;
               fadeout_value = 0.0f;
+              script_manager->fire_wakeup_event(ScriptManager::FADE_DONE);
             }
           else
             {
-              fadeout_value -= delta;
+              fadeout_value -= delta * fade_time;
             }
           break;
 
@@ -235,6 +237,7 @@ GameSessionImpl::update(float delta, const Controller& controller)
           if (fadeout_value > 1.0f)
             { 
               fadeout_value = 1.0f;
+              script_manager->fire_wakeup_event(ScriptManager::FADE_DONE);
 
               switch(next_action)
                 {
@@ -252,7 +255,7 @@ GameSessionImpl::update(float delta, const Controller& controller)
             }
           else
             {
-              fadeout_value += delta;
+              fadeout_value += delta * fade_time;
             }
           break;
 
@@ -293,6 +296,7 @@ GameSession::change_sector(const std::string& arg_filename)
  
   sound_manager->stop_music();
 
+  impl->fade_time   = 1.0f;
   impl->fade_state    = GameSessionImpl::FADEOUT;
   impl->next_action   = GameSessionImpl::CHANGE_SECTOR_ACTION;
 }
@@ -311,6 +315,7 @@ GameSession::set_sector(const std::string& )
   impl->sector->spawn_player("default");
   impl->sector->activate();
   
+  impl->fade_time   = 1.0f;
   impl->fade_state    = GameSessionImpl::FADEIN;
   impl->next_action   = GameSessionImpl::NO_ACTION;
 
@@ -378,6 +383,7 @@ GameSession::quit()
     {
       sound_manager->stop_music();
       impl->fade_state  = GameSessionImpl::FADEOUT;
+      impl->fade_time   = 1.0f;
       impl->next_action = GameSessionImpl::QUIT_ACTION;
     }
 }
@@ -447,16 +453,18 @@ GameSession::set_cutscene_mode(bool t)
 }
 
 void
-GameSession::fadeout(const Color& color)
+GameSession::fadeout(float time, const Color& color)
 {
+  impl->fade_time   = 1.0f/time;
   impl->fade_color  = color;
   impl->fade_state  = GameSessionImpl::FADEOUT;
   impl->next_action = GameSessionImpl::NO_ACTION;
 }
 
 void
-GameSession::fadein()
+GameSession::fadein(float time)
 {
+  impl->fade_time   = 1.0f/time;
   impl->fade_state  = GameSessionImpl::FADEIN;
   impl->next_action = GameSessionImpl::NO_ACTION;
 }

@@ -37,6 +37,7 @@ public:
     TIME                = (1 << 0),
     DIALOG_CLOSED       = (1 << 1),
     CONVERSATION_CLOSED = (1 << 2),
+    FADE_DONE           = (1 << 3)
   };                  
 
   void set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float timeout = -1);

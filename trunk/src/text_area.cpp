@@ -54,6 +54,7 @@ public:
   bool letter_by_letter;
   bool progress_complete;
   std::vector<TextAreaCommand> commands;
+  Vector cursor_pos;
 };
 
 TextArea::TextArea(const Rectf& rect, bool letter_by_letter)
@@ -356,11 +357,16 @@ TextArea::draw()
           break;
         }
     }
+
+  // FIXME: This is not correct, since the last command itself might
+  // not be completly excecuted
   if (i == impl->commands.end())
     impl->progress_complete = true;
     
   glEnd();
   glPopMatrix();
+
+  impl->cursor_pos = Vector(x_pos + impl->rect.left, y_pos + impl->rect.top);
 }
 
 void
@@ -373,6 +379,12 @@ Rectf
 TextArea::get_rect() const
 {
   return impl->rect;
+}
+
+Vector
+TextArea::get_cursor_pos() const
+{
+  return impl->cursor_pos;
 }
 
 /* EOF */
