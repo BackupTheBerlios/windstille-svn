@@ -300,8 +300,10 @@ static int camera_add_point_wrapper(HSQUIRRELVM v)
   sq_getfloat(v, 2, &arg0);
   float arg1;
   sq_getfloat(v, 3, &arg1);
+  float arg2;
+  sq_getfloat(v, 4, &arg2);
   
-  Scripting::camera_add_point(arg0, arg1);
+  Scripting::camera_add_point(arg0, arg1, arg2);
   
   return 0;
 }

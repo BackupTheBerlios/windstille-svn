@@ -85,15 +85,15 @@ void set_view(float x, float y)
 }
 
 
-std::vector<Vector> camera_path;
+std::vector<Camera::PathPoint> camera_path;
 void camera_begin_path()
 {
   camera_path.clear();
 }
 
-void camera_add_point(float x, float y)
+void camera_add_point(float x, float y, float zoom)
 {
-  camera_path.push_back(Vector(x, y));
+  camera_path.push_back(Camera::PathPoint(Vector(x, y), zoom));
 }
 
 void camera_end_path()

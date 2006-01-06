@@ -48,7 +48,7 @@ void caption_end();
 
 void camera_set_active(bool active);
 void camera_begin_path();
-void camera_add_point(float x, float y);
+void camera_add_point(float x, float y, float zoom);
 void camera_end_path();
 
 void set_view(float x, float y);

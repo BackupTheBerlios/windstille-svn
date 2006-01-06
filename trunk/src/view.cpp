@@ -28,7 +28,7 @@ View* View::current_ = 0;
 
 View::View()
   : state(Display::get_width(), Display::get_height()),
-    zoom(1), transform(0, 0)
+    zoom(1.0), transform(0, 0)
 {
   current_ = this;
 }
@@ -37,7 +37,7 @@ void
 View::draw (SceneContext& sc)
 {
   state.set_pos(camera.get_pos());
-  state.set_zoom(zoom);
+  state.set_zoom(camera.get_zoom() + (zoom - 1.0f));
   state.set_pos(state.get_pos() + Vector(transform.x, transform.y));
 
   state.push(sc);

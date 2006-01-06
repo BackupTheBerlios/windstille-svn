@@ -30,12 +30,26 @@ class Camera
 public:
   enum Mode { CAMERA_INACTIVE, CAMERA_FOLLOW_PLAYER, CAMERA_FOLLOW_PATH };
 
+  struct PathPoint
+  {
+    Vector pos;
+    float  zoom;
+
+    PathPoint(const Vector& pos_, float zoom_)
+      : pos(pos_), zoom(zoom_) {}
+
+    bool operator==(const PathPoint& p) {
+      return p.pos == pos && p.zoom == zoom;
+    }
+  };
+
 private:
   Mode mode;
 
   Vector pos;
-  
-  std::vector<Vector> path;
+  float  zoom;
+
+  std::vector<PathPoint> path;
   float path_pos;
 
   static Camera* current_;
@@ -45,15 +59,19 @@ public:
   Camera();
 
   void   update(float delta);
+
   Vector get_pos() const { return pos; }
   void   set_pos(float x, float y);
+
+  void   set_zoom(float zoom_);
+  float  get_zoom() const;
 
   void   set_mode(Mode mode_);
 
   /**
    * Set Camera to follow the given path
    */
-  void   set_path(const std::vector<Vector>& path_);
+  void   set_path(const std::vector<PathPoint>& path_);
 
 private:
   Camera (const Camera&);

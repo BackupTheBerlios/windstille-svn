@@ -29,18 +29,19 @@ Camera* Camera::current_ = 0;
  * Simple linear interpolation to move along a given vector path
  * FIXME: Could add curves and different speed per vertex
  */
-Vector interpolate_path(const std::vector<Vector>& path, float length)
+Camera::PathPoint interpolate_path(const std::vector<Camera::PathPoint>& path, float length)
 {
   float length_so_far = 0.0f;
-  for(std::vector<Vector>::size_type i = 0; i < path.size()-1; ++i)
+  for(std::vector<Camera::PathPoint>::size_type i = 0; i < path.size()-1; ++i)
     {
-      Vector segment = path[i+1] - path[i];
-      float segment_length = segment.length();
+      Vector segment = path[i+1].pos - path[i].pos;
+      float  segment_length = segment.length();
 
       if (length_so_far + segment_length > length)
         {
           float factor = (length - length_so_far) / segment_length;
-          return path[i] + segment * factor;
+          return Camera::PathPoint(path[i].pos + segment * factor,
+                                   (factor * path[i+1].zoom) + ((1.0f - factor) * path[i].zoom));
         }
       length_so_far += segment_length;
     }
@@ -48,7 +49,7 @@ Vector interpolate_path(const std::vector<Vector>& path, float length)
 }
 
 Camera::Camera()
-  : pos(0, 0)
+  : pos(0, 0), zoom(1.0f)
 {
   path_pos = 0;
   current_ = this;
@@ -108,13 +109,14 @@ Camera::update(float delta)
         assert(!path.empty());
         path_pos += delta * 50.0f;
 
-        Vector p = interpolate_path(path, path_pos);
+        PathPoint p = interpolate_path(path, path_pos);
         if (p == path.back())
           {
             script_manager->fire_wakeup_event(ScriptManager::CAMERA_DONE);
             set_mode(CAMERA_INACTIVE);
           }
-        set_pos(p.x, p.y);
+        set_pos(p.pos.x, p.pos.y);
+        set_zoom(p.zoom);
       }
       break;
     }
@@ -131,7 +133,19 @@ Camera::set_pos(float x, float y)
 }
 
 void
-Camera::set_path(const std::vector<Vector>& path_)
+Camera::set_zoom(float zoom_)
+{
+  zoom = zoom_;
+}
+
+float
+Camera::get_zoom() const
+{
+  return zoom;
+}
+
+void
+Camera::set_path(const std::vector<Camera::PathPoint>& path_)
 {
   path     = path_;
   path_pos = 0;
