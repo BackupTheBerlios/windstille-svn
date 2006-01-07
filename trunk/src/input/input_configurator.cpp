@@ -53,8 +53,8 @@ InputConfigurator::InputConfigurator()
   add_configure_item(ConfigureItem::CONFIGURE_BUTTON, SECONDARY_BUTTON);
   add_configure_item(ConfigureItem::CONFIGURE_BUTTON, PRIMARY_BUTTON);
 
-  add_configure_item(ConfigureItem::CONFIGURE_AXIS, X_AXIS);
   add_configure_item(ConfigureItem::CONFIGURE_AXIS, Y_AXIS);
+  add_configure_item(ConfigureItem::CONFIGURE_AXIS, X_AXIS);
 
   // add_configure_item(ConfigureItem::CONFIGURE_AXIS, X2_AXIS);
   // add_configure_item(ConfigureItem::CONFIGURE_AXIS, Y2_AXIS);

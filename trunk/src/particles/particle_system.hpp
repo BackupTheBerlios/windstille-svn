@@ -66,6 +66,9 @@ private:
   Randomizer* randomizer;
   Drawer* drawer;
 
+  float spawn_x;
+  float spawn_y;
+
   float x_pos;
   float y_pos;
   float z_pos;
@@ -118,9 +121,13 @@ public:
       particles to be emmitted only once */
   void set_cycles(float num);
 
-  /** The position from which the particles spawn, x,y are in world
-      coordinates */
+  /** The position of the particle system in world coordinates */
   void set_pos(float x, float y);
+
+  /** The position from which the particles spawn, x,y are in world
+      coordinates, this is relative to the position you can set via
+      set_pos() */
+  void set_spawn_point(float x, float y);
   
   /** Causes all particles to spawn from a single point */
   void set_point_distribution();

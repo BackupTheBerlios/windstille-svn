@@ -45,6 +45,7 @@ public:
   void draw();
   void update(float delta, const Controller& controller);
 
+  RootComponent* get_root() const;
 private:
   GUIManager (const GUIManager&);
   GUIManager& operator= (const GUIManager&);

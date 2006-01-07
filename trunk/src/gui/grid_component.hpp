@@ -55,10 +55,11 @@ private:
   };
 
   typedef Field<ComponentBox> Grid;
-  Grid grid;
+  Grid  grid;
   Point pos;
-  bool child_active;
-  
+  bool  child_active;
+  float padding;
+
 public:
   GridComponent(const lisp::Lisp* lisp, Component* parent);
   GridComponent(const Rectf& rect, int weight, int height, Component* parent);
@@ -76,6 +77,9 @@ public:
   void move_right();
 
   void on_activation();
+
+  void set_padding(float p);
+  
 private:
   GridComponent (const GridComponent&);
   GridComponent& operator= (const GridComponent&);

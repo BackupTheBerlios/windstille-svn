@@ -28,7 +28,12 @@
 
 #include "screen.hpp"
 #include "sprite2d/sprite.hpp"
+#include "gui/gui_manager.hpp"
 #include "particles/particle_system.hpp"
+
+namespace GUI {
+class Slider;
+}
 
 /** */
 class ParticleViewer : public Screen
@@ -39,6 +44,14 @@ private:
   Systems systems;
   Sprite background;
 
+  Vector pos;
+  bool   show_gui;
+  GUI::GUIManager* manager;
+
+  GUI::Slider* gravity_slider;
+  GUI::Slider* velocity_slider;
+  GUI::Slider* count_slider;
+
 public:
   ParticleViewer();
   ~ParticleViewer();
@@ -46,6 +59,7 @@ public:
   void draw();
   void update(float delta, const Controller& controller);
   void load(const std::string& filename);
+
 private:
   ParticleViewer (const ParticleViewer&);
   ParticleViewer& operator= (const ParticleViewer&);

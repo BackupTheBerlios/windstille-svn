@@ -40,8 +40,8 @@ GridComponent::GridComponent(const Rectf& rect, int weight, int height, Componen
   : Component(rect, parent),
     grid(weight, height),
     pos(0, 0),
-    child_active(false)
-
+    child_active(false),
+    padding(15.0f)
 {
 }
 
@@ -71,19 +71,6 @@ GridComponent::draw()
 void
 GridComponent::update(float delta, const Controller& controller)
 {
-  for(int y = 0; y < grid.get_height(); ++y)
-    for(int x = 0; x < grid.get_width(); ++x)
-      {
-        if (grid(x, y).component && !grid(x, y).has_parent())
-          {
-            // give input to current compontent, empty input to the rest
-            if (child_active && pos.x == x && pos.y == y)
-              grid(x, y).component->update(delta, controller);
-            else
-              grid(x, y).component->update(delta, Controller());
-          }
-      }
-
   if (child_active && !grid(pos.x, pos.y).component->is_active())
     {
       child_active = false;
@@ -131,6 +118,19 @@ GridComponent::update(float delta, const Controller& controller)
             }
         }
     }
+
+  for(int y = 0; y < grid.get_height(); ++y)
+    for(int x = 0; x < grid.get_width(); ++x)
+      {
+        if (grid(x, y).component && !grid(x, y).has_parent())
+          {
+            // give input to current compontent, empty input to the rest
+            if (child_active && pos.x == x && pos.y == y)
+              grid(x, y).component->update(delta, controller);
+            else
+              grid(x, y).component->update(delta, Controller());
+          }
+      }
 }
 
 void
@@ -220,8 +220,6 @@ GridComponent::pack(Component* component, int x, int y, int colspan, int rowspan
           grid(x, y) = ComponentBox(component, Size(colspan, rowspan));
         }
 
-      float padding = 15.0f;
-
       component->set_screen_rect(Rectf(Vector(rect.left + x * (rect.get_width() /grid.get_width())  + padding,
                                               rect.top  + y * (rect.get_height()/grid.get_height()) + padding),
                                        Sizef((rect.get_width()/grid.get_width())   * colspan - 2*padding,
@@ -230,9 +228,15 @@ GridComponent::pack(Component* component, int x, int y, int colspan, int rowspan
 }
 
 void
+GridComponent::set_padding(float p)
+{
+  padding = p;
+}
+
+void
 GridComponent::on_activation()
 {
-  grid(pos.x, pos.y).component->set_active(true);
+  //grid(pos.x, pos.y).component->set_active(true);
 }
 
 } // namespace GUI

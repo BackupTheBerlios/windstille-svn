@@ -38,6 +38,10 @@ ParticleSystem::ParticleSystem(FileReader& props)
   x_pos      = 320.0f;
   y_pos      = 240.0f;
   z_pos      = 0;
+
+  spawn_x    = 0;
+  spawn_y    = 0;
+
   life_time  = 1.0f;
 
   bunching = 1.0f;
@@ -82,6 +86,10 @@ ParticleSystem::ParticleSystem(FileReader& props)
   float p_cycles;
   if (props.get("cycles",  p_cycles))
     set_cycles(p_cycles);
+
+  Vector spawn_pos;
+  if (props.get("spawn-point", spawn_pos))
+    set_spawn_point(spawn_pos.x, spawn_pos.y);
 
   Vector p_pos;
   if (props.get("pos", p_pos))
@@ -246,8 +254,8 @@ ParticleSystem::spawn(Particle& particle)
 {
   randomizer->set_pos(particle);
 
-  particle.x   += (parent ? parent->get_pos().x : 0) + x_pos;
-  particle.y   += (parent ? parent->get_pos().y : 0) + y_pos;
+  particle.x   += (parent ? parent->get_pos().x : 0) + x_pos + spawn_x;
+  particle.y   += (parent ? parent->get_pos().y : 0) + y_pos + spawn_y;
 
   float direction = rnd.drand(cone_start, cone_stop);
   float speed     = rnd.drand(speed_start, speed_stop);
@@ -284,13 +292,15 @@ ParticleSystem::update(float delta)
 void
 ParticleSystem::set_count(int num)
 {
+  int old_size = particles.size();
+
   particles.resize(num);
 
-  for(Particles::iterator i = particles.begin(); i != particles.end(); ++i)
+  for(Particles::size_type i = old_size-1; i < particles.size(); ++i)
     {
       //i->t = -1.0f;
-      spawn(*i);
-      i->t = (life_time * bunching * (float(i - particles.begin())/particles.size()));
+      spawn(particles[i]);
+      particles[i].t = (life_time * bunching * i/particles.size());
     }
 }
   
@@ -311,6 +321,12 @@ ParticleSystem::set_pos(float x, float y)
 {
   x_pos = x;
   y_pos = y;
+}
+
+void
+ParticleSystem::set_spawn_point(float x, float y)
+{
+  
 }
 
 void

@@ -23,6 +23,7 @@
 **  02111-1307, USA.
 */
 
+#include <iostream>
 #include "root_component.hpp"
 
 namespace GUI {
@@ -48,19 +49,24 @@ RootComponent::set_child(Component* child_)
 void
 RootComponent::draw()
 {
-  child->draw();
+  if (child)
+    child->draw();
 }
 
 void
 RootComponent::update(float delta, const Controller& controller)
 {
-  child->update(delta, controller);
+  if (child)
+    child->update(delta, controller);
 }
 
 bool
 RootComponent::is_active() const
 {
-  return child->is_active();
+  if (child)
+    return child->is_active();
+  else
+    return false;
 }
 
 } // namespace GUI

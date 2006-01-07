@@ -40,49 +40,6 @@ namespace GUI {
 GUIManager::GUIManager()
 {
   root = new RootComponent(Rectf(0,0,800,600));
-
-  TabComponent* tab = new TabComponent(Rectf(100, 100, 700, 500), root);
-
-  GridComponent* grid = new GridComponent(Rectf(100, 130, 700, 500), 3, 4, tab);
-
-  grid->pack(new Button("1", grid), 0, 0);
-  grid->pack(new Button("2", grid), 1, 0);
-  grid->pack(new Button("3", grid), 2, 0);
-
-  grid->pack(new Slider(grid), 0, 1);
-  //grid->pack(new Button("5", grid), 1, 1, 2, 2);
-  TextView* text_view = new TextView(Rectf(), grid);
-  grid->pack(text_view, 1, 1, 2, 2);
-
-  //grid->pack(new Button("6", grid), 2, 1);
-
-  grid->pack(new Button("7", grid), 0, 2, 1, 2);
-  //grid->pack(new Button("8", grid), 1, 2);
-  //grid->pack(new Button("9", grid), 2, 2);
-
-  //grid->pack(new Button("Cl", grid), 0, 3);
-  grid->pack(new Button("0",  grid), 1, 3);
-  grid->pack(new Button("Ok", grid), 2, 3);
-
-  tab->pack("Auto Map",  new Automap(Rectf(100, 130, 700, 500), tab));
-  tab->pack("Grid Test", grid);
-
-  ListView* list_view = new ListView(Rectf(), tab);
-  list_view->add_column("Date");
-  list_view->add_column("Name");
-  list_view->add_column("Subject");
-
-  list_view->add_item(ListView::Item("2005-10-08", "John Doh", "Re: Buying a goldmine"));
-  list_view->add_item(ListView::Item("2005-13-08", "Jane Doh", "Re: What the f***"));
-  list_view->add_item(ListView::Item("2005-13-09", "Testo Test", "Testing Email"));
-
-  tab->pack("ListView", list_view);
-
-  root->set_child(tab);
-  text_view->set_text("Hello World\n<large>Blabla</large> more textt and more and"
-                      "more for testing all for testing even more and more blabla blabla"
-                      "more for testing all for testing even more and more blabla blabla"
-                      "blabla blabla blabltest ende.");
 }
 
 GUIManager::~GUIManager()
@@ -102,9 +59,15 @@ GUIManager::update(float delta, const Controller& controller)
   root->update(delta, controller);
 
   if (!root->is_active())
-    {
+    { //FIXME: This doesn't work when GUI isn't an overlay
       screen_manager.set_overlay(0);
     }
+}
+
+RootComponent*
+GUIManager::get_root() const
+{
+  return root;
 }
 
 } // namespace GUI

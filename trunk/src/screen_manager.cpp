@@ -37,6 +37,17 @@
 #include "gui/gui_manager.hpp"
 #include "screen_manager.hpp"
 
+// GUI Stuff, can be removed if gui is a bit better organised
+#include "gui/button.hpp"
+#include "gui/slider.hpp"
+#include "gui/root_component.hpp"
+#include "gui/grid_component.hpp"
+#include "gui/tab_component.hpp"
+#include "gui/list_view.hpp"
+#include "gui/text_view.hpp"
+#include "gui/automap.hpp"
+
+
 using GUI::GUIManager;
 
 ScreenManager screen_manager; 
@@ -166,7 +177,55 @@ ScreenManager::poll_events()
               switch (event.key.keysym.sym)
                 {               
                 case SDLK_F8:
-                  set_overlay(new GUIManager());
+                  {
+                    using namespace GUI;
+                    GUIManager* manager = new GUIManager();
+
+                    TabComponent* tab = new TabComponent(Rectf(100, 100, 700, 500), manager->get_root());
+
+                    GridComponent* grid = new GridComponent(Rectf(100, 130, 700, 500), 3, 4, tab);
+
+                    grid->pack(new Button("1", grid), 0, 0);
+                    grid->pack(new Button("2", grid), 1, 0);
+                    grid->pack(new Button("3", grid), 2, 0);
+
+                    grid->pack(new Slider(grid), 0, 1);
+                    //grid->pack(new Button("5", grid), 1, 1, 2, 2);
+                    TextView* text_view = new TextView(Rectf(), grid);
+                    grid->pack(text_view, 1, 1, 2, 2);
+
+                    //grid->pack(new Button("6", grid), 2, 1);
+
+                    grid->pack(new Button("7", grid), 0, 2, 1, 2);
+                    //grid->pack(new Button("8", grid), 1, 2);
+                    //grid->pack(new Button("9", grid), 2, 2);
+
+                    //grid->pack(new Button("Cl", grid), 0, 3);
+                    grid->pack(new Button("0",  grid), 1, 3);
+                    grid->pack(new Button("Ok", grid), 2, 3);
+
+                    tab->pack("Auto Map",  new Automap(Rectf(100, 130, 700, 500), tab));
+                    tab->pack("Grid Test", grid);
+
+                    ListView* list_view = new ListView(Rectf(), tab);
+                    list_view->add_column("Date");
+                    list_view->add_column("Name");
+                    list_view->add_column("Subject");
+
+                    list_view->add_item(ListView::Item("2005-10-08", "John Doh", "Re: Buying a goldmine"));
+                    list_view->add_item(ListView::Item("2005-13-08", "Jane Doh", "Re: What the f***"));
+                    list_view->add_item(ListView::Item("2005-13-09", "Testo Test", "Testing Email"));
+
+                    tab->pack("ListView", list_view);
+
+                    manager->get_root()->set_child(tab);
+                    text_view->set_text("Hello World\n<large>Blabla</large> more textt and more and"
+                                        "more for testing all for testing even more and more blabla blabla"
+                                        "more for testing all for testing even more and more blabla blabla"
+                                        "blabla blabla blabltest ende.");
+
+                    set_overlay(manager);
+                  }
                   break;
 
                 case SDLK_F9:
@@ -193,10 +252,10 @@ ScreenManager::poll_events()
                 default:
                   if (!console.is_active())
                     {
-                    if (overlay_screen)
-                      overlay_screen->handle_event(event);
-                    else
-                      screen->handle_event(event);
+                      if (overlay_screen)
+                        overlay_screen->handle_event(event);
+                      else
+                        screen->handle_event(event);
                     }
                   break;
                 }
@@ -233,7 +292,7 @@ ScreenManager::poll_events()
           else              
             screen->handle_event(event);
           break;
-      }
+        }
     }
 }
 
