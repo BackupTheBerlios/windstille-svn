@@ -34,6 +34,7 @@ public:
   }
 
   enum WakeupEvent {
+    // FIXME: Does/should this be a bitmask is a are normal enum enough?
     TIME                = (1 << 0),
     DIALOG_CLOSED       = (1 << 1),
     CONVERSATION_CLOSED = (1 << 2),

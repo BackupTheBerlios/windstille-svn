@@ -2,6 +2,7 @@
 
 #include "sprite3d/data.hpp"
 
+#include <iostream>
 #include <physfs.h>
 #include <string.h>
 #include <sstream>
@@ -17,39 +18,39 @@ static const int FORMAT_VERSION = 2;
 
 static inline float read_float(PHYSFS_file* file)
 {
-    uint32_t int_result;
-    if(PHYSFS_readULE32(file, &int_result) == 0) {
-        std::ostringstream msg;
-        msg << "Problem reading float value: " << PHYSFS_getLastError();
-        throw std::runtime_error(msg.str());
-    }
+  uint32_t int_result;
+  if(PHYSFS_readULE32(file, &int_result) == 0) {
+    std::ostringstream msg;
+    msg << "Problem reading float value: " << PHYSFS_getLastError();
+    throw std::runtime_error(msg.str());
+  }
 
-    // is this platform independent?
-    return * ( reinterpret_cast<float*> (&int_result) );
+  // is this platform independent?
+  return * ( reinterpret_cast<float*> (&int_result) );
 }
 
 static inline uint16_t read_uint16_t(PHYSFS_file* file)
 {
-    uint16_t result;
-    if(PHYSFS_readULE16(file, &result) == 0) {
-        std::ostringstream msg;
-        msg << "Problem reading uint16 value: " << PHYSFS_getLastError();
-        throw std::runtime_error(msg.str());
-    }
-    return result;
+  uint16_t result;
+  if(PHYSFS_readULE16(file, &result) == 0) {
+    std::ostringstream msg;
+    msg << "Problem reading uint16 value: " << PHYSFS_getLastError();
+    throw std::runtime_error(msg.str());
+  }
+  return result;
 }
 
 static inline std::string read_string(PHYSFS_file* file, size_t size)
 {
-    char buffer[size+1];
-    if(PHYSFS_read(file, buffer, size, 1) != 1) {
-        std::ostringstream msg;
-        msg << "Problem reading string value: " << PHYSFS_getLastError();
-        throw std::runtime_error(msg.str());
-    }
-    buffer[size] = 0;
+  char buffer[size+1];
+  if(PHYSFS_read(file, buffer, size, 1) != 1) {
+    std::ostringstream msg;
+    msg << "Problem reading string value: " << PHYSFS_getLastError();
+    throw std::runtime_error(msg.str());
+  }
+  buffer[size] = 0;
 
-    return buffer;
+  return buffer;
 }
 
 Data::Data(const std::string& filename)
@@ -58,7 +59,7 @@ Data::Data(const std::string& filename)
   if(!file) {
     std::ostringstream msg;
     msg << "Couldn't open '" << filename << "': "
-      << PHYSFS_getLastError();
+        << PHYSFS_getLastError();
     throw std::runtime_error(msg.str());
   }
 
@@ -184,9 +185,18 @@ Data::get_action(const std::string& name) const
     if(action->name == name)
       return *action;
   }
-  std::ostringstream msg;
-  msg << "No action with name '" << name << "' defined";
-  throw std::runtime_error(msg.str());
+
+  if (actions.empty())
+    {
+      std::ostringstream msg;
+      msg << "No action with name '" << name << "' defined";
+      throw std::runtime_error(msg.str());
+    }
+  else
+    {
+      std::cout << "No action with name '" << name << "' defined" << std::endl;
+      return actions.front();
+    }
 }
 
 const Marker&

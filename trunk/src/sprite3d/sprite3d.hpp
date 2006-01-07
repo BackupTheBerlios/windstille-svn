@@ -73,6 +73,11 @@ public:
   std::vector<std::string> get_actions() const;
 
   /**
+   * Return a list of all available attachment points
+   */
+  std::vector<std::string> get_attachment_points() const;
+
+  /**
    * Set the next action and vflip value to be played after the current action
    * has finished (or reached the point to be defined by abort_at_marker)
    */

@@ -104,6 +104,12 @@ Sprite3D::get_actions() const
   return actions;
 }
 
+std::vector<std::string>
+Sprite3D::get_attachment_points() const
+{
+  return data->attachment_points;
+}
+
 void
 Sprite3D::set_next_action(const std::string& name, float speed)
 {
