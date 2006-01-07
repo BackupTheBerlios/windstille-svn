@@ -174,6 +174,7 @@ public:
   /** Returns the how much a particle has progressed, this is
       particle.life_time with fade_in/fade_out applied  */
   float get_progress(float t);
+
 private:
   ParticleSystem (const ParticleSystem&);
   ParticleSystem& operator= (const ParticleSystem&);

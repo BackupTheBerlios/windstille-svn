@@ -47,6 +47,7 @@
 #include "sprite3d/manager.hpp"
 #include "screen_manager.hpp"
 #include "sprite3dview.hpp"
+#include "particle_viewer.hpp"
 #include "sprite2d/manager.hpp"
 
 WindstilleMain::WindstilleMain()
@@ -103,35 +104,45 @@ WindstilleMain::main(int argc, char** argv)
 
     if (debug) std::cout << "Initialising TileFactory" << std::endl;
     TileFactory::init();
+    
+    if (debug) std::cout << "Starting file: '" << config.get_string("levelfile") << "'" 
+                         << std::endl;
+    
+    std::string levelfile;
+    if (config.get<std::string>("levelfile").is_set())
+      {
+        // FIXME: Looks a little hacky, doesn't it?
+        std::string leveldir = dirname(config.get_string("levelfile"));
+        PHYSFS_addToSearchPath(leveldir.c_str(), true);
+        levelfile = basename(config.get_string("levelfile"));
+      }
 
     if (sprite3dview)
       {
         Sprite3DView* sprite3dview = new Sprite3DView();
 
-        if (config.get<std::string>("levelfile").is_set())
-          {
-            // FIXME: Looks a little hacky, doesn't it?
-            std::string leveldir = dirname(config.get_string("levelfile"));
-            PHYSFS_addToSearchPath(leveldir.c_str(), true);
-            sprite3dview->set_model(basename(config.get_string("levelfile")));
-          }
-            
+        if (!levelfile.empty())
+          sprite3dview->set_model(levelfile);
+
         // Launching Sprite3DView instead of game
         screen_manager.set_screen(sprite3dview);
       }
+    else if (particleview)
+      {
+        ParticleViewer* particle_viewer = new ParticleViewer();
+        if (!levelfile.empty())
+          particle_viewer->load(levelfile);
+        screen_manager.set_screen(particle_viewer);
+      }
     else
       {
-        if (!config.get<std::string>("levelfile").is_set())
+        if (!levelfile.empty())
           {
             screen_manager.set_screen(new GameSession("levels/newformat2.wst"));
           }
         else
           {
-            if (debug) std::cout << "Starting level: '" << config.get_string("levelfile") << "'" 
-                                 << std::endl;
-            std::string leveldir = dirname(config.get_string("levelfile"));
-            PHYSFS_addToSearchPath(leveldir.c_str(), true);
-            screen_manager.set_screen(new GameSession(basename(config.get_string("levelfile"))));
+            screen_manager.set_screen(new GameSession(levelfile));
           }
       }
         

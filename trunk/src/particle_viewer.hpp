@@ -23,41 +23,32 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_SPRITE3DVIEW_HPP
-#define HEADER_SPRITE3DVIEW_HPP
+#ifndef HEADER_PARTICLE_VIEWER_HPP
+#define HEADER_PARTICLE_VIEWER_HPP
 
-#include "display/scene_context.hpp"
-#include "sprite3d/sprite3d.hpp"
 #include "screen.hpp"
+#include "sprite2d/sprite.hpp"
+#include "particles/particle_system.hpp"
 
-/**
- * A simple class to view 3d sprites and their different actions,
- * mostly usefull for debugging 
- */
-class Sprite3DView : public Screen
+/** */
+class ParticleViewer : public Screen
 {
 private:
   SceneContext sc;
-  Sprite3D sprite;
-  std::vector<std::string> actions;
-  int current_action;
-
-  float rotx;
-  float roty;
-  float scale;
+  typedef std::vector<ParticleSystem*> Systems;
+  Systems systems;
+  Sprite background;
 
 public:
-  Sprite3DView();
-  ~Sprite3DView();
-
+  ParticleViewer();
+  ~ParticleViewer();
+  
   void draw();
   void update(float delta, const Controller& controller);
-
-  void set_model(const std::string& filename);
-
+  void load(const std::string& filename);
 private:
-  Sprite3DView (const Sprite3DView&);
-  Sprite3DView& operator= (const Sprite3DView&);
+  ParticleViewer (const ParticleViewer&);
+  ParticleViewer& operator= (const ParticleViewer&);
 };
 
 #endif
