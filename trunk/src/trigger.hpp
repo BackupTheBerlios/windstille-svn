@@ -36,7 +36,7 @@ private:
   bool one_time_trigger;
   
 public:
-  Trigger(const lisp::Lisp* lisp);
+  Trigger(FileReader& props);
   virtual ~Trigger();
 
   void draw (SceneContext& gc);

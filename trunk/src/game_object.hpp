@@ -17,10 +17,11 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-#ifndef GAME_OBJECT_HXX
-#define GAME_OBJECT_HXX
+#ifndef WINDSTILLE_GAME_OBJECT_HXX
+#define WINDSTILLE_GAME_OBJECT_HXX
 
 #include <string>
+#include "file_reader.hpp"
 #include "display/scene_context.hpp"
 #include "refcounter.hpp"
 

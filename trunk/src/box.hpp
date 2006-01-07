@@ -36,7 +36,7 @@ private:
   float gravity;
 
 public:
-  Box(const lisp::Lisp* lisp);
+  Box(FileReader& props);
   virtual ~Box();
 
   void collision(const CollisionData& data); 

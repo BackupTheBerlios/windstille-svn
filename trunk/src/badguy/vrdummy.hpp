@@ -26,7 +26,6 @@
 #ifndef HEADER_BADYGUY_VRDUMMY_HPP
 #define HEADER_BADYGUY_VRDUMMY_HPP
 
-#include "lisp/lisp.hpp"
 #include "sprite3d/sprite3d.hpp"
 #include "sprite2d/sprite.hpp"
 #include "entity.hpp"
@@ -41,7 +40,7 @@ private:
   float rotation;
   float jump_time;
 public:
-  VRDummy(const lisp::Lisp* lisp);
+  VRDummy(FileReader& props);
   ~VRDummy();
 
   void draw(SceneContext& gc);

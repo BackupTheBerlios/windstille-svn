@@ -27,20 +27,17 @@
 #include "player.hpp"
 #include "sector.hpp"
 #include "hedgehog.hpp"
-#include "lisp/properties.hpp"
 #include "game_session.hpp"
 #include "view.hpp"
-#include "lisp_getters.hpp"
 #include "display/vertex_array_drawing_request.hpp"
 #include "random.hpp"
 #include "swarm.hpp"
 
-Swarm::Swarm(const lisp::Lisp* lisp)
+Swarm::Swarm(FileReader& props)
 {
   int count = 100;
   turn_speed = 7.0f;
 
-  lisp::Properties props(lisp);
   props.get("name",  name);
   props.get("pos",   pos);
   props.get("count", count);

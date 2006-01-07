@@ -152,8 +152,10 @@ Sector::parse_file(const std::string& filename)
 void
 Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
 {
+  lisp::Properties props(lisp);
+
   if(name == "tilemap") {
-    TileMap* tilemap = new TileMap(lisp);
+    TileMap* tilemap = new TileMap(props);
     add(tilemap);
     if (tilemap->get_name() == "interactive")
       interactive_tilemap = tilemap;
@@ -162,35 +164,35 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
   } else if(name == "background") {
     // TODO
   } else if (name == "background-gradient") {
-    add(new BackgroundGradient(lisp));
+    add(new BackgroundGradient(props));
   } else if(name == "trigger") {
-    add(new Trigger(lisp));
+    add(new Trigger(props));
   } else if(name == "box") {
-    add(new Box(lisp));
+    add(new Box(props));
   } else if(name == "elevator") {
-    add(new Elevator(lisp));
+    add(new Elevator(props));
   } else if(name == "character") {    
-    add(new Character(lisp));
+    add(new Character(props));
   } else if(name == "spider-mine") {
-    add(new SpiderMine(lisp));
+    add(new SpiderMine(props));
   } else if(name == "hedgehog") {
-    add(new Hedgehog(lisp));
+    add(new Hedgehog(props));
   } else if(name == "test-object") {
-    add(new TestObject(lisp));
+    add(new TestObject(props));
   } else if (name == "nightvision") {
-    add(new Nightvision(lisp));
+    add(new Nightvision(props));
   } else if (name == "particle-system") {
-    add(new ParticleSystem(lisp));
+    add(new ParticleSystem(props));
   } else if(name == "scriptable-object") {    
-    add(new ScriptableObject(lisp));
+    add(new ScriptableObject(props));
   } else if (name == "vrdummy") {
-    add(new VRDummy(lisp));
+    add(new VRDummy(props));
   } else if (name == "swarm") {
-    add(new Swarm(lisp));
+    add(new Swarm(props));
   } else if (name == "laserpointer") {
     add(new LaserPointer());
   } else if (name == "liquid") {
-    add(new Liquid(lisp));
+    add(new Liquid(props));
   } else {
     std::cout << "Skipping unknown Object: " << name << "\n";
   }

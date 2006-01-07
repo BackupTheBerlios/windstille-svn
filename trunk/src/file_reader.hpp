@@ -19,30 +19,17 @@
 ** 
 **  You should have received a copy of the GNU General Public License
 **  along with this program; if not, write to the Free Software
-**  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+**  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+**  02111-1307, USA.
 */
 
-#ifndef HEADER_ELEVATOR_HXX
-#define HEADER_ELEVATOR_HXX
+#ifndef HEADER_FILE_READER_HPP
+#define HEADER_FILE_READER_HPP
 
-#include "lisp/lisp.hpp"
-#include "entity.hpp"
-#include "sprite2d/sprite.hpp"
+#include "lisp/properties.hpp"
+#include "lisp_getters.hpp"
 
-/** */
-class Elevator : public Entity
-{
-private:
-  Sizef size;
-  CollisionObject* colobject;
-  Sprite sprite;
-public:
-  Elevator(FileReader& props);
-  ~Elevator();
-
-  void draw(SceneContext& sc);
-  void update(float delta);
-};
+typedef lisp::Properties FileReader;
 
 #endif
 

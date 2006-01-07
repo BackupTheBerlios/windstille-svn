@@ -30,11 +30,10 @@
 #include "lisp/properties.hpp"
 #include "lisp_getters.hpp"
 
-Elevator::Elevator(const lisp::Lisp* lisp)
+Elevator::Elevator(FileReader& props)
 {
   std::string spritename;
 
-  lisp::Properties props(lisp);
   props.get("sprite", spritename);
   props.get("pos", pos);
   props.get("name", name);

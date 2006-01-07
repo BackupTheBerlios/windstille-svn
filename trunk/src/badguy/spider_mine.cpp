@@ -25,16 +25,13 @@
 #include <config.h>
 
 #include "spider_mine.hpp"
-#include "lisp/properties.hpp"
-#include "lisp_getters.hpp"
 #include "player.hpp"
 #include "sprite2d/manager.hpp"
 
-SpiderMine::SpiderMine(const lisp::Lisp* lisp)
+SpiderMine::SpiderMine(FileReader& props)
   : explode("images/explosion.sprite"),
     explode_light("images/explolight.sprite")
 {
-  lisp::Properties props(lisp);
   props.get("name", name);
   props.get("pos", pos);
   props.print_unused_warnings("spidermine");

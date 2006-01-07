@@ -50,7 +50,7 @@ private:
 
   float turn_speed; 
 public:
-  Swarm(const lisp::Lisp* lisp);
+  Swarm(FileReader& reader);
   
   void draw(SceneContext& sc);
   void update(float delta);

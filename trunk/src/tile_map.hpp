@@ -39,7 +39,7 @@ private:
   float total_time;
 
 public:
-  TileMap(const lisp::Lisp* lisp);
+  TileMap(FileReader& props);
   virtual ~TileMap();
 
   void update (float delta);

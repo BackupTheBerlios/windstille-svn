@@ -92,10 +92,14 @@ public:
    */
   void spawn_player(const std::string& spawnpoint);
 
-  int get_width () const;
+  int get_width  () const;
   int get_height () const;
 
-  void set_ambient_light(const Color& color);
+  /**
+   * Set ambient light, ie. the light that illuminates the whole sector
+   * all the time, to \a color
+   */
+  void  set_ambient_light(const Color& color);
   Color get_ambient_light() const;
 
   void add(GameObject*);

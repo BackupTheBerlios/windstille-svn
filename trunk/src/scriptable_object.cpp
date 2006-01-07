@@ -32,7 +32,7 @@
 #include "sprite2d/manager.hpp"
 #include "script_manager.hpp"
 
-ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
+ScriptableObject::ScriptableObject(FileReader& props)
   : z_pos(50),
     target_speed(0),
     acceleration(0),
@@ -42,7 +42,6 @@ ScriptableObject::ScriptableObject(const lisp::Lisp* lisp)
   std::string highlightname;
   std::string lightname;
   
-  lisp::Properties props(lisp);
   props.get("name", name);
   props.get("sprite", spritename);
   props.get("highlight", highlightname);

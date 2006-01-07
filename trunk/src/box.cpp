@@ -29,7 +29,7 @@
 #include "random.hpp"
 #include "sprite2d/manager.hpp"
 
-Box::Box(const lisp::Lisp* lisp)
+Box::Box(FileReader& props)
 {
   gravity = 0.0f;
   float width  = 64.0f;
@@ -37,7 +37,6 @@ Box::Box(const lisp::Lisp* lisp)
   std::string spritename;
   Vector vel;
 
-  lisp::Properties props(lisp);
   props.get("sprite", spritename);
   props.get("pos", pos);
   props.get("width", width);

@@ -66,7 +66,7 @@ protected:
   void flash();
 
 public:
-  ScriptableObject(const lisp::Lisp* lisp);
+  ScriptableObject(FileReader& reader);
   virtual ~ScriptableObject();
 
   void draw (SceneContext& sc);

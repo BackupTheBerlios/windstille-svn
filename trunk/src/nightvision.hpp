@@ -39,7 +39,7 @@ private:
   Texture noise;
 
 public:
-  Nightvision(const lisp::Lisp* lisp);
+  Nightvision(FileReader& props);
   ~Nightvision();
 
   void draw(SceneContext& sc);

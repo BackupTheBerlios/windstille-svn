@@ -33,7 +33,7 @@
 
 #include <exception>
 
-Character::Character(const lisp::Lisp* lisp)
+Character::Character(FileReader& props)
 {
   set_useable(true);
   use_verb = "Talk";
@@ -42,7 +42,6 @@ Character::Character(const lisp::Lisp* lisp)
   std::string sprite3d_filename = "3dsprites/heroken.wsprite";
   std::string action_name;
 
-  lisp::Properties props(lisp);
   props.get("name", name);
   props.get("pos", pos);
   props.get("z-pos", z_pos);

@@ -36,7 +36,7 @@ private:
   std::vector<float> colors;
   float z_pos; 
 public:
-  BackgroundGradient(const lisp::Lisp* lisp);
+  BackgroundGradient(FileReader& props);
   ~BackgroundGradient();
   
   void update (float delta);

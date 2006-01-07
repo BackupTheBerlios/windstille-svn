@@ -29,7 +29,7 @@
 #include "lisp/properties.hpp"
 #include <inttypes.h>
 
-TileMap::TileMap(const lisp::Lisp* lisp)
+TileMap::TileMap(FileReader& props)
 {
   using namespace lisp;
   int width = -1;
@@ -37,7 +37,6 @@ TileMap::TileMap(const lisp::Lisp* lisp)
   z_pos = 0;
   total_time = 0;
   
-  Properties props(lisp);
   props.get("name", name);
   props.get("z-pos", z_pos);
   props.get("width", width);

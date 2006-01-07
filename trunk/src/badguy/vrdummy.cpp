@@ -23,14 +23,11 @@
 **  02111-1307, USA.
 */
 
-#include "lisp/properties.hpp"
 #include "random.hpp"
-#include "lisp_getters.hpp"
 #include "vrdummy.hpp"
 
-VRDummy::VRDummy(const lisp::Lisp* lisp)
+VRDummy::VRDummy(FileReader& props)
 {
-  lisp::Properties props(lisp);
   props.get("name", name);
   props.get("pos",  pos);
   props.print_unused_warnings("VRDummy");

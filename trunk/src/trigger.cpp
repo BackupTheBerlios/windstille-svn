@@ -25,16 +25,14 @@
 #include "lisp/lisp.hpp"
 #include "lisp/properties.hpp"
 
-Trigger::Trigger(const lisp::Lisp* lisp)
+Trigger::Trigger(FileReader& props)
   : triggered(false), one_time_trigger(false)
 {
-  using namespace lisp;
   float x = -1;
   float y = -1;
   float width = -1;
   float height = -1;
   
-  Properties props(lisp);
   props.get("x", x);
   props.get("y", y);
   props.get("width", width);

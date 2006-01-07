@@ -26,16 +26,13 @@
 #include "player.hpp"
 #include "sector.hpp"
 #include "hedgehog.hpp"
-#include "lisp/properties.hpp"
-#include "lisp_getters.hpp"
 
-Hedgehog::Hedgehog(const lisp::Lisp* lisp)
+Hedgehog::Hedgehog(FileReader& props)
   : sprite("images/hedgehog.sprite"),
     die_sprite("images/hedgehog_die1.sprite"),
     light("images/hedgehog_light.sprite"),
     highlight("images/hedgehog_highlight.sprite")
 {
-  lisp::Properties props(lisp);
   props.get("name", name);
   props.get("pos", pos);
   props.print_unused_warnings("hedgehog");

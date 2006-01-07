@@ -31,7 +31,7 @@ private:
   float z_pos;
     
 public:
-  Character(const lisp::Lisp* lisp);
+  Character(FileReader& props);
   ~Character();
   
   void update(float delta);

@@ -5,13 +5,12 @@
 #include "lisp/properties.hpp"
 #include "lisp_getters.hpp"
 
-TestObject::TestObject(const lisp::Lisp* lisp)
+TestObject::TestObject(FileReader& props)
 {
   using namespace lisp;
   pos = Vector(0, 0);
   std::string spritename;
 
-  Properties props(lisp);
   props.get("sprite", spritename);
   props.get("pos", pos);
   props.get("name", name);

@@ -10,7 +10,7 @@
 class TestObject : public GameObject
 {
 public:
-  TestObject(const lisp::Lisp* lisp);
+  TestObject(FileReader& reader);
   virtual ~TestObject();
 
   void draw(SceneContext& context);

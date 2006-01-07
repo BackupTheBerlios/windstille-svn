@@ -30,10 +30,9 @@
 #include "glutil/texture_manager.hpp"
 #include "nightvision.hpp"
 
-Nightvision::Nightvision(const lisp::Lisp* lisp)
+Nightvision::Nightvision(FileReader& props)
   : nightvision("images/nightvision.sprite")
 {
-  (void) lisp;
   name = "nightvision";
   noise = Texture("images/noise.png");
   noise.set_wrap(GL_REPEAT);

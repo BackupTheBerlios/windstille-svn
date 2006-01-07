@@ -23,15 +23,13 @@
 **  02111-1307, USA.
 */
 
-#include "lisp/properties.hpp"
 #include "display/vertex_array_drawing_request.hpp"
 #include "background_gradient.hpp"
 
-BackgroundGradient::BackgroundGradient(const lisp::Lisp* lisp)
+BackgroundGradient::BackgroundGradient(FileReader& props)
 {
   z_pos = 0.0;
 
-  lisp::Properties props(lisp);
   props.get("z-pos",  z_pos);
   props.get("colors", colors);
   if (colors.size() % (3 + 4 + 4 + 2) != 0)

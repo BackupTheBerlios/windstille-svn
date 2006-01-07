@@ -26,7 +26,6 @@
 #define HEADER_HEDGEHOG_HXX
 
 #include "badguy.hpp"
-#include "lisp/lisp.hpp"
 
 class Hedgehog : public Badguy
 {
@@ -39,7 +38,7 @@ private:
   bool direction_left;
   enum { WALKING, FALLING, DYING } state;
 public:
-  Hedgehog(const lisp::Lisp* lisp);
+  Hedgehog(FileReader& props);
   ~Hedgehog();
 
   void draw(SceneContext& gc);

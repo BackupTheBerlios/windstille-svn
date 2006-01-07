@@ -31,12 +31,11 @@
 
 #define SAMPLES 5
 
-Liquid::Liquid(const lisp::Lisp* lisp)
+Liquid::Liquid(FileReader& props)
 {
   int width = 10;
   t = 0;
 
-  lisp::Properties props(lisp);
   props.get("pos",    pos);
   props.get("width",  width);
   props.print_unused_warnings("Liquid");

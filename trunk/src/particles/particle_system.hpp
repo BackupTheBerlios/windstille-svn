@@ -95,7 +95,7 @@ private:
   void spawn(Particle& particle);
 public:
   ParticleSystem();
-  ParticleSystem(const lisp::Lisp* lisp);
+  ParticleSystem(FileReader& props);
   virtual ~ParticleSystem();
 
   void set_drawer(Drawer*);

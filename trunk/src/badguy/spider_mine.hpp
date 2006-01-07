@@ -26,7 +26,6 @@
 #define HEADER_SPIDER_HPP
 
 #include "badguy.hpp"
-#include "lisp/lisp.hpp"
 #include "sprite2d/sprite.hpp"
 
 class SpiderMine : public Badguy
@@ -45,7 +44,7 @@ protected:
   void search_for_player(float delta);
 
 public:
-  SpiderMine(const lisp::Lisp* lisp);
+  SpiderMine(FileReader& props);
   ~SpiderMine();
   
   void update(float delta);

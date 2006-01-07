@@ -44,7 +44,7 @@ private:
   std::vector<float>* heightfield2;
 
 public:
-  Liquid(const lisp::Lisp* lisp);
+  Liquid(FileReader& props);
   ~Liquid();
 
   void draw(SceneContext& sc);

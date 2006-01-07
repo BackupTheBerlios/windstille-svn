@@ -30,7 +30,7 @@
 #include "surface_drawer.hpp"
 #include "randomizer.hpp"
 
-ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
+ParticleSystem::ParticleSystem(FileReader& props)
 {
   // Init some defaults
   randomizer = new PointRandomizer;
@@ -58,9 +58,6 @@ ParticleSystem::ParticleSystem(const lisp::Lisp* lisp)
   color_stop  = Color(   0,    0,    0,    0);
 
   layer = SceneContext::COLORMAP;
-
-  // Set stuff from Lisp
-  lisp::Properties props(lisp);
 
   float p_bunching = 1.0; 
   props.get("bunching", p_bunching);
