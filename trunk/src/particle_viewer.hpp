@@ -33,7 +33,10 @@
 
 namespace GUI {
 class Slider;
+class TabComponent;
 }
+
+class ParticleSystemGUI;
 
 /** */
 class ParticleViewer : public Screen
@@ -47,11 +50,10 @@ private:
   Vector pos;
   bool   show_gui;
   GUI::GUIManager* manager;
+  GUI::TabComponent* tab;
 
-  GUI::Slider* gravity_slider;
-  GUI::Slider* velocity_slider;
-  GUI::Slider* count_slider;
-
+  typedef std::vector<ParticleSystemGUI*> ParticleSystemGUIs;
+  ParticleSystemGUIs guis;
 public:
   ParticleViewer();
   ~ParticleViewer();

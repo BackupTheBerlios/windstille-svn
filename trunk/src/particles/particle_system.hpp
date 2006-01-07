@@ -111,6 +111,8 @@ public:
   
   /** Set how many particles will be used */
   void set_count(int num);
+
+  int get_count() const;
   
   /** \a factor == 1 means a constant stream of particles, a value of
       0 means all particles will be released at once */

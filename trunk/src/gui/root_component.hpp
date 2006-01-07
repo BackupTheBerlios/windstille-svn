@@ -44,7 +44,8 @@ public:
   void update(float delta, const Controller& controller);
 
   void set_child(Component* child);
-
+  Component* get_child() const { return child; }
+  
   bool is_active() const;
 private:
   RootComponent (const RootComponent&);

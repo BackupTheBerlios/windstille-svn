@@ -289,17 +289,25 @@ ParticleSystem::update(float delta)
     }
 }
 
+int
+ParticleSystem::get_count() const
+{
+  return particles.size();
+}
+
 void
 ParticleSystem::set_count(int num)
 {
   int old_size = particles.size();
-
-  particles.resize(num);
-
-  for(Particles::size_type i = old_size; i < particles.size(); ++i)
+  if (old_size != num)
     {
-      spawn(particles[i]);
-      particles[i].t = life_time * bunching * float(i)/particles.size();
+      particles.resize(num);
+
+      for(Particles::size_type i = old_size; i < particles.size(); ++i)
+        {
+          spawn(particles[i]);
+          particles[i].t = life_time * bunching * float(i)/particles.size();
+        }
     }
 }
   

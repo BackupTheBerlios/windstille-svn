@@ -23,32 +23,30 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_WINDSTILLE_GUI_BUTTON_HPP
-#define HEADER_WINDSTILLE_GUI_BUTTON_HPP
+#ifndef HEADER_LABEL_HPP
+#define HEADER_LABEL_HPP
 
 #include <string>
-#include "lisp/lisp.hpp"
 #include "component.hpp"
 
 namespace GUI {
 
 /** */
-class Button : public Component
+class Label : public Component
 {
 private:
   std::string label;
 
 public:
-  Button(const lisp::Lisp* lisp, Component* parent);
-  Button(const std::string& label, Component* parent);
-  ~Button();
+  Label(const std::string& label);
+  ~Label();
 
   void draw();
   void update(float delta, const Controller& controller);
-  
+
 private:
-  Button (const Button&);
-  Button& operator= (const Button&);
+  Label (const Label&);
+  Label& operator= (const Label&);
 };
 
 } // namespace GUI

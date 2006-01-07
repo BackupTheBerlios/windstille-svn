@@ -76,7 +76,7 @@ Slider::draw()
   Display::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.5f));
   
   int width = 30;
-  Rectf slider_rect(Vector(rect.left + (rect.get_width()-width) * (pos/float(max - min)) ,
+  Rectf slider_rect(Vector(rect.left + (rect.get_width()-width) * ((pos-min)/float(max - min)),
                            rect.top + 2),
                     Sizef(width, rect.get_height()-4));
   if (is_active())

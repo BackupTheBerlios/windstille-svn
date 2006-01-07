@@ -34,6 +34,7 @@
 
 // Components
 #include "gui/button.hpp"
+#include "gui/label.hpp"
 #include "gui/slider.hpp"
 #include "gui/root_component.hpp"
 #include "gui/grid_component.hpp"
@@ -41,6 +42,55 @@
 #include "gui/list_view.hpp"
 #include "gui/text_view.hpp"
 #include "gui/automap.hpp"
+
+class ParticleSystemGUI
+{
+public:
+  ParticleSystem* psystem;
+  GUI::GridComponent* grid;
+  GUI::Slider* gravity_slider;
+  GUI::Slider* velocity_slider;
+  GUI::Slider* count_slider;
+  
+  ParticleSystemGUI(GUI::Component* parent, ParticleSystem* psystem_)
+    : psystem(psystem_)
+  {
+    using namespace GUI;
+    grid = new GridComponent(Rectf(200, 120, 600, 220), 2, 3, parent);
+    grid->set_padding(4);
+
+    gravity_slider  = new Slider(grid);
+    velocity_slider = new Slider(grid);
+    count_slider    = new Slider(grid);
+
+    gravity_slider->set_range(-10, 10);
+    gravity_slider->set_step(3);
+    gravity_slider->set_pos(1);
+
+    velocity_slider->set_range(-500, 500);
+    velocity_slider->set_step(50);
+    velocity_slider->set_pos(10);//psystem->get_count());
+
+    count_slider->set_range(1, 200);
+    count_slider->set_step(10);
+    count_slider->set_pos(psystem->get_count());
+
+    grid->pack(new Label("Gravitation:"), 0, 0);
+    grid->pack(new Label("Velocity:"),    0, 1);
+    grid->pack(new Label("Count:"),       0, 2);
+
+    grid->pack(gravity_slider,  1, 0);
+    grid->pack(velocity_slider, 1, 1);
+    grid->pack(count_slider,    1, 2);    
+  }
+
+  void update()
+  {
+    psystem->set_count(count_slider->get_pos());
+  }
+
+  GUI::Component* get_component() { return grid; }
+};
 
 ParticleViewer::ParticleViewer()
 {
@@ -50,33 +100,9 @@ ParticleViewer::ParticleViewer()
   using namespace GUI;
 
   manager = new GUIManager();
-
-  GridComponent* grid = new GridComponent(Rectf(350, 20, 450, 120), 1, 3, manager->get_root());
-  grid->set_padding(4);
-
-  gravity_slider  = new Slider(grid);
-  velocity_slider = new Slider(grid);
-  count_slider    = new Slider(grid);
-
-
-  gravity_slider->set_range(-10, 10);
-  gravity_slider->set_step(1);
-  velocity_slider->set_pos(1);
-
-  velocity_slider->set_range(-500, 500);
-  velocity_slider->set_step(10);
-  velocity_slider->set_pos(200);
-
-  count_slider->set_range(1, 200);
-  count_slider->set_step(10);
-  count_slider->set_pos(50);
-
-  grid->pack(gravity_slider,  0, 0);
-  grid->pack(velocity_slider, 0, 1);
-  grid->pack(count_slider,    0, 2);
-
-
-  manager->get_root()->set_child(grid);
+  tab = new TabComponent(Rectf(200, 50, 600, 250), manager->get_root());
+  
+  manager->get_root()->set_child(tab);
 }
 
 ParticleViewer::~ParticleViewer()
@@ -111,6 +137,9 @@ ParticleViewer::load(const std::string& filename)
       {
         FileReader reader(*iter);
         systems.push_back(new ParticleSystem(reader));
+
+        guis.push_back(new ParticleSystemGUI(tab, systems.back()));
+        tab->pack("Testomap", guis.back()->get_component());
       }
   }
 
@@ -157,20 +186,24 @@ ParticleViewer::update(float delta, const Controller& controller)
       if (controller.button_was_pressed(OK_BUTTON))
         {
           show_gui = true;
-          std::cout << "Show GUI" << std::endl;       
+          manager->get_root()->get_child()->set_active(true);
         }
     }
   else
     {
       if (!manager->get_root()->is_active())
         {
-          std::cout << "Hide GUI" << std::endl;
           show_gui = false;
         }
       else
         {
           manager->update(delta, controller);
         }
+    }
+
+  for(ParticleSystemGUIs::iterator i = guis.begin(); i != guis.end(); ++i)
+    {
+      (*i)->update();
     }
 
   //systems[3]->set_count(count_slider->get_pos());

@@ -23,36 +23,37 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_WINDSTILLE_GUI_BUTTON_HPP
-#define HEADER_WINDSTILLE_GUI_BUTTON_HPP
-
-#include <string>
-#include "lisp/lisp.hpp"
-#include "component.hpp"
+#include "font/fonts.hpp"
+#include "label.hpp"
 
 namespace GUI {
 
-/** */
-class Button : public Component
+Label::Label(const std::string& label_)
+  : Component(Rectf(), parent),
+    label(label_)
 {
-private:
-  std::string label;
+}
 
-public:
-  Button(const lisp::Lisp* lisp, Component* parent);
-  Button(const std::string& label, Component* parent);
-  ~Button();
+Label::~Label()
+{
+}
 
-  void draw();
-  void update(float delta, const Controller& controller);
-  
-private:
-  Button (const Button&);
-  Button& operator= (const Button&);
-};
+void
+Label::draw()
+{
+  //Display::fill_rect(rect, Color(0.0f, 0.0f, 0.0f, 0.5f));
+  //Display::draw_rect(rect, Color(1.0f, 1.0f, 1.0f, 0.5f));
+  Fonts::vera12->draw(int(rect.left + 5/*+ rect.get_width()/2*/), int(rect.top + rect.get_height()/2 + 3),
+                      label,
+                      Color(1.0f, 1.0f, 1.0f, 1.0f));
+}
+
+void
+Label::update(float delta, const Controller& controller)
+{
+  set_active(false);
+}
 
 } // namespace GUI
-
-#endif
 
 /* EOF */

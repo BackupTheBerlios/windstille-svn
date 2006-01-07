@@ -77,7 +77,9 @@ GridComponent::update(float delta, const Controller& controller)
     }
   else if (!child_active)
     {
-      for(InputEventLst::const_iterator i = controller.get_events().begin(); i != controller.get_events().end(); ++i) 
+      for(InputEventLst::const_iterator i = controller.get_events().begin(); 
+          i != controller.get_events().end(); 
+          ++i)
         {
           if (i->type == BUTTON_EVENT && i->button.down)
             {
