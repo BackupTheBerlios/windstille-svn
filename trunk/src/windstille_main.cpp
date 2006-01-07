@@ -136,7 +136,7 @@ WindstilleMain::main(int argc, char** argv)
       }
     else
       {
-        if (!levelfile.empty())
+        if (levelfile.empty())
           {
             screen_manager.set_screen(new GameSession("levels/newformat2.wst"));
           }

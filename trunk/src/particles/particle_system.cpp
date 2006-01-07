@@ -72,10 +72,6 @@ ParticleSystem::ParticleSystem(FileReader& props)
   float p_lifetime;
   if (props.get("lifetime", p_lifetime))
     set_lifetime(p_lifetime);
- 
-  int p_count = 70;
-  props.get("count", p_count);
-  set_count(p_count);
 
   props.get("z-pos", z_pos);
 
@@ -187,6 +183,10 @@ ParticleSystem::ParticleSystem(FileReader& props)
       }
   }
 
+  int p_count = 70;
+  props.get("count", p_count);
+  set_count(p_count);
+
   //props.get("point-distribution",   ); // void
   //props.get("line-distribution",   ); // 2xvector2
   //props.get("circle", ); // float
@@ -264,7 +264,7 @@ ParticleSystem::spawn(Particle& particle)
 
   particle.angle = rnd.drand(360);
 
-  particle.t   = std::min(std::max(0.0f, particle.t - life_time), life_time);
+  particle.t   = fmodf(particle.t, life_time);
 }
 
 void
@@ -296,11 +296,10 @@ ParticleSystem::set_count(int num)
 
   particles.resize(num);
 
-  for(Particles::size_type i = old_size-1; i < particles.size(); ++i)
+  for(Particles::size_type i = old_size; i < particles.size(); ++i)
     {
-      //i->t = -1.0f;
       spawn(particles[i]);
-      particles[i].t = (life_time * bunching * i/particles.size());
+      particles[i].t = life_time * bunching * float(i)/particles.size();
     }
 }
   
@@ -326,7 +325,8 @@ ParticleSystem::set_pos(float x, float y)
 void
 ParticleSystem::set_spawn_point(float x, float y)
 {
-  
+  spawn_x = x;
+  spawn_y = y;
 }
 
 void
