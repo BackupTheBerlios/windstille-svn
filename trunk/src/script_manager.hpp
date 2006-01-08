@@ -45,11 +45,11 @@ public:
   };
 
   struct WakeupData {
-    WakeupEvent type;
-
     explicit WakeupData() : type(NO_EVENT) {}
     explicit WakeupData(WakeupEvent type_) : type(type_) {}
 
+    WakeupEvent type;
+    
     union {
       // GAMEOBJECT_DONE
       GameObject* game_object;

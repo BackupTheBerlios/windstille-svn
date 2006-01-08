@@ -126,71 +126,90 @@ ScriptManager::update()
     SquirrelVM& squirrel_vm = *i;
     int vm_state = sq_getvmstate(squirrel_vm.vm);
     
-    if(vm_state == SQ_VMSTATE_SUSPENDED && squirrel_vm.wakeup_time > 0 && game_time >= squirrel_vm.wakeup_time) {
-      squirrel_vm.waiting_for_events = WakeupData(NO_EVENT);
-      try {
-        if(sq_wakeupvm(squirrel_vm.vm, false, false) < 0) {
-          throw SquirrelError(squirrel_vm.vm, "Couldn't resume script");
+    if(vm_state == SQ_VMSTATE_SUSPENDED && squirrel_vm.wakeup_time > 0 && game_time >= squirrel_vm.wakeup_time) 
+      {
+        squirrel_vm.waiting_for_events = WakeupData(NO_EVENT);
+        try {
+          if(sq_wakeupvm(squirrel_vm.vm, false, false) < 0) {
+            throw SquirrelError(squirrel_vm.vm, "Couldn't resume script");
+          }
+        } catch(std::exception& e) {
+          std::cerr << "Problem executing script: " << e.what() << "\n";
+          sq_release(v, &squirrel_vm.vm_obj);
+          i = squirrel_vms.erase(i);
+          continue;
         }
-      } catch(std::exception& e) {
-        std::cerr << "Problem executing script: " << e.what() << "\n";
-        sq_release(v, &squirrel_vm.vm_obj);
-        i = squirrel_vms.erase(i);
-        continue;
       }
-	}
 	
-	if (vm_state != SQ_VMSTATE_SUSPENDED)
-	  {
-	    sq_release(v, &(squirrel_vm.vm_obj));
-	    i = squirrel_vms.erase(i);
-	  }
-  else
-    ++i;
+    if (vm_state != SQ_VMSTATE_SUSPENDED)
+      {
+        sq_release(v, &(squirrel_vm.vm_obj));
+        i = squirrel_vms.erase(i);
+      }
+    else
+      {
+        ++i;
+      }
   }
 }
 
 void
-ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupData  event, float timeout)
+ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupData event, float timeout)
 {
-  set_wakeup_event(vm, event.type, timeout);
+  assert(event.type >= 0 && event.type < MAX_WAKEUP_EVENT_COUNT);
+  // find the VM in the list and update it
+  for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i) {
+    SquirrelVM& squirrel_vm = *i;
+    if(squirrel_vm.vm == vm) 
+      {
+        squirrel_vm.waiting_for_events = event;
+
+        if(timeout < 0) {
+          squirrel_vm.wakeup_time = -1;
+        } else {
+          squirrel_vm.wakeup_time = game_time + timeout;
+        }
+        return;
+      }
+  }
 }
 
 void
 ScriptManager::fire_wakeup_event(WakeupData  event)
 {
-  fire_wakeup_event(event.type);
+  assert(event.type >= 0 && event.type < MAX_WAKEUP_EVENT_COUNT);
+  for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i) 
+    {
+      SquirrelVM& vm = *i;
+      if(vm.waiting_for_events.type == event.type && vm.waiting_for_events.type != NO_EVENT)
+        {
+          switch (event.type)
+            {
+            case GAMEOBJECT_DONE:
+              if (vm.waiting_for_events.game_object == event.game_object)
+                {
+                  vm.wakeup_time = game_time;
+                }
+              break;
+
+            default:
+              vm.wakeup_time = game_time;
+              break;
+            }
+        }
+    }
 }
 
 void
-ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float time)
+ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float timeout)
 {
-  assert(event >= 0 && event < MAX_WAKEUP_EVENT_COUNT);
-  // find the VM in the list and update it
-  for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i) {
-    SquirrelVM& squirrel_vm = *i;
-    if(squirrel_vm.vm == vm) {
-      if(time < 0) {
-        squirrel_vm.wakeup_time = -1;
-      } else {
-        squirrel_vm.wakeup_time = game_time + time;
-      }
-      squirrel_vm.waiting_for_events = WakeupData(event);
-      return;
-    }
-  }
+  set_wakeup_event(vm, WakeupData(event), timeout);
 }
 
 void
 ScriptManager::fire_wakeup_event(WakeupEvent event)
 {
-  assert(event >= 0 && event < MAX_WAKEUP_EVENT_COUNT);
-  for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i) {
-    SquirrelVM& vm = *i;
-    if(vm.waiting_for_events.type == event) {
-      vm.wakeup_time = game_time;
-    }
-  }
+  fire_wakeup_event(WakeupData(event));
 }
 
 bool ScriptManager::run_before(HSQUIRRELVM vm)
@@ -215,3 +234,4 @@ ScriptManager::SquirrelVM::SquirrelVM(const std::string& arg_name, HSQUIRRELVM a
   wakeup_time        = 0;
 }
 
+/* EOF */

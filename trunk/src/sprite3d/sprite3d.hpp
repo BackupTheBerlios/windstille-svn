@@ -104,7 +104,7 @@ public:
   /**
    * The speed of the action is multiplied with this factor
    */
-  void set_speed(float speed);
+  void  set_speed(float speed);
   float get_speed() const;
 
   /**
