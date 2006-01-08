@@ -1,24 +1,63 @@
+/* -*- c++ -*-
+**   __      __ __             ___        __   __ __   __
+**  /  \    /  \__| ____    __| _/_______/  |_|__|  | |  |   ____
+**  \   \/\/   /  |/    \  / __ |/  ___/\   __\  |  | |  | _/ __ \
+**   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
+**    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
+**         \/          \/      \/    \/                         \/
+**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**
+**  This program is free software; you can redistribute it and/or
+**  modify it under the terms of the GNU General Public License
+**  as published by the Free Software Foundation; either version 2
+**  of the License, or (at your option) any later version.
+**
+**  This program is distributed in the hope that it will be useful,
+**  but WITHOUT ANY WARRANTY; without even the implied warranty of
+**  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**  GNU General Public License for more details.
+** 
+**  You should have received a copy of the GNU General Public License
+**  along with this program; if not, write to the Free Software
+**  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+**  02111-1307, USA.
+*/
+
 /**
  * This script is read on Windstille startup, add all helper functions
  * that should be available in the console all the time here 
  */
+
+
+/**
+ * Constants from display/scene_context.hpp, manually copied here so
+ * you have to sync manually in case stuff changes
+ */
+RENDER_MASK_COLORMAP       <- 1<<0,
+RENDER_MASK_LIGHTMAP       <- 1<<1,
+RENDER_MASK_HIGHLIGHTMAP   <- 1<<2,
+RENDER_MASK_LIGHTMAPSCREEN <- 1<<3
+RENDER_MASK_ALL            <- (RENDER_MASK_HIGHLIGHTMAP | RENDER_MASK_LIGHTMAP | RENDER_MASK_COLORMAP)
 
 has_nightvision <- false;
 function nightvision_enabled(...)
 {
   if (vargc == 1) 
     {
-      if (has_nightvision) {
-        objects.nightvision.set_active(vargv[0]); 
-      } 
-      else if (vargv[0]) 
+      if (has_nightvision) 
+        {
+          objects.nightvision.set_active(vargv[0]); 
+        }
+      else if (vargv[0])
         {
           spawn_object("nightvision", {});
           has_nightvision = true;
         }
-    } else {
-    return true;
-  }
+    } 
+  else 
+    {
+      return true;
+    }
 }
 
 function game_speed(...)

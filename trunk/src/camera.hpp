@@ -34,9 +34,10 @@ public:
   {
     Vector pos;
     float  zoom;
+    float  rotation;
 
-    PathPoint(const Vector& pos_, float zoom_)
-      : pos(pos_), zoom(zoom_) {}
+    PathPoint(const Vector& pos_, float zoom_, float rotation_ = 0.0f)
+      : pos(pos_), zoom(zoom_), rotation(rotation_) {}
 
     bool operator==(const PathPoint& p) {
       return p.pos == pos && p.zoom == zoom;
@@ -45,8 +46,17 @@ public:
 
 private:
   Mode mode;
-
+  
+  /**
+   * Position of the camera, ie. where the center of the screen should
+   * be located
+   */
   Vector pos;
+  
+  /**
+   * Zoom of the Camera, 1.0 means no zoom, 2.0 means everything will
+   * be twice as large 
+   */
   float  zoom;
 
   std::vector<PathPoint> path;
@@ -70,8 +80,13 @@ public:
 
   /**
    * Set Camera to follow the given path
+   *
+   * @param path_ The path the camera should follow
+   * @param cont True if you want to continue the path from the
+   * current camera position, false if you want the camera to jump to
+   * the start of the path instantly
    */
-  void   set_path(const std::vector<PathPoint>& path_);
+  void   set_path(const std::vector<PathPoint>& path_, bool cont);
 
 private:
   Camera (const Camera&);

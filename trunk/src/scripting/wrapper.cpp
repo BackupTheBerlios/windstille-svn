@@ -285,6 +285,15 @@ static int camera_set_active_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int camera_continue_path_wrapper(HSQUIRRELVM v)
+{
+  (void) v;
+  
+  Scripting::camera_continue_path();
+  
+  return 0;
+}
+
 static int camera_begin_path_wrapper(HSQUIRRELVM v)
 {
   (void) v;
@@ -317,14 +326,24 @@ static int camera_end_path_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
-static int set_view_wrapper(HSQUIRRELVM v)
+static int camera_set_pos_wrapper(HSQUIRRELVM v)
 {
   float arg0;
   sq_getfloat(v, 2, &arg0);
   float arg1;
   sq_getfloat(v, 3, &arg1);
   
-  Scripting::set_view(arg0, arg1);
+  Scripting::camera_set_pos(arg0, arg1);
+  
+  return 0;
+}
+
+static int camera_set_zoom_wrapper(HSQUIRRELVM v)
+{
+  float arg0;
+  sq_getfloat(v, 2, &arg0);
+  
+  Scripting::camera_set_zoom(arg0);
   
   return 0;
 }
@@ -899,6 +918,14 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
+  sq_pushstring(v, "camera_continue_path", -1);
+  sq_newclosure(v, &camera_continue_path_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'camera_continue_path'";
+    throw SquirrelError(v, msg.str());
+  }
+
   sq_pushstring(v, "camera_begin_path", -1);
   sq_newclosure(v, &camera_begin_path_wrapper, 0);
   if(SQ_FAILED(sq_createslot(v, -3))) {
@@ -923,11 +950,19 @@ void register_windstille_wrapper(HSQUIRRELVM v)
     throw SquirrelError(v, msg.str());
   }
 
-  sq_pushstring(v, "set_view", -1);
-  sq_newclosure(v, &set_view_wrapper, 0);
+  sq_pushstring(v, "camera_set_pos", -1);
+  sq_newclosure(v, &camera_set_pos_wrapper, 0);
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
-    msg << "Couldn't register function'set_view'";
+    msg << "Couldn't register function'camera_set_pos'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "camera_set_zoom", -1);
+  sq_newclosure(v, &camera_set_zoom_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'camera_set_zoom'";
     throw SquirrelError(v, msg.str());
   }
 

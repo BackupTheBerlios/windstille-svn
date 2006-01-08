@@ -36,7 +36,15 @@ View::View()
 void
 View::draw (SceneContext& sc)
 {
-  state.set_pos(camera.get_pos());
+  // Casting here isn't really necessary, but should about some
+  // pixel-jitter when scrolling with subpixel values and pixel
+  // precise images.
+  if (camera.get_zoom() == 1.0)
+    state.set_pos(Vector(static_cast<int>(camera.get_pos().x),
+                         static_cast<int>(camera.get_pos().y)));
+  else
+    state.set_pos(camera.get_pos());
+
   state.set_zoom(camera.get_zoom() + (zoom - 1.0f));
   state.set_pos(state.get_pos() + Vector(transform.x, transform.y));
 

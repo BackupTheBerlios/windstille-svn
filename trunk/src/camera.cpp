@@ -26,6 +26,20 @@
 Camera* Camera::current_ = 0;
 
 /**
+ * Calculate the distance between two camera PathPoints, distance here
+ * means not only the distance between the points itself, but also
+ * between their zoom and rotation setting
+ */
+float distance(const Camera::PathPoint& a, const Camera::PathPoint& b)
+{
+  // "100.0f *" is there to balance out the speed between zoom and
+  // positional movement
+  return (b.pos - a.pos).length() 
+    + 100.0f * fabsf(b.zoom - a.zoom)
+    + fabsf(b.rotation - a.rotation);
+}
+
+/**
  * Simple linear interpolation to move along a given vector path
  * FIXME: Could add curves and different speed per vertex
  */
@@ -34,17 +48,17 @@ Camera::PathPoint interpolate_path(const std::vector<Camera::PathPoint>& path, f
   float length_so_far = 0.0f;
   for(std::vector<Camera::PathPoint>::size_type i = 0; i < path.size()-1; ++i)
     {
-      Vector segment = path[i+1].pos - path[i].pos;
-      float  segment_length = segment.length();
+      float  segment_length = distance(path[i], path[i+1]);
 
       if (length_so_far + segment_length > length)
         {
           float factor = (length - length_so_far) / segment_length;
-          return Camera::PathPoint(path[i].pos + segment * factor,
+          return Camera::PathPoint((path[i+1].pos * factor) + (path[i].pos * (1.0f - factor)),
                                    (factor * path[i+1].zoom) + ((1.0f - factor) * path[i].zoom));
         }
       length_so_far += segment_length;
     }
+
   return path.back();
 }
 
@@ -110,13 +124,15 @@ Camera::update(float delta)
         path_pos += delta * 50.0f;
 
         PathPoint p = interpolate_path(path, path_pos);
+
+        set_pos(p.pos.x, p.pos.y);
+        set_zoom(p.zoom);
+
         if (p == path.back())
           {
             script_manager->fire_wakeup_event(ScriptManager::CAMERA_DONE);
             set_mode(CAMERA_INACTIVE);
           }
-        set_pos(p.pos.x, p.pos.y);
-        set_zoom(p.zoom);
       }
       break;
     }
@@ -125,11 +141,8 @@ Camera::update(float delta)
 void
 Camera::set_pos(float x, float y)
 {
-  // Casting here isn't really necessary, but should about some
-  // pixel-jitter when scrolling with subpixel values and pixel
-  // precise images
-  pos.x = static_cast<int>(x + Display::get_width()/2);
-  pos.y = static_cast<int>(y + Display::get_height()/2);
+  pos.x = x; // + Display::get_width()/2);
+  pos.y = y; // + Display::get_height()/2);
 }
 
 void
@@ -145,9 +158,14 @@ Camera::get_zoom() const
 }
 
 void
-Camera::set_path(const std::vector<Camera::PathPoint>& path_)
+Camera::set_path(const std::vector<Camera::PathPoint>& path_, bool cont)
 {
-  path     = path_;
+  path.clear();
+  if (cont)
+    path.push_back(PathPoint(pos, zoom));
+
+  std::copy(path_.begin(), path_.end(), std::back_inserter(path)); 
+
   path_pos = 0;
   mode     = CAMERA_FOLLOW_PATH;
 }

@@ -105,14 +105,14 @@ public:
   Screen* current_gui;
 
   GameSessionImpl() {
-    sector = 0;
-    current_gui = 0;
+    sector         = 0;
+    current_gui    = 0;
     cutscene_mode  = false;
     cutscene_value = 0.0f;
-    fade_color = Color(0.0f, 0.0f, 0.0f, 1.0f);
-    fade_state = FADEOUT;
-    fadeout_value = 1.0f;
-    fade_time = 1.0f;
+    fade_color     = Color(0.0f, 0.0f, 0.0f, 1.0f);
+    fade_state     = RUNNING;
+    fadeout_value  = 0.0f;
+    fade_time      = 1.0f;
   }
   ~GameSessionImpl() {
     delete sector;
@@ -217,11 +217,12 @@ GameSessionImpl::update(float delta, const Controller& controller)
       script_manager->update();
       
       view.update(delta);
+      sector->update(delta);
   
       switch (fade_state)
         {
         case FADEIN:
-          if (fadeout_value < 0.0f)
+          if (fadeout_value <= 0.0f)
             {
               fade_state = RUNNING;
               fadeout_value = 0.0f;
@@ -234,7 +235,7 @@ GameSessionImpl::update(float delta, const Controller& controller)
           break;
 
         case FADEOUT:
-          if (fadeout_value > 1.0f)
+          if (fadeout_value >= 1.0f)
             { 
               fadeout_value = 1.0f;
               script_manager->fire_wakeup_event(ScriptManager::FADE_DONE);
@@ -260,7 +261,6 @@ GameSessionImpl::update(float delta, const Controller& controller)
           break;
 
         case RUNNING:
-          sector->update(delta);
           energy_bar.update(delta, controller);
           if (current_gui)
             current_gui->update(delta, controller);
@@ -296,9 +296,16 @@ GameSession::change_sector(const std::string& arg_filename)
  
   sound_manager->stop_music();
 
-  impl->fade_time   = 1.0f;
-  impl->fade_state    = GameSessionImpl::FADEOUT;
-  impl->next_action   = GameSessionImpl::CHANGE_SECTOR_ACTION;
+  if (impl->fade_state == GameSessionImpl::FADEOUT)
+    {
+      GameSession::current()->set_sector(impl->filename);
+    }
+  else
+    {
+      impl->fade_time     = 1.0f;
+      impl->fade_state    = GameSessionImpl::FADEOUT;
+      impl->next_action   = GameSessionImpl::CHANGE_SECTOR_ACTION;
+    }
 }
 
 void
@@ -315,10 +322,6 @@ GameSession::set_sector(const std::string& )
   impl->sector->spawn_player("default");
   impl->sector->activate();
   
-  impl->fade_time   = 1.0f;
-  impl->fade_state    = GameSessionImpl::FADEIN;
-  impl->next_action   = GameSessionImpl::NO_ACTION;
-
   if (debug) std::cout << "Finished changing sector" << std::endl;
 }
 
@@ -455,10 +458,20 @@ GameSession::set_cutscene_mode(bool t)
 void
 GameSession::fadeout(float time, const Color& color)
 {
-  impl->fade_time   = 1.0f/time;
-  impl->fade_color  = color;
-  impl->fade_state  = GameSessionImpl::FADEOUT;
-  impl->next_action = GameSessionImpl::NO_ACTION;
+  if (time == 0.0)
+    { // directly go to a state of solid color, no fading
+      impl->fadeout_value  = 1.0f;
+      impl->fade_color  = color;
+      impl->fade_state  = GameSessionImpl::FADEOUT;
+      impl->next_action = GameSessionImpl::NO_ACTION;
+    }
+  else
+    {
+      impl->fade_time   = 1.0f/time;
+      impl->fade_color  = color;
+      impl->fade_state  = GameSessionImpl::FADEOUT;
+      impl->next_action = GameSessionImpl::NO_ACTION;
+    }
 }
 
 void

@@ -79,15 +79,28 @@ void caption_end()
   GameSession::current()->set_control_state(GameSession::GAME);
 }
 
-void set_view(float x, float y)
+void camera_set_pos(float x, float y)
 {
   Camera::current()->set_pos(x, y);
 }
 
+void camera_set_zoom(float z)
+{
+  Camera::current()->set_zoom(z);
+}
 
+bool camera_path_continue;
 std::vector<Camera::PathPoint> camera_path;
+
+void camera_continue_path()
+{
+  camera_path_continue = true;
+  camera_path.clear();
+}
+
 void camera_begin_path()
 {
+  camera_path_continue = false;
   camera_path.clear();
 }
 
@@ -98,7 +111,7 @@ void camera_add_point(float x, float y, float zoom)
 
 void camera_end_path()
 {
-  Camera::current()->set_path(camera_path);
+  Camera::current()->set_path(camera_path, camera_path_continue);
 }
 
 void camera_set_active(bool active)
