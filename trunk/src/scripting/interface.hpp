@@ -31,8 +31,7 @@
 #include <squirrel.h>
 #endif
 
-namespace Scripting
-{
+namespace Scripting {
 
 void set_sector(const std::string& filename);
 
@@ -108,6 +107,9 @@ void cutscene_end();
 
 void internal_fadeout_rgb(float time, float r, float g, float b);
 void internal_fadein(float time);
+
+int  render_mask_get();
+void render_mask_set(int mask);
 
 } // namespace Scripting
 

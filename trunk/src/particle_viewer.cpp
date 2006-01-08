@@ -71,7 +71,7 @@ public:
     velocity_slider->set_step(50);
     velocity_slider->set_pos(10);//psystem->get_count());
 
-    count_slider->set_range(1, 200);
+    count_slider->set_range(1, 500);
     count_slider->set_step(10);
     count_slider->set_pos(psystem->get_count());
 

@@ -294,6 +294,17 @@ void internal_fadein(float time)
   GameSession::current()->fadein(time);
 }
 
+int  render_mask_get()
+{
+  return GameSession::current()->get_scene_context()->get_render_mask();
+}
+
+void render_mask_set(int mask)
+{
+  GameSession::current()->get_scene_context()->set_render_mask(mask);
+}
+
+
 } // namespace Scripting
 
 /* EOF */

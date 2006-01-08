@@ -469,4 +469,10 @@ GameSession::fadein(float time)
   impl->next_action = GameSessionImpl::NO_ACTION;
 }
 
+SceneContext*
+GameSession::get_scene_context()
+{
+  return &(impl->sc);
+}
+
 /* EOF */

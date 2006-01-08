@@ -127,7 +127,7 @@ ScriptManager::update()
     int vm_state = sq_getvmstate(squirrel_vm.vm);
     
     if(vm_state == SQ_VMSTATE_SUSPENDED && squirrel_vm.wakeup_time > 0 && game_time >= squirrel_vm.wakeup_time) {
-      squirrel_vm.waiting_for_events = 0;
+      squirrel_vm.waiting_for_events = WakeupData(NO_EVENT);
       try {
         if(sq_wakeupvm(squirrel_vm.vm, false, false) < 0) {
           throw SquirrelError(squirrel_vm.vm, "Couldn't resume script");
@@ -151,8 +151,21 @@ ScriptManager::update()
 }
 
 void
+ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupData  event, float timeout)
+{
+  set_wakeup_event(vm, event.type, timeout);
+}
+
+void
+ScriptManager::fire_wakeup_event(WakeupData  event)
+{
+  fire_wakeup_event(event.type);
+}
+
+void
 ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float time)
 {
+  assert(event >= 0 && event < MAX_WAKEUP_EVENT_COUNT);
   // find the VM in the list and update it
   for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i) {
     SquirrelVM& squirrel_vm = *i;
@@ -162,7 +175,7 @@ ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float time)
       } else {
         squirrel_vm.wakeup_time = game_time + time;
       }
-      squirrel_vm.waiting_for_events |= event;
+      squirrel_vm.waiting_for_events = WakeupData(event);
       return;
     }
   }
@@ -171,9 +184,10 @@ ScriptManager::set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float time)
 void
 ScriptManager::fire_wakeup_event(WakeupEvent event)
 {
+  assert(event >= 0 && event < MAX_WAKEUP_EVENT_COUNT);
   for(SquirrelVMs::iterator i = squirrel_vms.begin(); i != squirrel_vms.end(); ++i) {
     SquirrelVM& vm = *i;
-    if(vm.waiting_for_events & event) {
+    if(vm.waiting_for_events.type == event) {
       vm.wakeup_time = game_time;
     }
   }
@@ -193,9 +207,11 @@ bool ScriptManager::run_before(HSQUIRRELVM vm)
 }
 
 ScriptManager::SquirrelVM::SquirrelVM(const std::string& arg_name, HSQUIRRELVM arg_vm, HSQOBJECT arg_obj)
-  : name(arg_name), vm(arg_vm), vm_obj(arg_obj)
+  : name(arg_name),
+    vm(arg_vm), 
+    vm_obj(arg_obj)
 {
-  waiting_for_events = 0;
-  wakeup_time = 0;
+  waiting_for_events = WakeupData(NO_EVENT);
+  wakeup_time        = 0;
 }
 

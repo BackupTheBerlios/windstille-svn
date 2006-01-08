@@ -89,6 +89,7 @@ public:
 
   void quit();
 
+  SceneContext* get_scene_context();
 private:
   SharedPtr<GameSessionImpl> impl;
 };

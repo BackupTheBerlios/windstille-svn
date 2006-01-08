@@ -34,16 +34,32 @@ public:
   }
 
   enum WakeupEvent {
-    // FIXME: Does/should this be a bitmask is a are normal enum enough?
-    TIME                = (1 << 0),
-    DIALOG_CLOSED       = (1 << 1),
-    CONVERSATION_CLOSED = (1 << 2),
-    FADE_DONE           = (1 << 3),
-    CAMERA_DONE         = (1 << 4)
-  };                  
+    NO_EVENT,
+    TIME,
+    DIALOG_CLOSED,
+    CONVERSATION_CLOSED,
+    FADE_DONE,
+    CAMERA_DONE,
+    GAMEOBJECT_DONE,
+    MAX_WAKEUP_EVENT_COUNT
+  };
+
+  struct WakeupData {
+    WakeupEvent type;
+
+    explicit WakeupData() : type(NO_EVENT) {}
+    explicit WakeupData(WakeupEvent type_) : type(type_) {}
+
+    union {
+      // GAMEOBJECT_DONE
+      GameObject* game_object;
+    };
+  };
 
   void set_wakeup_event(HSQUIRRELVM vm, WakeupEvent event, float timeout = -1);
+  void set_wakeup_event(HSQUIRRELVM vm, WakeupData  event, float timeout = -1);
   void fire_wakeup_event(WakeupEvent event);
+  void fire_wakeup_event(WakeupData  event);
   
   bool run_before(HSQUIRRELVM vm);
 
@@ -54,9 +70,9 @@ private:
     SquirrelVM(const std::string& arg_name, HSQUIRRELVM arg_vm, HSQOBJECT arg_obj);
     std::string name;
     HSQUIRRELVM vm;
-    HSQOBJECT vm_obj;
-    float wakeup_time;
-    int waiting_for_events;
+    HSQOBJECT   vm_obj;
+    float       wakeup_time;
+    WakeupData  waiting_for_events;
   };
   
   typedef std::list<SquirrelVM> SquirrelVMs;

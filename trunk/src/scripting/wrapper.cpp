@@ -652,6 +652,25 @@ static int internal_fadein_wrapper(HSQUIRRELVM v)
   return 0;
 }
 
+static int render_mask_get_wrapper(HSQUIRRELVM v)
+{
+  
+  int return_value = Scripting::render_mask_get();
+  
+  sq_pushinteger(v, return_value);
+  return 1;
+}
+
+static int render_mask_set_wrapper(HSQUIRRELVM v)
+{
+  int arg0;
+  sq_getinteger(v, 2, &arg0);
+  
+  Scripting::render_mask_set(arg0);
+  
+  return 0;
+}
+
 static int spawn_object_wrapper(HSQUIRRELVM v)
 {
   return Scripting::spawn_object(v);
@@ -1165,6 +1184,22 @@ void register_windstille_wrapper(HSQUIRRELVM v)
   if(SQ_FAILED(sq_createslot(v, -3))) {
     std::ostringstream msg;
     msg << "Couldn't register function'internal_fadein'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "render_mask_get", -1);
+  sq_newclosure(v, &render_mask_get_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'render_mask_get'";
+    throw SquirrelError(v, msg.str());
+  }
+
+  sq_pushstring(v, "render_mask_set", -1);
+  sq_newclosure(v, &render_mask_set_wrapper, 0);
+  if(SQ_FAILED(sq_createslot(v, -3))) {
+    std::ostringstream msg;
+    msg << "Couldn't register function'render_mask_set'";
     throw SquirrelError(v, msg.str());
   }
 
