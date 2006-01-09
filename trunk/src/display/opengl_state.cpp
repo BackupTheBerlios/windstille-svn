@@ -35,6 +35,8 @@
 #include "display/display.hpp"
 #include "util.hpp"
 
+#define MAX_TEXTURE_UNITS 4
+
 class OpenGLStateImpl
 {
 public:
@@ -42,7 +44,7 @@ public:
       somebody forget the final activate() call */
   bool was_activated;
 
-  Texture     texture;
+  Texture     texture[MAX_TEXTURE_UNITS];
   Framebuffer framebuffer;
 
   Color color;
@@ -96,7 +98,7 @@ OpenGLState::global()
 OpenGLState::OpenGLState()
   : impl(new OpenGLStateImpl())
 {
-  impl->state[GL_TEXTURE_2D]  = false;
+  //impl->state[GL_TEXTURE_2D]  = false;
   impl->state[GL_DEPTH_TEST]  = false;
   impl->state[GL_BLEND]       = false;
   impl->state[GL_LINE_SMOOTH] = false;
@@ -118,9 +120,10 @@ OpenGLState::~OpenGLState()
 }
 
 void
-OpenGLState::bind_texture(const Texture& texture)
+OpenGLState::bind_texture(const Texture& texture, int unit)
 {
-  impl->texture = texture;
+  assert(unit >= 0 && unit < MAX_TEXTURE_UNITS);
+  impl->texture[unit] = texture;
 }
 
 void
@@ -162,12 +165,16 @@ OpenGLState::set_state(GLenum cap, bool value)
 void
 OpenGLState::enable(GLenum cap)
 {
+  if (cap == GL_TEXTURE_2D)// FIXME: HACK
+    return;
   set_state(cap, true);
 }
 
 void
 OpenGLState::disable(GLenum cap)
 {  
+  if (cap == GL_TEXTURE_2D)// FIXME: HACK
+    return;
   set_state(cap, false);
 }
 
@@ -267,17 +274,23 @@ OpenGLState::activate()
       global->impl->blend_dfactor = impl->blend_dfactor;
     }
 
-  if (impl->texture != global->impl->texture)
+  for(int i = 0; i < MAX_TEXTURE_UNITS; ++i)
     {
-      if (impl->texture)
-        {
-          glBindTexture(GL_TEXTURE_2D, impl->texture.get_handle());
-          global->impl->texture = impl->texture;
-        }
-      else
-        {
-          glBindTexture(GL_TEXTURE_2D, 0);
-          global->impl->texture = impl->texture;
+      if (impl->texture[i] != global->impl->texture[i])
+        { 
+          glActiveTexture(GL_TEXTURE0 + i);
+          if (impl->texture[i])
+            {
+              glBindTexture(GL_TEXTURE_2D, impl->texture[i].get_handle());
+              glEnable(GL_TEXTURE_2D);
+              global->impl->texture[i] = impl->texture[i];
+            }
+          else
+            {
+              glBindTexture(GL_TEXTURE_2D, 0);
+              glDisable(GL_TEXTURE_2D);
+              global->impl->texture[i] = impl->texture[i];
+            }
         }
     }
 
@@ -335,13 +348,17 @@ OpenGLState::verify()
       std::cout << "OpenGLState: dst blendfunc is out of sync" << std::endl;
     }
 
-  GLint texture_handle;
-  glGetIntegerv(GL_TEXTURE_2D_BINDING_EXT, &texture_handle);
-  if (impl->texture && static_cast<GLuint>(texture_handle) != impl->texture.get_handle())
+  if (1)
     {
-      std::cout << "OpenGLState: texture handle is out of sync: " << impl->texture.get_handle() << std::endl;
+      // FIXME: Add multitexture support here
+      GLint texture_handle;
+      glActiveTexture(GL_TEXTURE0);
+      glGetIntegerv(GL_TEXTURE_2D_BINDING_EXT, &texture_handle);
+      if (impl->texture[0] && static_cast<GLuint>(texture_handle) != impl->texture[0].get_handle())
+        {
+          std::cout << "OpenGLState: texture handle is out of sync: " << impl->texture[0].get_handle() << std::endl;
+        }
     }
-
   assert_gl("OpenGLState::verify");
 }
 

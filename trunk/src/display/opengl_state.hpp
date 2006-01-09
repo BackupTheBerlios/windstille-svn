@@ -50,7 +50,7 @@ public:
   OpenGLState();
   ~OpenGLState();
 
-  void bind_texture(const Texture& texture);
+  void bind_texture(const Texture& texture, int unit = 0);
   void set_blend_func(GLenum sfactor, GLenum dfactor);
 
   void bind_framebuffer(const Framebuffer& framebuffer);

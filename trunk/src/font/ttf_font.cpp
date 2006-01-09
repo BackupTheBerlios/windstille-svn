@@ -184,6 +184,10 @@ TTFFont::get_height() const
 void
 TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& color)
 {
+  // FIXME: Little bit hacky to throw it just in
+  x_pos = static_cast<int>(x_pos);
+  y_pos = static_cast<int>(y_pos);
+
   OpenGLState state;
 
   state.enable(GL_BLEND);

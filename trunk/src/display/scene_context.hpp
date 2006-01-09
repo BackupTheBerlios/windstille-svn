@@ -79,10 +79,11 @@ public:
       that will be shown on the screen */
   void render();
 
-  enum { COLORMAP     = 1<<0,
-         LIGHTMAP     = 1<<1,
-         HIGHLIGHTMAP = 1<<2,
-         LIGHTMAPSCREEN     = 1<<3
+  enum { COLORMAP       = 1<<0,
+         LIGHTMAP       = 1<<1,
+         HIGHLIGHTMAP   = 1<<2,
+         LIGHTMAPSCREEN = 1<<3,
+         BLURMAP        = 1<<4
   };
 
   void set_render_mask(unsigned int mask);

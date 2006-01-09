@@ -27,15 +27,21 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 
+#include <iostream>
+
 #include "display/display.hpp"
 #include "display/surface.hpp"
 #include "display/opengl_state.hpp"
+
+#include "shader_program.hpp"
+#include "shader_object.hpp"
 #include "framebuffer.hpp"
 #include "scene_context.hpp"
 #include <assert.h>
 
 // The lightmap has a resolution of screen.w/LIGHTMAP, screen.h/LIGHTMAP
 #define LIGHTMAP_DIV 4
+#define BLURMAP_DIV 1
 
 class SceneContextImpl
 {
@@ -46,20 +52,38 @@ public:
   unsigned int render_mask;
 
   Framebuffer framebuffer;
-  
   Surface lightmap;
+
+  Framebuffer blur_framebuffer;
+  Surface     blur_surface;
+  ShaderProgram shader_program;
+
+  Texture noise;
 
   SceneContextImpl() 
     : render_mask(SceneContext::COLORMAP |
                   SceneContext::LIGHTMAP | 
                   SceneContext::HIGHLIGHTMAP | 
-                  SceneContext::LIGHTMAPSCREEN),
+                  SceneContext::LIGHTMAPSCREEN |
+                  SceneContext::BLURMAP
+                  ),
       framebuffer(256, 256),
       lightmap(framebuffer.get_texture(), 
                Rectf(0, 0, (800/LIGHTMAP_DIV)/256.0f, (600/LIGHTMAP_DIV)/256.0f),
-               800/LIGHTMAP_DIV, 600/LIGHTMAP_DIV)
+               800/LIGHTMAP_DIV, 600/LIGHTMAP_DIV),
       //lightmap(800/LIGHTMAP_DIV, 600/LIGHTMAP_DIV)
+      blur_framebuffer(1024, 1024),
+      blur_surface(blur_framebuffer.get_texture(),
+               Rectf(0, 0, (800/BLURMAP_DIV)/1024.0f, (600/BLURMAP_DIV)/1024.0f),
+               800/BLURMAP_DIV, 600/BLURMAP_DIV)
   {
+    shader_program.attach(ShaderObject(GL_FRAGMENT_SHADER_ARB, "/tmp/shader.frag"));
+    shader_program.link();
+    blur_surface.get_texture().set_wrap(GL_REPEAT);
+    blur_surface.get_texture().set_filter(GL_LINEAR);
+    noise = Texture("images/noise3.png");
+    noise.set_wrap(GL_REPEAT);
+    noise.set_filter(GL_LINEAR);
   }
 };
 
@@ -241,6 +265,56 @@ SceneContext::render()
   if (impl->render_mask & HIGHLIGHTMAP)
     {
       impl->highlight.render();
+    }
+
+  if (impl->render_mask & BLURMAP)
+    {
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->blur_framebuffer.get_handle());
+      glClear(GL_DEPTH_BUFFER_BIT);
+
+      glPushMatrix();
+      glTranslatef(0, 600-(600/BLURMAP_DIV), 0);
+      glScalef(1.0f/BLURMAP_DIV, 1.0f/BLURMAP_DIV, 1.0f);
+      impl->color.render();
+      glPopMatrix();
+
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);     
+
+      OpenGLState state;
+
+      Rectf uv = impl->blur_surface.get_uv();
+
+      state.enable(GL_TEXTURE_2D);
+      state.bind_texture(impl->blur_surface.get_texture(), 0);
+      state.bind_texture(impl->noise, 1);
+
+      //state.enable(GL_BLEND);
+      //state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+      //state.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+      state.activate();
+
+      glUseProgramObjectARB(impl->shader_program.get_handle());
+      glUniform1iARB(impl->shader_program.get_uniform_location("texture"), 0);
+      glUniform1iARB(impl->shader_program.get_uniform_location("noise"), 1);
+
+      glBegin(GL_QUADS);
+
+      glTexCoord2f(uv.left, uv.bottom);
+      glVertex2f(0, 0);
+
+      glTexCoord2f(uv.right, uv.bottom);
+      glVertex2f(impl->blur_surface.get_width() * BLURMAP_DIV, 0);
+
+      glTexCoord2f(uv.right, uv.top);
+      glVertex2f(impl->blur_surface.get_width() * BLURMAP_DIV,
+                 impl->blur_surface.get_height() * BLURMAP_DIV);
+
+      glTexCoord2f(uv.left, uv.top);
+      glVertex2f(0, impl->blur_surface.get_height() * BLURMAP_DIV);
+
+      glEnd();
+
+      glUseProgramObjectARB(0);
     }
 
   // Clear all DrawingContexts
