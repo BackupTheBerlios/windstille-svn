@@ -30,7 +30,6 @@
 #include "display/opengl_state.hpp"
 #include "display.hpp"
 #include "util.hpp"
-#include <GL/glext.h>
 #include <assert.h>
 
 SDL_Surface* Display::window       = 0;

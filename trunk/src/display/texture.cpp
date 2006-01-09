@@ -27,7 +27,6 @@
 #include <stdexcept>
 #include <iostream>
 #include <GL/gl.h>
-#include <GL/glext.h>
 #include "texture.hpp"
 #include "display/opengl_state.hpp"
 #include "texture_manager.hpp"

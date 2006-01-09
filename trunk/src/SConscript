@@ -27,7 +27,7 @@
 SConscript("squirrel/SConstruct")
 
 env = Environment(CC = 'gcc',
-                  CCFLAGS = ['-O2', '-Wall', '-Werror', '-g'])
+                  CCFLAGS = ['-O2', '-Wall', '-Werror', '-g', '-DDEBUG'])
 
 # env.Copy(LIBS = ['a', 'b'])
 
@@ -100,6 +100,7 @@ env.Program('../windstille', [
 'collision/stair_contact.cpp',
 'display/display.cpp',
 'display/drawing_context.cpp',
+'display/framebuffer.cpp',
 'display/scene_context.cpp',
 'display/vertex_array_drawing_request.cpp',
 'display/opengl_state.cpp',
@@ -167,7 +168,7 @@ env.Program('../windstille', [
 'tinygettext/gettext.cpp',
 'tinygettext/tinygettext.cpp'
 ],
-LIBS    = ['GL', 'squirrel', 'physfs', 'SDL_image', 'openal'] + env['LIBS'],
+LIBS    = ['GL', 'GLU', 'squirrel', 'physfs', 'SDL_image', 'openal'] + env['LIBS'],
 LIBPATH = ['squirrel/'],
 CPPPATH = env['CPPPATH'] + ['.', '..', 'squirrel/include/'])
 

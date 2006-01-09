@@ -23,12 +23,15 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_OPENGL_STATE_HPP
-#define HEADER_OPENGL_STATE_HPP
+#ifndef HEADER_DISPLAY_OPENGL_STATE_HPP
+#define HEADER_DISPLAY_OPENGL_STATE_HPP
 
-#include <memory>
+#define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
+#include <GL/glext.h>
+#include <memory>
 
+class Framebuffer;
 class Texture;
 class Color;
 class OpenGLStateImpl;
@@ -50,6 +53,7 @@ public:
   void bind_texture(const Texture& texture);
   void set_blend_func(GLenum sfactor, GLenum dfactor);
 
+  void bind_framebuffer(const Framebuffer& framebuffer);
 
   void enable(GLenum cap);
   void disable(GLenum cap);

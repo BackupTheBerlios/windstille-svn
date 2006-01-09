@@ -7,7 +7,6 @@
 #include <stdexcept>
 #include <SDL_image.h>
 #include <GL/gl.h>
-#include <GL/glext.h>
 #include "util.hpp"
 #include "globals.hpp"
 #include "texture.hpp"

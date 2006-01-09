@@ -45,6 +45,14 @@ class Surface
 public:
   Surface();
   Surface(const std::string& filename);
+  
+  /** 
+   * Create a new Surface object from a Texture
+   * @param texture The Texture to use
+   * @param rect The rectangle of the texture to use in (0-1) notation
+   * @param width  Width of the surface on the screen
+   * @param height Height of the surface on the screen
+   */
   Surface(Texture texture, const Rectf& rect, int width, int height);
   Surface(int width, int height);
   ~Surface();

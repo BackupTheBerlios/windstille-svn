@@ -23,17 +23,17 @@
 **  02111-1307, USA.
 */
 
+#include "opengl_state.hpp"
+
 #include <assert.h>
 #include <map>
 #include <iostream>
-#include <GL/gl.h>
-#include <GL/glext.h>
+#include "framebuffer.hpp"
 #include "texture.hpp"
 #include "color.hpp"
 #include "globals.hpp"
 #include "display/display.hpp"
 #include "util.hpp"
-#include "opengl_state.hpp"
 
 class OpenGLStateImpl
 {
@@ -42,7 +42,8 @@ public:
       somebody forget the final activate() call */
   bool was_activated;
 
-  Texture texture;
+  Texture     texture;
+  Framebuffer framebuffer;
 
   Color color;
 
@@ -273,6 +274,28 @@ OpenGLState::activate()
           glBindTexture(GL_TEXTURE_2D, impl->texture.get_handle());
           global->impl->texture = impl->texture;
         }
+      else
+        {
+          glBindTexture(GL_TEXTURE_2D, 0);
+          global->impl->texture = impl->texture;
+        }
+    }
+
+  if (0)
+    {
+      if (impl->framebuffer != global->impl->framebuffer)
+        {
+          if (impl->framebuffer)
+            {
+              glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->framebuffer.get_handle());
+              global->impl->framebuffer = impl->framebuffer;
+            }
+          else
+            {
+              glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+              global->impl->framebuffer = impl->framebuffer;
+            }
+        }
     }
 
   if (debug)
@@ -320,6 +343,12 @@ OpenGLState::verify()
     }
 
   assert_gl("OpenGLState::verify");
+}
+
+void
+OpenGLState::bind_framebuffer(const Framebuffer& framebuffer)
+{
+  impl->framebuffer = framebuffer;
 }
 
 /* EOF */
