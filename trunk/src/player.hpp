@@ -26,7 +26,7 @@
 #include "globals.hpp"
 #include "entity.hpp"
 #include "ref.hpp"
-#include "glutil/surface.hpp"
+#include "display/surface.hpp"
 
 class Controller;
 class Contact;

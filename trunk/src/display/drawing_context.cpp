@@ -24,10 +24,10 @@
 #include "font/fonts.hpp"
 #include "sprite2d/sprite.hpp"
 #include "drawing_context.hpp"
-#include "glutil/opengl_state.hpp"
-#include "glutil/surface_drawing_parameters.hpp"
+#include "display/opengl_state.hpp"
+#include "display/surface_drawing_parameters.hpp"
 #include "display/vertex_array_drawing_request.hpp"
-#include "glutil/surface.hpp"
+#include "display/surface.hpp"
 
 struct DrawingRequestsSorter
 {

@@ -27,7 +27,7 @@
 
 #include <assert.h>
 
-#include "glutil/opengl_state.hpp"
+#include "display/opengl_state.hpp"
 #include "vertex_array_drawing_request.hpp"
 
 VertexArrayDrawingRequest::VertexArrayDrawingRequest(const Vector& pos_, float z_pos_, 

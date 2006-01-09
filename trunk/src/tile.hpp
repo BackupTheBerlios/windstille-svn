@@ -22,7 +22,7 @@
 
 #include <assert.h>
 #include <GL/gl.h>
-#include "glutil/texture.hpp"
+#include "display/texture.hpp"
 #include "math/rect.hpp"
 
 enum TileType {

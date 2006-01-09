@@ -4,7 +4,7 @@
 #include <string>
 #include <GL/gl.h>
 #include "color.hpp"
-#include "glutil/surface.hpp"
+#include "display/surface.hpp"
 #include "math/vector.hpp"
 #include "math/matrix.hpp"
 

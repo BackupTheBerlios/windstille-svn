@@ -30,7 +30,7 @@
 #include "globals.hpp"
 #include "util.hpp"
 #include "timer.hpp"
-#include "glutil/opengl_state.hpp"
+#include "display/opengl_state.hpp"
 #include "sprite3d/manager.hpp"
 #include "sprite3d/data.hpp"
 

@@ -24,7 +24,7 @@
 #include <GL/gl.h>
 #include <vector>
 #include "ref.hpp"
-#include "glutil/texture.hpp"
+#include "display/texture.hpp"
 #include "math/vector3.hpp"
 #include "math/quaternion.hpp"
 

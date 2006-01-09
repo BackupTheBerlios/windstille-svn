@@ -23,7 +23,7 @@
 #include <vector>
 #include "color.hpp"
 #include "math/matrix.hpp"
-#include "glutil/texture.hpp"
+#include "display/texture.hpp"
 #include "drawing_request.hpp"
 
 /** */

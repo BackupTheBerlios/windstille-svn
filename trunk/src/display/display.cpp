@@ -27,7 +27,7 @@
 #include <stdexcept>
 #include <SDL.h>
 #include "config.hpp"
-#include "glutil/opengl_state.hpp"
+#include "display/opengl_state.hpp"
 #include "display.hpp"
 #include "util.hpp"
 #include <GL/glext.h>

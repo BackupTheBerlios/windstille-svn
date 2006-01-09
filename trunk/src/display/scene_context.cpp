@@ -18,8 +18,8 @@
 //  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "display/display.hpp"
-#include "glutil/surface.hpp"
-#include "glutil/opengl_state.hpp"
+#include "display/surface.hpp"
+#include "display/opengl_state.hpp"
 #include "scene_context.hpp"
 #include <assert.h>
 

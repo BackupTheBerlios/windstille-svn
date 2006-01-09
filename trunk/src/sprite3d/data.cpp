@@ -9,8 +9,8 @@
 #include <stdexcept>
 #include "util.hpp"
 #include "globals.hpp"
-#include "glutil/texture_manager.hpp"
-#include "glutil/texture.hpp"
+#include "display/texture_manager.hpp"
+#include "display/texture.hpp"
 
 namespace sprite3d {
 

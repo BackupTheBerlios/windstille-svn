@@ -21,7 +21,7 @@
 #include "particle_system.hpp"
 #include "../console.hpp" 
 #include "lisp/properties.hpp"
-#include "glutil/surface_manager.hpp"
+#include "display/surface_manager.hpp"
 #include "surface_drawer.hpp"
 
 SurfaceDrawer::SurfaceDrawer(Surface surface_)

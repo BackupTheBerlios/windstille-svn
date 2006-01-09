@@ -21,7 +21,7 @@
 #include <assert.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
-#include "glutil/texture.hpp"
+#include "display/texture.hpp"
 #include "globals.hpp"
 #include "tile_packer.hpp"
 #include "util.hpp"

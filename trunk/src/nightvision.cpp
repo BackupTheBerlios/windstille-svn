@@ -27,7 +27,7 @@
 #include "random.hpp"
 #include "math/matrix.hpp"
 #include "display/vertex_array_drawing_request.hpp"
-#include "glutil/texture_manager.hpp"
+#include "display/texture_manager.hpp"
 #include "nightvision.hpp"
 
 Nightvision::Nightvision(FileReader& props)

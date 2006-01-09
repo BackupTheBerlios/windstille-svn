@@ -20,7 +20,7 @@
 #ifndef HEADER_SURFACE_DRAWER_HXX
 #define HEADER_SURFACE_DRAWER_HXX
 
-#include "glutil/surface.hpp"
+#include "display/surface.hpp"
 #include "ref.hpp"
 #include "drawer.hpp"
 

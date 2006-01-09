@@ -27,7 +27,7 @@
 #define HEADER_NIGHTVISION_HPP
 
 #include "lisp/lisp.hpp"
-#include "glutil/texture.hpp"
+#include "display/texture.hpp"
 #include "sprite2d/sprite.hpp"
 #include "game_object.hpp"
 

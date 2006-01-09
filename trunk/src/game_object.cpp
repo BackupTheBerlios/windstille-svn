@@ -1,4 +1,4 @@
-//  $Id: gameobj.cxx,v 1.2 2003/08/12 08:24:41 grumbel Exp $
+//  $Id$
 //
 //  Windstille - A Jump'n Shoot Game
 //  Copyright (C) 2000 Ingo Ruhnke <grumbel@gmx.de>

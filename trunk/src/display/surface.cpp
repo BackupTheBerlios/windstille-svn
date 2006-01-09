@@ -26,7 +26,7 @@
 
 #include "surface.hpp"
 #include "math/vector.hpp"
-#include "glutil/opengl_state.hpp"
+#include "display/opengl_state.hpp"
 #include "surface_drawing_parameters.hpp"
 #include "surface_manager.hpp"
 

@@ -29,7 +29,7 @@
 #include "pda.hpp"
 #include "tile.hpp"
 #include "sprite3d/manager.hpp"
-#include "glutil/surface_manager.hpp"
+#include "display/surface_manager.hpp"
 #include "particles/particle_system.hpp"
 #include "collision/collision_engine.hpp"
 #include "laser_pointer.hpp"

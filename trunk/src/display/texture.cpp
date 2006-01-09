@@ -29,7 +29,7 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include "texture.hpp"
-#include "glutil/opengl_state.hpp"
+#include "display/opengl_state.hpp"
 #include "texture_manager.hpp"
 #include "util.hpp"
 

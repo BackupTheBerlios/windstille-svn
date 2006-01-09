@@ -30,7 +30,7 @@
 #include <GL/gl.h>
 #include "color.hpp"
 #include "math/rect.hpp"
-#include "glutil/texture.hpp"
+#include "display/texture.hpp"
 
 class FontEffect;
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include <GL/gl.h>
 #include "math/vector.hpp"
-#include "glutil/surface.hpp"
+#include "display/surface.hpp"
 #include "lisp/lisp.hpp"
 #include "ref.hpp"
 

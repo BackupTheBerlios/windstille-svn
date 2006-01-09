@@ -33,8 +33,8 @@
 #include "lisp/lisp.hpp"
 #include "lisp/parser.hpp"
 #include "lisp/properties.hpp"
-#include "glutil/surface_manager.hpp"
-#include "glutil/texture.hpp"
+#include "display/surface_manager.hpp"
+#include "display/texture.hpp"
 #include "physfs/physfs_sdl.hpp"
 
 TileFactory* TileFactory::current_ = 0;

@@ -23,7 +23,7 @@
 **  02111-1307, USA.
 */
 
-#include "glutil/surface_drawing_parameters.hpp"
+#include "display/surface_drawing_parameters.hpp"
 #include "input/controller.hpp"
 #include "sector.hpp"
 #include "tile_map.hpp"

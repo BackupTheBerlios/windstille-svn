@@ -25,7 +25,7 @@
 
 #include <assert.h>
 
-#include "glutil/opengl_state.hpp"
+#include "display/opengl_state.hpp"
 #include "font/ttf_font.hpp"
 #include "text_area.hpp"
 #include "baby_xml.hpp"

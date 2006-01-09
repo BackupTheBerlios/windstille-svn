@@ -31,9 +31,9 @@
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 
-#include "glutil/opengl_state.hpp"
+#include "display/opengl_state.hpp"
 #include "physfs/physfs_stream.hpp"
-#include "glutil/texture_manager.hpp"
+#include "display/texture_manager.hpp"
 #include "blitter.hpp"
 #include "ttf_font.hpp"
 #include "font_effect.hpp"

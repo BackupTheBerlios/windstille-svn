@@ -56,8 +56,8 @@
 #include "collision/collision_engine.hpp"
 #include "test_object.hpp"
 #include "inventory.hpp"
-#include "glutil/surface_manager.hpp"
-#include "glutil/surface.hpp"
+#include "display/surface_manager.hpp"
+#include "display/surface.hpp"
 #include "display/display.hpp"
 #include "pda.hpp"
 

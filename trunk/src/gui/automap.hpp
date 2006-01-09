@@ -26,7 +26,7 @@
 #ifndef HEADER_WINDSTILLE_GUI_AUTOMAP_HPP
 #define HEADER_WINDSTILLE_GUI_AUTOMAP_HPP
 
-#include "glutil/surface.hpp"
+#include "display/surface.hpp"
 #include "component.hpp"
 
 namespace GUI {

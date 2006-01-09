@@ -12,8 +12,8 @@
 #include "lisp/parser.hpp"
 #include "lisp/properties.hpp"
 #include "lisp_getters.hpp"
-#include "glutil/surface.hpp"
-#include "glutil/surface_manager.hpp"
+#include "display/surface.hpp"
+#include "display/surface_manager.hpp"
 
 namespace sprite2d
 {

@@ -8,7 +8,7 @@
 #include "display/scene_context.hpp"
 #include "sprite2d/data.hpp"
 #include "sprite2d/manager.hpp"
-#include "glutil/surface_drawing_parameters.hpp"
+#include "display/surface_drawing_parameters.hpp"
 #include "color.hpp"
 #include "util.hpp"
 
