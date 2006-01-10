@@ -96,6 +96,8 @@ public:
   void set_client_state(GLenum array, bool value);
   bool get_client_state(GLenum array) const;
 
+  // FIXME: Color is a per vertex attribute, doesn't make much sense
+  // to have it here
   void color(const Color& color);
 
   /**

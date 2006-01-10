@@ -77,7 +77,7 @@ public:
                Rectf(0, 0, (800/BLURMAP_DIV)/1024.0f, (600/BLURMAP_DIV)/1024.0f),
                800/BLURMAP_DIV, 600/BLURMAP_DIV)
   {
-    shader_program.attach(ShaderObject(GL_FRAGMENT_SHADER_ARB, "data/shader/blacknwhite.frag"));
+    shader_program.attach(ShaderObject(GL_FRAGMENT_SHADER_ARB, "data/shader/shockwave2.frag"));
     shader_program.link();
     blur_surface.get_texture().set_wrap(GL_REPEAT);
     blur_surface.get_texture().set_filter(GL_LINEAR);
@@ -86,12 +86,56 @@ public:
     noise.set_filter(GL_LINEAR);
 
     glUseProgramObjectARB(shader_program.get_handle());
-    shader_program.set_uniform1i("texture", 0);
-    shader_program.set_uniform1i("noise",   1);
+    shader_program.set_uniform1i("background_tex", 0);
+    shader_program.set_uniform1i("noise_tex",   1);
     shader_program.set_uniform1f("time", fmod(SDL_GetTicks()/10000.0f, 1.0f));
     glUseProgramObjectARB(0);
   }
 };
+
+void draw_disc(int count)
+{
+  float radius = (count)*2.0f;
+  float minradius = 2.0f*count - 164.0f;
+  if (minradius < 0)
+    minradius = 0;
+  glClear(GL_DEPTH_BUFFER_BIT);
+
+  int segments = 64;
+  
+  glBegin(GL_QUADS);
+  for (int i = 0; i < segments; ++i)
+    {
+      float angel = (2*M_PI / segments);
+
+      float x1 =  sin(angel*i)*radius;
+      float y1 = -cos(angel*i)*radius;
+
+      float x2 =  sin(angel*(i+1))*radius;
+      float y2 = -cos(angel*(i+1))*radius;
+
+      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+      glTexCoord2f(x1/512.0f+0.5f, y1/512.0f+0.5f);
+      glVertex3f(x1+256, y1+256, 0);
+
+      glTexCoord2f(x2/512.0f+0.5f, y2/512.0f+0.5f);
+      glVertex3f(x2+256, y2+256, 0);
+
+
+      float x3 =  sin(angel*i)*minradius;
+      float y3 = -cos(angel*i)*minradius;
+
+      float x4 =  sin(angel*(i+1))*minradius;
+      float y4 = -cos(angel*(i+1))*minradius;
+
+      glColor4f(1.0f, 1.0f, 1.0f, 0.0f);
+      glTexCoord2f(x4/512.0f+0.5f, y4/512.0f+0.5f);
+      glVertex3f(x4+256, y4+256, 0);
+      glTexCoord2f(x3/512.0f+0.5f, y3/512.0f+0.5f);
+      glVertex3f(x3+256, y3+256, 0);
+    }
+  glEnd();
+}
 
 SceneContext::SceneContext()
 {
@@ -244,7 +288,7 @@ SceneContext::render()
       Rectf uv = impl->lightmap.get_uv();
 
       state.bind_texture(impl->lightmap.get_texture());
-
+      
       state.enable(GL_BLEND);
       state.set_blend_func(GL_DST_COLOR, GL_ZERO);
       state.activate();
@@ -285,39 +329,58 @@ SceneContext::render()
 
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);     
 
-      OpenGLState state;
+      if (0)
+        { // Draw funny effect with shader
+          OpenGLState state;
 
-      Rectf uv = impl->blur_surface.get_uv();
+          Rectf uv = impl->blur_surface.get_uv();
 
-      state.bind_texture(impl->blur_surface.get_texture(), 0);
-      state.bind_texture(impl->noise, 1);
+          state.bind_texture(impl->blur_surface.get_texture(), 0);
+          state.bind_texture(impl->noise, 1);
+          state.disable(GL_BLEND);
 
-      //state.enable(GL_BLEND);
-      //state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-      //state.set_blend_func(GL_SRC_ALPHA, GL_ONE);
-      state.activate();
+          //state.enable(GL_BLEND);
+          //state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+          //state.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+          state.activate();
 
-      glUseProgramObjectARB(impl->shader_program.get_handle());
+          glUseProgramObjectARB(impl->shader_program.get_handle());
 
-      glBegin(GL_QUADS);
+          glBegin(GL_QUADS);
 
-      glTexCoord2f(uv.left, uv.bottom);
-      glVertex2f(0, 0);
+          glTexCoord2f(uv.left, uv.bottom);
+          glVertex2f(0, 0);
 
-      glTexCoord2f(uv.right, uv.bottom);
-      glVertex2f(impl->blur_surface.get_width() * BLURMAP_DIV, 0);
+          glTexCoord2f(uv.right, uv.bottom);
+          glVertex2f(impl->blur_surface.get_width() * BLURMAP_DIV, 0);
 
-      glTexCoord2f(uv.right, uv.top);
-      glVertex2f(impl->blur_surface.get_width() * BLURMAP_DIV,
-                 impl->blur_surface.get_height() * BLURMAP_DIV);
+          glTexCoord2f(uv.right, uv.top);
+          glVertex2f(impl->blur_surface.get_width() * BLURMAP_DIV,
+                     impl->blur_surface.get_height() * BLURMAP_DIV);
 
-      glTexCoord2f(uv.left, uv.top);
-      glVertex2f(0, impl->blur_surface.get_height() * BLURMAP_DIV);
+          glTexCoord2f(uv.left, uv.top);
+          glVertex2f(0, impl->blur_surface.get_height() * BLURMAP_DIV);
 
-      glEnd();
+          glEnd();
 
-      glUseProgramObjectARB(0);
+          glUseProgramObjectARB(0);
+        }
     }
+
+  {
+    OpenGLState state;
+    state.bind_texture(impl->blur_surface.get_texture(), 0);
+    state.bind_texture(impl->noise, 1);
+    state.disable(GL_BLEND);
+    state.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+    state.activate();
+
+    glUseProgramObjectARB(impl->shader_program.get_handle());    
+    float radius = 100 * (sinf(SDL_GetTicks()/3000.0f) + 1.0f);
+    impl->shader_program.set_uniform1f("radius",   radius/512.0f*2.0f);
+    draw_disc(int(radius));
+    glUseProgramObjectARB(0);
+  }
 
   // Clear all DrawingContexts
   impl->color.clear();
