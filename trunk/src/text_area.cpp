@@ -154,7 +154,6 @@ TextArea::draw()
 
   OpenGLState state;
   
-  state.enable(GL_TEXTURE_2D);
   state.bind_texture(impl->font->get_texture());
 
   state.enable(GL_BLEND);

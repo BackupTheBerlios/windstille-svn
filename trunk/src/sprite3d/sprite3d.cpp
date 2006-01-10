@@ -333,7 +333,6 @@ Sprite3D::draw(const Vector& pos, const Matrix& modelview) const
   } 
 
   OpenGLState state;
-  state.enable(GL_TEXTURE_2D);
 
   if (blend_sfactor != GL_ONE || blend_dfactor != GL_ZERO)
     {

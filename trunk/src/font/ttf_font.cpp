@@ -192,7 +192,6 @@ TTFFont::draw(float x_pos, float y_pos, const std::string& str, const Color& col
 
   state.enable(GL_BLEND);
   state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  state.enable(GL_TEXTURE_2D);
   state.bind_texture(impl->texture);
   state.color(color);
   state.activate();

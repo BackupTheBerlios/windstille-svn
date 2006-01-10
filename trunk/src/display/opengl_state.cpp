@@ -28,7 +28,6 @@
 #include <assert.h>
 #include <map>
 #include <iostream>
-#include "framebuffer.hpp"
 #include "texture.hpp"
 #include "color.hpp"
 #include "globals.hpp"
@@ -45,7 +44,6 @@ public:
   bool was_activated;
 
   Texture     texture[MAX_TEXTURE_UNITS];
-  Framebuffer framebuffer;
 
   Color color;
 
@@ -68,8 +66,9 @@ OpenGLState* OpenGLState::global_ = 0;
 void
 OpenGLState::init()
 {
+  assert(global_ == 0);
+
   // Init the default settings
-  glDisable(GL_TEXTURE_2D);
   glDisable(GL_DEPTH_TEST);
   glDisable(GL_BLEND);
 
@@ -98,7 +97,6 @@ OpenGLState::global()
 OpenGLState::OpenGLState()
   : impl(new OpenGLStateImpl())
 {
-  //impl->state[GL_TEXTURE_2D]  = false;
   impl->state[GL_DEPTH_TEST]  = false;
   impl->state[GL_BLEND]       = false;
   impl->state[GL_LINE_SMOOTH] = false;
@@ -165,16 +163,18 @@ OpenGLState::set_state(GLenum cap, bool value)
 void
 OpenGLState::enable(GLenum cap)
 {
-  if (cap == GL_TEXTURE_2D)// FIXME: HACK
-    return;
+  // Texturing is enabled automatically when a texture is bind
+  assert(cap != GL_TEXTURE_2D);
+
   set_state(cap, true);
 }
 
 void
 OpenGLState::disable(GLenum cap)
 {  
-  if (cap == GL_TEXTURE_2D)// FIXME: HACK
-    return;
+  // Texturing is enabled automatically when a texture is bind
+  assert(cap != GL_TEXTURE_2D);
+
   set_state(cap, false);
 }
 
@@ -294,23 +294,6 @@ OpenGLState::activate()
         }
     }
 
-  if (0)
-    {
-      if (impl->framebuffer != global->impl->framebuffer)
-        {
-          if (impl->framebuffer)
-            {
-              glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->framebuffer.get_handle());
-              global->impl->framebuffer = impl->framebuffer;
-            }
-          else
-            {
-              glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-              global->impl->framebuffer = impl->framebuffer;
-            }
-        }
-    }
-
   if (debug)
     verify();
 }
@@ -360,12 +343,6 @@ OpenGLState::verify()
         }
     }
   assert_gl("OpenGLState::verify");
-}
-
-void
-OpenGLState::bind_framebuffer(const Framebuffer& framebuffer)
-{
-  impl->framebuffer = framebuffer;
 }
 
 /* EOF */

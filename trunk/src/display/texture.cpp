@@ -123,7 +123,6 @@ Texture::Texture(SDL_Surface* image, GLint glformat)
         }
 
       OpenGLState state;
-      state.enable(GL_TEXTURE_2D);
       state.bind_texture(*this);
       state.activate();
 

@@ -145,7 +145,6 @@ Surface::draw(const Vector& pos) const
   OpenGLState state;
   state.enable(GL_BLEND);
   state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  state.enable(GL_TEXTURE_2D);
   state.bind_texture(impl->texture);
   state.activate();
 
@@ -170,7 +169,6 @@ void
 Surface::draw(const SurfaceDrawingParameters& params) const
 {
   OpenGLState state;
-  state.enable(GL_TEXTURE_2D);
   state.enable(GL_BLEND);
   state.set_blend_func(params.blendfunc_src, params.blendfunc_dst);
   state.bind_texture(impl->texture);

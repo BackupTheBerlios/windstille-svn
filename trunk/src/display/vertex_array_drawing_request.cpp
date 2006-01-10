@@ -67,12 +67,7 @@ VertexArrayDrawingRequest::draw(int start, int end)
   
   if (texture)
     {
-      state.enable(GL_TEXTURE_2D);
       state.bind_texture(texture);
-    }
-  else
-    {
-      state.disable(GL_TEXTURE_2D);
     }
 
   if (!colors.empty())

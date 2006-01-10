@@ -24,7 +24,9 @@
 */
 
 #include "shader_program.hpp"
+#include <iostream>
 #include "shader_object.hpp"
+#include "util.hpp"
 
 class ShaderProgramImpl
 {
@@ -71,7 +73,7 @@ ShaderProgram::get_uniform_location(const char* name)
   if (loc == -1)
     printf("No such uniform named \"%s\"\n", name);
 
-  //printOpenGLError();  // Check for OpenGL errors
+  assert_gl("ShaderProgram::get_uniform_location()");
 
   return loc;
 }
@@ -80,6 +82,86 @@ GLhandleARB
 ShaderProgram::get_handle() const
 {
   return impl->handle;
+}
+
+void
+ShaderProgram::set_uniform1f(const char* name, GLfloat v0)
+{
+  GLint location = glGetUniformLocationARB(impl->handle, name);
+  if (location == -1)
+    std::cout << "No such uniform named \"" << name << "\"" << std::endl;
+  else
+    glUniform1fARB(location, v0);
+}
+
+void
+ShaderProgram::set_uniform2f(const char* name, GLfloat v0, GLfloat v1)
+{
+  GLint location = glGetUniformLocationARB(impl->handle, name);
+  if (location == -1)
+    std::cout << "No such uniform named \"" << name << "\"" << std::endl;
+  else
+    glUniform2fARB(location, v0, v1);
+}
+
+void
+ShaderProgram::set_uniform3f(const char* name, GLfloat v0, GLfloat v1, GLfloat v2)
+{
+  GLint location = glGetUniformLocationARB(impl->handle, name);
+  if (location == -1)
+    std::cout << "No such uniform named \"" << name << "\"" << std::endl;
+  else
+    glUniform3fARB(location, v0, v1, v2);
+}
+
+void
+ShaderProgram::set_uniform4f(const char* name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)
+{
+  GLint location = glGetUniformLocationARB(impl->handle, name);
+  if (location == -1)
+    std::cout << "No such uniform named \"" << name << "\"" << std::endl;
+  else
+    glUniform4fARB(location, v0, v1, v2, v3);
+}
+
+void
+ShaderProgram::set_uniform1i(const char* name, GLint v0)
+{
+  GLint location = glGetUniformLocationARB(impl->handle, name);
+  if (location == -1)
+    std::cout << "No such uniform named \"" << name << "\"" << std::endl;
+  else
+    glUniform1iARB(location, v0);
+}
+
+void
+ShaderProgram::set_uniform2i(const char* name, GLint v0, GLint v1)
+{
+  GLint location = glGetUniformLocationARB(impl->handle, name);
+  if (location == -1)
+    std::cout << "No such uniform named \"" << name << "\"" << std::endl;
+  else
+    glUniform2iARB(location, v0, v1);
+}
+
+void
+ShaderProgram::set_uniform3i(const char* name, GLint v0, GLint v1, GLint v2)
+{
+  GLint location = glGetUniformLocationARB(impl->handle, name);
+  if (location == -1)
+    std::cout << "No such uniform named \"" << name << "\"" << std::endl;
+  else
+    glUniform3iARB(location, v0, v1, v2);
+}
+
+void
+ShaderProgram::set_uniform4i(const char* name, GLint v0, GLint v1, GLint v2, GLint v3)
+{
+  GLint location = glGetUniformLocationARB(impl->handle, name);
+  if (location == -1)
+    std::cout << "No such uniform named \"" << name << "\"" << std::endl;
+  else
+    glUniform4iARB(location, v0, v1, v2, v3);
 }
 
 /* EOF */

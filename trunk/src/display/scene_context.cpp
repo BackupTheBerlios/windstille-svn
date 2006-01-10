@@ -77,13 +77,19 @@ public:
                Rectf(0, 0, (800/BLURMAP_DIV)/1024.0f, (600/BLURMAP_DIV)/1024.0f),
                800/BLURMAP_DIV, 600/BLURMAP_DIV)
   {
-    shader_program.attach(ShaderObject(GL_FRAGMENT_SHADER_ARB, "/tmp/shader.frag"));
+    shader_program.attach(ShaderObject(GL_FRAGMENT_SHADER_ARB, "data/shader/blacknwhite.frag"));
     shader_program.link();
     blur_surface.get_texture().set_wrap(GL_REPEAT);
     blur_surface.get_texture().set_filter(GL_LINEAR);
     noise = Texture("images/noise3.png");
     noise.set_wrap(GL_REPEAT);
     noise.set_filter(GL_LINEAR);
+
+    glUseProgramObjectARB(shader_program.get_handle());
+    shader_program.set_uniform1i("texture", 0);
+    shader_program.set_uniform1i("noise",   1);
+    shader_program.set_uniform1f("time", fmod(SDL_GetTicks()/10000.0f, 1.0f));
+    glUseProgramObjectARB(0);
   }
 };
 
@@ -237,7 +243,6 @@ SceneContext::render()
 
       Rectf uv = impl->lightmap.get_uv();
 
-      state.enable(GL_TEXTURE_2D);
       state.bind_texture(impl->lightmap.get_texture());
 
       state.enable(GL_BLEND);
@@ -284,7 +289,6 @@ SceneContext::render()
 
       Rectf uv = impl->blur_surface.get_uv();
 
-      state.enable(GL_TEXTURE_2D);
       state.bind_texture(impl->blur_surface.get_texture(), 0);
       state.bind_texture(impl->noise, 1);
 
@@ -294,8 +298,6 @@ SceneContext::render()
       state.activate();
 
       glUseProgramObjectARB(impl->shader_program.get_handle());
-      glUniform1iARB(impl->shader_program.get_uniform_location("texture"), 0);
-      glUniform1iARB(impl->shader_program.get_uniform_location("noise"), 1);
 
       glBegin(GL_QUADS);
 
