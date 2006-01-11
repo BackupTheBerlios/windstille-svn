@@ -4,7 +4,6 @@ SubInclude TOP src badguy ;
 SubInclude TOP src collision ;
 SubInclude TOP src display ;
 SubInclude TOP src font ;
-SubInclude TOP src glutil ;
 SubInclude TOP src gui ;
 SubInclude TOP src input ;
 SubInclude TOP src lisp ;
@@ -34,12 +33,15 @@ sources =
         camera.hpp
         character.cpp
         character.hpp
-        console.cpp
-        console.hpp
+	color.hpp
         command_line.hpp
         command_line.cpp
         command_line_generic.hpp
         command_line_generic.cpp
+	config.cpp
+	config.hpp
+        console.cpp
+        console.hpp
         controller_def.cpp
         controller_def.hpp
         controller_help_window.hpp
@@ -48,15 +50,14 @@ sources =
         conversation.cpp
         dialog_manager.cpp
         dialog_manager.hpp
+	elevator.cpp
+	elevator.hpp
         energy_bar.cpp
         energy_bar.hpp
         entity.cpp
         entity.hpp
-        elevator.hpp
-        elevator.cpp
         field.hpp
-        config.hpp
-        config.cpp
+	file_reader.hpp
         game_object.cpp
         game_object.hpp
         game_session.cpp
@@ -73,19 +74,25 @@ sources =
         laser_pointer.cpp
         liquid.hpp
         liquid.cpp
+	lisp_getters.cpp
+	lisp_getters.hpp
         math.hpp
         nightvision.cpp
         nightvision.hpp
-        physics.cpp
-        physics.hpp
+	particle_viewer.cpp
+	particle_viewer.hpp
         pda.cpp
         pda.hpp
+        physics.cpp
+        physics.hpp
         pistol.cpp
         pistol.hpp
         player.cpp
         player.hpp
         random.cpp
         random.hpp
+	ref.hpp
+	refcounter.hpp
         screen.cpp
         screen.hpp
         screen_manager.cpp
@@ -96,23 +103,23 @@ sources =
         scriptable_object.cpp
         sector.cpp
         sector.hpp
+	sharedptr.hpp
         spawnpoint.cpp
         spawnpoint.hpp
         sprite3dview.hpp
         sprite3dview.cpp
-        sharedptr.hpp
         test_object.cpp
         test_object.hpp
         text_area.hpp
         text_area.cpp
-        tile.cpp
+	tile.cpp
+        tile.hpp
         tile_factory.cpp
         tile_factory.hpp
+	tile_map.cpp
+	tile_map.hpp
         tile_packer.cpp
         tile_packer.hpp
-        tile.hpp
-        tile_map.cpp
-        tile_map.hpp
         timer.hpp
         timer.cpp
         trigger.cpp
@@ -121,8 +128,7 @@ sources =
         util.hpp
         view.cpp
         view.hpp
-        lisp_getters.hpp
-        lisp_getters.cpp
+	weapon.hpp
         windstille_main.cpp
         windstille_main.hpp
 ;

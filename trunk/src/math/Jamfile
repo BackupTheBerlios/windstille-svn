@@ -2,16 +2,17 @@ SubDir TOP src math ;
 
 sources = matrix.hpp
           matrix.cpp
-          rect.hpp
-          rect.cpp
-          vector.hpp
-          vector.cpp
-          size.hpp
           origin.hpp
           origin.cpp
           point.hpp
           quaternion.hpp
           quaternion.cpp
+          rect.hpp
+          rect.cpp
+          size.hpp
+          vector.hpp
+          vector.cpp
+	  vector3.hpp
 ;
 
 TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;
