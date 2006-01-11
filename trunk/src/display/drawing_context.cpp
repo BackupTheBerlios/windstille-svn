@@ -33,6 +33,7 @@
 #include "display/opengl_state.hpp"
 #include "display/surface_drawing_parameters.hpp"
 #include "display/vertex_array_drawing_request.hpp"
+#include "display/scene_context.hpp"
 #include "display/surface.hpp"
 
 struct DrawingRequestsSorter
@@ -117,12 +118,15 @@ DrawingContext::~DrawingContext()
 }
 
 void
-DrawingContext::render()
+DrawingContext::render(SceneContext& sc)
 {
   std::stable_sort(drawingrequests.begin(), drawingrequests.end(), DrawingRequestsSorter());
   
   for(DrawingRequests::iterator i = drawingrequests.begin(); i != drawingrequests.end(); ++i)
     {
+      if ((*i)->needs_framebuffer())
+        (*i)->set_framebuffer_texture(sc.request_framebuffer_texture((*i)->framebuffer_rect()));
+      
       (*i)->draw();
     }
 }

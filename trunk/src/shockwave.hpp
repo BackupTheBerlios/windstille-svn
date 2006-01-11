@@ -5,7 +5,7 @@
 **   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
 **    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
 **         \/          \/      \/    \/                         \/
-**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
 **
 **  This program is free software; you can redistribute it and/or
 **  modify it under the terms of the GNU General Public License
@@ -23,43 +23,31 @@
 **  02111-1307, USA.
 */
 
-#ifndef HEADER_DRAWING_REQUEST_HXX
-#define HEADER_DRAWING_REQUEST_HXX
+#ifndef HEADER_SHOCKWAVE_HPP
+#define HEADER_SHOCKWAVE_HPP
 
-#include "math/vector.hpp"
-#include "math/rect.hpp"
-#include "math/matrix.hpp"
-#include "texture.hpp"
+#include "display/shader_program.hpp"
+#include "display/texture.hpp"
+#include "game_object.hpp"
 
-/** 
- */
-class DrawingRequest
+/** */
+class Shockwave : public GameObject
 {
-protected:
-  Vector  pos;
-  float   z_pos;
-  Matrix  modelview;
-  Texture framebuffer_texture;
-public:
-  DrawingRequest(const Vector& pos_, float z_pos = 0,  const Matrix& modelview_ = Matrix::identity())
-    : pos(pos_), z_pos(z_pos), modelview(modelview_)
-  {}
-  virtual ~DrawingRequest() {}
-  
-  virtual void draw() = 0;
-  
-  /** Returns the position at which the request should be drawn */
-  float get_z_pos() const { return z_pos; }
-
-  Matrix get_modelview() const
-  { return modelview; }
-
-  virtual bool  needs_framebuffer() { return false; }
-  virtual Rectf framebuffer_rect() { return Rectf(); }
-  void set_framebuffer_texture(const Texture& t) { framebuffer_texture = t; }
 private:
-  DrawingRequest (const DrawingRequest&);
-  DrawingRequest& operator= (const DrawingRequest&);
+  Vector        pos;
+  Texture       noise;
+  ShaderProgram shader_program;
+  float radius;
+public:
+  Shockwave(FileReader& props);
+  ~Shockwave();
+
+  void draw (SceneContext& context);
+  void update (float delta);
+
+private:
+  Shockwave (const Shockwave&);
+  Shockwave& operator= (const Shockwave&);
 };
 
 #endif

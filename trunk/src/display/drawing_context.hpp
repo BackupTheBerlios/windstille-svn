@@ -35,6 +35,7 @@
 
 class Surface;
 class SurfaceDrawingParameters;
+class SceneContext;
 class Sprite;
 
 /** The DrawingContext collects all DrawingRequests and allows you to
@@ -56,7 +57,7 @@ public:
   ~DrawingContext();
 
   /** Draws everything in the drawing context to the screen */
-  void render();
+  void render(SceneContext& sc);
 
   /** Empties the drawing context */
   void clear();

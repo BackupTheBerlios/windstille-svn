@@ -50,16 +50,12 @@ public:
   DrawingContext color;
   DrawingContext light;
   DrawingContext highlight; 
-  unsigned int render_mask;
+  unsigned int   render_mask;
 
-  Framebuffer framebuffer;
-  Surface lightmap;
-
-  Framebuffer blur_framebuffer;
-  ShaderProgram shader_program;
-  ShaderProgram simple_program;
-  Texture noise;
-
+  Framebuffer screen_framebuffer;
+  Framebuffer tmp_framebuffer;
+  Framebuffer lightmap_framebuffer;
+  
   SceneContextImpl() 
     : render_mask(SceneContext::COLORMAP |
                   SceneContext::LIGHTMAP | 
@@ -67,28 +63,10 @@ public:
                   SceneContext::LIGHTMAPSCREEN |
                   SceneContext::BLURMAP
                   ),
-      framebuffer(GL_TEXTURE_2D, 256, 256),
-      lightmap(framebuffer.get_texture(), 
-               Rectf(0, 0, (800/LIGHTMAP_DIV)/256.0f, (600/LIGHTMAP_DIV)/256.0f),
-               800/LIGHTMAP_DIV, 600/LIGHTMAP_DIV),
-      //lightmap(800/LIGHTMAP_DIV, 600/LIGHTMAP_DIV)
-      //blur_framebuffer(GL_TEXTURE_2D, 1024, 1024)
-      blur_framebuffer(GL_TEXTURE_RECTANGLE_ARB, 800, 600)
+      screen_framebuffer(GL_TEXTURE_RECTANGLE_ARB, 800, 600),
+      tmp_framebuffer(GL_TEXTURE_RECTANGLE_ARB, 800, 600),
+      lightmap_framebuffer(GL_TEXTURE_RECTANGLE_ARB, 800/LIGHTMAP_DIV, 600/LIGHTMAP_DIV)
   {
-    shader_program.attach(ShaderObject(GL_FRAGMENT_SHADER_ARB, "data/shader/shockwave2.frag"));
-    shader_program.link();
-    noise = Texture("images/noise3.png");
-    noise.set_wrap(GL_REPEAT);
-    noise.set_filter(GL_LINEAR);
-
-    glUseProgramObjectARB(shader_program.get_handle());
-    shader_program.set_uniform1i("background_tex", 0);
-    shader_program.set_uniform1i("noise_tex",   1);
-    shader_program.set_uniform1f("time", fmod(SDL_GetTicks()/10000.0f, 1.0f));
-    glUseProgramObjectARB(0);
-
-    simple_program.attach(ShaderObject(GL_FRAGMENT_SHADER_ARB, "data/shader/simple.frag"));
-    simple_program.link();
   }
 };
 
@@ -228,17 +206,14 @@ void draw_disc(int count)
 void
 SceneContext::render_lightmap()
 {
-  // FIXME: 2006-01-09: shouldn't use Surface and just discard the
-  // borders of a power of two texture, but instead use them and
-  // set UV accordingly
+  Rect uv(0, 0, impl->lightmap_framebuffer.get_width(), impl->lightmap_framebuffer.get_height());
+
   OpenGLState state;
 
-  Rectf uv = impl->lightmap.get_uv();
-
-  state.bind_texture(impl->lightmap.get_texture());
+  state.bind_texture(impl->lightmap_framebuffer.get_texture());
       
   state.enable(GL_BLEND);
-  state.set_blend_func(GL_DST_COLOR, GL_ZERO);
+  state.set_blend_func(GL_DST_COLOR, GL_ZERO); // multiple the lightmap with the screen
   state.activate();
 
   glBegin(GL_QUADS);
@@ -247,14 +222,14 @@ SceneContext::render_lightmap()
   glVertex2f(0, 0);
 
   glTexCoord2f(uv.right, uv.bottom);
-  glVertex2f(impl->lightmap.get_width() * LIGHTMAP_DIV, 0);
+  glVertex2f(impl->lightmap_framebuffer.get_width() * LIGHTMAP_DIV, 0);
 
   glTexCoord2f(uv.right, uv.top);
-  glVertex2f(impl->lightmap.get_width() * LIGHTMAP_DIV,
-             impl->lightmap.get_height() * LIGHTMAP_DIV);
+  glVertex2f(impl->lightmap_framebuffer.get_width() * LIGHTMAP_DIV,
+             impl->lightmap_framebuffer.get_height() * LIGHTMAP_DIV);
 
   glTexCoord2f(uv.left, uv.top);
-  glVertex2f(0, impl->lightmap.get_height() * LIGHTMAP_DIV);
+  glVertex2f(0, impl->lightmap_framebuffer.get_height() * LIGHTMAP_DIV);
 
   glEnd();
 }
@@ -278,64 +253,72 @@ SceneContext::render()
       
   if (impl->render_mask & LIGHTMAPSCREEN)
     {
-      if (0)
-        { // render lightmap to screen
-          Display::push_cliprect(Rect(Point(0, 0),
-                                      Size(impl->lightmap.get_width(), impl->lightmap.get_height())));
+      // Render the lightmap to the lightmap_framebuffer
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->lightmap_framebuffer.get_handle());
 
-          glPushMatrix();
-          glScalef(1.0f/LIGHTMAP_DIV, 1.0f/LIGHTMAP_DIV, 1.0f);
+      glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-          impl->light.render();
-          glPopMatrix();
-      
-          {
-            OpenGLState state;
-        
-            // Weird y-pos is needed since OpenGL is upside down when it comes to y-coordinate
-            state.bind_texture(impl->lightmap.get_texture());
-            state.activate();
+      glPushMatrix();
+      glTranslatef(0, 600-(600/LIGHTMAP_DIV), 0);
+      glScalef(1.0f/LIGHTMAP_DIV, 1.0f/LIGHTMAP_DIV, 1.0f);
+      impl->light.render(*this);
+      glPopMatrix();
 
-            glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
-                                0, 0, 
-                                0, Display::get_height() - impl->lightmap.get_height(),
-                                impl->lightmap.get_width(), impl->lightmap.get_height());
-          }
-
-          Display::pop_cliprect();
-        }
-      else
-        {
-          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->framebuffer.get_handle());
-          glClear(GL_DEPTH_BUFFER_BIT);
-
-          glPushMatrix();
-          glTranslatef(0, 600-(600/LIGHTMAP_DIV), 0);
-          glScalef(1.0f/LIGHTMAP_DIV, 1.0f/LIGHTMAP_DIV, 1.0f);
-          impl->light.render();
-          glPopMatrix();
-
-          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-        }
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
   if (impl->render_mask & COLORMAP)
     {
-      impl->color.render();
+      // Render the colormap to the screen_framebuffer
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
+      impl->color.render(*this);
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
+
   if (impl->render_mask & LIGHTMAP)
-    {
+    { // Renders the lightmap to the screen
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
       render_lightmap();
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
   if (impl->render_mask & HIGHLIGHTMAP)
     {
-      impl->highlight.render();
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
+      impl->highlight.render(*this);
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
-  if (impl->render_mask & BLURMAP)
     {
+      // Render the screen framebuffer to the actual screen 
+      OpenGLState state;
+
+      Rectf uv(0.375, 0.375, 
+               impl->screen_framebuffer.get_width()  + 0.375,
+               impl->screen_framebuffer.get_height() + 0.375);
+          
+      state.bind_texture(impl->screen_framebuffer.get_texture(), 0);
+      state.activate();
+
+      glBegin(GL_QUADS);
+
+      glTexCoord2f(uv.left, uv.bottom);
+      glVertex2f(0, 0);
+
+      glTexCoord2f(uv.right, uv.bottom);
+      glVertex2f(800, 0);
+
+      glTexCoord2f(uv.right, uv.top);
+      glVertex2f(800, 600);
+
+      glTexCoord2f(uv.left, uv.top);
+      glVertex2f(0, 600);
+
+      glEnd();
+    }
+
+    /*
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->blur_framebuffer.get_handle());
       glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -346,125 +329,7 @@ SceneContext::render()
       render_lightmap();
       impl->highlight.render();
       glPopMatrix();
-
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);     
-
-      if (0)
-        { // test render the blur buffer
-
-          Rectf uv(0, 0, 800, 600);
-          //Rectf uv(0, 0, 1, 1);
-
-          float div = 0.5f;
-          glUseProgramObjectARB(impl->simple_program.get_handle());
-          impl->simple_program.set_uniform1i("background", 0);
-
-          OpenGLState state;
-          state.bind_texture(impl->blur_framebuffer.get_texture(), 0);
-          state.activate();
-
-          glBegin(GL_QUADS);
-
-          glTexCoord2f(uv.left, uv.bottom);
-          glVertex2f(0, 0);
-
-          glTexCoord2f(uv.right, uv.bottom);
-          glVertex2f(impl->blur_framebuffer.get_width() * div, 0);
-
-          glTexCoord2f(uv.right, uv.top);
-          glVertex2f(impl->blur_framebuffer.get_width() * div,
-                     impl->blur_framebuffer.get_height() * div);
-
-          glTexCoord2f(uv.left, uv.top);
-          glVertex2f(0, impl->blur_framebuffer.get_height() * div);
-
-          glEnd();         
-          glUseProgramObjectARB(0);
-          glDisable(GL_TEXTURE_RECTANGLE_ARB);
-        }
-
-      if (0)
-        { // Draw funny effect with shader
-          OpenGLState state;
-
-          Rectf uv(0, 0, 800, 600);
-          
-          state.bind_texture(impl->blur_framebuffer.get_texture(), 0);
-          state.bind_texture(impl->noise, 1);
-          state.disable(GL_BLEND);
-
-          //state.enable(GL_BLEND);
-          //state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-          //state.set_blend_func(GL_SRC_ALPHA, GL_ONE);
-          state.activate();
-
-          glUseProgramObjectARB(impl->shader_program.get_handle());
-
-          glBegin(GL_QUADS);
-
-          glTexCoord2f(uv.left, uv.bottom);
-          glVertex2f(0, 0);
-
-          glTexCoord2f(uv.right, uv.bottom);
-          glVertex2f(impl->blur_framebuffer.get_width() * BLURMAP_DIV, 0);
-
-          glTexCoord2f(uv.right, uv.top);
-          glVertex2f(impl->blur_framebuffer.get_width() * BLURMAP_DIV,
-                     impl->blur_framebuffer.get_height() * BLURMAP_DIV);
-
-          glTexCoord2f(uv.left, uv.top);
-          glVertex2f(0, impl->blur_framebuffer.get_height() * BLURMAP_DIV);
-
-          glEnd();
-
-          glUseProgramObjectARB(0);
-        }
-    }
-
-      if (0)
-        { // Zoom
-          OpenGLState state;
-
-          Rectf uv(300+50, 200+50, 500-50, 400-50);
-          
-          state.bind_texture(impl->blur_framebuffer.get_texture(), 0);
-          state.activate();
-
-          glBegin(GL_QUADS);
-
-          glTexCoord2f(uv.left, uv.bottom);
-          glVertex2f(300, 200);
-
-          glTexCoord2f(uv.right, uv.bottom);
-          glVertex2f(500, 200);
-
-          glTexCoord2f(uv.right, uv.top);
-          glVertex2f(500, 400);
-
-          glTexCoord2f(uv.left, uv.top);
-          glVertex2f(300, 400);
-
-          glEnd();
-
-        }
-
-
-  if (1) 
-    {
-      OpenGLState state;
-      state.bind_texture(impl->blur_framebuffer.get_texture(), 0);
-      state.bind_texture(impl->noise, 1);
-      state.disable(GL_BLEND);
-      state.set_blend_func(GL_SRC_ALPHA, GL_ONE);
-      state.activate();
-
-      glUseProgramObjectARB(impl->shader_program.get_handle());    
-      float radius = 100 * (sinf(SDL_GetTicks()/3000.0f) + 1.0f);
-      impl->shader_program.set_uniform1f("radius",   radius/512.0f*2.0f);
-      draw_disc(int(radius));
-      glUseProgramObjectARB(0);
-    }
-
+    */
 
   // Clear all DrawingContexts
   impl->color.clear();
@@ -501,6 +366,43 @@ SceneContext::get_layer(unsigned int type)
     default:
       assert(!"SceneContext::get_layer(): Unknown type");
     }
+}
+
+Texture
+SceneContext::request_framebuffer_texture(const Rectf& rect)
+{
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->tmp_framebuffer.get_handle());
+
+  {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Render the screen framebuffer to the actual screen 
+    OpenGLState state;
+    state.bind_texture(impl->screen_framebuffer.get_texture(), 0);
+    state.activate();
+
+    glBegin(GL_QUADS);
+    
+    glTexCoord2f(rect.left, rect.bottom);
+    glVertex2f(rect.left, rect.top);
+
+    glTexCoord2f(rect.right, rect.bottom);
+    glVertex2f(rect.right, rect.top);
+
+    glTexCoord2f(rect.right, rect.top);
+    glVertex2f(rect.right, rect.bottom);
+
+    glTexCoord2f(rect.left, rect.top);
+    glVertex2f(rect.left, rect.bottom);
+    
+    glEnd();
+  } 
+
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+
+  // FIXME: Hacky, hacky, need something like push/pop_framebuffer to avoid this
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
+
+  return impl->tmp_framebuffer.get_texture();
 }
 
 /* EOF */

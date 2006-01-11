@@ -46,6 +46,7 @@
 #include "laser_pointer.hpp"
 #include "badguy/swarm.hpp"
 #include "liquid.hpp"
+#include "shockwave.hpp"
 #include "badguy/hedgehog.hpp"
 #include "badguy/spider_mine.hpp"
 #include "box.hpp"
@@ -169,6 +170,8 @@ Sector::add_object(const std::string& name, const lisp::Lisp* lisp)
     add(new Trigger(props));
   } else if(name == "box") {
     add(new Box(props));
+  } else if(name == "shockwave") {
+    add(new Shockwave(props));
   } else if(name == "elevator") {
     add(new Elevator(props));
   } else if(name == "character") {    

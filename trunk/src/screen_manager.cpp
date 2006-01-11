@@ -249,7 +249,7 @@ ScreenManager::poll_events()
                     int count = 0;
                     std::string filename;
                     do {
-                      filename = (boost::format("/tmp/windstille%05d.png") % count).str();
+                      filename = (boost::format("/tmp/windstille%04d.png") % count).str();
                       count += 1;
                     } while(access(filename.c_str(), F_OK) == 0);
 
