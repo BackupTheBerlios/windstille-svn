@@ -225,6 +225,51 @@ void draw_disc(int count)
   glEnd();
 }
 
+void
+SceneContext::render_lightmap()
+{
+  // FIXME: 2006-01-09: shouldn't use Surface and just discard the
+  // borders of a power of two texture, but instead use them and
+  // set UV accordingly
+  OpenGLState state;
+
+  Rectf uv = impl->lightmap.get_uv();
+
+  state.bind_texture(impl->lightmap.get_texture());
+      
+  state.enable(GL_BLEND);
+  state.set_blend_func(GL_DST_COLOR, GL_ZERO);
+  state.activate();
+
+  glBegin(GL_QUADS);
+
+  glTexCoord2f(uv.left, uv.bottom);
+  glVertex2f(0, 0);
+
+  glTexCoord2f(uv.right, uv.bottom);
+  glVertex2f(impl->lightmap.get_width() * LIGHTMAP_DIV, 0);
+
+  glTexCoord2f(uv.right, uv.top);
+  glVertex2f(impl->lightmap.get_width() * LIGHTMAP_DIV,
+             impl->lightmap.get_height() * LIGHTMAP_DIV);
+
+  glTexCoord2f(uv.left, uv.top);
+  glVertex2f(0, impl->lightmap.get_height() * LIGHTMAP_DIV);
+
+  glEnd();
+}
+
+void
+SceneContext::render_colormap()
+{
+  
+}
+
+void
+SceneContext::render_highlightmap()
+{
+  
+}
 
 void
 SceneContext::render()
@@ -281,35 +326,7 @@ SceneContext::render()
 
   if (impl->render_mask & LIGHTMAP)
     {
-      // FIXME: 2006-01-09: shouldn't use Surface and just discard the
-      // borders of a power of two texture, but instead use them and
-      // set UV accordingly
-      OpenGLState state;
-
-      Rectf uv = impl->lightmap.get_uv();
-
-      state.bind_texture(impl->lightmap.get_texture());
-      
-      state.enable(GL_BLEND);
-      state.set_blend_func(GL_DST_COLOR, GL_ZERO);
-      state.activate();
-
-      glBegin(GL_QUADS);
-
-      glTexCoord2f(uv.left, uv.bottom);
-      glVertex2f(0, 0);
-
-      glTexCoord2f(uv.right, uv.bottom);
-      glVertex2f(impl->lightmap.get_width() * LIGHTMAP_DIV, 0);
-
-      glTexCoord2f(uv.right, uv.top);
-      glVertex2f(impl->lightmap.get_width() * LIGHTMAP_DIV,
-                 impl->lightmap.get_height() * LIGHTMAP_DIV);
-
-      glTexCoord2f(uv.left, uv.top);
-      glVertex2f(0, impl->lightmap.get_height() * LIGHTMAP_DIV);
-
-      glEnd();
+      render_lightmap();
     }
 
   if (impl->render_mask & HIGHLIGHTMAP)
@@ -326,6 +343,8 @@ SceneContext::render()
       glTranslatef(0, 600-(600/BLURMAP_DIV), 0);
       glScalef(1.0f/BLURMAP_DIV, 1.0f/BLURMAP_DIV, 1.0f);
       impl->color.render();
+      render_lightmap();
+      impl->highlight.render();
       glPopMatrix();
 
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);     
@@ -401,6 +420,33 @@ SceneContext::render()
           glUseProgramObjectARB(0);
         }
     }
+
+      if (0)
+        { // Zoom
+          OpenGLState state;
+
+          Rectf uv(300+50, 200+50, 500-50, 400-50);
+          
+          state.bind_texture(impl->blur_framebuffer.get_texture(), 0);
+          state.activate();
+
+          glBegin(GL_QUADS);
+
+          glTexCoord2f(uv.left, uv.bottom);
+          glVertex2f(300, 200);
+
+          glTexCoord2f(uv.right, uv.bottom);
+          glVertex2f(500, 200);
+
+          glTexCoord2f(uv.right, uv.top);
+          glVertex2f(500, 400);
+
+          glTexCoord2f(uv.left, uv.top);
+          glVertex2f(300, 400);
+
+          glEnd();
+
+        }
 
 
   if (1) 

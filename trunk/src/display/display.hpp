@@ -59,6 +59,8 @@ public:
 
   static void set_gamma(float r, float g, float b);
 
+  static void save_screenshot(const std::string& filename);
+
   static void init();
 };
 

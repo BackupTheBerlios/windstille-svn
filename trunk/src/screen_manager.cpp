@@ -23,7 +23,9 @@
 **  02111-1307, USA.
 */
 
+#include <boost/format.hpp>
 #include <iostream>
+#include <unistd.h>
 #include "game_session.hpp"
 #include "input/input_manager_sdl.hpp"
 #include "display/display.hpp"
@@ -242,10 +244,17 @@ ScreenManager::poll_events()
                   break;
               
                 case SDLK_F12:
-                  // FIXME: Implement me for SDL
                   {
-                    std::string filename = "screenshot.png";
-                    std::cout << "Saving screenshot *NOT* to: " << filename << std::endl;
+                    // FIXME: Replace this with Physfs stuff
+                    int count = 0;
+                    std::string filename;
+                    do {
+                      filename = (boost::format("/tmp/windstille%05d.png") % count).str();
+                      count += 1;
+                    } while(access(filename.c_str(), F_OK) == 0);
+
+                    Display::save_screenshot(filename);
+                    console << "Writing screenshot to: '" << filename << "'" << std::endl;
                   }
                   break;
               

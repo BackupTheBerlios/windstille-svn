@@ -23,9 +23,13 @@
 **  02111-1307, USA.
 */
 
-#include <cmath>
+#include <png.h>
+#include <math.h>
+#include <errno.h>
+#include <fstream>
 #include <stdexcept>
 #include <SDL.h>
+#include "console.hpp"
 #include "config.hpp"
 #include "display/opengl_state.hpp"
 #include "display.hpp"
@@ -357,6 +361,88 @@ Display::set_gamma(float r, float g, float b)
   if (SDL_SetGamma(r, g, b) == -1)
     {
       // Couldn't set gamma
+    }
+}
+
+void
+Display::save_screenshot(const std::string& filename)
+{
+  int len = get_width() * get_height() * 3;
+  GLbyte pixels[len];
+  glReadPixels(0, 0, get_width(), get_height(), GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+  if (0)
+    {
+      int pitch = get_width() * 3;
+
+      // save to ppm
+      std::ofstream out(filename.c_str());
+      out << "P6\n"
+          << "# Windstille Screenshot\n"
+          << get_width() << " " << get_height() << "\n"
+          << "255\n";
+      
+      for(int y = get_height()-1; y >= 0; --y)
+        out.write(reinterpret_cast<const char*>(pixels + y*pitch), pitch);
+
+      out.close();
+    }
+  else if (0) // BMP saving
+    {
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+      SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(pixels, get_width(), get_height(), 24, get_width()*3,
+                                                      0xff000000, 0x00ff0000, 0x0000ff00, 0x000000ff);
+#else
+      SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(pixels, get_width(), get_height(), 24, get_width()*3,
+                                                      0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000);
+#endif
+
+      SDL_SaveBMP(surface, filename.c_str());
+      SDL_FreeSurface(surface);
+    }
+  else // PNG saving
+    {
+      FILE* fp = fopen(filename.c_str(), "w");
+
+      if (!fp)
+        {
+          console << "Error: Couldn't save screenshot: " << strerror(errno) << std::endl;
+          return;
+        }
+      else
+        {
+          int pitch   = get_width() * 3;
+          png_structp png_ptr;
+          png_infop   info_ptr;
+
+          png_ptr  = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+          info_ptr = png_create_info_struct(png_ptr);
+
+          png_init_io(png_ptr, fp);
+
+          png_set_IHDR(png_ptr, info_ptr, 
+                       get_width(), get_height(), 8 /* bitdepth */,
+                       PNG_COLOR_TYPE_RGB,
+                       PNG_INTERLACE_NONE, 
+                       PNG_COMPRESSION_TYPE_BASE, 
+                       PNG_FILTER_TYPE_BASE);
+      
+          png_set_compression_level(png_ptr, 6);
+          png_write_info(png_ptr, info_ptr);
+
+          png_uint_32 height = get_height();
+          png_bytep row_pointers[height];
+   
+          // generate row pointers
+          for (unsigned int k = 0; k < height; k++)
+            row_pointers[k] = reinterpret_cast<png_byte*>(pixels + ((height - k - 1) * pitch));
+
+          png_write_image(png_ptr, row_pointers);
+
+          png_write_end(png_ptr, info_ptr);
+
+          fclose(fp);
+        }
     }
 }
 

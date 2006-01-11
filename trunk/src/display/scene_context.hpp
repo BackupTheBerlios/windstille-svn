@@ -91,6 +91,9 @@ public:
 
   DrawingContext& get_layer(unsigned int t);
 
+  void render_lightmap();
+  void render_colormap();
+  void render_highlightmap();
 private:
   SceneContextImpl* impl;
 
