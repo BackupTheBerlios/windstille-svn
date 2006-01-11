@@ -35,6 +35,7 @@
 class TextureImpl
 {
 public:
+  GLenum target;
   GLuint handle;
   int    width;
   int    height;
@@ -62,9 +63,10 @@ Texture::Texture(const std::string& filename)
   std::cout << "Filename: " << filename << " -> " << get_handle() << std::endl;
 }
 
-Texture::Texture(int width, int height, GLint format)
+Texture::Texture(GLenum target, int width, int height, GLint format)
   : impl(new TextureImpl())
 {
+  impl->target = target;
   impl->width  = width;
   impl->height = height;
 
@@ -72,14 +74,14 @@ Texture::Texture(int width, int height, GLint format)
   state.bind_texture(*this);
   state.activate();
 
-  glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA,
+  glTexImage2D(target, 0, format, width, height, 0, GL_RGBA,
                GL_UNSIGNED_BYTE, 0);
 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+  glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(target, GL_TEXTURE_WRAP_R, GL_CLAMP);
 }
 
 static inline bool is_power_of_2(int v)
@@ -90,6 +92,7 @@ static inline bool is_power_of_2(int v)
 Texture::Texture(SDL_Surface* image, GLint glformat)
   : impl(new TextureImpl())
 {
+  impl->target = GL_TEXTURE_2D;
   impl->width  = image->w;
   impl->height = image->h;
 
@@ -128,17 +131,17 @@ Texture::Texture(SDL_Surface* image, GLint glformat)
 
       glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
       glPixelStorei(GL_UNPACK_ROW_LENGTH, image->pitch/format->BytesPerPixel);
-      glTexImage2D(GL_TEXTURE_2D, 0, glformat,
+      glTexImage2D(impl->target, 0, glformat,
                    image->w, image->h, 0, sdl_format,
                    GL_UNSIGNED_BYTE, image->pixels);
 
       assert_gl("creating texture");
 
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+      glTexParameteri(impl->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(impl->target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(impl->target, GL_TEXTURE_WRAP_S, GL_CLAMP);
+      glTexParameteri(impl->target, GL_TEXTURE_WRAP_T, GL_CLAMP);
+      glTexParameteri(impl->target, GL_TEXTURE_WRAP_R, GL_CLAMP);
 
       assert_gl("setting texture parameters");
     } 
@@ -196,7 +199,7 @@ Texture::put(SDL_Surface* image, int x, int y)
   glPixelStorei(GL_UNPACK_ROW_LENGTH,
                 image->pitch / image->format->BytesPerPixel);
 
-  glTexSubImage2D(GL_TEXTURE_2D, 0, x, y,
+  glTexSubImage2D(impl->target, 0, x, y,
                   image->w, image->h, sdl_format, GL_UNSIGNED_BYTE,
                   image->pixels);
 }
@@ -208,9 +211,9 @@ Texture::set_wrap(GLenum mode)
   state.bind_texture(*this);
   state.activate();
 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, mode);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, mode);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, mode); // FIXME: only good for 3d textures?!
+  glTexParameteri(impl->target, GL_TEXTURE_WRAP_S, mode);
+  glTexParameteri(impl->target, GL_TEXTURE_WRAP_T, mode);
+  glTexParameteri(impl->target, GL_TEXTURE_WRAP_R, mode); // FIXME: only good for 3d textures?!
 }
 
 void
@@ -220,8 +223,8 @@ Texture::set_filter(GLenum mode)
   state.bind_texture(*this);
   state.activate();
 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mode);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
+  glTexParameteri(impl->target, GL_TEXTURE_MIN_FILTER, mode);
+  glTexParameteri(impl->target, GL_TEXTURE_MAG_FILTER, mode);
 }
 
 Texture::operator bool() const
@@ -239,6 +242,12 @@ bool
 Texture::operator!=(const Texture& other) const
 {
   return impl.get() != other.impl.get();
+}
+
+GLenum
+Texture::get_target() const
+{
+  return impl->target;
 }
 
 /* EOF */

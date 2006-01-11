@@ -281,14 +281,40 @@ OpenGLState::activate()
           glActiveTexture(GL_TEXTURE0 + i);
           if (impl->texture[i])
             {
-              glBindTexture(GL_TEXTURE_2D, impl->texture[i].get_handle());
-              glEnable(GL_TEXTURE_2D);
               global->impl->texture[i] = impl->texture[i];
+
+              switch (impl->texture[i].get_target())
+                {
+                case GL_TEXTURE_RECTANGLE_ARB:
+                  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, impl->texture[i].get_handle());
+                  glEnable(GL_TEXTURE_RECTANGLE_ARB);
+
+                  //glBindTexture(GL_TEXTURE_2D, 0);
+                  //glDisable(GL_TEXTURE_2D);                  
+                  break;
+                  
+                case GL_TEXTURE_2D:
+                  glBindTexture(GL_TEXTURE_2D, impl->texture[i].get_handle());
+                  glEnable(GL_TEXTURE_2D);
+
+                  glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
+                  glDisable(GL_TEXTURE_RECTANGLE_ARB);
+                  break;
+                  
+                default:
+                  assert(!"Unknown texture target");
+                  break;
+                }
             }
           else
             {
+              // FIXME: Hacky, should disable only the right target
               glBindTexture(GL_TEXTURE_2D, 0);
+              glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
+
+              glDisable(GL_TEXTURE_RECTANGLE_ARB);
               glDisable(GL_TEXTURE_2D);
+
               global->impl->texture[i] = impl->texture[i];
             }
         }
@@ -331,7 +357,7 @@ OpenGLState::verify()
       std::cout << "OpenGLState: dst blendfunc is out of sync" << std::endl;
     }
 
-  if (1)
+  if (0)
     {
       // FIXME: Add multitexture support here
       GLint texture_handle;

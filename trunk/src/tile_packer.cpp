@@ -56,7 +56,7 @@ TilePacker::TilePacker(int width, int height)
   impl->width  = width;
   impl->height = height;
 
-  impl->texture = Texture(width, height);
+  impl->texture = Texture(GL_TEXTURE_2D, width, height);
         
   assert_gl("setting TilePacker texture parameters"); 
 }

@@ -53,7 +53,7 @@ public:
   /** 
    * Create an empty Texture with the given dimensions
    */
-  explicit Texture(int width, int height, GLint format = GL_RGBA);
+  explicit Texture(GLenum target, int width, int height, GLint format = GL_RGBA);
 
   ~Texture();
 
@@ -74,6 +74,12 @@ public:
   void put(SDL_Surface* image, int x, int y);
 
   GLuint get_handle() const;
+  
+  /**
+   * Return the target used by this texture, ie. GL_TEXTURE_2D or
+   * GL_TEXTURE_RECTANGLE_ARB
+   */ 
+  GLenum get_target() const;
 
   /** true if the Texture is valid and usable, false if not */
   operator bool() const;

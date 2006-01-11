@@ -27,7 +27,7 @@
 SConscript("squirrel/SConstruct")
 
 env = Environment(CC = 'gcc',
-                  CCFLAGS = ['-O2', '-Wall', '-Werror', '-g', '-DDEBUG'])
+                  CCFLAGS = ['-O0', '-Wall', '-Werror', '-g', '-DDEBUG'])
 
 # env.Copy(LIBS = ['a', 'b'])
 

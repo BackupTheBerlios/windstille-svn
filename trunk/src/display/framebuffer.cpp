@@ -36,15 +36,15 @@ public:
   GLuint  handle;
   Texture texture;
   
-  FramebufferImpl(int width, int height)
-    : texture(width, height)
+  FramebufferImpl(GLenum target, int width, int height)
+    : texture(target, width, height)
   {
     glGenFramebuffersEXT(1, &handle);
     assert_gl("Framebuffer1");
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, handle);
     assert_gl("Framebuffer2");
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, 
-                              GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, texture.get_handle(), 0);
+                              GL_COLOR_ATTACHMENT0_EXT, texture.get_target(), texture.get_handle(), 0);
     assert_gl("Framebuffer3");
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
   }
@@ -59,8 +59,8 @@ Framebuffer::Framebuffer()
 {
 }
 
-Framebuffer::Framebuffer(int width, int height)
-  : impl(new FramebufferImpl(width, height))
+Framebuffer::Framebuffer(GLenum target, int width, int height)
+  : impl(new FramebufferImpl(target, width, height))
 {  
 }
 

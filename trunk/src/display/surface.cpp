@@ -64,7 +64,7 @@ Surface::Surface(int width, int height)
   impl->width  = width;
   impl->height = height;
 
-  impl->texture = Texture(power_of_two(width), power_of_two(height));
+  impl->texture = Texture(GL_TEXTURE_2D, power_of_two(width), power_of_two(height));
   impl->uv      = Rectf(0, 0,
                         float(impl->width)  / impl->texture.get_width(),
                         float(impl->height) / impl->texture.get_height());
