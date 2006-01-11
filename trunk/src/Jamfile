@@ -104,6 +104,8 @@ sources =
         sector.cpp
         sector.hpp
 	sharedptr.hpp
+	shockwave.cpp
+	shockwave.hpp
         spawnpoint.cpp
         spawnpoint.hpp
         sprite3dview.hpp
