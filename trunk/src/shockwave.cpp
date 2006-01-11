@@ -67,6 +67,7 @@ public:
   {
     glPushMatrix();
     glMultMatrixf(modelview.matrix);
+    glTranslatef(pos.x, pos.y, 0);
     if (0)
       {
         Rectf rect(0, 0, 800, 600);
@@ -96,8 +97,8 @@ public:
         OpenGLState state;
         state.bind_texture(framebuffer_texture, 0);
         state.bind_texture(noise, 1);
-        state.disable(GL_BLEND);
-        state.set_blend_func(GL_SRC_ALPHA, GL_ONE);
+        state.enable(GL_BLEND);
+        state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         state.activate();
 
         glUseProgramObjectARB(shader_program.get_handle());    
@@ -187,7 +188,9 @@ Shockwave::draw (SceneContext& sc)
 void
 Shockwave::update (float delta)
 {
-  radius = (sinf(SDL_GetTicks() / 500.0f) + 1.0f) * 100.0f;
+  radius += 150.0f * delta;
+  if (radius > 300.0f)
+    radius = 0;
 }
 
 /* EOF */

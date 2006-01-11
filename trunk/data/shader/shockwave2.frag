@@ -18,7 +18,7 @@ void main()
   vec4 uv_col  = texture2D(noise_tex, gl_TexCoord[0].xy*1.5);
   float h = 1.0 - clamp((radius - dist)*512.0/thickness, 0.0, 1.0);
   h *= h;
-  vec4 col = texture2DRect(background_tex, gl_FragCoord.xy + (uv_col.rb * uv_col.g) * h * 0.3 *300);
+  vec4 col = texture2DRect(background_tex, gl_FragCoord.xy + (uv_col.rb * uv_col.g) * h * 0.3 * 300.0);
 
   float highlight = 1.0 - clamp((radius - dist)*512.0/32.0, 0.0, 1.0);
 
@@ -26,6 +26,8 @@ void main()
               h * uv_col.r + highlight*0.9,
               h*1.5 * uv_col.r + highlight, 
               1);
+
+  col.a = clamp((250.0 - (radius*256.0))/50.0, 0.0, 1.0);
 
   gl_FragColor = col;
 }

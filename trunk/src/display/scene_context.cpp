@@ -371,6 +371,8 @@ SceneContext::get_layer(unsigned int type)
 Texture
 SceneContext::request_framebuffer_texture(const Rectf& rect)
 {
+  // FIXME: There is no reason to limit this to Rectf, *all* OpenGL
+  // primitve or plain drawing operations could be used for this!
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->tmp_framebuffer.get_handle());
 
   {
