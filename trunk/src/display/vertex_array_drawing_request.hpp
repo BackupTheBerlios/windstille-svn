@@ -43,7 +43,7 @@ private:
 public:
   VertexArrayDrawingRequest(const Vector& pos_, float z_pos_, const Matrix& modelview_);
 
-  void draw();
+  void draw(const Texture& tmp_texture);
   void draw(int start, int end);
 
   void vertex(float x, float y, float z = 0.0f);

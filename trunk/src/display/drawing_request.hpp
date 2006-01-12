@@ -39,14 +39,35 @@ protected:
   Vector  pos;
   float   z_pos;
   Matrix  modelview;
-  Texture framebuffer_texture;
+
 public:
   DrawingRequest(const Vector& pos_, float z_pos = 0,  const Matrix& modelview_ = Matrix::identity())
     : pos(pos_), z_pos(z_pos), modelview(modelview_)
   {}
   virtual ~DrawingRequest() {}
   
-  virtual void draw() = 0;
+  /**
+   * The draw() method does the important work in DrawingRequest,
+   * ie. it is the place where you can access the screen with raw
+   * OpenGL methods. The \a tmp_texture provides a texture of the
+   * current framebuffer, you have to copy the \a screen_texture to it
+   * to contain usefull content
+   */
+  virtual void draw(const Texture& tmp_texture) = 0;
+
+  /**
+   * This method is called before draw() to allow the DrawingRequest
+   * to copy content from \a screen_texture, which is the current
+   * framebuffer to a temporary buffer which can then be used in
+   * draw() for deformation effects
+   */
+  virtual void prepare(const Texture& screen_texture) {}
+
+  /**
+   * Override this and let it return true if you need to prepare()
+   * function call
+   */
+  virtual bool needs_prepare() { return false; }
   
   /** Returns the position at which the request should be drawn */
   float get_z_pos() const { return z_pos; }
@@ -54,9 +75,6 @@ public:
   Matrix get_modelview() const
   { return modelview; }
 
-  virtual bool  needs_framebuffer() { return false; }
-  virtual Rectf framebuffer_rect() { return Rectf(); }
-  void set_framebuffer_texture(const Texture& t) { framebuffer_texture = t; }
 private:
   DrawingRequest (const DrawingRequest&);
   DrawingRequest& operator= (const DrawingRequest&);

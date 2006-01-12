@@ -24,7 +24,7 @@
 #include "input/input_manager.hpp"
 #include "controller_def.hpp"
 #include "player.hpp"
-#include "bomb.hpp"
+#include "objects/bomb.hpp"
 #include "globals.hpp"
 #include "pda.hpp"
 #include "tile.hpp"

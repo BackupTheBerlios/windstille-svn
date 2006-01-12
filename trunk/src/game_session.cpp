@@ -54,7 +54,7 @@
 #include "sound/sound_manager.hpp"
 #include "conversation.hpp"
 #include "collision/collision_engine.hpp"
-#include "test_object.hpp"
+#include "objects/test_object.hpp"
 #include "inventory.hpp"
 #include "display/surface_manager.hpp"
 #include "display/surface.hpp"
@@ -355,6 +355,12 @@ GameSessionImpl::handle_event(const SDL_Event& event)
               sc.set_render_mask(sc.get_render_mask() ^ SceneContext::LIGHTMAPSCREEN);
               console << "Toggled LIGHTMAP: " << ((sc.get_render_mask() & SceneContext::LIGHTMAPSCREEN) > 0) << std::endl;
               break;
+
+            case SDLK_5:
+              sc.set_render_mask(sc.get_render_mask() ^ SceneContext::BLURMAP);
+              console << "Toggled blurmap: " << ((sc.get_render_mask() & SceneContext::BLURMAP) > 0) << std::endl;
+              break;
+
 
             case SDLK_c:
               if (debug) {

@@ -46,7 +46,7 @@ VertexArrayDrawingRequest::num_vertices() const
 }
 
 void
-VertexArrayDrawingRequest::draw()
+VertexArrayDrawingRequest::draw(const Texture& tmp_texture)
 {
   draw(0, num_vertices());
 }

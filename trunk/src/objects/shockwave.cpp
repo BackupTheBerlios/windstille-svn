@@ -53,17 +53,88 @@ public:
   {
   }
 
-  bool  needs_framebuffer()
+  bool  needs_prepare()
   {
     return true; 
   }
-  
-  Rectf framebuffer_rect() 
+    
+  void prepare(const Texture& screen_texture)
   {
-    return Rectf(0, 0, 800, 600); 
-  }
+    // FIXME: Clear stuff is only for debugging
+    glClearColor(1.0, 0.0, 1.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glPushMatrix();
+    glMultMatrixf(modelview.matrix);
+    glTranslatef(pos.x, pos.y, 0);
+
+    { // Apply modelview matrix to texture matrix so that we can
+      // give texcoords as screencords
+      GLdouble modelview[16];
+      glMatrixMode(GL_MODELVIEW);
+      glGetDoublev(GL_MODELVIEW_MATRIX, modelview);
+      glMatrixMode(GL_TEXTURE);
+      glLoadIdentity();
+      glTranslatef(0, 599, 0);
+      glScalef(1, -1, 1);
+      glMultMatrixd(modelview);
+
+      //glLoadMatrixd(modelview);
+    }
+
+    int count = int(radius);
+    OpenGLState state;
+    state.bind_texture(screen_texture, 0);
+    state.activate();
+
+    float radius = (count)*2.0f + 20.0f; // enlarge radius by 20.0f to handle texture displacement 
+    float minradius = 2.0f*count - 164.0f;
+    if (minradius < 0)
+      minradius = 0;
+
+    int segments = 64;
+
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   
-  void draw()
+    glBegin(GL_QUADS);
+    for (int i = 0; i < segments; ++i)
+      {
+        float angel = (2*M_PI / segments);
+
+        float x1 =  sin(angel*i)*radius;
+        float y1 = -cos(angel*i)*radius;
+
+        float x2 =  sin(angel*(i+1))*radius;
+        float y2 = -cos(angel*(i+1))*radius;
+
+        glTexCoord2f(x1+256, (y1+256));
+        glVertex3f(x1+256, y1+256, 0);
+
+        glTexCoord2f(x2+256, (y2+256));
+        glVertex3f(x2+256, y2+256, 0);
+
+
+        float x3 =  sin(angel*i)*minradius;
+        float y3 = -cos(angel*i)*minradius;
+
+        float x4 =  sin(angel*(i+1))*minradius;
+        float y4 = -cos(angel*(i+1))*minradius;
+
+        glTexCoord2f(x4+256, (y4+256));
+        glVertex3f(x4+256, y4+256, 0);
+        glTexCoord2f(x3+256, (y3+256));
+        glVertex3f(x3+256, y3+256, 0);
+      }
+    glEnd();
+
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+
+    glPopMatrix();
+  }
+
+  void draw(const Texture& tmp_texture)
   {
     glPushMatrix();
     glMultMatrixf(modelview.matrix);
@@ -73,7 +144,7 @@ public:
         Rectf rect(0, 0, 800, 600);
         // Render the screen framebuffer to the actual screen 
         OpenGLState state;
-        state.bind_texture(framebuffer_texture, 0);
+        state.bind_texture(tmp_texture, 0);
         state.activate();
 
         glBegin(GL_QUADS);
@@ -95,7 +166,7 @@ public:
     else
       {
         OpenGLState state;
-        state.bind_texture(framebuffer_texture, 0);
+        state.bind_texture(tmp_texture, 0);
         state.bind_texture(noise, 1);
         state.enable(GL_BLEND);
         state.set_blend_func(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -117,7 +188,6 @@ public:
     float minradius = 2.0f*count - 164.0f;
     if (minradius < 0)
       minradius = 0;
-    glClear(GL_DEPTH_BUFFER_BIT);
 
     int segments = 64;
   

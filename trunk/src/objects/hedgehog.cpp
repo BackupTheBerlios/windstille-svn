@@ -34,7 +34,7 @@ Hedgehog::Hedgehog(FileReader& props)
     highlight("images/hedgehog_highlight.sprite")
 {
   props.get("name", name);
-  props.get("pos", pos);
+  props.get("pos",  pos);
   props.print_unused_warnings("hedgehog");
   
   direction_left = false;

@@ -3,7 +3,7 @@
 
 #ifndef SCRIPTING_API
 #include "game_object.hpp"
-#include "test_object.hpp"
+#include "objects/test_object.hpp"
 #include "player.hpp"
 #include "scriptable_object.hpp"
 #include "ref.hpp"

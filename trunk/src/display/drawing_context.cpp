@@ -54,7 +54,7 @@ public:
   }
   virtual ~FillScreenDrawingRequest() {}
 
-  void draw() {
+  void draw(const Texture& tmp_texture) {
     OpenGLState state;
     // FIXME: move clear color to opengl_state
     state.activate();
@@ -74,7 +74,7 @@ public:
   {}
   virtual ~TextDrawingRequest() {}
 
-  void draw() {
+  void draw(const Texture& tmp_texture) {
     glPushMatrix();
     glMultMatrixf(modelview.matrix);
     Fonts::ttffont->draw(int(pos.x), int(pos.y), text);
@@ -96,7 +96,7 @@ public:
   virtual ~SurfaceDrawingRequest()
   {}
 
-  void draw() 
+  void draw(const Texture& tmp_texture) 
   {
     glPushMatrix();
     glMultMatrixf(modelview.matrix);
@@ -124,10 +124,7 @@ DrawingContext::render(SceneContext& sc)
   
   for(DrawingRequests::iterator i = drawingrequests.begin(); i != drawingrequests.end(); ++i)
     {
-      if ((*i)->needs_framebuffer())
-        (*i)->set_framebuffer_texture(sc.request_framebuffer_texture((*i)->framebuffer_rect()));
-      
-      (*i)->draw();
+      sc.eval(*i);
     }
 }
 

@@ -25,7 +25,6 @@
 #include "globals.hpp"
 #include "sector.hpp"
 #include "bomb.hpp"
-#include "badguy/badguy.hpp"
 
 Bomb::Bomb(int x, int y)
   : sprite("images/bomb.sprite"),
@@ -99,22 +98,6 @@ Bomb::draw(SceneContext& sc)
 void 
 Bomb::explode()
 {
-  if (0)
-    { // FIXME: Should be handled by the collision system
-      std::vector<GameObject*>* objs = Sector::current()->get_objects();
-      for(std::vector<GameObject*>::iterator i = objs->begin(); i != objs->end(); ++i)
-        {
-          Badguy* badguy = dynamic_cast<Badguy*>(*i);
-          if (badguy)
-            {
-              if (badguy->get_pos().x > pos.x - 30 &&
-                  badguy->get_pos().x < pos.x + 30 &&
-                  badguy->get_pos().y > pos.y - 20 &&
-                  badguy->get_pos().y < pos.y + 20)
-                badguy->die();
-            }
-        }
-    }
 }
 
 /* EOF */

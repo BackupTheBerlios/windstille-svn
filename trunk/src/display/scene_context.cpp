@@ -290,6 +290,7 @@ SceneContext::render()
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 
+  if (1) 
     {
       // Render the screen framebuffer to the actual screen 
       OpenGLState state;
@@ -297,8 +298,12 @@ SceneContext::render()
       Rectf uv(0.375, 0.375, 
                impl->screen_framebuffer.get_width()  + 0.375,
                impl->screen_framebuffer.get_height() + 0.375);
-          
-      state.bind_texture(impl->screen_framebuffer.get_texture(), 0);
+
+      if (impl->render_mask & BLURMAP)
+        state.bind_texture(impl->screen_framebuffer.get_texture(), 0);
+      else
+        state.bind_texture(impl->tmp_framebuffer.get_texture(), 0);
+
       state.activate();
 
       glBegin(GL_QUADS);
@@ -317,19 +322,6 @@ SceneContext::render()
 
       glEnd();
     }
-
-    /*
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->blur_framebuffer.get_handle());
-      glClear(GL_DEPTH_BUFFER_BIT);
-
-      glPushMatrix();
-      glTranslatef(0, 600-(600/BLURMAP_DIV), 0);
-      glScalef(1.0f/BLURMAP_DIV, 1.0f/BLURMAP_DIV, 1.0f);
-      impl->color.render();
-      render_lightmap();
-      impl->highlight.render();
-      glPopMatrix();
-    */
 
   // Clear all DrawingContexts
   impl->color.clear();
@@ -368,43 +360,20 @@ SceneContext::get_layer(unsigned int type)
     }
 }
 
-Texture
-SceneContext::request_framebuffer_texture(const Rectf& rect)
+void
+SceneContext::eval(DrawingRequest* request)
 {
-  // FIXME: There is no reason to limit this to Rectf, *all* OpenGL
-  // primitve or plain drawing operations could be used for this!
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->tmp_framebuffer.get_handle());
-
-  {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // Render the screen framebuffer to the actual screen 
-    OpenGLState state;
-    state.bind_texture(impl->screen_framebuffer.get_texture(), 0);
-    state.activate();
-
-    glBegin(GL_QUADS);
-    
-    glTexCoord2f(rect.left, rect.bottom);
-    glVertex2f(rect.left, rect.top);
-
-    glTexCoord2f(rect.right, rect.bottom);
-    glVertex2f(rect.right, rect.top);
-
-    glTexCoord2f(rect.right, rect.top);
-    glVertex2f(rect.right, rect.bottom);
-
-    glTexCoord2f(rect.left, rect.top);
-    glVertex2f(rect.left, rect.bottom);
-    
-    glEnd();
-  } 
-
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
-  // FIXME: Hacky, hacky, need something like push/pop_framebuffer to avoid this
-  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
-
-  return impl->tmp_framebuffer.get_texture();
+  if (request->needs_prepare())
+    {
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->tmp_framebuffer.get_handle());
+      request->prepare(impl->screen_framebuffer.get_texture());
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
+      request->draw(impl->tmp_framebuffer.get_texture());
+    }
+  else
+    {
+      request->draw(Texture());
+    }
 }
 
 /* EOF */

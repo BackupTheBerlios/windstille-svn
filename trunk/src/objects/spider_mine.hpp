@@ -22,18 +22,34 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef HEADER_BADGUY_HXX
-#define HEADER_BADGUY_HXX
+#ifndef HEADER_SPIDER_HPP
+#define HEADER_SPIDER_HPP
 
 #include "entity.hpp"
+#include "sprite2d/sprite.hpp"
 
-class Badguy : public Entity
+class SpiderMine : public Entity
 {
-public:
-  Badguy();
-  virtual ~Badguy();
+private:
+  Sprite sprite;
+  Sprite explode;
+  Sprite explode_light;
+  Vector initial_position;
+  float walk_speed;
+  float jump_time;
+  enum { WAIT, ATTACK, RETURN, JUMP, EXPLODE } state;
+  bool exploded;
+    
+protected:
+  void search_for_player(float delta);
 
-  virtual void die() = 0;
+public:
+  SpiderMine(FileReader& props);
+  ~SpiderMine();
+  
+  void update(float delta);
+  void draw (SceneContext& sc);
+  void die();
 };
 
 #endif

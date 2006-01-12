@@ -90,11 +90,12 @@ public:
   unsigned int get_render_mask();
 
   DrawingContext& get_layer(unsigned int t);
-  Texture request_framebuffer_texture(const Rectf& rect);
 
   void render_lightmap();
   void render_colormap();
   void render_highlightmap();
+
+  void eval(DrawingRequest* request);
 private:
   SceneContextImpl* impl;
 

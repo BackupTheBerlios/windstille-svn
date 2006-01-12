@@ -33,7 +33,7 @@ SpiderMine::SpiderMine(FileReader& props)
     explode_light("images/explolight.sprite")
 {
   props.get("name", name);
-  props.get("pos", pos);
+  props.get("pos",  pos);
   props.print_unused_warnings("spidermine");
   
   sprite = Sprite("images/spider_mine.sprite");

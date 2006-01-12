@@ -22,33 +22,27 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef HEADER_SPIDER_HPP
-#define HEADER_SPIDER_HPP
+#ifndef HEADER_HEDGEHOG_HXX
+#define HEADER_HEDGEHOG_HXX
 
-#include "badguy.hpp"
-#include "sprite2d/sprite.hpp"
+#include "game_object.hpp"
 
-class SpiderMine : public Badguy
+class Hedgehog : public Entity
 {
 private:
   Sprite sprite;
-  Sprite explode;
-  Sprite explode_light;
-  Vector initial_position;
-  float walk_speed;
-  float jump_time;
-  enum { WAIT, ATTACK, RETURN, JUMP, EXPLODE } state;
-  bool exploded;
-    
-protected:
-  void search_for_player(float delta);
+  Sprite die_sprite;
+  Sprite light;
+  Sprite highlight;
 
+  bool direction_left;
+  enum { WALKING, FALLING, DYING } state;
 public:
-  SpiderMine(FileReader& props);
-  ~SpiderMine();
-  
+  Hedgehog(FileReader& props);
+  ~Hedgehog();
+
+  void draw(SceneContext& gc);
   void update(float delta);
-  void draw (SceneContext& sc);
   void die();
 };
 
