@@ -1,18 +1,26 @@
-SubDir TOP src badguy ;
+SubDir TOP src objects ;
 
 sources =
-  badguy.cpp
-  badguy.hpp
+  background_gradient.cpp
+  background_gradient.hpp
+  bomb.cpp
+  bomb.hpp
   hedgehog.cpp
   hedgehog.hpp
+  nightvision.cpp
+  nightvision.hpp
+  shockwave.cpp
+  shockwave.hpp
   spider_mine.cpp
   spider_mine.hpp
-  swarm.hpp
   swarm.cpp
-  vrdummy.hpp
+  swarm.hpp
+  test_object.cpp
+  test_object.hpp
   vrdummy.cpp
+  vrdummy.hpp
 ;
 
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
-badguy_objects = [ CompileObjects $(sources) ] ;
+objects_objects = [ CompileObjects $(sources) ] ;
 

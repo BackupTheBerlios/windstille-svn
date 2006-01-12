@@ -1,6 +1,5 @@
 SubDir TOP src ;
 
-SubInclude TOP src badguy ;
 SubInclude TOP src collision ;
 SubInclude TOP src display ;
 SubInclude TOP src font ;
@@ -8,6 +7,7 @@ SubInclude TOP src gui ;
 SubInclude TOP src input ;
 SubInclude TOP src lisp ;
 SubInclude TOP src math ;
+SubInclude TOP src objects ;
 SubInclude TOP src particles ;
 SubInclude TOP src physfs ;
 SubInclude TOP src scripting ;
@@ -21,12 +21,8 @@ SubInclude TOP src tinygettext ;
 sources = 
         baby_xml.cpp
         baby_xml.hpp
-        background_gradient.cpp
-        background_gradient.hpp
         blitter.cpp
         blitter.hpp        
-        bomb.cpp
-        bomb.hpp
 	box.cpp
  	box.hpp
         camera.cpp
@@ -77,8 +73,6 @@ sources =
 	lisp_getters.cpp
 	lisp_getters.hpp
         math.hpp
-        nightvision.cpp
-        nightvision.hpp
 	particle_viewer.cpp
 	particle_viewer.hpp
         pda.cpp
@@ -104,14 +98,10 @@ sources =
         sector.cpp
         sector.hpp
 	sharedptr.hpp
-	shockwave.cpp
-	shockwave.hpp
         spawnpoint.cpp
         spawnpoint.hpp
         sprite3dview.hpp
         sprite3dview.cpp
-        test_object.cpp
-        test_object.hpp
         text_area.hpp
         text_area.cpp
 	tile.cpp
@@ -138,9 +128,7 @@ sources =
 TRANSLATABLE_SOURCES += [ SearchSource $(sources) ] ;
 
 Application windstille
-    :   $(badguy_objects)
-    
-        $(display_objects)
+    :   $(display_objects)
 
         $(font_objects)
 
@@ -151,6 +139,8 @@ Application windstille
         $(input_objects)
 
         $(lisp_objects)
+
+        $(objects_objects)
 
         $(physfs_objects)
 
