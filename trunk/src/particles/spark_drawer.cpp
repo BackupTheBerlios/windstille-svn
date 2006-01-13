@@ -31,11 +31,10 @@
 #include "color.hpp"
 #include "spark_drawer.hpp"
 
-SparkDrawer::SparkDrawer(const lisp::Lisp* lisp)
+SparkDrawer::SparkDrawer(FileReader& props)
 {
   width = 1.0f;
   color = Color(1.0f, 1.0f, 1.0f);
-  lisp::Properties props(lisp);
   props.get("color", color);
   props.get("width", width);
 }

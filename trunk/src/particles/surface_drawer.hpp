@@ -38,12 +38,13 @@ private:
   GLenum blendfunc_dest;
   
 public:
-  SurfaceDrawer(const lisp::Lisp* lisp);
+  SurfaceDrawer(FileReader& props);
   SurfaceDrawer(Surface surface);
   virtual ~SurfaceDrawer();
   
   void set_texture(Surface surface);
   void set_blendfuncs(GLenum blendfunc_src, GLenum blendfunc_dst);
+
   void draw(DrawingContext& sc, ParticleSystem& psys);
 };
 

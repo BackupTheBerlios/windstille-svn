@@ -38,7 +38,7 @@ private:
   float width;
 
 public:
-  SparkDrawer(const lisp::Lisp* lisp);
+  SparkDrawer(FileReader& props);
   void draw(DrawingContext& dc, ParticleSystem& psys);
 };
 

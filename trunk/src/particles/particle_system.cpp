@@ -32,7 +32,9 @@
 #include "lisp/properties.hpp"
 #include "lisp/property_iterator.hpp"
 #include "lisp_getters.hpp"
+#include "file_reader.hpp"
 #include "spark_drawer.hpp"
+#include "deform_drawer.hpp"
 #include "surface_drawer.hpp"
 #include "randomizer.hpp"
 
@@ -140,12 +142,19 @@ ParticleSystem::ParticleSystem(FileReader& props)
         while(iter.next()) {
           if (iter.item() == "surface-drawer") 
             {
-              set_drawer(new SurfaceDrawer(*iter));
+              lisp::Properties props(*iter);
+              set_drawer(new SurfaceDrawer(props));
             } 
           else if (iter.item() == "spark-drawer") 
             {
-              set_drawer(new SparkDrawer(*iter));
+              lisp::Properties props(*iter);
+              set_drawer(new SparkDrawer(props));
             } 
+          else if (iter.item() == "deform-drawer")
+            {
+              lisp::Properties props(*iter);
+              set_drawer(new DeformDrawer(props));
+            }
           else 
             {
               std::cout << "Unknown drawer: " << iter.item() << std::endl;

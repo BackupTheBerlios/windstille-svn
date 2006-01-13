@@ -145,6 +145,7 @@ env.Program('../windstille', [
 'particle_viewer.cpp',
 'particles/particle_system.cpp',
 'particles/spark_drawer.cpp',
+'particles/deform_drawer.cpp',
 'particles/surface_drawer.cpp',
 'physfs/physfs_sdl.cpp',
 'physfs/physfs_stream.cpp',

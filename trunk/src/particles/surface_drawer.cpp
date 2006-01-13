@@ -58,13 +58,12 @@ static GLenum string2blendfunc(const std::string& str)
   }
 }
 
-SurfaceDrawer::SurfaceDrawer(const lisp::Lisp* lisp)
+SurfaceDrawer::SurfaceDrawer(FileReader& props)
 {
   std::string blendfunc_src_str = "src_alpha";
   std::string blendfunc_dst_str = "one_minus_src_alpha";
   std::string surface_file;
 
-  lisp::Properties props(lisp);
   props.get("image", surface_file);
   props.get("blendfunc-src", blendfunc_src_str);
   props.get("blendfunc-dst", blendfunc_dst_str);

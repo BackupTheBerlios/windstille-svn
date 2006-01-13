@@ -29,6 +29,7 @@
 class DrawingContext;
 class ParticleSystem;
 
+// FIXME: Rename this to ParticleDrawer or move it into a "namespace particles"
 class Drawer
 {
 public:

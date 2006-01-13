@@ -44,6 +44,10 @@
 #define LIGHTMAP_DIV 4
 #define BLURMAP_DIV 1
 
+GLuint current_framebuffer;
+
+
+
 class SceneContextImpl
 {
 public:
@@ -255,6 +259,7 @@ SceneContext::render()
     {
       // Render the lightmap to the lightmap_framebuffer
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->lightmap_framebuffer.get_handle());
+      current_framebuffer = impl->lightmap_framebuffer.get_handle();
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -271,6 +276,7 @@ SceneContext::render()
     {
       // Render the colormap to the screen_framebuffer
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
+      current_framebuffer = impl->screen_framebuffer.get_handle();
       impl->color.render(*this);
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
@@ -279,6 +285,7 @@ SceneContext::render()
   if (impl->render_mask & LIGHTMAP)
     { // Renders the lightmap to the screen
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
+      current_framebuffer = impl->screen_framebuffer.get_handle();
       render_lightmap();
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
@@ -286,6 +293,7 @@ SceneContext::render()
   if (impl->render_mask & HIGHLIGHTMAP)
     {
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
+      current_framebuffer = impl->screen_framebuffer.get_handle();
       impl->highlight.render(*this);
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
@@ -366,8 +374,10 @@ SceneContext::eval(DrawingRequest* request)
   if (request->needs_prepare())
     {
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->tmp_framebuffer.get_handle());
+      current_framebuffer = impl->tmp_framebuffer.get_handle();
       request->prepare(impl->screen_framebuffer.get_texture());
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
+      current_framebuffer = impl->screen_framebuffer.get_handle();
       request->draw(impl->tmp_framebuffer.get_texture());
     }
   else
