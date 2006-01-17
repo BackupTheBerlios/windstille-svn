@@ -461,15 +461,17 @@ Display::push_framebuffer(Framebuffer& framebuffer)
 void
 Display::pop_framebuffer()
 {
-  framebuffers.pop_back();
+  assert(!framebuffers.empty());
 
-  if (framebuffers.empty())
+  framebuffers.pop_back();
+  
+  if (!framebuffers.empty())
     {
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffers.back().get_handle());
     }
   else
     {
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+          glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     }
 }
 
