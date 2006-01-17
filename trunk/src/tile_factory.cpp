@@ -85,7 +85,10 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
   assert(data);
 
   lisp::Properties props(data);
-  TileDescription desc(props);
+
+  descriptions.push_back(TileDescription(props));
+  
+  TileDescription& desc = descriptions.back();
   desc.load(this);
 }
 

@@ -52,6 +52,12 @@ public:
   void texcoord(float u, float v);
   void color(const Color& color);
   void add_texcoords(const float* coords, size_t n);
+  /**
+   * Add eight texcoords for use with a quad from a given rect. The
+   * coords are clockwise around the rect, ie:
+   * left, top, right, top, right, bottom, left, bottom,
+   */
+  void add_texcoords(const Rectf& coords);
 
   int num_vertices() const;
 

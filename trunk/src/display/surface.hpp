@@ -62,9 +62,6 @@ public:
 
   Texture get_texture() const;
 
-  /** Returns texture coordinates for the Surface rectangle (float[8]) */
-  const float* get_texcoords() const;
-
   /** Returns texture coordinates for the Surface rectangle */
   Rectf get_uv() const;
 

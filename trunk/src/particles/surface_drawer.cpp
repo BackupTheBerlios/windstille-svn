@@ -131,7 +131,7 @@ SurfaceDrawer::draw(DrawingContext& dc, ParticleSystem& psys)
               y_rot = (width/2) * s + (height/2) * c;
             }
 
-          buffer->add_texcoords(surface.get_texcoords(), 8);
+          buffer->add_texcoords(surface.get_uv());
 
           buffer->color(color);
           buffer->vertex(i->x - x_rot, i->y - y_rot);

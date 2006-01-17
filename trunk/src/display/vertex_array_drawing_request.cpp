@@ -129,6 +129,19 @@ VertexArrayDrawingRequest::texcoord(float u, float v)
 }
 
 void
+VertexArrayDrawingRequest::add_texcoords(const Rectf& rect)
+{
+  texcoords.push_back(rect.left);
+  texcoords.push_back(rect.top);
+  texcoords.push_back(rect.right);
+  texcoords.push_back(rect.top);
+  texcoords.push_back(rect.right);
+  texcoords.push_back(rect.bottom);
+  texcoords.push_back(rect.left);
+  texcoords.push_back(rect.bottom);
+}
+
+void
 VertexArrayDrawingRequest::add_texcoords(const float* coords, size_t n)
 {
   assert(n % 2 == 0);

@@ -34,8 +34,7 @@ class SurfaceImpl
 {
 public:
   Texture texture;
-  float texcoords[8];
-  Rectf  uv;
+  Rectf   uv;
 
   int width;
   int height;
@@ -68,18 +67,7 @@ Surface::Surface(int width, int height)
   impl->uv      = Rectf(0, 0,
                         float(impl->width)  / impl->texture.get_width(),
                         float(impl->height) / impl->texture.get_height());
-
-  // Keep the texcoords in array form for convenience
-  impl->texcoords[0] = impl->uv.left;
-  impl->texcoords[1] = impl->uv.top;
-  impl->texcoords[2] = impl->uv.right;
-  impl->texcoords[3] = impl->uv.top;
-  impl->texcoords[4] = impl->uv.right;
-  impl->texcoords[5] = impl->uv.bottom;
-  impl->texcoords[6] = impl->uv.left;
-  impl->texcoords[7] = impl->uv.bottom;
 }
-
 
 Surface::Surface(Texture texture, const Rectf& rect, int width, int height)
   : impl(new SurfaceImpl())
@@ -88,16 +76,6 @@ Surface::Surface(Texture texture, const Rectf& rect, int width, int height)
   impl->width   = width;
   impl->height  = height;
   impl->uv      = rect;
-
-  // Keep the texcoords in array form for convenience
-  impl->texcoords[0] = rect.left;
-  impl->texcoords[1] = rect.top;
-  impl->texcoords[2] = rect.right;
-  impl->texcoords[3] = rect.top;
-  impl->texcoords[4] = rect.right;
-  impl->texcoords[5] = rect.bottom;
-  impl->texcoords[6] = rect.left;
-  impl->texcoords[7] = rect.bottom;
 }
 
 Surface::~Surface()
@@ -120,12 +98,6 @@ Texture
 Surface::get_texture() const
 {
   return impl->texture;
-}
-
-const float*
-Surface::get_texcoords() const
-{
-  return impl->texcoords; 
 }
 
 Rectf

@@ -23,6 +23,7 @@
 #include <map>
 #include <string>
 #include "lisp/lisp.hpp"
+#include "tile_description.hpp"
 
 class Tile;
 class TilePacker;
@@ -40,6 +41,9 @@ private:
   static TileFactory* current_;
 
   friend class TileDescription;
+
+  std::vector<TileDescription> descriptions;
+  
 public:
   static std::string tile_def_file;
 
