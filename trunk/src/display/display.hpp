@@ -30,6 +30,7 @@
 #include <SDL.h>
 #include "math/rect.hpp"
 #include "color.hpp"
+#include "display/framebuffer.hpp"
 
 class Display
 {
@@ -56,6 +57,10 @@ public:
 
   static void push_cliprect(const Rect& rect);
   static void pop_cliprect();
+
+  static void push_framebuffer(Framebuffer& framebuffer);
+  static void pop_framebuffer();
+  static Framebuffer get_framebuffer();
 
   static void set_gamma(float r, float g, float b);
 

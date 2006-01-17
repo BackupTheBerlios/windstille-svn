@@ -52,12 +52,11 @@ public:
   TileFactory(const std::string& filename);
   ~TileFactory();
 
-  /** Create a new tile, or loads&creates it if it is not already available */
+  /**
+   * Create a new tile, or loads&create it if it is not already
+   * available
+   */
   Tile* create(int tile_id);
-
-  Texture get_texture(int tile_id);
-
-  void add(int id, Tile* tile);
 
   /** Create the default TileFactor*/
   static void init();

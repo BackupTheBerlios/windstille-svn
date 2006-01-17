@@ -36,8 +36,11 @@
 #include "util.hpp"
 #include <assert.h>
 
+namespace {
 SDL_Surface* Display::window       = 0;
 std::vector<Rect> Display::cliprects;
+std::vector<Framebuffer> framebuffers;
+}
 
 void
 Display::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)
@@ -444,6 +447,39 @@ Display::save_screenshot(const std::string& filename)
           fclose(fp);
         }
     }
+}
+
+void
+Display::push_framebuffer(Framebuffer& framebuffer)
+{
+  framebuffers.push_back(framebuffer);
+  // FIXME: How expensive is it to switch framebuffers? might be worth
+  // to optimze some switches away
+  glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffers.back().get_handle());
+}
+
+void
+Display::pop_framebuffer()
+{
+  framebuffers.pop_back();
+
+  if (framebuffers.empty())
+    {
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffers.back().get_handle());
+    }
+  else
+    {
+      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    }
+}
+
+Framebuffer
+Display::get_framebuffer()
+{
+  if (framebuffers.empty())
+    return Framebuffer();
+  else
+    return framebuffers.back();
 }
 
 /* EOF */

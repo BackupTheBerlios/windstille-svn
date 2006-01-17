@@ -27,14 +27,12 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 
+#include "display/display.hpp"
 #include "display/shader_object.hpp"
 #include "particle_system.hpp"
 #include "display/drawing_request.hpp"
 #include "display/opengl_state.hpp"
 #include "deform_drawer.hpp"
-
-// FIXME: HACK
-extern GLuint current_framebuffer;
 
 class DeformDrawerRequest : public DrawingRequest
 {
@@ -56,10 +54,10 @@ public:
   
   void draw(const Texture& tmp_texture) 
   {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, framebuffer.get_handle());
+    Display::push_framebuffer(framebuffer);
     glClear(GL_COLOR_BUFFER_BIT);
     draw_particles();
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, current_framebuffer);
+    Display::pop_framebuffer();
 
     if (1) {
       OpenGLState state;

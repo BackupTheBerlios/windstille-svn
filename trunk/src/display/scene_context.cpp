@@ -44,10 +44,6 @@
 #define LIGHTMAP_DIV 4
 #define BLURMAP_DIV 1
 
-GLuint current_framebuffer;
-
-
-
 class SceneContextImpl
 {
 public:
@@ -258,9 +254,8 @@ SceneContext::render()
   if (impl->render_mask & LIGHTMAPSCREEN)
     {
       // Render the lightmap to the lightmap_framebuffer
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->lightmap_framebuffer.get_handle());
-      current_framebuffer = impl->lightmap_framebuffer.get_handle();
-
+      Display::push_framebuffer(impl->lightmap_framebuffer);
+      
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       glPushMatrix();
@@ -269,33 +264,30 @@ SceneContext::render()
       impl->light.render(*this);
       glPopMatrix();
 
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+      Display::pop_framebuffer();
     }
 
   if (impl->render_mask & COLORMAP)
     {
       // Render the colormap to the screen_framebuffer
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
-      current_framebuffer = impl->screen_framebuffer.get_handle();
+      Display::push_framebuffer(impl->screen_framebuffer);
       impl->color.render(*this);
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+      Display::pop_framebuffer();
     }
 
 
   if (impl->render_mask & LIGHTMAP)
     { // Renders the lightmap to the screen
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
-      current_framebuffer = impl->screen_framebuffer.get_handle();
+      Display::push_framebuffer(impl->screen_framebuffer);
       render_lightmap();
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+      Display::pop_framebuffer();
     }
 
   if (impl->render_mask & HIGHLIGHTMAP)
     {
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
-      current_framebuffer = impl->screen_framebuffer.get_handle();
+      Display::push_framebuffer(impl->screen_framebuffer);
       impl->highlight.render(*this);
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+      Display::pop_framebuffer();
     }
 
   if (1) 
@@ -373,12 +365,13 @@ SceneContext::eval(DrawingRequest* request)
 {
   if (request->needs_prepare())
     {
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->tmp_framebuffer.get_handle());
-      current_framebuffer = impl->tmp_framebuffer.get_handle();
+      Display::push_framebuffer(impl->tmp_framebuffer);
       request->prepare(impl->screen_framebuffer.get_texture());
-      glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, impl->screen_framebuffer.get_handle());
-      current_framebuffer = impl->screen_framebuffer.get_handle();
+      Display::pop_framebuffer();
+      
+      Display::push_framebuffer(impl->screen_framebuffer);
       request->draw(impl->tmp_framebuffer.get_texture());
+      Display::pop_framebuffer();
     }
   else
     {

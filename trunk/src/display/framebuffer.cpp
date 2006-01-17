@@ -41,6 +41,9 @@ public:
   {
     glGenFramebuffersEXT(1, &handle);
     assert_gl("Framebuffer1");
+
+    // FIXME: Should use push/pop_framebuffer instead, but don't have
+    // pointer to Framebuffer here
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, handle);
     assert_gl("Framebuffer2");
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, 
