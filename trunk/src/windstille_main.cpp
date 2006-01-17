@@ -72,6 +72,8 @@ WindstilleMain::main(int argc, char** argv)
     dictionaryManager->add_directory("locale");
 
     config.load();
+    
+    config.parse_args(argc, argv);
 
     init_modules();
 

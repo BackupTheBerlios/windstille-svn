@@ -156,6 +156,7 @@ TTFFont::TTFFont(const std::string& filename, int size_, FontEffect* effect)
 
   try {
     impl->texture = Texture(pixelbuffer);
+    impl->texture.set_filter(GL_NEAREST);
   } catch(...) {
     SDL_FreeSurface(pixelbuffer);
     throw;
