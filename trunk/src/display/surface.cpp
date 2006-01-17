@@ -33,11 +33,20 @@
 class SurfaceImpl
 {
 public:
+  /**
+   * Texture on which the surface is located
+   */
   Texture texture;
+
+  /** 
+   * uv coordinates of the Surface in [0,1] range
+   */
   Rectf   uv;
 
-  int width;
-  int height;
+  /**
+   * The size of the Surface in pixels
+   */
+  Size size;
 };
 
 Surface::Surface()
@@ -60,21 +69,20 @@ static int power_of_two(int val) {
 Surface::Surface(int width, int height)
   : impl(new SurfaceImpl())
 {
-  impl->width  = width;
-  impl->height = height;
+  impl->size  = Size(width, height);
 
   impl->texture = Texture(GL_TEXTURE_2D, power_of_two(width), power_of_two(height));
   impl->uv      = Rectf(0, 0,
-                        float(impl->width)  / impl->texture.get_width(),
-                        float(impl->height) / impl->texture.get_height());
+                        float(impl->size.width)  / impl->texture.get_width(),
+                        float(impl->size.height) / impl->texture.get_height());
 }
 
 Surface::Surface(Texture texture, const Rectf& rect, int width, int height)
   : impl(new SurfaceImpl())
 {
   impl->texture = texture;
-  impl->width   = width;
-  impl->height  = height;
+  impl->size.width   = width;
+  impl->size.height  = height;
   impl->uv      = rect;
 }
 
@@ -85,13 +93,13 @@ Surface::~Surface()
 int
 Surface::get_width()  const
 {
-  return impl->width;
+  return impl->size.width;
 }
 
 int
 Surface::get_height() const
 { 
-  return impl->height; 
+  return impl->size.height; 
 }
 
 Texture
@@ -126,13 +134,13 @@ Surface::draw(const Vector& pos) const
   glVertex2f(pos.x, pos.y);
 
   glTexCoord2f(impl->uv.right, impl->uv.top);
-  glVertex2f(pos.x + impl->width, pos.y);
+  glVertex2f(pos.x + impl->size.width, pos.y);
 
   glTexCoord2f(impl->uv.right, impl->uv.bottom);
-  glVertex2f(pos.x + impl->width, pos.y + impl->height);
+  glVertex2f(pos.x + impl->size.width, pos.y + impl->size.height);
 
   glTexCoord2f(impl->uv.left, impl->uv.bottom);
-  glVertex2f(pos.x, pos.y + impl->height);
+  glVertex2f(pos.x, pos.y + impl->size.height);
 
   glEnd();
 }
@@ -155,13 +163,14 @@ Surface::draw(const SurfaceDrawingParameters& params) const
   glVertex2f(params.pos.x, params.pos.y);
 
   glTexCoord2f(impl->uv.right, impl->uv.top);
-  glVertex2f(params.pos.x + impl->width * params.scale, params.pos.y);
+  glVertex2f(params.pos.x + impl->size.width * params.scale, params.pos.y);
 
   glTexCoord2f(impl->uv.right, impl->uv.bottom);
-  glVertex2f(params.pos.x + impl->width * params.scale, params.pos.y + impl->height * params.scale);
+  glVertex2f(params.pos.x + impl->size.width * params.scale, 
+             params.pos.y + impl->size.height * params.scale);
 
   glTexCoord2f(impl->uv.left, impl->uv.bottom);
-  glVertex2f(params.pos.x, params.pos.y + impl->height * params.scale);
+  glVertex2f(params.pos.x, params.pos.y + impl->size.height * params.scale);
 
   glEnd(); 
 }
