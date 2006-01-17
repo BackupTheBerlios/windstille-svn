@@ -33,6 +33,8 @@ enum TileType {
   TILE_RIGHT  = (1 << 3)
 };
 
+class TileDescription;
+
 /** A Tile is a surface or sprite together with information for
  *  collision detection (aka colmap). The collision map is at a
  *  resolution of 8x8 bits. Position information is handled in the
@@ -51,6 +53,7 @@ public:
 
   /** bitmap that holds the collision attributes for this tile */
   unsigned int colmap;
+  TileDescription* desc;
 
   Tile(unsigned int arg_colmap);
 

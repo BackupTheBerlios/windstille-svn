@@ -25,6 +25,7 @@ Tile::Tile(unsigned int arg_colmap)
   : colmap(arg_colmap)
 {
   color_packer = -1;
+  desc = 0;
 }
 
 /* EOF */

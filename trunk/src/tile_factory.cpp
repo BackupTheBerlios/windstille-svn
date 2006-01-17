@@ -86,10 +86,29 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
 
   lisp::Properties props(data);
 
-  descriptions.push_back(TileDescription(props));
+  descriptions.push_back(new TileDescription(props));
+  TileDescription& desc = *descriptions.back();
   
-  TileDescription& desc = descriptions.back();
-  desc.load(this);
+  if (0)
+    {
+      desc.load(this);
+    }
+  else
+    {
+      for(std::vector<int>::size_type i = 0; i < desc.ids.size(); ++i)
+        { // FIXME: Very very ugly load on demand
+          int& id = desc.ids[i];
+          if (id != 0)
+            {
+              if (id >= int(tiles.size()))
+                tiles.resize(id + 1, 0);
+    
+              delete tiles[id];
+              tiles[id] = new Tile(desc.colmap[i]);
+              tiles[id]->desc = &desc;
+            }
+        }
+    }
 }
 
 Tile*
@@ -101,6 +120,10 @@ TileFactory::create(int id)
     }
   else
     {
+      // FIXME: Ugly load on demand
+      if (tiles[id] && tiles[id]->desc)
+        tiles[id]->desc->load(this);
+
       return tiles[id];
     }
 }

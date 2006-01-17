@@ -42,7 +42,7 @@ private:
 
   friend class TileDescription;
 
-  std::vector<TileDescription> descriptions;
+  std::vector<TileDescription*> descriptions;
   
 public:
   static std::string tile_def_file;

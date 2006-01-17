@@ -109,13 +109,15 @@ TileDescription::load(TileFactory* factory)
         for (int x = 0; x < width*TILE_RESOLUTION; x += TILE_RESOLUTION)
           {
             int id = ids[i];
-            int collider = colmap[i];
+            int colval = colmap[i];
             i++;
 
             if(id == -1)
               continue;
 
-            if(id < (int) factory->tiles.size() && factory->tiles[id] != 0)
+            if(id < int(factory->tiles.size())
+               && factory->tiles[id] != 0
+               && factory->tiles[id]->desc == 0)
               {
                 std::ostringstream msg;
                 msg << "Duplicate tile id: " << filename << " " << id;
@@ -125,8 +127,10 @@ TileDescription::load(TileFactory* factory)
             if (id >= int(factory->tiles.size()))
               factory->tiles.resize(id + 1, 0);
 
-            factory->tiles[id] = new Tile(collider); 
+            delete factory->tiles[id];
+            factory->tiles[id] = new Tile(colval); 
             Tile& tile = *(factory->tiles[id]);
+            tile.desc = 0;
             tile.id = id;
 
             if (surface_empty(image, x, y, TILE_RESOLUTION, TILE_RESOLUTION))
