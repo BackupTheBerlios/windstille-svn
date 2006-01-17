@@ -28,6 +28,7 @@
 #include <GL/glext.h>
 #include "util.hpp"
 #include "texture.hpp"
+#include "render_buffer.hpp"
 #include "framebuffer.hpp"
 
 class FramebufferImpl
@@ -35,26 +36,32 @@ class FramebufferImpl
 public:
   GLuint  handle;
   Texture texture;
+  RenderBuffer render_buffer;
   
   FramebufferImpl(GLenum target, int width, int height)
-    : texture(target, width, height)
+    : texture(target, width, height),
+      render_buffer(GL_DEPTH_COMPONENT24, width, height)
   {
     glGenFramebuffersEXT(1, &handle);
     assert_gl("Framebuffer1");
 
-    // FIXME: Should use push/pop_framebuffer instead, but don't have
-    // pointer to Framebuffer here
+    // FIXME: Should use push/pop_framebuffer instead, but don't have pointer to Framebuffer here
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, handle);
     assert_gl("Framebuffer2");
     glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, 
                               GL_COLOR_ATTACHMENT0_EXT, texture.get_target(), texture.get_handle(), 0);
     assert_gl("Framebuffer3");
+    
+    glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, 
+                                 GL_DEPTH_ATTACHMENT_EXT, // FIXME: must not hardcode this
+                                 GL_RENDERBUFFER_EXT, render_buffer.get_handle());
+
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
   }
 
   ~FramebufferImpl()
   {
-    glDeleteRenderbuffersEXT(1, &handle);
+    glDeleteFramebuffersEXT(1, &handle);
   }
 };
 

@@ -65,6 +65,7 @@ env.Program('../windstille', [
 'pistol.cpp',
 'player.cpp',
 'random.cpp',
+'display/render_buffer.cpp',
 'screen.cpp',
 'screen_manager.cpp',
 'scriptable_object.cpp',
