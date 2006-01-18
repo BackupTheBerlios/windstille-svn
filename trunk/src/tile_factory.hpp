@@ -62,6 +62,9 @@ public:
    */
   Tile* create(int tile_id);
 
+  /** 
+   * Adds a surface to the TileFactory
+   */
   void pack(int id, int colmap, SDL_Surface* image, const Rect& rect);
 
   /** Create the default TileFactor*/

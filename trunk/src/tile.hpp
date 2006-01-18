@@ -48,7 +48,7 @@ public:
   // FIXME: Using a surface here might be a worthy consideration, just
   // need to find a way to properly bucket-sort the request
   int     color_packer;
-  Rectf   color_rect;
+  Rectf   uv;
   Texture texture;
 
   /** bitmap that holds the collision attributes for this tile */

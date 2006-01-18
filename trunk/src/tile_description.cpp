@@ -49,10 +49,7 @@ TileDescription::TileDescription(FileReader& props)
 
 void
 TileDescription::load(TileFactory* factory)
-{
-  // FIXME: This function messes far to much around with TileFactory's
-  // internals
-  
+{  
   if (debug)
     std::cout << "Loading tiles: " << filename << std::endl;
 

@@ -122,7 +122,7 @@ TileFactory::parse_tiles(const lisp::Lisp* data)
   else
     { // Load on demand
       for(std::vector<int>::size_type i = 0; i < desc.ids.size(); ++i)
-        { // FIXME: Very very ugly load on demand
+        { 
           int& id = desc.ids[i];
           if (id != 0)
             {
@@ -167,7 +167,7 @@ TileFactory::pack(int id, int colmap, SDL_Surface* image, const Rect& rect)
           Rectf uv = packers[color_packer]->pack(image, 
                                                  rect.left, rect.top,
                                                  rect.get_width(), rect.get_height());
-          tiles[id]->color_rect   = uv;
+          tiles[id]->uv   = uv;
           tiles[id]->color_packer = color_packer;
           tiles[id]->texture      = packers[color_packer]->get_texture();
         }
@@ -183,7 +183,6 @@ TileFactory::create(int id)
     }
   else
     {
-      // FIXME: Ugly load on demand
       if (tiles[id] && tiles[id]->desc)
         tiles[id]->desc->load(this);
 
