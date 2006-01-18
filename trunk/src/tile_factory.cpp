@@ -167,9 +167,9 @@ TileFactory::pack(int id, int colmap, SDL_Surface* image, const Rect& rect)
           Rectf uv = packers[color_packer]->pack(image, 
                                                  rect.left, rect.top,
                                                  rect.get_width(), rect.get_height());
-          tiles[id]->uv   = uv;
-          tiles[id]->color_packer = color_packer;
-          tiles[id]->texture      = packers[color_packer]->get_texture();
+          tiles[id]->uv      = uv;
+          tiles[id]->packer  = color_packer;
+          tiles[id]->texture = packers[color_packer]->get_texture();
         }
     }
 }

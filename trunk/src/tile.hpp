@@ -47,7 +47,11 @@ public:
 
   // FIXME: Using a surface here might be a worthy consideration, just
   // need to find a way to properly bucket-sort the request
-  int     color_packer;
+
+  /**
+   * Id of the packer
+   */
+  int     packer;
   Rectf   uv;
   Texture texture;
 

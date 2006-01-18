@@ -128,9 +128,9 @@ TileMap::draw (SceneContext& sc)
       {
         Tile* tile = field(x, y);
 
-        if (!(tile == 0 || tile->color_packer < 0))
+        if (!(tile == 0 || tile->packer < 0))
           {
-            int packer = tile->color_packer; 
+            int packer = tile->packer; 
 
             if(packer >= int(requests.size()))
               requests.resize(packer+1);
