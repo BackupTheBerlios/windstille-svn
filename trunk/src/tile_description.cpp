@@ -108,45 +108,45 @@ TileDescription::load(TileFactory* factory)
       {
         for (int x = 0; x < width*TILE_RESOLUTION; x += TILE_RESOLUTION)
           {
-            int id = ids[i];
-            int colval = colmap[i];
-            i++;
-
-            if(id == -1)
-              continue;
-
-            if(id < int(factory->tiles.size())
-               && factory->tiles[id] != 0
-               && factory->tiles[id]->desc == 0)
-              {
-                std::ostringstream msg;
-                msg << "Duplicate tile id: " << filename << " " << id;
-                throw std::runtime_error(msg.str());
-              } 
-
-            if (id >= int(factory->tiles.size()))
-              factory->tiles.resize(id + 1, 0);
-
-            delete factory->tiles[id];
-            factory->tiles[id] = new Tile(colval); 
-            Tile& tile = *(factory->tiles[id]);
-            tile.desc = 0;
-            tile.id = id;
-
-            if (surface_empty(image, x, y, TILE_RESOLUTION, TILE_RESOLUTION))
-              continue;
+            int& id = ids[i];
             
-            if(factory->packers[factory->color_packer]->is_full())
+            if(id != -1)
               {
-                factory->packers.push_back(new TilePacker(1024, 1024));
-                factory->color_packer = factory->packers.size() - 1;
+                if(id < int(factory->tiles.size())
+                   && factory->tiles[id] != 0
+                   && factory->tiles[id]->desc == 0)
+                  {
+                    std::cout << "Warning: Duplicate tile id: " << filename << "', ignoring" << id << std::endl;
+                  }
+                else
+                  {
+                    if (id >= int(factory->tiles.size()))
+                      factory->tiles.resize(id + 1, 0);
+
+                    delete factory->tiles[id];
+                    factory->tiles[id] = new Tile(colmap[i]);
+                    Tile& tile = *(factory->tiles[id]);
+                    tile.desc = 0;
+                    tile.id = id;
+
+                    if (!surface_empty(image, x, y, TILE_RESOLUTION, TILE_RESOLUTION))
+                      {
+                        if(factory->packers[factory->color_packer]->is_full())
+                          {
+                            factory->packers.push_back(new TilePacker(1024, 1024));
+                            factory->color_packer = factory->packers.size() - 1;
+                          }
+
+                        Rectf rect = factory->packers[factory->color_packer]->pack(image, x, y,
+                                                                                   TILE_RESOLUTION, TILE_RESOLUTION);
+                        tile.color_rect   = rect;
+                        tile.color_packer = factory->color_packer;
+                        tile.texture      = factory->packers[factory->color_packer]->get_texture();
+                      }
+                  }
               }
 
-            Rectf rect = factory->packers[factory->color_packer]->pack(image, x, y,
-                                                                       TILE_RESOLUTION, TILE_RESOLUTION);
-            tile.color_rect   = rect;
-            tile.color_packer = factory->color_packer;
-            tile.texture      = factory->packers[factory->color_packer]->get_texture();
+            i += 1; 
           }
       }
   } catch(...) {

@@ -42,9 +42,9 @@ public:
   int y_pos;
 
   Texture texture;
-  // width+height of the texture
-  float width;
-  float height;  
+
+  int width;
+  int height;
 };
 
 TilePacker::TilePacker(int width, int height)
