@@ -10,7 +10,8 @@ Tip: 'Export meshes/actions to windstille format'
 ##  $Id: windstille_main.hxx,v 1.4 2003/11/07 13:00:39 grumbel Exp $
 ## 
 ##  Windstille - A Jump'n Shoot Game
-##  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
+##  Copyright (C) 2005 Matthias Braun <matze@braunis.de>,
+##                     Ingo Ruhnke <grumbel@gmx.de>
 ##
 ##  This program is free software; you can redistribute it and/or
 ##  modify it under the terms of the GNU General Public License
@@ -76,7 +77,7 @@ def matrix2quaternion(m):
     x = (m[2][0] + m[0][2]) * s
     y = (m[1][2] + m[2][1]) * s
     w = (m[0][1] - m[1][0]) * s
-    
+
   return quaternion_normalize([w, x, y, z])
 
 def quaternion_normalize(q):
@@ -100,7 +101,7 @@ def parse_actionconfig(text):
     if res == lex.eof:
       raise Exception, "Expected string, got EOF"
     return res
-    
+
   def expect_int():
     res = lex.get_token()
     if res == lex.eof:
@@ -153,13 +154,17 @@ def parse_actionconfig(text):
       markers.append( (marker_name, marker_frame) )
       token = lex.get_token()
     lex.push_token(token)
-      
+
     actionconfig[action_name] = ActionConfig(first_frame, last_frame, speed, samplerate, markers)
     print "Config: %-20s - %s" % (action_name, str(actionconfig[action_name]))
 
   return actionconfig
 
 class ActionConfig:
+  """ActionConfig handles the properties of an
+  action, ie. when it starts, when it stops, its speed, how many
+  spamles should be taken, etc."""
+
   def __init__(self, first_frame, last_frame, speed, samplerate, markers):
     self.first_frame = first_frame
     self.last_frame  = last_frame
@@ -172,8 +177,11 @@ class ActionConfig:
     return "Frames: %3i - %3i, speed: %3.2f, Samplerate: %3d" % (self.first_frame, self.last_frame,
                                                            self.speed, self.samplerate)
 
-# return contents of a text in the blender scene
+##########################################################
 def get_text(textname):
+  """Little shortcut function to return the content of
+  Blender.Text.get(textname) as a single string and do a little error
+  handling in addition""" 
   try:
     textobj = Blender.Text.Get(textname)
   except:                                                         
@@ -186,121 +194,129 @@ def get_text(textname):
     text += line + "\n"
   return text
 
+##########################################################
 class WindstilleExporter:
+  """ WindstilleExporter bundles all kind of functions... """
+
+  ########################################################
   def __init__(self):
     self.meshes    = []
     self.attachement_objects = []
     self.actions = []
     self.objvertmaps = {}
-    self.file = None
     self.armatureobj = None
 
+  ########################################################
   def export(self, filename):
-    # parse actionconfig
+    """ parse actionconfig """
     try:
       self.actionconfigs = parse_actionconfig(get_text("actionconfig"))
     except Exception, message:
       raise Exception, "Parse Error in actionconfig:" + str(message)
-    
-    self.export_lowlevel()
-    
-    self.file = open(filename, "wb")
-    self.write_file()
-    self.file.close()
 
-  def write_file(self):
-    # write file header
-    self.file.write(struct.pack("=4sHHHH", "W3DS", FORMAT_VERSION, \
+    self.export_lowlevel()
+
+    file = open(filename, "wb")
+    self.write_file(file)
+    file.close()
+
+  ### begin: save_frame()
+  def save_frame(self, out):
+    """ """
+    for obj in self.meshes:
+      data = Blender.NMesh.GetRawFromObject(obj.getName())
+      m = obj.getMatrix()
+      # action/frame/mesh/vertices
+      for nv in self.objvertmaps[obj.getName()]:
+        v = data.verts[nv]
+        t = [0, 0, 0]
+        t[0] = m[0][0]*v[0] + m[1][0]*v[1] + m[2][0]*v[2] + m[3][0]
+        t[1] = m[0][1]*v[0] + m[1][1]*v[1] + m[2][1]*v[2] + m[3][1]        
+        t[2] = m[0][2]*v[0] + m[1][2]*v[1] + m[2][2]*v[2] + m[3][2]
+        t[0] *= ZOOM
+        t[1] *= ZOOM
+        t[2] *= ZOOM
+        out.write(struct.pack("=fff", t[1], -t[2], -t[0]))
+
+    # attachement points
+    for obj in self.attachement_objects:
+      m = obj.matrixWorld
+      loc = (m[3][0] * ZOOM, m[3][1] * ZOOM, m[3][2] * ZOOM)
+      out.write(struct.pack("=fff", loc[1], -loc[2], -loc[0]))
+      quat = matrix2quaternion(m)
+      out.write(struct.pack("=ffff", quat[0], quat[2], quat[3], quat[1]))
+    ### end: save_frame()
+
+  ########################################################    
+  def write_file(self, out):
+    """ write file header """
+    out.write(struct.pack("=4sHHHH", "W3DS", FORMAT_VERSION, \
           len(self.meshes), len(self.attachement_objects), len(self.actions)))
 
     # Mesh Headers + Data
     for obj in self.meshes:
-      self.export_mesh_header(obj)
-      
+      self.export_mesh_header(out, obj)
+
     # Attachement Point Headers
     for obj in self.attachement_objects:
-      self.file.write(struct.pack("=64s", obj.getName()[2:]))
+      out.write(struct.pack("=64s", obj.getName()[2:]))
 
     # Action Headers + actions
-    def save_frame():
-      for obj in self.meshes:
-        data = Blender.NMesh.GetRawFromObject(obj.getName())
-        m = obj.getMatrix()
-        # action/frame/mesh/vertices
-        for nv in self.objvertmaps[obj.getName()]:
-          v = data.verts[nv]
-          t = [0, 0, 0]
-          t[0] = m[0][0]*v[0] + m[1][0]*v[1] + m[2][0]*v[2] + m[3][0]
-          t[1] = m[0][1]*v[0] + m[1][1]*v[1] + m[2][1]*v[2] + m[3][1]        
-          t[2] = m[0][2]*v[0] + m[1][2]*v[1] + m[2][2]*v[2] + m[3][2]
-          t[0] *= ZOOM
-          t[1] *= ZOOM
-          t[2] *= ZOOM
-          self.file.write(struct.pack("=fff", t[1], -t[2], -t[0]))
-
-      # attachement points
-      for obj in self.attachement_objects:
-        m = obj.matrixWorld
-        loc = (m[3][0] * ZOOM, m[3][1] * ZOOM, m[3][2] * ZOOM)
-        self.file.write(struct.pack("=fff", loc[1], -loc[2], -loc[0]))
-        quat = matrix2quaternion(m)
-        self.file.write(struct.pack("=ffff", quat[0], quat[2], quat[3], quat[1]))
-
     actionnum = 0
 
-    for action in self.actions:
-      # special case, no armature+animations
-      if not self.armatureobj:
-        self.file.write(struct.pack("=64sfHH", "Default", \
-                   DEFAULT_SPEED * SPEED_MULTIPLIER, 0, 1))
-        save_frame()
-        break
+    # special case, no armature+animations
+    if not self.armatureobj:
+      out.write(struct.pack("=64sfHH", "Default", \
+                            DEFAULT_SPEED * SPEED_MULTIPLIER, 0, 1))
+      self.save_frame(out)
+    else:
+      for action in self.actions:
+        # enable action
+        action.setActive(self.armatureobj)
 
-      # enable action
-      action.setActive(self.armatureobj)
+        # find/autodetect config
+        if self.actionconfigs.has_key(action.getName()):
+          actioncfg = self.actionconfigs[action.getName()]
+        else:
+          print "Error: No config for action '%s' defined." % action.getName()
+          actioncfg = ActionConfig(1, 1, DEFAULT_SPEED, DEFAULT_SAMPLERATE, [])
 
-      # find/autodetect config
-      if self.actionconfigs.has_key(action.getName()):
-        actioncfg = self.actionconfigs[action.getName()]
-      else:
-        print "Error: No config for action '%s' defined." % action.getName()
-        actioncfg = ActionConfig(1, 1, DEFAULT_SPEED, DEFAULT_SAMPLERATE, [])
+        # calculate number of frames and stuff for the header
+        resultframes = 0
+        for i in range(actioncfg.first_frame, actioncfg.last_frame+1, actioncfg.samplerate):
+          resultframes += 1
+        progress = 1.0/float(len(self.actions)) * actionnum
 
-      # calculate number of frames and stuff for the header
-      resultframes = 0
-      for i in range(actioncfg.first_frame, actioncfg.last_frame+1, actioncfg.samplerate):
-        resultframes += 1
-      progress = 1.0/float(len(self.actions)) * actionnum
+        print "Exporting Action %s (%d frames)" \
+                % (action.getName(), resultframes)
+        Window.DrawProgressBar(progress, "Exporting Action %s (%d frames)" \
+                % (action.getName(), resultframes))
+        actionnum += 1
+        out.write(struct.pack("=64sfHH", action.getName(), \
+              actioncfg.speed * SPEED_MULTIPLIER, len(actioncfg.markers), resultframes))
 
-      print "Exporting Action %s (%d frames)" \
-              % (action.getName(), resultframes)
-      Window.DrawProgressBar(progress, "Exporting Action %s (%d frames)" \
-              % (action.getName(), resultframes))
-      actionnum += 1
-      self.file.write(struct.pack("=64sfHH", action.getName(), \
-            actioncfg.speed * SPEED_MULTIPLIER, len(actioncfg.markers), resultframes))
+        def blenderframe_to_wspriteframe(frame):
+          return (frame - actioncfg.first_frame) / actioncfg.samplerate
 
-      def blenderframe_to_wspriteframe(frame):
-        return (frame - actioncfg.first_frame) / actioncfg.samplerate
+        # write markers
+        for marker in actioncfg.markers:
+          out.write(struct.pack("=64sH", marker[0], \
+                blenderframe_to_wspriteframe(marker[1])))
 
-      # write markers
-      for marker in actioncfg.markers:
-        self.file.write(struct.pack("=64sH", marker[0], \
-              blenderframe_to_wspriteframe(marker[1])))
+        # output for all frames for all meshs all vertex positions
+        frs = 0
+        for frame in range(actioncfg.first_frame, actioncfg.last_frame+1, actioncfg.samplerate):
+          frs += 1
+          Blender.Set("curframe", int(frame))
+          self.save_frame(out)
+  ### end: write_file()
 
-      # output for all frames for all meshs all vertex positions
-      frs = 0
-      for frame in range(actioncfg.first_frame, actioncfg.last_frame+1, actioncfg.samplerate):
-        frs += 1
-        Blender.Set("curframe", int(frame))
-        save_frame()
-    
-  def export_mesh_header(self, obj):
+  def export_mesh_header(self, out, obj):
     print "Exporting Mesh %s" % obj.getName()
     data = obj.getData()
 
     print "Faces: %s" % (len(data.faces))
-    
+
     texture = data.faces[0].image
     texture_filename = texture.filename
     texture_filename = os.path.basename(texture_filename)
@@ -312,29 +328,34 @@ class WindstilleExporter:
     facecount = 0
     texturewarning = False
 
+    ##############################
     def mapvertex(index, u, v):
+      """Inline helper function"""
       for mv in xrange(0, len(vertexmap)):
         if vertexmap[mv] == index and uvs[mv] == (u, v):
           return mv
       vertexmap.append(index)
       uvs.append( (u, v) )
       return len(vertexmap)-1
-    
+    ##############################
+
     for face in data.faces:
       if face.image != texture and not texturewarning:
         print "WARNING: Mesh '%s' has more than 1 material" % obj.getName()
         texturewarning = True
 
+      # Write out triangle
       for v in [0, 1, 2]:
         bodydata += struct.pack("=H", \
               mapvertex(face.v[v].index, face.uv[v][0], face.uv[v][1]))
+      facecount += 1
+
+      # Write out another triangle in case we have a quad
       if len(face.v) == 4:
-        facecount += 2
+        facecount += 1
         for v in [0, 2, 3]:
           bodydata += struct.pack("=H", \
                 mapvertex(face.v[v].index, face.uv[v][0], face.uv[v][1]))
-      else:
-        facecount += 1
 
     # normals
     for face in data.faces:
@@ -346,17 +367,21 @@ class WindstilleExporter:
     for uv in uvs:
       bodydata += struct.pack("=ff", uv[0], 1.0-uv[1])
 
-    self.file.write(struct.pack("=64sHH", texture_filename, facecount, len(vertexmap)))
+    out.write(struct.pack("=64sHH", texture_filename, facecount, len(vertexmap)))
     print "Exporting Mesh Tex: %s Facecount: %d Vertices: %d" \
             % (texture_filename, facecount, len(vertexmap))
-    self.file.write(bodydata)
+    out.write(bodydata)
 
     self.objvertmaps[obj.getName()] = vertexmap
+  ### end: export_mesh()
 
   def export_lowlevel(self):
+    """Convert Blender data structures into something that is used by
+    this export script"""
+
     scene = Blender.Scene.getCurrent()
     layers = scene.Layers
-    
+
     # compose list of meshs to export
     for obj in Blender.Object.Get():
       data = obj.getData()
@@ -395,7 +420,11 @@ class WindstilleExporter:
     else:
       for action in Blender.Armature.NLA.GetActions().iteritems():
         self.actions.append(action[1])
-      
+  ## end: exporter_lowlevel()
+
+### end: WindstilleExporter
+
+########################################################
 def fs_callback(filename):
   print "=== Exporting: %s ===" % (filename)
   exporter = WindstilleExporter()
@@ -404,7 +433,7 @@ def fs_callback(filename):
 
 defaultname = Blender.Get("filename")
 if defaultname.endswith(".blend"):
-    defaultname = defaultname[0:len(defaultname) - len(".blend")] + ".wsprite"
+  defaultname = defaultname[0:len(defaultname) - len(".blend")] + ".wsprite"
 Window.FileSelector(fs_callback, "Windstille Export", defaultname)
 
 # EOF #
