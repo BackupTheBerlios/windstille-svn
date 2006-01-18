@@ -32,27 +32,6 @@
 #include "tile_factory.hpp"
 #include "tile_description.hpp"
 
-/** Check if the given region of the given image is fully transparent */
-static bool surface_empty(SDL_Surface* image, int sx, int sy, int w, int h)
-{
-  SDL_LockSurface(image);
-  
-  unsigned char* data = static_cast<unsigned char*>(image->pixels);
-  
-  for(int y = sy; y < sy + h; ++y)
-    for(int x = sx; x < sx + w; ++x)
-      {
-        if (data[y * image->pitch + 4*x + 3] != 0)
-          { 
-            SDL_UnlockSurface(image);
-            return false;
-          }
-      }
-
-  SDL_UnlockSurface(image);
-  return true;
-}
-
 TileDescription::TileDescription(FileReader& props)
   : width(0), height(0)
 {
@@ -84,76 +63,49 @@ TileDescription::load(TileFactory* factory)
       msg << "Couldn't load image '" << filename << "': " << SDL_GetError();
       throw std::runtime_error(msg.str());
     }
- 
-  try {
-    int num_tiles = width * height; //(image->w/TILE_RESOLUTION) * (image->h/TILE_RESOLUTION);
-    if (int(colmap.size()) != num_tiles)
-      {
-        std::ostringstream str;
-        str << "'colmap' information and num_tiles mismatch (" 
-            << colmap.size() << " != " << num_tiles << ") for image '" << filename << "'";
-        throw std::runtime_error(str.str());
-      }
+  else
+    {
+      try 
+        {
+          int num_tiles = width * height; //(image->w/TILE_RESOLUTION) * (image->h/TILE_RESOLUTION);
+          if (int(colmap.size()) != num_tiles)
+            {
+              std::ostringstream str;
+              str << "'colmap' information and num_tiles mismatch (" 
+                  << colmap.size() << " != " << num_tiles << ") for image '" << filename << "'";
+              throw std::runtime_error(str.str());
+            }
 
-    if (int(ids.size()) != num_tiles)
-      {
-        std::ostringstream str;
-        str << "'ids' information and num_tiles mismatch (" 
-            << ids.size() << " != " << num_tiles << ") for image '" << filename << "'";
-        throw std::runtime_error(str.str());
-      }
+          if (int(ids.size()) != num_tiles)
+            {
+              std::ostringstream str;
+              str << "'ids' information and num_tiles mismatch (" 
+                  << ids.size() << " != " << num_tiles << ") for image '" << filename << "'";
+              throw std::runtime_error(str.str());
+            }
     
-    int i = 0;
-    for (int y = 0; y < height*TILE_RESOLUTION; y += TILE_RESOLUTION)
-      {
-        for (int x = 0; x < width*TILE_RESOLUTION; x += TILE_RESOLUTION)
-          {
-            int& id = ids[i];
-            
-            if(id != -1)
-              {
-                if(id < int(factory->tiles.size())
-                   && factory->tiles[id] != 0
-                   && factory->tiles[id]->desc == 0)
-                  {
-                    std::cout << "Warning: Duplicate tile id: " << filename << "', ignoring" << id << std::endl;
-                  }
-                else
-                  {
-                    if (id >= int(factory->tiles.size()))
-                      factory->tiles.resize(id + 1, 0);
+          int i = 0;
+          for (int y = 0; y < height*TILE_RESOLUTION; y += TILE_RESOLUTION)
+            {
+              for (int x = 0; x < width*TILE_RESOLUTION; x += TILE_RESOLUTION)
+                {
+                  if(ids[i] != -1)
+                    {
+                      factory->pack(ids[i], colmap[i], image,
+                                    Rect(x, y, x+TILE_RESOLUTION, y+TILE_RESOLUTION));
+                    }
 
-                    delete factory->tiles[id];
-                    factory->tiles[id] = new Tile(colmap[i]);
-                    Tile& tile = *(factory->tiles[id]);
-                    tile.desc = 0;
-                    tile.id = id;
-
-                    if (!surface_empty(image, x, y, TILE_RESOLUTION, TILE_RESOLUTION))
-                      {
-                        if(factory->packers[factory->color_packer]->is_full())
-                          {
-                            factory->packers.push_back(new TilePacker(1024, 1024));
-                            factory->color_packer = factory->packers.size() - 1;
-                          }
-
-                        Rectf rect = factory->packers[factory->color_packer]->pack(image, x, y,
-                                                                                   TILE_RESOLUTION, TILE_RESOLUTION);
-                        tile.color_rect   = rect;
-                        tile.color_packer = factory->color_packer;
-                        tile.texture      = factory->packers[factory->color_packer]->get_texture();
-                      }
-                  }
-              }
-
-            i += 1; 
-          }
-      }
-  } catch(...) {
-    SDL_FreeSurface(image);
-    throw;
-  }
-  SDL_FreeSurface(image);
+                  i += 1; 
+                }
+            }
+        } 
+      catch(...) 
+        {
+          SDL_FreeSurface(image);
+          throw;
+        }
+      SDL_FreeSurface(image);
+    }
 }
 
 /* EOF */
