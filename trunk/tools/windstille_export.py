@@ -182,7 +182,7 @@ class MeshData:
     # Filename of the used texture
     self.texture_filename = texture_filename
 
-    # [[MeshVertexData, MeshVertexData, MeshVertexData], ...]
+    # [[VertexData, VertexData, VertexData], ...]
     self.faces            = faces
 
     # Table to translate (object, index) to new_index
@@ -220,12 +220,17 @@ class MeshData:
         return new_index
     raise "MeshData: Couldn't translate vertex: %s, %s" % (arg_object, arg_index)
 
-class MeshVertexData:
+class FaceData:
+  def __init__(self, vertices, normal):
+    self.vertices = []
+    self.normal   = normal
+
+
+class VertexData:
   def __init__(self, object, index, uv, normal):
     self.object = object
     self.index  = index
     self.uv     = uv
-    # FIXME: Shouldn't the normal be a per per vertex data?
     self.normal = normal
 
 class AttachmentPointData:
@@ -288,6 +293,9 @@ class WindstilleExporter:
 
     # Name of the actions as string
     self.actions = []
+
+    # Used to store animation data (vertex position and such)
+    self.action_data = []
     
     self.objvertmaps = {}
     self.armatureobj = None
@@ -305,9 +313,10 @@ class WindstilleExporter:
 
     self.export_lowlevel()
 
+    self.collect_scene_data()
+
     file = open(filename, "wb")
     self.write_file(file)
-    self.collect_scene_data()
     file.close()
 
   ### begin: save_frame()
@@ -433,7 +442,7 @@ class WindstilleExporter:
       # Write out triangle: ((index, u, v), (index, u, v), (index, u, v))
       for v in [0, 1, 2]:
         bodydata += struct.pack("=H", \
-              mapvertex(face.v[v].index, face.uv[v][0], face.uv[v][1]))
+                                mapvertex(face.v[v].index, face.uv[v][0], face.uv[v][1]))
       facecount += 1
 
       # Write out another triangle in case we have a quad: index, u, v
@@ -562,17 +571,17 @@ class WindstilleExporter:
 
       faces = []
       for v in [0, 1, 2]:
-        faces += [MeshVertexData(obj, face.v[v].index,
-                                [face.uv[v][0], 1.0-face.uv[v][1]],
-                                [face.normal[1], -face.normal[2], -face.normal[0]])]
+        faces += [VertexData(obj, face.v[v].index,
+                             [face.uv[v][0], 1.0-face.uv[v][1]],
+                             [face.normal[1], -face.normal[2], -face.normal[0]])]
       mesh_data[texture_filename].faces += [faces]
 
       # Write out another triangle in case we have a quad: index, u, v
       if len(face.v) == 4:
         for v in [0, 2, 3]:
-          faces += [MeshVertexData(obj, face.v[v].index,
-                                  [face.uv[v][0], 1.0-face.uv[v][1]],
-                                  [face.normal[1], -face.normal[2], -face.normal[0]])]
+          faces += [VertexData(obj, face.v[v].index,
+                               [face.uv[v][0], 1.0-face.uv[v][1]],
+                               [face.normal[1], -face.normal[2], -face.normal[0]])]
         mesh_data[texture_filename].faces += [faces]
       
     return mesh_data.values()
@@ -620,6 +629,63 @@ class WindstilleExporter:
                                             [quat[0], quat[2], quat[3], quat[1]])]
 
     return FrameData(meshs, attachment_points)
+
+  def write(self, out):
+    """This is a new version of write_file(), instead of using blender
+    internals, it uses the collected data"""
+
+    ### Write magic, version and counts for mesh, attachment_points and actions
+    out.write(struct.pack("=4sHHHH", "W3DS", FORMAT_VERSION, \
+                          len(self.mesh_objects),
+                          len(self.attachment_objects),
+                          len(self.actions)))
+
+    ### Mesh Header:
+    for mesh in self.mesh_data:
+      out.write(struct.pack("=64sHH", mesh.texture_filename, len(mesh.faces), len(mesh.vertices()) * 2))
+      ### Mesh Data:
+      ## Vertex indices of triangles
+      for face in mesh.faces:
+        out.write(struct.pack("=HHH", face[0].index,  face[1].index,  face[2].index))
+
+      ## Normal
+      for face in mesh.faces: ## FIXME: Wrong
+        out.write(struct.pack("=fff", face[0].normal, face[1].normal, face[2].normal))
+
+      ## UV Coordinates
+      for face in mesh.faces: 
+        out.write(struct.pack("=ff",  face.uv[0], face.uv[1]))
+
+    ### Attachment points
+    for obj in self.attachment_objects:
+      out.write(struct.pack("=64s", obj.getName()[2:]))
+
+    ## Action Header
+    for action in self.action_configs:
+      out.write(struct.pack("=64sfHH", action.name, 
+                            action.config.speed * SPEED_MULTIPLIER,
+                            len(action.config.markers), len(action.frame_data)))
+
+    ## Marker, FIXME: Are markers per action, or global?
+    for marker in action.config.markers:
+      out.write(struct.pack("=64sH", marker[0], \
+                            (frame - action.config.first_frame) / action.config.samplerate))
+
+    ## Action Data
+    for action in self.action_data:
+      for frame in action.frame_data:
+        ### Vertex positions
+        for mesh in frame.vertex_locs:
+          for vert in mesh:
+           out.write(struct.pack("=fff", vert[0], vert[1], vert[2]))
+        ### Attachment Points
+        for at in frame.attachment_point:
+          out.write(struct.pack("=fffffff",
+                                at.loc[0],  at.loc[1],  at.loc[2],
+                                at.quat[0], at.quat[1], at.quat[2], at.quat[3]))
+
+    ### DONE ###
+
 
 ### end: WindstilleExporter
 
