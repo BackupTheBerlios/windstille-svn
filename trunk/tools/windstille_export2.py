@@ -1,7 +1,7 @@
 #!BPY
 
 """
-Name: 'Windstille Exporter V2'
+Name: 'Windstille Exporter'
 Blender: 233
 Group: 'Export'
 Tip: 'Export meshes/actions to windstille format'
