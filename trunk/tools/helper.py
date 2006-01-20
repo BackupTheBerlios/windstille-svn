@@ -49,10 +49,11 @@ def quaternion_to_axisangle(q):
 def get_text(textname):
   """Little shortcut function to return the content of
   Blender.Text.get(textname) as a single string and do a little error
-  handling in addition""" 
-  textobj = Blender.Text.Get(textname)
-  if not textobj:
-    print "WARNING: Text '%s' not found" % textname
+  handling in addition"""
+  try:
+    textobj = Blender.Text.Get(textname)
+  except Exception, err:
+    print "WARNING: ", err
     return ""
   else:
     return string.join(textobj.asLines(), "\n")

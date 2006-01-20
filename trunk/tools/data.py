@@ -17,39 +17,44 @@ class MeshData:
 
     self.vertices         = []
 
-    # Table to translate (object, index) to new_index
-    # Format: [[object, index, new_index], ...]
-    self.transtable       = []
-
-  def transtable_has_vertex(self, new_object, new_index):
-      for (object, index, new_index) in self.transtable:
-          if object == new_object and index == new_object:
-              return True
-          else:
-              return False
-
-  def translate(self, vert):
-      """Translate a vertex given as object, index pair to its
-      corresponding index, as used in the wsprite file"""
-      
-      for (object, index, new_index) in self.transtable:
-          if object == vert.object and index == vert.index:
-              return new_index
-      
-      print "MeshData: Couldn't translate vertex: %s, %s" % (vert.object, vert.index)
-      return 0
+  def merge(self, mesh):
+      """Merges a mesh with self"""
+      if self.texture_filename != mesh.texture_filename:
+          raise Exception, "Error: MeshData:merge: meshes can only be merged if they have the same texture"
+      elif self.vertices != []:
+          raise Exception, "Error: MeshData:merge: Must merge the meshes before finalization"
+      else:
+          self.faces += mesh.faces
 
   def finalize(self):
-      """Reorders vertex indexes and merge vertexes which have the same
-      UV coordinates"""
+      """Reorders vertex indexes and merge vertexes which have the
+      same UV coordinates, thus bringing the MeshData into a stage
+      where it is ready to be written out to file"""
 
+      # Merge vertices with the same UV
+      vertices = {}
       for face in self.faces:
           for vert in face.verts:
-              if not self.transtable_has_vertex(vert.object, vert.index):
-                  new_index = len(self.transtable)
-                  self.transtable.append([vert.object, vert.index, new_index])
-                  self.vertices.append(vert)
+              key = (vert.uv[0], vert.uv[1])
+              vertices[key] = vert
 
+      print "Vertices: ", len(vertices)
+
+      # FIXME: This might not work with vertices that have the same
+      # uv, but different positions
+      for face in self.faces:
+          for vi in range(0, len(face.verts)):
+              key = (face.verts[vi].uv[0], face.verts[vi].uv[1])
+              face.verts[vi] = vertices[key]
+
+      # Generate new index numbering
+      self.vertices = vertices.values()
+      for i, vert in enumerate(self.vertices):
+          vert.new_index = i
+
+      ## Remove '//' infront of the filename that Blender inserts there
+      self.texture_filename = self.texture_filename[2:]
+      
 class FaceData:
     def __init__(self, verts, normal):
         self.verts   = verts
@@ -57,10 +62,11 @@ class FaceData:
 
 class VertexData:
     def __init__(self, object, index, uv, normal):
-        self.object = object
-        self.index  = index
-        self.uv     = uv
-        self.normal = normal
+        self.object    = object
+        self.index     = index
+        self.uv        = uv
+        self.normal    = normal
+        self.new_index = -1
 
 class AttachmentPointData:
     """Data for an attachment point, its location and its rotation"""

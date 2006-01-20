@@ -33,6 +33,12 @@ Tip: 'Export meshes/actions to windstille format'
 #
 # See windstille/docs/models.txt for more details
 
+### TODO ###
+# - add merging of vertices with the same uv
+# - add merging of meshes with the same texture
+# - add handling of meshes with armatures, but without actions
+############
+
 import struct, shlex, os.path, math
 import Blender
 from Blender import NMesh
@@ -153,16 +159,22 @@ class WindstilleSprite:
           self.action_data.append(ActionData(action.getName(), actioncfg, frame_data))
 
   def collect_object_data(self):
+    self.mesh_data = {}
     for obj in self.mesh_objects:
-      self.mesh_data += self.collect_mesh_data(obj)
+      ### Convert mesh_objects to MeshData and merge all meshes with
+      ### the same texture     
+      for (texture, mesh) in self.collect_mesh_data(obj).iteritems():
+        if self.mesh_data.has_key(texture):
+          self.mesh_data[texture].merge(mesh)
+        else:
+          self.mesh_data[texture] = mesh
+    self.mesh_data = self.mesh_data.values()
 
-    # insert code to merge meshes here
-
-    # Create the transtable
+    # Optimize the meshs by merging meshes and vertices
     for mesh in self.mesh_data:
       mesh.finalize()
 
-  def collect_mesh_data(self, obj):
+  def collect_mesh_data(self, obj): # returns { texture_filename : MeshData, ...}
       """
       Returns mesh_data as dict with format:
       key: texture_filename
@@ -174,7 +186,7 @@ class WindstilleSprite:
           if face.image:
               texture_filename = face.image.filename
           else:
-              texture_filename = "//404.png" # FIXME: what is // good for?
+              texture_filename = "//404.png"
 
           if not mesh_data.has_key(texture_filename):
               mesh_data[texture_filename] = MeshData(texture_filename)
@@ -197,7 +209,7 @@ class WindstilleSprite:
               mesh_data[texture_filename].faces.append(FaceData(faces,
                                                                 [face.normal[1], -face.normal[2], -face.normal[0]]))
 
-      return mesh_data.values()
+      return mesh_data
 
   def collect_frame_data(self):
       """
@@ -217,12 +229,12 @@ class WindstilleSprite:
       # no triangles here (those are global), just vertexes (those are local)
       for mesh_data in self.mesh_data:
           vertex_positions = []
-          for vertex in mesh_data.transtable:
-              if obj != vertex[0]:
-                  obj  = vertex[0]
+          for vertex in mesh_data.vertices:
+              if obj != vertex.object:
+                  obj  = vertex.object
                   data = Blender.NMesh.GetRawFromObject(obj.getName())
 
-              index = vertex[1]
+              index = vertex.index
 
               m = obj.getMatrix()
 
@@ -264,9 +276,9 @@ class WindstilleSprite:
           ## Vertex indices of triangles
           for face in mesh.faces:
               out.write(struct.pack("=HHH",
-                                    mesh.translate(face.verts[0]),
-                                    mesh.translate(face.verts[1]),
-                                    mesh.translate(face.verts[2])))
+                                    face.verts[0].new_index,
+                                    face.verts[1].new_index,
+                                    face.verts[2].new_index))
 
           ## Normal
           for face in mesh.faces:
