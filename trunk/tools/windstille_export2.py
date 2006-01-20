@@ -34,8 +34,6 @@ Tip: 'Export meshes/actions to windstille format'
 # See windstille/docs/models.txt for more details
 
 ### TODO ###
-# - add merging of vertices with the same uv
-# - add merging of meshes with the same texture
 # - add handling of meshes with armatures, but without actions
 ############
 
@@ -54,6 +52,250 @@ DEFAULT_SPEED = 1.0
 SPEED_MULTIPLIER = 9.8
 # DO NOT change this
 FORMAT_VERSION = 2
+
+def progress(percent, str):
+#    print "%3.2f%% - %s" % (percent*100, str)
+    Window.DrawProgressBar(percent, str)
+
+### Some math helper functions ###
+def matrix2quaternion(m):
+  tr = 1.0 + m[0][0] + m[1][1] + m[2][2]
+  if tr > .00001:
+    s = math.sqrt(tr)
+    w = s / 2.0
+    s = 0.5 / s
+    x = (m[1][2] - m[2][1]) * s
+    y = (m[2][0] - m[0][2]) * s
+    z = (m[0][1] - m[1][0]) * s
+  elif m[0][0] > m[1][1] and m[0][0] > m[2][2]:
+    s = math.sqrt(1.0 + m[0][0] - m[1][1] - m[2][2])
+    x = s / 2.0
+    s = 0.5 / s
+    y = (m[0][1] + m[1][0]) * s
+    z = (m[2][0] + m[0][2]) * s
+    w = (m[1][2] - m[2][1]) * s
+  elif m[1][1] > m[2][2]:
+    s = math.sqrt(1.0 + m[1][1] - m[0][0] - m[2][2])
+    y = s / 2.0
+    s = 0.5 / s
+    x = (m[0][1] + m[1][0]) * s
+    z = (m[1][2] + m[2][1]) * s
+    w = (m[2][0] - m[0][2]) * s
+  else:
+    s = math.sqrt(1.0 + m[2][2] - m[0][0] - m[1][1])
+    z = s / 2.0
+    s = 0.5 / s
+    x = (m[2][0] + m[0][2]) * s
+    y = (m[1][2] + m[2][1]) * s
+    w = (m[0][1] - m[1][0]) * s
+
+  return quaternion_normalize([w, x, y, z])
+
+def quaternion_normalize(q):
+  l = math.sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3])
+  return q[0] / l, q[1] / l, q[2] / l, q[3] / l
+
+def quaternion_to_axisangle(q):
+  cos_a = q[0]
+  angle = math.acos(cos_a) * 2.0
+  sin_a = math.sqrt(1.0 - cos_a * cos_a)
+  if(sin_a < .0005 or sin_a > .0005): sin_a = 1
+  return angle, q[1]/sin_a, q[2]/sin_a, q[3]/sin_a
+
+##########################################################
+def get_text(textname):
+  """Little shortcut function to return the content of
+  Blender.Text.get(textname) as a single string and do a little error
+  handling in addition"""
+  try:
+    textobj = Blender.Text.Get(textname)
+  except Exception, err:
+    print "WARNING: ", err
+    return ""
+  else:
+    return string.join(textobj.asLines(), "\n")
+
+### Data Structures to hold the Mesh ###
+class MeshData:
+  def __init__(self, texture_filename):
+    # Filename of the used texture
+    self.texture_filename = texture_filename
+
+    # [FaceData, ...]
+    self.faces            = []
+
+    self.vertices         = []
+
+  def merge(self, mesh):
+      """Merges a mesh with self"""
+      if self.texture_filename != mesh.texture_filename:
+          raise Exception, "Error: MeshData:merge: meshes can only be merged if they have the same texture"
+      elif self.vertices != []:
+          raise Exception, "Error: MeshData:merge: Must merge the meshes before finalization"
+      else:
+          self.faces += mesh.faces
+
+  def finalize(self):
+      """Reorders vertex indexes and merge vertexes which have the
+      same UV coordinates, thus bringing the MeshData into a stage
+      where it is ready to be written out to file"""
+
+      # Merge vertices with the same UV
+      vertices = {}
+      for face in self.faces:
+          for vert in face.verts:
+              key = (vert.uv[0], vert.uv[1])
+              vertices[key] = vert
+
+      print "Vertices: ", len(vertices)
+
+      # FIXME: This might not work with vertices that have the same
+      # uv, but different positions
+      for face in self.faces:
+          for vi in range(0, len(face.verts)):
+              key = (face.verts[vi].uv[0], face.verts[vi].uv[1])
+              face.verts[vi] = vertices[key]
+
+      self.vertices = vertices.values()
+
+      # Sort the vertices by object to allow faster export in collect_frame_data()
+      self.vertices.sort(lambda x, y: cmp(x.object.getName(), y.object.getName()))
+      
+      # Generate new index numbering
+      for i, vert in enumerate(self.vertices):
+          vert.new_index = i
+
+      ## Remove '//' infront of the filename that Blender inserts there
+      self.texture_filename = self.texture_filename[2:]
+      
+class FaceData:
+    def __init__(self, verts, normal):
+        self.verts   = verts
+        self.normal  = normal
+
+class VertexData:
+    def __init__(self, object, index, uv, normal):
+        self.object    = object
+        self.index     = index
+        self.uv        = uv
+        self.normal    = normal
+        self.new_index = -1
+
+class AttachmentPointData:
+    """Data for an attachment point, its location and its rotation"""
+    def __init__(self, loc, quat):
+        self.loc  = loc
+        self.quat = quat
+
+class FrameData:
+    """ Data used for a single frame in an action """
+    def __init__(self, vertex_locs, attachment_points):
+        # Format: [[[x,y,z], ...], [[x,y,z],  ...], ...] (one list for each Mesh)
+        self.vertex_locs        = vertex_locs
+
+        # [AttachmentPointData, ...]
+        self.attachment_points = attachment_points
+
+
+class ActionConfig:
+    """ActionConfig handles the properties of a single
+    action, ie. when it starts, when it stops, its speed, how many
+    spamles should be taken, etc."""
+
+    def __init__(self, first_frame, last_frame, speed, samplerate, markers):
+        self.first_frame = first_frame
+        self.last_frame  = last_frame
+        self.speed       = speed
+        self.samplerate  = samplerate
+        self.markers     = markers
+        self.numframes   = last_frame - first_frame + 1
+
+    def __str__(self):
+        return "Frames: %3i - %3i, speed: %3.2f, Samplerate: %3d" % (self.first_frame, self.last_frame,
+                                                                         self.speed, self.samplerate)
+
+    # config entry (first_frame, last_frame, speed, samplerate, markers[])
+    #  a marker is (name, frame)
+    def parse(text):     
+        def expect_string():
+            res = lex.get_token()
+            if res == lex.eof:
+                raise Exception, "Expected string, got EOF"
+            return res
+
+        def expect_int():
+            res = lex.get_token()
+            if res == lex.eof:
+                raise Exception, "Expected in, got EOF"
+            return int(res)
+
+        def expect_float():
+            res = lex.get_token()
+            if res == lex.eof:
+                raise Exception, "Expected float, got EOF"
+            return float(res)
+
+        def expect_dash():
+            res = lex.get_token()
+            if res == lex.eof:
+                raise Exception, "Expected '-', got EOF"
+            elif res != "-":
+                raise Exception, "Expected '-', got '%s'" % res
+
+        lex = shlex.shlex(text)
+        lex.wordchars += "."
+
+        actionconfig = {}
+        while True:
+            token = lex.get_token()
+            if token == lex.eof:
+                break
+            lex.push_token(token)
+            action_name = expect_string()
+            first_frame = expect_int()
+            expect_dash()
+            last_frame = expect_int()
+
+            token = lex.get_token()
+            if token == "speed":
+                speed = expect_float()
+            else:
+                lex.push_token(token)
+                speed = DEFAULT_SPEED
+
+            token = lex.get_token()
+            if token == "samplerate":
+                samplerate = expect_int()
+            else:
+                lex.push_token(token)
+                samplerate = DEFAULT_SAMPLERATE
+
+            token = lex.get_token()
+            markers = []
+            while token == "marker":
+                marker_name = expect_string()
+                marker_frame = expect_int()
+                markers.append( (marker_name, marker_frame) )
+                token = lex.get_token()
+            lex.push_token(token)
+
+            actionconfig[action_name] = ActionConfig(first_frame, last_frame, speed, samplerate, markers)
+
+        return actionconfig
+    parse = staticmethod(parse)
+
+class ActionData:
+  def __init__(self, name, config, frame_data):
+    # name as string
+    self.name       = name
+
+    # ActionConfig
+    self.config     = config
+
+    # FrameData (filled out later in the WindstilleExporter)
+    self.frame_data = frame_data
+
+### end: Data Structures to hold the Mesh ###
 
 class WindstilleSprite:
   ########################################################
@@ -118,15 +360,15 @@ class WindstilleSprite:
               self.mesh_objects.append(obj)
 
       # search for armature object
-      self.armature_object = Blender.Object.Get("Armature")
-      if self.armature_object and self.armature_object.getType() != "Armature":
-          print "Warning: object named 'Armature' is not an armature!"
-          self.armature_object = None
+      armatures = [obj for obj in Blender.Object.Get() if obj.getType() == "Armature"]
+      if len(armatures) > 1:
+          raise Exception, "Need to have at most 1 armature in the scene"
+      else:
+          self.armature_object = armatures[0]
 
       # compose list of objects for attachment points
-      for obj in Blender.Object.Get():
-          if obj.getType() == 'Empty' and obj.getName().startswith("A:"):
-              self.attachment_objects.append(obj)
+      self.attachment_objects += [obj for obj in Blender.Object.Get() 
+                                  if (obj.getType() == 'Empty' and obj.getName().startswith("A:"))]
 
       # compose list of actions to export
       if not self.armature_object:
@@ -139,8 +381,7 @@ class WindstilleSprite:
 
   def collect_animation_data(self):
       for index, action in enumerate(self.actions):
-          Window.DrawProgressBar(float(index)/len(self.mesh_data)*0.5,
-                                 "Collection Action %s" % (action.name))
+          progress(float(index)/len(self.actions)*0.5, "Collecting Action %s" % (action.name))
           
           action.setActive(self.armature_object)
 
@@ -153,6 +394,9 @@ class WindstilleSprite:
 
           frame_data = []
           for frame in range(actioncfg.first_frame, actioncfg.last_frame+1, actioncfg.samplerate):
+              #progress((index + (float(frame)/(actioncfg.last_frame+1 - actioncfg.first_frame)))
+              #         /len(self.actions)*0.5,
+              #         "Collecting Action %s" % (action.name))
               Blender.Set("curframe", int(frame))
               frame_data.append(self.collect_frame_data())
 
@@ -220,7 +464,7 @@ class WindstilleSprite:
       [[attachment_pos_x, attachment_pos_y, attachment_pos_z,
       attachment_quat1, attachment_quat2, attachment_quat3, attachment_quat4], ...]]
        """
-   
+      # FIXME: This is by far the slowest function of all, optimizing might help
       meshs = []
       attachment_points = []
 
@@ -233,13 +477,10 @@ class WindstilleSprite:
               if obj != vertex.object:
                   obj  = vertex.object
                   data = Blender.NMesh.GetRawFromObject(obj.getName())
-
-              index = vertex.index
-
-              m = obj.getMatrix()
+                  m    = obj.getMatrix()
 
               # location: action/frame/mesh/vertices
-              v = data.verts[index]
+              v = data.verts[vertex.index]
               vertex_positions.append([+(m[0][1]*v[0] + m[1][1]*v[1] + m[2][1]*v[2] + m[3][1]) * ZOOM,
                                        -(m[0][2]*v[0] + m[1][2]*v[1] + m[2][2]*v[2] + m[3][2]) * ZOOM,
                                        -(m[0][0]*v[0] + m[1][0]*v[1] + m[2][0]*v[2] + m[3][0]) * ZOOM])
@@ -250,8 +491,8 @@ class WindstilleSprite:
           m    = obj.matrixWorld
           loc  = (m[3][0] * ZOOM, m[3][1] * ZOOM, m[3][2] * ZOOM)
           quat = matrix2quaternion(m)      
-          attachment_points.append(AttachmentPoint([loc[1], -loc[2], -loc[0]],
-                                                   [quat[0], quat[2], quat[3], quat[1]]))
+          attachment_points.append(AttachmentPointData([loc[1], -loc[2], -loc[0]],
+                                                       [quat[0], quat[2], quat[3], quat[1]]))
 
       return FrameData(meshs, attachment_points)
 
@@ -294,8 +535,8 @@ class WindstilleSprite:
 
       ## Action Header
       for index, action in enumerate(self.action_data):
-          Window.DrawProgressBar(0.5 + float(index)/len(self.mesh_data) * 0.5,
-                                 "Writing Action %s" % (action.name))
+          progress(0.5 + float(index)/len(self.action_data) * 0.5,
+                   "Writing Action %s" % (action.name))
 
           out.write(struct.pack("=64sfHH",
                                 action.name, 
