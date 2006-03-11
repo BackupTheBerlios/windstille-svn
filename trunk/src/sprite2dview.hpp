@@ -5,7 +5,7 @@
 **   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
 **    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
 **         \/          \/      \/    \/                         \/
-**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
 **
 **  This program is free software; you can redistribute it and/or
 **  modify it under the terms of the GNU General Public License
@@ -23,24 +23,39 @@
 **  02111-1307, USA.
 */
 
-#include "globals.hpp"
+#ifndef HEADER_SPRITE2DVIEW_HPP
+#define HEADER_SPRITE2DVIEW_HPP
 
-std::string datadir;
+#include "display/scene_context.hpp"
+#include "sprite2d/sprite.hpp"
+#include "screen.hpp"
 
-int TILE_SIZE    = 32;
-int TILE_RESOLUTION = 64;
+/**
+ * A simple class to view 3d sprites and their different actions,
+ * mostly usefull for debugging 
+ */
+class Sprite2DView : public Screen
+{
+private:
+  SceneContext sc;
 
-float game_speed = 1.0f;
-#ifdef DEBUG
-bool debug = true;
-#else
-bool debug = false;
+  Sprite sprite;
+  float scale;
+
+public:
+  Sprite2DView();
+  ~Sprite2DView();
+
+  void draw();
+  void update(float delta, const Controller& controller);
+
+  void set_model(const std::string& filename);
+
+private:
+  Sprite2DView (const Sprite2DView&);
+  Sprite2DView& operator= (const Sprite2DView&);
+};
+
 #endif
-bool collision_debug = false;
-bool sound_disabled  = false;
-
-bool sprite3dview    = false;
-bool sprite2dview    = false;
-bool particleview    = false;
 
 /* EOF */

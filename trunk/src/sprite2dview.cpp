@@ -5,7 +5,7 @@
 **   \        /|  |   |  \/ /_/ |\___ \  |  | |  |  |_|  |_\  ___/
 **    \__/\  / |__|___|  /\____ /____  > |__| |__|____/____/\___  >
 **         \/          \/      \/    \/                         \/
-**  Copyright (C) 2000,2005 Ingo Ruhnke <grumbel@gmx.de>
+**  Copyright (C) 2005 Ingo Ruhnke <grumbel@gmx.de>
 **
 **  This program is free software; you can redistribute it and/or
 **  modify it under the terms of the GNU General Public License
@@ -23,24 +23,34 @@
 **  02111-1307, USA.
 */
 
-#include "globals.hpp"
+#include "sprite2dview.hpp"
 
-std::string datadir;
+Sprite2DView::Sprite2DView()
+{
+  
+}
 
-int TILE_SIZE    = 32;
-int TILE_RESOLUTION = 64;
+Sprite2DView::~Sprite2DView()
+{
+  
+}
 
-float game_speed = 1.0f;
-#ifdef DEBUG
-bool debug = true;
-#else
-bool debug = false;
-#endif
-bool collision_debug = false;
-bool sound_disabled  = false;
+void
+Sprite2DView::draw()
+{
+  
+}
 
-bool sprite3dview    = false;
-bool sprite2dview    = false;
-bool particleview    = false;
+void
+Sprite2DView::update(float delta, const Controller& controller)
+{
+  
+}
+
+void
+Sprite2DView::set_model(const std::string& filename)
+{
+}
+
 
 /* EOF */

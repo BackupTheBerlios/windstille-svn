@@ -131,6 +131,7 @@ Config::parse_args(int argc, char** argv)
   const int nodebug_flag      = 257;
   const int sprite3dview_flag = 258;
   const int particleview_flag = 259;
+  const int sprite2dview_flag = 260;
     
   argp.set_help_indent(24);
   argp.add_usage ("[LEVELFILE]");
@@ -138,6 +139,7 @@ Config::parse_args(int argc, char** argv)
 
   argp.add_group("Mode Options:");
   argp.add_option(sprite3dview_flag, "sprite3dview", "", "Launch Sprite3DView instead of the game");
+  argp.add_option(sprite2dview_flag, "sprite2dview", "", "Launch Sprite2DView instead of the game");
   argp.add_option(particleview_flag, "particle-viewer", "", "Launch ParticleView instead of the game");
 
   argp.add_group("Display Options:");
@@ -208,6 +210,10 @@ Config::parse_args(int argc, char** argv)
 
         case sprite3dview_flag:
           sprite3dview = true;
+          break;
+
+        case sprite2dview_flag:
+          sprite2dview = true;
           break;
 
         case particleview_flag:

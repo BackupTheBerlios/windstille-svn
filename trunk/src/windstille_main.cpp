@@ -47,6 +47,7 @@
 #include "sprite3d/manager.hpp"
 #include "screen_manager.hpp"
 #include "sprite3dview.hpp"
+#include "sprite2dview.hpp"
 #include "particle_viewer.hpp"
 #include "sprite2d/manager.hpp"
 
@@ -128,6 +129,16 @@ WindstilleMain::main(int argc, char** argv)
 
         // Launching Sprite3DView instead of game
         screen_manager.set_screen(sprite3dview);
+      }
+    else if (sprite2dview)
+      {
+        Sprite2DView* sprite2dview = new Sprite2DView();
+
+        if (!levelfile.empty())
+          sprite2dview->set_model(levelfile);
+
+        // Launching Sprite2DView instead of game
+        screen_manager.set_screen(sprite2dview);
       }
     else if (particleview)
       {

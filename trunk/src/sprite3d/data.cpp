@@ -124,13 +124,13 @@ Data::Data(const std::string& filename)
       action.name = read_string(file, 64);
       action.speed = read_float(file);
       uint16_t marker_count = read_uint16_t(file);
-      uint16_t frame_count = read_uint16_t(file);
+      uint16_t frame_count  = read_uint16_t(file);
 
       // read markers
       action.markers.resize(marker_count);
       for(uint16_t m = 0; m < action.markers.size(); ++m) {
         Marker& marker = action.markers[m];
-        marker.name = read_string(file, 64);
+        marker.name  = read_string(file, 64);
         marker.frame = read_uint16_t(file);
       }
 

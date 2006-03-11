@@ -73,6 +73,7 @@ env.Program('../windstille', [
 'sector.cpp',
 'spawnpoint.cpp',
 'sprite3dview.cpp',
+'sprite2dview.cpp',
 'text_area.cpp',
 'tile.cpp',
 'tile_factory.cpp',
@@ -173,8 +174,8 @@ env.Program('../windstille', [
 'tinygettext/gettext.cpp',
 'tinygettext/tinygettext.cpp'
 ],
-LIBS    = ['GL', 'GLU', 'squirrel', 'physfs', 'SDL_image', 'openal'] + env['LIBS'],
-LIBPATH = ['squirrel/'],
-CPPPATH = env['CPPPATH'] + ['.', '..', 'squirrel/include/'])
+LIBS    = ['GL', 'GLU', 'squirrel', 'physfs', 'SDL_image', 'openal', 'glew'] + env['LIBS'],
+LIBPATH = ['squirrel/', '../lib/'],
+CPPPATH = env['CPPPATH'] + ['.', '..', 'squirrel/include/', '../lib/glew'])
 
 # EOF #
