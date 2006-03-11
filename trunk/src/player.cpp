@@ -31,6 +31,7 @@
 #include "sprite3d/manager.hpp"
 #include "display/surface_manager.hpp"
 #include "particles/particle_system.hpp"
+#include "sound/sound_manager.hpp"
 #include "collision/collision_engine.hpp"
 #include "laser_pointer.hpp"
 #include "collision/stair_contact.hpp"
@@ -380,26 +381,41 @@ Player::set_walk(Direction direction)
     velocity.x = WALK_SPEED;
   else
     velocity.x = -WALK_SPEED;
+
+  // start walking sound
+  sound_source.reset(sound_manager->create_sound_source("sounds/steps_dirt.ogg"));
+  sound_source->set_looping(true);
+  sound_source->play();
 }
 
 void
 Player::update_walk()
 {
   if (controller.get_axis_state(X_AXIS) == 0) {
+    leave_walk();
     set_stand();
     return;
   }
 
   if(get_direction() == WEST && controller.get_axis_state(X_AXIS) > 0
      || get_direction() == EAST && controller.get_axis_state(X_AXIS) < 0) {
+    leave_walk();
     set_turnaround();
     return;
   }
   
   if(controller.get_button_state(RUN_BUTTON)) {
+    leave_walk();
     set_run();
     return;
   }
+}
+
+void
+Player::leave_walk()
+{
+  // stop walking sound
+  sound_source->stop();
 }
 
 void
@@ -524,19 +540,32 @@ Player::set_run()
   else
     velocity.x = -RUN_SPEED;  
   state = RUN;
+
+  // start running sound
+  sound_source.reset(sound_manager->create_sound_source("sounds/steps_dirt.ogg"));
+  sound_source->set_looping(true);
+  sound_source->play();
 }
 
 void
 Player::update_run()
 {
   if(!controller.get_button_state(RUN_BUTTON)) {
+    leave_run();
     set_walk(get_direction());
     return;
   }
   if(controller.get_button_state(JUMP_BUTTON)) {
+    leave_run();
     set_jump_begin();
     return;
   }
+}
+
+void
+Player::leave_run()
+{
+  sound_source->stop();
 }
 
 void

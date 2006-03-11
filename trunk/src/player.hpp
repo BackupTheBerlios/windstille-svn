@@ -19,9 +19,11 @@
 #ifndef PLAYER_HXX
 #define PLAYER_HXX
 
+#include <memory>
 #include "sprite2d/sprite.hpp"
 #include "input/controller.hpp"
 #include "sprite3d/sprite3d.hpp"
+#include "sound/sound_source.hpp"
 #include "math/vector.hpp"
 #include "globals.hpp"
 #include "entity.hpp"
@@ -42,6 +44,7 @@ private:
   Sprite   flashlight;
   Sprite   flashlighthighlight;
   Sprite3D sprite;
+  std::auto_ptr<SoundSource> sound_source;
 
   bool jumping;
   bool bomb_placed;
@@ -116,11 +119,22 @@ public:
   virtual void set_pos(Vector pos);
 
 private:
+  /*
+   * Following is a set of functions that manage the players state
+   * the set_ function is called to enter a new state, the update function is
+   * called each frame when a state is active, the leave function is called
+   * right before we enter a new state.
+   *
+   * TODO: can we generalize this mechanism? Or create a small specification
+   * language for this?
+   */
+  
   void update_walk_stand();
   void set_stand();
   void update_stand();
   void set_walk(Direction direction);
   void update_walk();
+  void leave_walk();
   void set_ducking();
   void update_ducking();
   void set_ducked();
@@ -133,6 +147,7 @@ private:
   void update_listen();
   void set_run();
   void update_run();
+  void leave_run();
   
   void set_jump_begin();
   void update_jump_begin();
