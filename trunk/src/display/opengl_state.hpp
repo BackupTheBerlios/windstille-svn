@@ -26,9 +26,8 @@
 #ifndef HEADER_DISPLAY_OPENGL_STATE_HPP
 #define HEADER_DISPLAY_OPENGL_STATE_HPP
 
-#define GL_GLEXT_PROTOTYPES 1
+#include <GL/glew.h>
 #include <GL/gl.h>
-#include <GL/glext.h>
 #include <memory>
 
 class Framebuffer;

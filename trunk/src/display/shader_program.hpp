@@ -26,9 +26,8 @@
 #ifndef HEADER_SHADER_PROGRAM_HPP
 #define HEADER_SHADER_PROGRAM_HPP
 
-#define GL_GLEXT_PROTOTYPES 1
+#include <GL/glew.h>
 #include <GL/gl.h>
-#include <GL/glext.h>
 #include "sharedptr.hpp"
 
 class ShaderProgramImpl;

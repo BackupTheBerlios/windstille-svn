@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <SDL.h>
+#include <GL/glew.h>
 #include <GL/gl.h>
 
 class Texture;

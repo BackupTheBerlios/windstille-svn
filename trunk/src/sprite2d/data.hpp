@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include "math/vector.hpp"
 #include "display/surface.hpp"

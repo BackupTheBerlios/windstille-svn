@@ -22,6 +22,7 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 **  02111-1307, USA.
 */
+#include <config.h>
 
 #include <png.h>
 #include <math.h>
@@ -232,11 +233,25 @@ Display::init()
 
   SDL_WM_SetCaption("Windstille", 0 /* icon */);
 
+  GLenum err = glewInit();
+  if(err != GLEW_OK) {
+      std::ostringstream msg;
+      msg << "Display:: Couldn't initialize glew: " << glewGetString(err);
+      throw std::runtime_error(msg.str());
+  }
+  /*
+  if(!GLEW_EXT_framebuffer_object) {
+      std::ostringstream msg;
+      msg << "Display:: Framebuffer opengl extension not supported";
+      throw std::runtime_error(msg.str());
+  }
+  */
+
   glViewport(0, 0, window->w, window->h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
 
-#define cl_pixelcenter_constant 0.375
+  static const float cl_pixelcenter_constant = 0.375;
 
   //glOrtho(0.0, window->w, window->h, 0.0, -1000.0, 1000.0);
   glOrtho(0.0, 800, 600, 0.0, 1000.0, -1000.0);

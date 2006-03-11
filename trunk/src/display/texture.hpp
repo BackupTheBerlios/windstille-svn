@@ -28,6 +28,7 @@
 #define __TEXTURE_HPP__
 
 #include <string>
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include <SDL.h>
 #include "../sharedptr.hpp"

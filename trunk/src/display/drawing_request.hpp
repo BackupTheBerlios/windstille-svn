@@ -61,7 +61,9 @@ public:
    * framebuffer to a temporary buffer which can then be used in
    * draw() for deformation effects
    */
-  virtual void prepare(const Texture& screen_texture) {}
+  virtual void prepare(const Texture& screen_texture) {
+      (void) screen_texture;
+  }
 
   /**
    * Override this and let it return true if you need to prepare()

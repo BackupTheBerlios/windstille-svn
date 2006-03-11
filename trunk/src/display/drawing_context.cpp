@@ -26,6 +26,7 @@
 #include <assert.h>
 #include <iostream>
 #include <iosfwd>
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include "font/fonts.hpp"
 #include "sprite2d/sprite.hpp"

@@ -22,10 +22,10 @@
 **  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 **  02111-1307, USA.
 */
+#include <config.h>
 
-#define GL_GLEXT_PROTOTYPES 1
+#include <GL/glew.h>
 #include <GL/gl.h>
-#include <GL/glext.h>
 #include "util.hpp"
 #include "texture.hpp"
 #include "render_buffer.hpp"

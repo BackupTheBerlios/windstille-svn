@@ -27,6 +27,7 @@
 #define HEADER_TILE_PACKER_HXX
 
 #include <SDL.h>
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include "display/texture.hpp"
 #include "math/rect.hpp"

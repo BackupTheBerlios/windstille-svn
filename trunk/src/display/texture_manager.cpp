@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <SDL_image.h>
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include "util.hpp"
 #include "globals.hpp"

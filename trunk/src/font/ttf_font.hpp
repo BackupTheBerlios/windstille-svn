@@ -27,6 +27,7 @@
 #define HEADER_TTF_FONT_HXX
 
 #include <string>
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include "color.hpp"
 #include "math/rect.hpp"

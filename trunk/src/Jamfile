@@ -61,7 +61,8 @@ Application windstille
 ;
 
 C++Flags windstille : -DAPPDATADIR='\"$(appdatadir)\"' ;
-LinkWith windstille : squirrel ;
+CppFlags windstille : -I$(top_srcdir)/lib/glew ;
+LinkWith windstille : squirrel glew ;
 LFlags windstille : $($(USE_LIBS)_LIBS) ;
 Help windstille : "Build the windstille executable" ;
 

@@ -21,6 +21,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include <vector>
 #include "ref.hpp"
