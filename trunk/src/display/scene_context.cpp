@@ -66,6 +66,7 @@ public:
   };
   
   Framebuffers* framebuffers;
+  Surface lightmap;
 
   SceneContextImpl() 
     : render_mask(SceneContext::COLORMAP |
@@ -73,7 +74,8 @@ public:
                   SceneContext::HIGHLIGHTMAP | 
                   SceneContext::LIGHTMAPSCREEN |
                   SceneContext::BLURMAP),
-      framebuffers(0) //new Framebuffers())
+      framebuffers(0), //new Framebuffers())
+      lightmap(800/LIGHTMAP_DIV, 600/LIGHTMAP_DIV)
   {
   }
 
@@ -356,6 +358,19 @@ SceneContext::render_without_framebuffers()
       glScalef(1.0f/LIGHTMAP_DIV, 1.0f/LIGHTMAP_DIV, 1.0f);
       impl->light.render(*this);
       glPopMatrix();
+
+      { // Copy lightmap to a texture
+        OpenGLState state;
+        
+        // Weird y-pos is needed since OpenGL is upside down when it comes to y-coordinate
+        state.bind_texture(impl->lightmap.get_texture());
+        state.activate();
+
+        glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
+                            0, 0, 
+                            0, 0, //Display::get_height() - impl->lightmap.get_height(),
+                            impl->lightmap.get_width(), impl->lightmap.get_height());
+      }
     }
 
   if (impl->render_mask & COLORMAP)
@@ -367,8 +382,33 @@ SceneContext::render_without_framebuffers()
 
 
   if (impl->render_mask & LIGHTMAP)
-    { // Renders the lightmap to the screen
-      //render_lightmap();
+    { // Renders the lightmap to the screen     
+      OpenGLState state;
+
+      Rectf uv = impl->lightmap.get_uv();
+
+      state.bind_texture(impl->lightmap.get_texture());
+
+      state.enable(GL_BLEND);
+      state.set_blend_func(GL_DST_COLOR, GL_ZERO);
+      state.activate();
+
+      glBegin(GL_QUADS);
+
+      glTexCoord2f(uv.left, uv.bottom);
+      glVertex2f(0, 0);
+
+      glTexCoord2f(uv.right, uv.bottom);
+      glVertex2f(impl->lightmap.get_width() * LIGHTMAP_DIV, 0);
+
+      glTexCoord2f(uv.right, uv.top);
+      glVertex2f(impl->lightmap.get_width()  * LIGHTMAP_DIV,
+                 impl->lightmap.get_height() * LIGHTMAP_DIV);
+
+      glTexCoord2f(uv.left, uv.top);
+      glVertex2f(0, impl->lightmap.get_height() * LIGHTMAP_DIV);
+
+      glEnd();
     }
 
   if (impl->render_mask & HIGHLIGHTMAP)
