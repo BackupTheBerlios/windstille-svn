@@ -1,32 +1,6 @@
 SubDir TOP src display ;
 
-sources = display.cpp
-	  display.hpp
-	  drawing_context.cpp
-	  drawing_context.hpp
-	  drawing_request.hpp
-	  framebuffer.cpp
-	  framebuffer.hpp
-	  opengl_state.cpp
-	  opengl_state.hpp
-	  scene_context.cpp
-	  scene_context.hpp
-	  shader_object.cpp
-	  shader_object.hpp
-	  shader_program.cpp
-	  shader_program.hpp
-	  surface.cpp
-	  surface.hpp
-	  surface_drawing_parameters.hpp
-	  surface_manager.cpp
-	  surface_manager.hpp
-	  texture.cpp
-	  texture.hpp
-	  texture_manager.cpp
-	  texture_manager.hpp
-	  vertex_array_drawing_request.cpp
-	  vertex_array_drawing_request.hpp
-;
+sources = [ Wildcard *.cpp *.hpp ] ;
 
 TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;
 display_objects = [ CompileObjects $(sources) ] ;

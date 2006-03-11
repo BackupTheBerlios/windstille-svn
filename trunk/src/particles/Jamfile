@@ -1,14 +1,6 @@
 SubDir TOP src particles ;
 
-sources = drawer.hpp
-	  particle_system.hpp
-          particle_system.cpp
-          randomizer.hpp
-          spark_drawer.cpp
-          spark_drawer.hpp
-          surface_drawer.cpp
-          surface_drawer.hpp
-;
+sources = [ Wildcard *.cpp *.hpp ] ;
 
 TRANSLATABLE_SOURCES = [ SearchSource $(sources) ] ;
 particles_objects = [ CompileObjects $(sources) ] ;
