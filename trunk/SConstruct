@@ -106,6 +106,7 @@ if 'configure' in COMMAND_LINE_TARGETS:
 else:
     Export('env')
     SConscript('tools/miniswig/SConscript')
+    SConscript('lib//SConscript')
     SConscript('src/SConscript')
     SConscript('src/scripting/SConscript')
 
