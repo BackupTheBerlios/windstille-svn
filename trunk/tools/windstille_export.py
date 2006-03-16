@@ -37,6 +37,7 @@ Tip: 'Export meshes/actions to windstille format'
 # - add handling of meshes with armatures, but without actions
 ############
 
+import string
 import struct, shlex, os.path, math
 import Blender
 from Blender import NMesh
