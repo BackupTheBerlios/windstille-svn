@@ -41,8 +41,6 @@ import struct, shlex, os.path, math
 import Blender
 from Blender import NMesh
 from Blender import Window
-from helper import *
-from data import * 
 
 # SAMPLEFRAMES, only export every nth frame of the animation
 DEFAULT_SAMPLERATE = 5
