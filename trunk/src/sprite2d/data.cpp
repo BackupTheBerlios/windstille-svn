@@ -18,21 +18,53 @@
 namespace sprite2d
 {
 
+static bool has_suffix(const std::string& str, const std::string& suffix)
+{
+  if (str.length() >= suffix.length())
+    return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
+  else
+    return false;
+}
+
 Data::Data(const std::string& filename)
 {
   if (PHYSFS_exists(filename.c_str()))
     {
-      std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
-      lisp::Properties rootp(root.get());
-      const lisp::Lisp* sprite = 0;
-      if(rootp.get("sprite", sprite) == false) {
-        std::ostringstream msg;
-        msg << "File '" << filename << "' is not a windstille sprite";
-        throw std::runtime_error(msg.str());
-      }
+      if (has_suffix(filename, ".sprite"))
+        {
+          std::auto_ptr<lisp::Lisp> root (lisp::Parser::parse(filename));
+          lisp::Properties rootp(root.get());
+          const lisp::Lisp* sprite = 0;
+          if(rootp.get("sprite", sprite) == false) {
+            std::ostringstream msg;
+            msg << "File '" << filename << "' is not a windstille sprite";
+            throw std::runtime_error(msg.str());
+          }
     
-      std::string dir = dirname(filename);
-      parse(dir, sprite);
+          std::string dir = dirname(filename);
+          parse(dir, sprite);
+        }
+      else if (has_suffix(filename, ".png") || has_suffix(filename, ".jpg"))
+        {
+          if (PHYSFS_exists(filename.c_str()))
+            {
+              std::auto_ptr<Action> action(new Action);
+              action->name   = "default";
+              action->speed  = 1.0;
+              action->scale  = 1.0f;
+              action->offset = Vector(0, 0);
+              action->surfaces.push_back(Surface(filename));
+              actions.push_back(action.release());
+            }
+          else
+            {
+              throw std::runtime_error("Couldn't find '" + filename + "'");
+            }
+        }
+      else
+        {
+          throw std::runtime_error("Sprite filename has unknown suffix: '" + filename + "'");
+        }
     }
   else if (filename.length() > std::string(".sprite").length())
     { // If sprite file is not found, we search for a file with the
@@ -44,7 +76,7 @@ Data::Data(const std::string& filename)
           std::auto_ptr<Action> action(new Action);
           action->name   = "default";
           action->speed  = 1.0;
-          action->scale = 1.0f;
+          action->scale  = 1.0f;
           action->offset = Vector(0, 0);
           action->surfaces.push_back(Surface(pngfile));
           actions.push_back(action.release());

@@ -135,7 +135,7 @@ WindstilleMain::main(int argc, char** argv)
         Sprite2DView* sprite2dview = new Sprite2DView();
 
         if (!levelfile.empty())
-          sprite2dview->set_model(levelfile);
+          sprite2dview->set_sprite(levelfile);
 
         // Launching Sprite2DView instead of game
         screen_manager.set_screen(sprite2dview);

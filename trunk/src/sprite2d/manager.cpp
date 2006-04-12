@@ -36,3 +36,5 @@ Manager::create_data(const std::string& filename)
 }
 
 }
+
+/* EOF */

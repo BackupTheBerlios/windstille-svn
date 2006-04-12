@@ -38,9 +38,24 @@ class Sprite2DView : public Screen
 {
 private:
   SceneContext sc;
+  std::vector<std::string> directory;
 
+  enum Mode { SLIDESHOW, MANUAL } mode;
+  
+  // Manual Mode Variables
+  float  zoom;
+  Vector pos;
+
+  // Slideshow variables
+  float width;
+  float height;
+  float aspect;
+
+  int    index;
   Sprite sprite;
-  float scale;
+  Sprite next_sprite;
+  float  scale;
+  float  offset;
 
 public:
   Sprite2DView();
@@ -49,7 +64,10 @@ public:
   void draw();
   void update(float delta, const Controller& controller);
 
-  void set_model(const std::string& filename);
+  void update_slideshow(float delta, const Controller& controller);
+  void update_manual(float delta, const Controller& controller);
+
+  void set_sprite(const std::string& filename);
 
 private:
   Sprite2DView (const Sprite2DView&);
