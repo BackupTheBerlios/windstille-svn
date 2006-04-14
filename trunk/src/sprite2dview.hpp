@@ -53,9 +53,14 @@ private:
 
   int    index;
   Sprite sprite;
-  Sprite next_sprite;
+  
+  Sprite new_sprite;
+  float fadein;
+
   float  scale;
   float  offset;
+
+  float display_time;
 
 public:
   Sprite2DView();
@@ -67,8 +72,12 @@ public:
   void update_slideshow(float delta, const Controller& controller);
   void update_manual(float delta, const Controller& controller);
 
-  void set_sprite(const std::string& filename);
+  /** move \a i images forward in the directory */
+  void next_image(int i = 1);
+  void prev_image(int i = 1) { next_image(-i); }
 
+  void set_sprite(const std::string& filename);
+  void prepare_sprite(Sprite& sprite);
 private:
   Sprite2DView (const Sprite2DView&);
   Sprite2DView& operator= (const Sprite2DView&);

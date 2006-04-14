@@ -36,6 +36,8 @@
 #include "command_line.hpp"
 #include "globals.hpp"
 
+std::vector<std::string> arg_files;
+
 Config config;
 
 Config::Config()
@@ -268,6 +270,7 @@ Config::parse_args(int argc, char** argv)
 
         case CommandLine::REST_ARG:
           set_string("levelfile", argp.get_argument());
+          arg_files.push_back(argp.get_argument());
           break;
         }
     }

@@ -24,26 +24,29 @@
 */
 
 #include <iostream>
+#include <algorithm>
 #include "math.hpp"
 #include "input/controller.hpp"
 #include "sprite2dview.hpp"
+
+extern std::vector<std::string> arg_files;
 
 Sprite2DView::Sprite2DView()
 {
   index = 0;
 
-  directory.push_back("images/test/mech1.png");
-  directory.push_back("images/test/mech2.png");
-  directory.push_back("images/test/mech3.png");
+  directory = arg_files;
+
+  std::random_shuffle(directory.begin(), directory.end());
 
   sprite      = Sprite(directory.back());
-  next_sprite = Sprite(directory.front());
   offset = 0.0f;
 
-  mode = MANUAL; 
-  //mode = SLIDESHOW;
+  //mode = MANUAL; 
+  mode = SLIDESHOW;
   zoom = 1.0f;
   pos  = Vector(0,0);
+  display_time = 0.0f;
 }
 
 Sprite2DView::~Sprite2DView()
@@ -66,7 +69,12 @@ Sprite2DView::draw()
       else
         {
           sprite.draw(Vector(0, -offset));
-        } 
+        }
+
+      if (new_sprite)
+        {
+          new_sprite.draw(Vector(0,0));
+        }
       break;
       
     case MANUAL:
@@ -79,8 +87,82 @@ Sprite2DView::draw()
 void
 Sprite2DView::update_slideshow(float delta, const Controller& controller)
 {
-  offset += delta * 50.0f;
+  if (!new_sprite)
+    {
+      width  = sprite.get_width();
+      height = sprite.get_height();
+      aspect = width/height;
 
+      if (aspect > 4.0/3.0)
+        { // expand vertical
+          float scale = 600.0f/height;
+          width  *= scale;
+          height *= scale;
+          sprite.set_scale(scale);
+
+          if (offset - (width - 800) > 0)
+            {
+              if (display_time > 3.0f)
+                next_image();
+            }
+          else
+            {
+              offset += delta * 50.0f +   controller.get_axis_state(X_AXIS) * 200.0f * delta;
+            }
+        }
+      else
+        { // expand horizontal
+          float scale = 800.0f/width;
+          width  *= scale;
+          height *= scale;
+          sprite.set_scale(scale);
+
+          if (offset - (height - 600) > 0)
+            {
+              if (display_time > 3.0f)
+                next_image();
+            }
+          else
+            {
+              offset += delta * 50.0f +   controller.get_axis_state(X_AXIS) * 200.0f * delta;
+            }
+        }
+    }
+
+  if (controller.button_was_pressed(PRIMARY_BUTTON))
+    {
+      next_image();
+    }
+  else if (controller.button_was_pressed(SECONDARY_BUTTON))
+    {
+      prev_image();
+    }
+}
+
+void
+Sprite2DView::next_image(int i)
+{
+  if (directory.size() > 1)
+    {
+      if (new_sprite)
+        {
+          sprite = new_sprite;
+          sprite.set_alpha(1.0f);
+          new_sprite = Sprite();
+          offset = 0;
+          display_time = 0;
+        }
+
+      index = (unsigned int)(index + i) % directory.size();
+      new_sprite = Sprite(directory[index]);
+      fadein = 0.0f;
+      prepare_sprite(new_sprite);
+    }
+}
+
+void
+Sprite2DView::prepare_sprite(Sprite& sprite)
+{
   width  = sprite.get_width();
   height = sprite.get_height();
   aspect = width/height;
@@ -91,17 +173,6 @@ Sprite2DView::update_slideshow(float delta, const Controller& controller)
       width  *= scale;
       height *= scale;
       sprite.set_scale(scale);
-
-      if (offset - (width - 800) > 0)
-        {
-          offset = 0;
-
-          if (++index >= int(directory.size()))
-            index = 0;
-
-          sprite = next_sprite;
-          next_sprite = Sprite(directory[index]);
-        }
     }
   else
     { // expand horizontal
@@ -109,18 +180,7 @@ Sprite2DView::update_slideshow(float delta, const Controller& controller)
       width  *= scale;
       height *= scale;
       sprite.set_scale(scale);
-
-      if (offset - (height - 600) > 0)
-        {
-          offset = 0;
-
-          if (++index >= int(directory.size()))
-            index = 0;
-
-          sprite = next_sprite;
-          next_sprite = Sprite(directory[index]);
-        }
-    }
+    }  
 }
 
 void
@@ -141,6 +201,8 @@ Sprite2DView::update_manual(float delta, const Controller& controller)
 void
 Sprite2DView::update(float delta, const Controller& controller)
 {  
+  display_time += delta;
+
   switch(mode) {
   case SLIDESHOW:
     update_slideshow(delta, controller);
@@ -149,6 +211,24 @@ Sprite2DView::update(float delta, const Controller& controller)
     update_manual(delta, controller);
     break;
   }
+
+  if (new_sprite)
+    {
+      fadein += delta;
+
+      if (fadein > 1.0f)
+        {
+          sprite = new_sprite;
+          sprite.set_alpha(1.0f);
+          new_sprite = Sprite();
+          offset = 0;
+          display_time = 0;
+        }
+      else
+        {
+          new_sprite.set_alpha(fadein);
+        }
+    }
 }
 
 void
