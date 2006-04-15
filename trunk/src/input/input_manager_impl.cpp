@@ -38,6 +38,18 @@ InputManagerImpl::add_axis_event(int name, float pos)
 }
 
 void
+InputManagerImpl::add_ball_event  (int name, float pos)
+{
+  InputEvent event;
+  event.type = BALL_EVENT;
+  event.axis.name = name;
+  event.axis.pos  = pos;
+
+  controller.add_event(event);
+  controller.set_ball_state(name, pos);  
+}
+
+void
 InputManagerImpl::add_button_event(int name, bool down)
 {
   InputEvent event;

@@ -29,6 +29,7 @@
 
 Controller::Controller()
 {
+  // FIXME: need to mark states with type
   states.resize(LAST_EVENT);
 }
 
@@ -140,12 +141,41 @@ void
 Controller::clear()
 {
   events.clear();
+  // FIXME: EVIL HARDCODE
+  states[0].ball = 0;
+  states[1].ball = 0;
 }
 
 void
 Controller::add_event(const InputEvent& event)
 {
   events.push_back(event);
+}
+
+float
+Controller::get_ball_state(int id) const
+{
+  assert(id < int(states.size()));
+  return states[id].ball;
+}
+
+void
+Controller::set_ball_state(int id, float pos)
+{
+  assert(id < static_cast<int>(states.size()));
+  states[id].ball = pos;
+}
+
+void
+Controller::add_ball_event(int name, float pos)
+{
+  InputEvent event;
+
+  event.type = BALL_EVENT;
+  event.ball.name = name;
+  event.ball.pos  = pos;
+
+  events.push_back(event);  
 }
 
 /* EOF */

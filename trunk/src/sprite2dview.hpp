@@ -61,7 +61,7 @@ private:
   float  offset;
 
   float display_time;
-
+  bool show_thumbnail;
 public:
   Sprite2DView();
   ~Sprite2DView();

@@ -33,6 +33,9 @@
 
 enum InputEventName
   { 
+    MOUSE_MOTION_X, 
+    MOUSE_MOTION_Y, 
+
     X_AXIS, // used to run left/right
     Y_AXIS,  // used to aim up/down
 

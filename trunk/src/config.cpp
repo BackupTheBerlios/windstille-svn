@@ -127,6 +127,8 @@ Config::set_float (const std::string& name, float value)
 void
 Config::parse_args(int argc, char** argv)
 {
+  arg_files.clear();
+
   CommandLine argp;
 
   const int debug_flag        = 256;

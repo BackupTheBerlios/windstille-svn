@@ -45,6 +45,7 @@ public:
   void clear();
 
   void add_axis_event  (int name, float pos);
+  void add_ball_event  (int name, float pos);
   void add_button_event(int name, bool down);
   void add_keyboard_event(int name, KeyboardEvent::KeyType key_type, int code);
 private:

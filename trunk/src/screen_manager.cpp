@@ -177,7 +177,17 @@ ScreenManager::poll_events()
           if (event.key.state)
             {    
               switch (event.key.keysym.sym)
-                {               
+                {       
+                case SDLK_F6:
+                  SDL_ShowCursor(SDL_ENABLE);   // SDL_ENABLE to show the mouse cursor (default)
+                  SDL_WM_GrabInput(SDL_GRAB_OFF); // SDL_GRAB_OFF to not grab input (default)
+                  break;
+
+                case SDLK_F7:
+                  SDL_ShowCursor(SDL_DISABLE);   // SDL_ENABLE to show the mouse cursor (default)
+                  SDL_WM_GrabInput(SDL_GRAB_ON); // SDL_GRAB_OFF to not grab input (default)
+                  break;
+      
                 case SDLK_F8:
                   {
                     using namespace GUI;

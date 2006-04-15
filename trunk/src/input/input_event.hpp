@@ -28,7 +28,7 @@
 
 #include <vector>
 
-enum InputEventType { BUTTON_EVENT, AXIS_EVENT, KEYBOARD_EVENT };
+enum InputEventType { BUTTON_EVENT, AXIS_EVENT, BALL_EVENT, KEYBOARD_EVENT };
 
 /** Used for textual input */
 struct KeyboardEvent
@@ -48,6 +48,13 @@ struct ButtonEvent
   bool is_up()   const { return !down; }
 };
 
+struct BallEvent
+{
+  int   name;
+  float pos;
+  float get_pos() const { return pos; }
+};
+
 struct AxisEvent
 {
   int name;
@@ -55,7 +62,7 @@ struct AxisEvent
   /** Pos can be in range from [-1.0, 1.0], some axis will only use [0,1.0] */
   float pos;
 
-  float get_pos() { return pos; }
+  float get_pos() const { return pos; }
 };
 
 struct InputEvent 
@@ -67,6 +74,7 @@ struct InputEvent
     struct ButtonEvent   button;
     struct AxisEvent     axis;
     struct KeyboardEvent keyboard;
+    struct BallEvent     ball;
   };
 };
 

@@ -37,8 +37,10 @@ class Controller
 {
 private:
   union State {
+    enum { BUTTON_STATE, BALL_STATE, AXIS_STATE } type;
     bool  button;
     float axis;
+    float ball;
   };
 
   std::vector<State> states;
@@ -49,12 +51,15 @@ public:
 
   float get_axis_state  (int name) const;
   bool  get_button_state(int name) const;
+  float get_ball_state  (int name) const;
 
   void  set_axis_state  (int name, float pos);
   void  set_button_state(int name, bool down);
+  void  set_ball_state  (int name, float delta);
 
   void add_axis_event  (int name, float pos);
   void add_button_event(int name, bool down);
+  void add_ball_event  (int name, float pos);
 
   const InputEventLst& get_events() const;
   void set_events(const InputEventLst& lst);

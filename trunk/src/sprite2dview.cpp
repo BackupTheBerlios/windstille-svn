@@ -25,11 +25,16 @@
 
 #include <iostream>
 #include <algorithm>
+#include "display/display.hpp"
 #include "math.hpp"
+#include "console.hpp"
 #include "input/controller.hpp"
 #include "sprite2dview.hpp"
 
 extern std::vector<std::string> arg_files;
+
+#define DISPLAY_W 800
+#define DISPLAY_H 600
 
 Sprite2DView::Sprite2DView()
 {
@@ -37,16 +42,24 @@ Sprite2DView::Sprite2DView()
 
   directory = arg_files;
 
+  std::cout << "Length: " << directory.size() << std::endl;
+
   std::random_shuffle(directory.begin(), directory.end());
+
+  std::cout << "Length: " << directory.size() << std::endl;
 
   sprite      = Sprite(directory.back());
   offset = 0.0f;
 
-  //mode = MANUAL; 
-  mode = SLIDESHOW;
+  if (directory.size() > 1)
+    mode = SLIDESHOW;
+  else
+    mode = MANUAL; 
+
   zoom = 1.0f;
   pos  = Vector(0,0);
   display_time = 0.0f;
+  show_thumbnail = false;
 }
 
 Sprite2DView::~Sprite2DView()
@@ -75,6 +88,37 @@ Sprite2DView::draw()
         {
           new_sprite.draw(Vector(0,0));
         }
+
+      if (show_thumbnail)
+        {
+          Sprite small = sprite;
+          small.set_alpha(1.0f);
+          float width  = small.get_width();
+          float height = small.get_height();
+          float scale;
+          if (width > height)
+            {
+              scale = 125.0f / width;
+
+              width  *= scale;
+              height *= scale;
+              small.set_scale(scale);
+
+              small.draw(Vector(DISPLAY_W - width,
+                                DISPLAY_H - height));
+            }
+          else
+            {
+              scale = 125.0f / height;
+
+              width  *= scale;
+              height *= scale;
+              small.set_scale(scale);
+
+              small.draw(Vector(DISPLAY_W - width,
+                                DISPLAY_H - height));
+            }
+        }        
       break;
       
     case MANUAL:
@@ -95,12 +139,12 @@ Sprite2DView::update_slideshow(float delta, const Controller& controller)
 
       if (aspect > 4.0/3.0)
         { // expand vertical
-          float scale = 600.0f/height;
+          float scale = DISPLAY_H/height;
           width  *= scale;
           height *= scale;
           sprite.set_scale(scale);
 
-          if (offset - (width - 800) > 0)
+          if (offset - (width - DISPLAY_W) > 0)
             {
               if (display_time > 3.0f)
                 next_image();
@@ -117,7 +161,7 @@ Sprite2DView::update_slideshow(float delta, const Controller& controller)
           height *= scale;
           sprite.set_scale(scale);
 
-          if (offset - (height - 600) > 0)
+          if (offset - (height - DISPLAY_H) > 0)
             {
               if (display_time > 3.0f)
                 next_image();
@@ -157,26 +201,27 @@ Sprite2DView::next_image(int i)
       new_sprite = Sprite(directory[index]);
       fadein = 0.0f;
       prepare_sprite(new_sprite);
+      console << index << ": " << directory[index] << std::endl;
     }
 }
 
 void
 Sprite2DView::prepare_sprite(Sprite& sprite)
 {
-  width  = sprite.get_width();
-  height = sprite.get_height();
-  aspect = width/height;
+  float width  = sprite.get_width();
+  float height = sprite.get_height();
+  float aspect = width/height;
 
   if (aspect > 4.0/3.0)
     { // expand vertical
-      float scale = 600.0f/height;
+      float scale = DISPLAY_H/height;
       width  *= scale;
       height *= scale;
       sprite.set_scale(scale);
     }
   else
     { // expand horizontal
-      float scale = 800.0f/width;
+      float scale = DISPLAY_W/width;
       width  *= scale;
       height *= scale;
       sprite.set_scale(scale);
@@ -186,8 +231,8 @@ Sprite2DView::prepare_sprite(Sprite& sprite)
 void
 Sprite2DView::update_manual(float delta, const Controller& controller)
 {
-  pos.x += controller.get_axis_state(X_AXIS) * 100.0f * delta;
-  pos.y += controller.get_axis_state(Y_AXIS) * 100.0f * delta;
+  pos.x += controller.get_axis_state(X_AXIS) * 100.0f * delta + controller.get_ball_state(MOUSE_MOTION_X);
+  pos.y += controller.get_axis_state(Y_AXIS) * 100.0f * delta + controller.get_ball_state(MOUSE_MOTION_Y);
   
   if (controller.get_button_state(PRIMARY_BUTTON))
     zoom *= 1.0f + 0.3f * delta;
@@ -211,6 +256,15 @@ Sprite2DView::update(float delta, const Controller& controller)
     update_manual(delta, controller);
     break;
   }
+
+  if (controller.button_was_pressed(TERTIARY_BUTTON))
+    show_thumbnail = !show_thumbnail;
+
+  if (controller.button_was_pressed(AIM_BUTTON))
+    {
+      if (mode == SLIDESHOW) mode = MANUAL; 
+      else if (mode == MANUAL) mode = SLIDESHOW; 
+    }
 
   if (new_sprite)
     {

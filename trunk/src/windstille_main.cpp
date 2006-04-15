@@ -94,6 +94,9 @@ WindstilleMain::main(int argc, char** argv)
 
       controller_description.add_axis("x2-axis", X2_AXIS);
       controller_description.add_axis("y2-axis", Y2_AXIS);
+
+      controller_description.add_ball("mouse-motion-x", MOUSE_MOTION_X);
+      controller_description.add_ball("mouse-motion-y", MOUSE_MOTION_Y);
     }
 
       {
