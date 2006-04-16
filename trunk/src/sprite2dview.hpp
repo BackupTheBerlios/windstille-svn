@@ -62,6 +62,7 @@ private:
 
   float display_time;
   bool show_thumbnail;
+  bool ignore_delta;
 public:
   Sprite2DView();
   ~Sprite2DView();

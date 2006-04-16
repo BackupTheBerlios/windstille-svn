@@ -60,6 +60,7 @@ Sprite2DView::Sprite2DView()
   pos  = Vector(0,0);
   display_time = 0.0f;
   show_thumbnail = false;
+  ignore_delta = false;
 }
 
 Sprite2DView::~Sprite2DView()
@@ -199,6 +200,7 @@ Sprite2DView::next_image(int i)
 
       index = (unsigned int)(index + i) % directory.size();
       new_sprite = Sprite(directory[index]);
+      ignore_delta = true;
       fadein = 0.0f;
       prepare_sprite(new_sprite);
       console << index << ": " << directory[index] << std::endl;
@@ -246,6 +248,12 @@ Sprite2DView::update_manual(float delta, const Controller& controller)
 void
 Sprite2DView::update(float delta, const Controller& controller)
 {  
+  if (ignore_delta)
+    {
+      ignore_delta = false;
+      delta = 0.0f;
+    }
+  
   display_time += delta;
 
   switch(mode) {
@@ -289,6 +297,7 @@ void
 Sprite2DView::set_sprite(const std::string& filename)
 {
   sprite = Sprite(filename);
+  ignore_delta = true;
 }
 
 /* EOF */
