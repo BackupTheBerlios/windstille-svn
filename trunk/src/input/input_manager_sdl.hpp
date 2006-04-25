@@ -54,6 +54,13 @@ struct JoystickButtonAxisBinding
   int plus;
 };
 
+struct MouseButtonBinding
+{
+  int event;
+  int device;
+  int button;
+};
+
 struct KeyboardButtonBinding
 {
   int event;
@@ -88,6 +95,7 @@ public:
 
   void bind_keyboard_button(int event, SDLKey key);
   void bind_keyboard_axis(int event, SDLKey minus, SDLKey plus);
+  void bind_mouse_button(int event, int device, int button);
   
   void clear_bindings();
 
@@ -98,6 +106,7 @@ public:
 
 private:
   void on_key_event(const SDL_KeyboardEvent& key);
+  void on_mouse_button_event(const SDL_MouseButtonEvent& button);
   void on_joy_button_event(const SDL_JoyButtonEvent& button);
   void on_joy_axis_event(const SDL_JoyAxisEvent& button);
   

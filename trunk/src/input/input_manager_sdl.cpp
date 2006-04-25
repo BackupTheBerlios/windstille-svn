@@ -44,6 +44,8 @@ public:
   std::vector<KeyboardButtonBinding> keyboard_button_bindings;
   std::vector<KeyboardAxisBinding>   keyboard_axis_bindings;
 
+  std::vector<MouseButtonBinding>   mouse_button_bindings;
+
   std::vector<SDL_Joystick*> joysticks;
 
   std::map<std::string, SDLKey> keyidmapping;
@@ -229,6 +231,20 @@ InputManagerSDL::on_key_event(const SDL_KeyboardEvent& event)
 }
 
 void
+InputManagerSDL::on_mouse_button_event(const SDL_MouseButtonEvent& button)
+{
+  for (std::vector<MouseButtonBinding>::const_iterator i = impl->mouse_button_bindings.begin();
+       i != impl->mouse_button_bindings.end();
+       ++i)
+    {
+      if (button.button == i->button)
+        {
+          add_button_event(i->event, button.state);
+        }
+    }
+}
+
+void
 InputManagerSDL::on_joy_button_event(const SDL_JoyButtonEvent& button)
 {
   for (std::vector<JoystickButtonBinding>::const_iterator i = impl->joystick_button_bindings.begin();
@@ -319,11 +335,11 @@ InputManagerSDL::on_event(const SDL_Event& event)
       break;
 
     case SDL_MOUSEBUTTONDOWN:
-      // event.button
+      on_mouse_button_event(event.button);
       break;
 
     case SDL_MOUSEBUTTONUP:
-      // event.button
+      on_mouse_button_event(event.button);
       break;
 
     case SDL_JOYAXISMOTION:
@@ -352,6 +368,18 @@ InputManagerSDL::on_event(const SDL_Event& event)
 void
 InputManagerSDL::update(float delta)
 {
+}
+
+void
+InputManagerSDL::bind_mouse_button(int event, int device, int button)
+{
+  MouseButtonBinding binding;
+
+  binding.event  = event;
+  binding.device = device;
+  binding.button = button;
+
+  impl->mouse_button_bindings.push_back(binding); 
 }
 
 void

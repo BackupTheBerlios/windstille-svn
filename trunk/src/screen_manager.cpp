@@ -292,6 +292,7 @@ ScreenManager::poll_events()
           break;
 
         case SDL_MOUSEBUTTONUP:
+        case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEMOTION:
         case SDL_JOYAXISMOTION:
         case SDL_JOYBALLMOTION:

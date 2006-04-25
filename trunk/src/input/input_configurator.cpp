@@ -152,7 +152,15 @@ InputConfigurator::handle_event(const SDL_Event& event)
       break;
 
     case SDL_MOUSEBUTTONDOWN:
-      // event.button
+      if (items.back().mode == ConfigureItem::CONFIGURE_BUTTON)
+        {
+          InputManagerSDL::current()->bind_mouse_button(items.back().event_id,
+                                                        0, // SDL only supports one mouse
+                                                        event.button.button);
+          out << "(mouse-button (device " << 0 << ")\n"
+              << "              (button " << int(event.button.button) << "))" << std::endl;
+          next_item();
+        }
       break;
 
     case SDL_MOUSEBUTTONUP:
