@@ -27,9 +27,9 @@
 #define HEADER_SURFACE_HPP
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 #include "math/rect.hpp"
 #include "texture.hpp"
-#include "sharedptr.hpp"
 
 class SurfaceDrawingParameters;
 class SurfaceImpl;
@@ -70,8 +70,10 @@ public:
 
   /** true if the Texture is valid and usable, false if not */
   operator bool() const;
+
+  long use_count() const { return impl.use_count(); }
 private:
-  SharedPtr<SurfaceImpl> impl;
+  boost::shared_ptr<SurfaceImpl> impl;
 };
 
 #endif

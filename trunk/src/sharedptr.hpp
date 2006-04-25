@@ -103,12 +103,6 @@ public:
 
 	U const* get() const { return (const U*) ((impl != 0) ? impl->ptr : 0); }
 
-	//: Return the pointer.
-	operator U*() { return get(); }
-
-	//: Returns the pointer.
-	operator U const*() const { return get(); }
-
 	//: Pointer equality check operator.
 	//- <p> This will return true if the SharedPtrs point to the same data. It doesn't
 	//- check the data itself for equality. </p>

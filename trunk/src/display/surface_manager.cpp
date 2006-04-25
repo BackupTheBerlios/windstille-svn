@@ -27,7 +27,8 @@ SurfaceManager::~SurfaceManager()
   {
     for(Surfaces::iterator i = surfaces.begin(); i != surfaces.end(); ++i)
     {
-      std::cerr << "Warning: Surface '" << i->first << "' not released.\n";
+      //      if (i->second.use_count() > 1)
+        std::cerr << "Warning: Surface '" << i->first << "' not released.\n";
     }
   }
 }
@@ -162,3 +163,17 @@ SurfaceManager::create_texture(SDL_Surface* image,
   return texture;
 }
 
+void
+SurfaceManager::cleanup()
+{
+  for(Surfaces::iterator i = surfaces.begin(); i != surfaces.end(); ++i)
+    {
+      if (i->second.use_count() == 1)
+        {
+          surfaces.erase(i);
+        }
+    }
+}
+
+
+/* EOF */

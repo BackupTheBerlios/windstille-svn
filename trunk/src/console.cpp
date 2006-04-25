@@ -163,7 +163,7 @@ ConsoleImpl::draw()
 
   if (console.is_active())
     Display::fill_rect(Rect(0,0, 800, 600),
-                       Color(0, 0, 0, 0.25f));
+                       Color(0, 0, 0, 0.5f));
 
   for(int i = buffer.size()-1 - scroll_offset; i >= 0 && i > int(buffer.size()) - num_lines - scroll_offset; --i)
     {
@@ -189,7 +189,7 @@ ConsoleImpl::draw()
             str += "_";
         }
 
-      Fonts::ttffont->draw(x_pos, y_pos, ">" + str, Color(1.0f, 1.0f, 1.0f));
+      Fonts::ttffont->draw(x_pos, y_pos, "> " + str, Color(1.0f, 1.0f, 1.0f));
     }
 }
 

@@ -33,6 +33,9 @@ public:
 
   Texture create_texture(SDL_Surface* image, 
                          float& maxu, float& maxv);
+
+  /** Removes all cached Sprites that are no longer in use */
+  void cleanup();
   
   typedef std::map<std::string, Surface> Surfaces;
   Surfaces surfaces;

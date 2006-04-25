@@ -25,10 +25,14 @@
 
 #include <iostream>
 #include <algorithm>
+#include <physfs.h>
+
 #include "display/display.hpp"
+#include "sprite2d/manager.hpp"
 #include "math.hpp"
 #include "console.hpp"
 #include "input/controller.hpp"
+#include "display/surface_manager.hpp"
 #include "sprite2dview.hpp"
 
 extern std::vector<std::string> arg_files;
@@ -40,15 +44,22 @@ Sprite2DView::Sprite2DView()
 {
   index = 0;
 
-  directory = arg_files;
+  for(std::vector<std::string>::iterator i = arg_files.begin(); i != arg_files.end(); ++i)
+    {
+      if (PHYSFS_isDirectory(i->c_str()))
+        { 
+          adddir(i->c_str());
+        }
+      else
+        {
+          directory.push_back(*i);
+        }
+    }
+  
+  next_image(0);
+  sprite = new_sprite;
+  new_sprite = Sprite();
 
-  std::cout << "Length: " << directory.size() << std::endl;
-
-  std::random_shuffle(directory.begin(), directory.end());
-
-  std::cout << "Length: " << directory.size() << std::endl;
-
-  sprite      = Sprite(directory.back());
   offset = 0.0f;
 
   if (directory.size() > 1)
@@ -61,6 +72,25 @@ Sprite2DView::Sprite2DView()
   display_time = 0.0f;
   show_thumbnail = false;
   ignore_delta = false;
+}
+
+void
+Sprite2DView::adddir(const std::string& dirname)
+{
+  char** dirlist = PHYSFS_enumerateFiles(dirname.c_str());
+  for (char **i = dirlist; *i != NULL; ++i)
+    {
+      //std::cout << dirname + "/" + *i << std::endl;
+      if (PHYSFS_isDirectory((dirname + "/" + *i).c_str()))
+        {
+          adddir(dirname + "/" + *i);
+        }
+      else
+        {
+          directory.push_back((dirname + "/" + *i).c_str());
+        }
+    }
+  PHYSFS_freeList(dirlist);
 }
 
 Sprite2DView::~Sprite2DView()
@@ -199,12 +229,26 @@ Sprite2DView::next_image(int i)
         }
 
       index = (unsigned int)(index + i) % directory.size();
-      new_sprite = Sprite(directory[index]);
+
+    retry:
+      try {
+        new_sprite = Sprite(directory[index]);
+      } catch(std::exception& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+        std::cout << "Removing '" << directory[index] << "' from the list" << std::endl;
+        directory.erase(directory.begin() + index);
+        index = (unsigned int)(index) % directory.size();
+        goto retry;
+      }
+
       ignore_delta = true;
       fadein = 0.0f;
       prepare_sprite(new_sprite);
       console << index << ": " << directory[index] << std::endl;
     }
+
+  sprite2d_manager->cleanup();
+  surface_manager->cleanup();
 }
 
 void
@@ -265,6 +309,9 @@ Sprite2DView::update(float delta, const Controller& controller)
     break;
   }
 
+  if (controller.button_was_pressed(INVENTORY_BUTTON))
+     std::random_shuffle(directory.begin(), directory.end());
+   
   if (controller.button_was_pressed(TERTIARY_BUTTON))
     show_thumbnail = !show_thumbnail;
 

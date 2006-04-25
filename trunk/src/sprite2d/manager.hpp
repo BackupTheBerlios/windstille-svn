@@ -3,10 +3,14 @@
 
 #include <string>
 #include <map>
+#include <boost/shared_ptr.hpp>
 
 namespace sprite2d
 {
+typedef 
+
 class Data;
+typedef boost::shared_ptr<Data> DataPtr;
 
 class Manager
 {
@@ -14,10 +18,12 @@ public:
   Manager();
   ~Manager();
 
-  const Data* create_data(const std::string& filename);
+  DataPtr create_data(const std::string& filename);
   
+  /** Removes all cached Sprites that are no longer in use */
+  void cleanup();
 private:
-  typedef std::map<std::string, Data*> Datas;
+  typedef std::map<std::string, DataPtr> Datas;
   Datas datas;
 };
 

@@ -63,9 +63,12 @@ private:
   float display_time;
   bool show_thumbnail;
   bool ignore_delta;
+
 public:
   Sprite2DView();
   ~Sprite2DView();
+  
+  void adddir(const std::string& dir);
 
   void draw();
   void update(float delta, const Controller& controller);

@@ -8,12 +8,12 @@
 #include "display/surface.hpp"
 #include "math/vector.hpp"
 #include "math/matrix.hpp"
+#include "manager.hpp"
 
 class DrawingContext;
 class Color;
 
 namespace sprite2d {
-class Data;
 struct Action;
 } 
 
@@ -26,7 +26,7 @@ public:
       search for a .png with the same name and use that as a simple
       one-file sprite */
   Sprite(const std::string& filename);
-  Sprite(const sprite2d::Data* data);
+  Sprite(const sprite2d::DataPtr data);
   ~Sprite();
 
   void update(float delta);
@@ -68,11 +68,11 @@ public:
 
   /** true if the Sprite is valid and usable, false if not */
   operator bool() const;
+
 private:
   /** Pointer to the Sprites data which is shared among all sprites
       with are loaded from the same file */
-  const sprite2d::Data* data;
-
+  sprite2d::DataPtr data;
   const sprite2d::Action* current_action;
 
   float frame;

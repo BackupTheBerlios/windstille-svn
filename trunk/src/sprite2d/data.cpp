@@ -15,8 +15,7 @@
 #include "display/surface.hpp"
 #include "display/surface_manager.hpp"
 
-namespace sprite2d
-{
+namespace sprite2d {
 
 static bool has_suffix(const std::string& str, const std::string& suffix)
 {
@@ -24,6 +23,14 @@ static bool has_suffix(const std::string& str, const std::string& suffix)
     return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
   else
     return false;
+}
+
+static std::string tolowercase(const std::string& str)
+{
+  std::string out;
+  for(std::string::const_iterator i = str.begin();  i != str.end(); ++i)
+    out += tolower(*i);
+  return out;
 }
 
 Data::Data(const std::string& filename)
@@ -44,7 +51,7 @@ Data::Data(const std::string& filename)
           std::string dir = dirname(filename);
           parse(dir, sprite);
         }
-      else if (has_suffix(filename, ".png") || has_suffix(filename, ".jpg"))
+      else if (has_suffix(tolowercase(filename), ".png") || has_suffix(tolowercase(filename), ".jpg"))
         {
           if (PHYSFS_exists(filename.c_str()))
             {
@@ -179,4 +186,6 @@ Data::parse_image_grid(Action* action, const std::string& dir,
                              action->surfaces, x_size, y_size);
 }
  
-}
+} // namespace sprite2d
+
+/* EOF */

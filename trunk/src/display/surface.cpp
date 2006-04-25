@@ -116,7 +116,7 @@ Surface::get_uv() const
 
 Surface::operator bool() const
 {
-  return !impl.is_null();
+  return impl.get() != 0;
 }
 
 void

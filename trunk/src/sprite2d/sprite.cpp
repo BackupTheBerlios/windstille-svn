@@ -13,7 +13,6 @@
 #include "util.hpp"
 
 Sprite::Sprite()
-  : data(0)
 {  
 }
 
@@ -34,7 +33,7 @@ Sprite::Sprite(const std::string& filename)
   blend_dfactor = GL_ONE_MINUS_SRC_ALPHA;
 }
 
-Sprite::Sprite(const sprite2d::Data* data)
+Sprite::Sprite(const sprite2d::DataPtr data)
   : data(data)
 {
   current_action = data->actions[0];
