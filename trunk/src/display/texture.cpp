@@ -48,7 +48,7 @@ public:
     assert_gl("creating texture handle."); 
   }
 
-  TextureImpl::~TextureImpl()
+  ~TextureImpl()
   {
     glDeleteTextures(1, &handle);
   }
