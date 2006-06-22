@@ -29,6 +29,8 @@
 #include <SDL.h>
 #include "signals/slot.hpp"
 
+namespace {
+
 class Controller;
 
 /** */
@@ -49,6 +51,8 @@ public:
   virtual void handle_event(const SDL_Event& ) {}
 };
 
+} // namespace
+    
 #endif
 
 /* EOF */
