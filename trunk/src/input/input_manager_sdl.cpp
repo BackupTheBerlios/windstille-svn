@@ -37,9 +37,9 @@ InputManagerSDL* InputManagerSDL::current_ = 0;
 class InputManagerSDLImpl
 {
 public:
-  std::vector<JoystickButtonBinding> joystick_button_bindings;
+  std::vector<JoystickButtonBinding>     joystick_button_bindings;
   std::vector<JoystickButtonAxisBinding> joystick_button_axis_bindings;
-  std::vector<JoystickAxisBinding>   joystick_axis_bindings;
+  std::vector<JoystickAxisBinding>       joystick_axis_bindings;
 
   std::vector<KeyboardButtonBinding> keyboard_button_bindings;
   std::vector<KeyboardAxisBinding>   keyboard_axis_bindings;

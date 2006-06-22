@@ -56,9 +56,9 @@ Sprite2DView::Sprite2DView()
         }
     }
   
-  next_image(0);
-  sprite = new_sprite;
-  new_sprite = Sprite();
+  shuffle_directory = directory;
+  shuffle = false;
+  std::random_shuffle(shuffle_directory.begin(), shuffle_directory.end());
 
   offset = 0.0f;
 
@@ -72,6 +72,12 @@ Sprite2DView::Sprite2DView()
   display_time = 0.0f;
   show_thumbnail = false;
   ignore_delta = false;
+
+
+  next_image(0);
+  sprite = new_sprite;
+  new_sprite = Sprite();
+
 }
 
 void
@@ -230,16 +236,28 @@ Sprite2DView::next_image(int i)
 
       index = (unsigned int)(index + i) % directory.size();
 
-    retry:
-      try {
-        new_sprite = Sprite(directory[index]);
-      } catch(std::exception& e) {
-        std::cout << "Error: " << e.what() << std::endl;
-        std::cout << "Removing '" << directory[index] << "' from the list" << std::endl;
-        directory.erase(directory.begin() + index);
-        index = (unsigned int)(index) % directory.size();
-        goto retry;
-      }
+      std::vector<std::string> dir;
+
+      if (shuffle)
+        dir = shuffle_directory;
+      else
+        dir = directory;
+      
+      bool retry = false;
+
+      do {
+        try {
+          new_sprite = Sprite(dir[index]);
+          retry = false;
+        } catch(std::exception& e) {
+          // FIXME: won't work in combination with shuffle
+          std::cout << "Error: " << e.what() << std::endl;
+          std::cout << "Removing '" << directory[index] << "' from the list" << std::endl;
+          directory.erase(directory.begin() + index);
+          index = (unsigned int)(index) % directory.size();
+          retry = true;
+        }
+      } while (retry);
 
       ignore_delta = true;
       fadein = 0.0f;
@@ -309,8 +327,34 @@ Sprite2DView::update(float delta, const Controller& controller)
     break;
   }
 
-  if (controller.button_was_pressed(INVENTORY_BUTTON))
-     std::random_shuffle(directory.begin(), directory.end());
+  if (controller.button_was_pressed(PDA_BUTTON))
+    {
+      if (shuffle)
+        {
+          std::vector<std::string>::iterator i = std::find(directory.begin(), directory.end(),
+                                                           shuffle_directory[index]);
+          if (i != directory.end())
+            {
+              index = i - directory.begin() ;
+            }
+        }
+      else
+        {
+          std::vector<std::string>::iterator i = std::find(shuffle_directory.begin(), shuffle_directory.end(),
+                                                           directory[index]);
+          if (i != shuffle_directory.end())
+            {
+              index = i - shuffle_directory.begin();
+            }
+        }
+
+      shuffle = !shuffle;
+
+      std::cout << shuffle << " " << index << std::endl;
+    }
+
+  //  if (controller.button_was_pressed(INVENTORY_BUTTON))
+  //std::random_shuffle(shuffle_directory.begin(), shuffle_directory.end());
    
   if (controller.button_was_pressed(TERTIARY_BUTTON))
     show_thumbnail = !show_thumbnail;

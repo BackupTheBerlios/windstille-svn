@@ -47,6 +47,7 @@ InputConfigurator::InputConfigurator()
 
   area.set_font(Fonts::ttffont);
 
+  add_configure_item(ConfigureItem::CONFIGURE_BUTTON, INVENTORY_BUTTON);
   add_configure_item(ConfigureItem::CONFIGURE_BUTTON, AIM_BUTTON);
   add_configure_item(ConfigureItem::CONFIGURE_BUTTON, PDA_BUTTON);
   add_configure_item(ConfigureItem::CONFIGURE_BUTTON, TERTIARY_BUTTON);

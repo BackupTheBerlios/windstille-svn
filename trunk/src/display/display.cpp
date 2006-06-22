@@ -37,11 +37,9 @@
 #include "util.hpp"
 #include <assert.h>
 
-namespace {
 SDL_Surface* Display::window       = 0;
 std::vector<Rect> Display::cliprects;
 std::vector<Framebuffer> framebuffers;
-}
 
 void
 Display::draw_line(const Vector& pos1, const Vector& pos2, const Color& color)

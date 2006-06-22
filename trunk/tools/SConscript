@@ -11,7 +11,7 @@ miniswig = env.Program('miniswig/miniswig',
                         'miniswig/tree.cpp',
                         'miniswig/parser.yy',
                         'miniswig/lexer.ll'], 
-                       CPPPATH="..")
+                       CPPPATH=["..", "miniswig"])
 
 Export('miniswig')
 

@@ -69,9 +69,18 @@ struct KeyboardButtonBinding
 
 struct KeyboardAxisBinding
 {
-  int event;
+  int    event;
   SDLKey minus;
   SDLKey plus;
+};
+
+struct ButtonBinding
+{
+  enum Type { JOYSTICK_BUTTON, JOYSTICK_AXIS, JOYSTICK_HAT, MOUSE_BUTTON };
+
+  Type type;
+  int  device;
+  int  button;
 };
 
 /** */

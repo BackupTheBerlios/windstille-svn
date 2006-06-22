@@ -39,6 +39,7 @@ class Sprite2DView : public Screen
 private:
   SceneContext sc;
   std::vector<std::string> directory;
+  std::vector<std::string> shuffle_directory;
 
   enum Mode { SLIDESHOW, MANUAL } mode;
   
@@ -63,7 +64,7 @@ private:
   float display_time;
   bool show_thumbnail;
   bool ignore_delta;
-
+  bool shuffle;
 public:
   Sprite2DView();
   ~Sprite2DView();
