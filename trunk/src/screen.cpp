@@ -36,8 +36,6 @@
 #include "input/input_manager_sdl.hpp"
 #include "sound/sound_manager.hpp"
 
-namespace Windstille {
-
 Screen::Screen()
 {
 }
@@ -45,7 +43,5 @@ Screen::Screen()
 Screen::~Screen()
 {
 }
-
-} // namespace Windstille
 
 /* EOF */
