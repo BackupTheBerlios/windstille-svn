@@ -105,7 +105,7 @@ if 'configure' in COMMAND_LINE_TARGETS:
     env = conf.Finish() 
 else:
     Export('env')
-    SConscript('tools/miniswig/SConscript')
+    SConscript('tools/SConscript')
     SConscript('lib//SConscript')
     SConscript('src/SConscript')
     SConscript('src/scripting/SConscript')
