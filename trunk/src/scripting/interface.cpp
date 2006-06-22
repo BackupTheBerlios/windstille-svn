@@ -238,13 +238,13 @@ void wait_for_conversation(HSQUIRRELVM v)
   script_manager->set_wakeup_event(v, ScriptManager::CONVERSATION_CLOSED);
 }
 
-int display(HSQUIRRELVM v) __custom
+SQInteger display(HSQUIRRELVM v) __custom
 {
   console << squirrel2string(v, -1);
   return 0;
 }
 
-int println(HSQUIRRELVM v) __custom
+SQInteger println(HSQUIRRELVM v) __custom
 {
   console << squirrel2string(v, -1) << std::endl;
   return 0;

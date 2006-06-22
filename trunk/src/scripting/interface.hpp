@@ -95,8 +95,8 @@ void  set_game_speed(float v);
 //Waits the specified time in seconds.
 void wait(HSQUIRRELVM vm, float time) __suspend;
 
-int display(HSQUIRRELVM) __custom;
-int println(HSQUIRRELVM) __custom;
+SQInteger display(HSQUIRRELVM) __custom;
+SQInteger println(HSQUIRRELVM) __custom;
 
 void set_console_font(const std::string& font, int size);
 void set_gamma(float g);

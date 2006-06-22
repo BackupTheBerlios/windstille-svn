@@ -96,7 +96,7 @@ void table_to_lisp(HSQUIRRELVM v, int table_idx, std::vector<Lisp*>& entries)
   sq_pop(v, 1);
 }
 
-int spawn_object(HSQUIRRELVM v)
+SQInteger spawn_object(HSQUIRRELVM v)
 {
   using namespace lisp;
   

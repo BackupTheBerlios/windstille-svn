@@ -15,7 +15,7 @@ namespace Scripting
  *
  * Example: spawn_object("scriptable-object", {name="blup", pos=[350,370], sprite="images/arrow.sprite"});
  */
-int spawn_object(HSQUIRRELVM v) __custom;
+SQInteger spawn_object(HSQUIRRELVM v) __custom;
 
 }
 
