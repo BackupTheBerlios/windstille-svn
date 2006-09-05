@@ -42,6 +42,7 @@ extern std::vector<std::string> arg_files;
 
 Sprite2DView::Sprite2DView()
 {
+  auto_scroll = false;
   index = 0;
 
   for(std::vector<std::string>::iterator i = arg_files.begin(); i != arg_files.end(); ++i)
@@ -58,14 +59,16 @@ Sprite2DView::Sprite2DView()
   
   shuffle_directory = directory;
   shuffle = false;
-  std::random_shuffle(shuffle_directory.begin(), shuffle_directory.end());
+
+  //std::sort(shuffle_directory.begin(), shuffle_directory.end());
+  //std::random_shuffle(shuffle_directory.begin(), shuffle_directory.end());
 
   offset = 0.0f;
 
   if (directory.size() > 1)
     mode = SLIDESHOW;
   else
-    mode = MANUAL; 
+    mode = SLIDESHOW; 
 
   zoom = 1.0f;
   pos  = Vector(0,0);
@@ -183,13 +186,17 @@ Sprite2DView::update_slideshow(float delta, const Controller& controller)
 
           if (offset - (width - DISPLAY_W) > 0)
             {
-              if (display_time > 3.0f)
+              offset = (width - DISPLAY_W);
+
+              if (auto_scroll && display_time > 3.0f)
                 next_image();
             }
           else
             {
-              offset += delta * 50.0f +   controller.get_axis_state(X_AXIS) * 200.0f * delta;
+              offset += delta * 50.0f + controller.get_axis_state(X_AXIS) * 200.0f * delta;
             }
+
+          offset +=  controller.get_ball_state(MOUSE_MOTION_Y);
         }
       else
         { // expand horizontal
@@ -200,13 +207,17 @@ Sprite2DView::update_slideshow(float delta, const Controller& controller)
 
           if (offset - (height - DISPLAY_H) > 0)
             {
-              if (display_time > 3.0f)
+              offset = (width - DISPLAY_H);
+
+              if (auto_scroll && display_time > 3.0f)
                 next_image();
             }
           else
             {
               offset += delta * 50.0f +   controller.get_axis_state(X_AXIS) * 200.0f * delta;
             }
+
+          offset += controller.get_ball_state(MOUSE_MOTION_Y);
         }
     }
 
@@ -316,7 +327,7 @@ Sprite2DView::update(float delta, const Controller& controller)
       delta = 0.0f;
     }
   
-  display_time += delta;
+  display_time += delta * 0.5;
 
   switch(mode) {
   case SLIDESHOW:

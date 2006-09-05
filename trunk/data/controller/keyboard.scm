@@ -8,6 +8,14 @@
   (keyboard-axis (minus "up") (plus "down"))
   (joystick-axis (device 0)  (axis 1)))
  
+ (x2-axis
+  (keyboard-axis (minus "left") (plus "right"))
+  (joystick-axis (device 0)  (axis 3)))
+
+ (y2-axis
+  (keyboard-axis (minus "c") (plus "t"))
+  (joystick-axis (device 0)  (axis 4)))
+
  (primary-button
   (keyboard-button (key "s"))
   (joystick-button (device 0)  (button 2)))
@@ -35,6 +43,5 @@
  (inventory-button
   (keyboard-button (key "e")))
  )
-
 
 ;; EOF ;;

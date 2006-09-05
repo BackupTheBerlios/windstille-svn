@@ -16,6 +16,8 @@
     (width 20)
     )
 
+;;(shockwave (pos 400 300))
+
    (liquid
     (pos 832 832)
     (width 4)

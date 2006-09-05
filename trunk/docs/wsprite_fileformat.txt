@@ -1,39 +1,41 @@
 Header
-    char magic[4] (= W3DS)
+    char     magic[4] (= W3DS)
     uint16_t format_version      (=2 at the moment)
     uint16_t mesh_count
     uint16_t attachement_point_count
     uint16_t action_count
 
-Mesh Header
-    char texturename[64]
+Mesh Header (x mesh_count)
+    char     texturename[64]
     uint16_t triangle_count
     uint16_t vertex_count
 
-Data after mesh header:
-    uint16_t vertexnum, edge per triangle
-    float normal[3] per triangle
-    float texcoord[2] per vertex
+    uint16_t vertexnum    (x 3*triangle_count) # three vertex indexes per face
+    float    normal[3]    (x triangle_count)   # one normal per face
+    float    texcoord[2]  (x vertex_count)     # one uv coordinate per vertex
 
-Attachement Point Header
+Attachement Point Header x attachement_point_count
     char name[64]
 
-Action Header
-    char name[64]
-    float speed
+Action Header (x action_count)
+    char     name[64]
+    float    speed
     uint16_t marker_count
     uint16_t frame_count
 
-Data per marker:
-    char name[64]
-    uint16_t frame
+  Marker (x marker_count)
+    char     name[64]
+    uint16_t frame_count
 
-Data per action:
-    for all frames:
-      for all meshes:
-        for all vertices:
-          float x, y, z
-      for all attachement points:
+  MeshData (x frame_count)
+    (x frame_count)
+      (x mesh_count)
+        (x mesh.vertex_count)
+          float[3] vertex_location
+
+      (x attachement_point_count)
         float locX, locY, locZ
         float rotW, rotX, rotY, rotZ (it's a quaternion)
 
+
+# EOF #

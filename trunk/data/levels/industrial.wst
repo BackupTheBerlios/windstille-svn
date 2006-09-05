@@ -13,53 +13,6 @@
         (pos 300 600)
         (count 10))
 
-    ;; Smoke
-    (particle-system
-     (lifetime   2.0)
-     (count      35)
-
-     (z-pos  1000)
-     (pos 386 736)
-     (velocity    50 60)
-     (cone   -110 -80)
-     (gravity -1.5 0.5)
-     (size   0.05 1.0)
-     (drawer (surface-drawer (image "images/particles/smoke2.png")))
-     (distribution (point-distribution))
-     )
-
-
-    ;; Smoke
-    (particle-system
-     (lifetime   1.5)
-     (count      35)
-
-     (z-pos  1000)
-     (pos 900 736)
-     (velocity    150 160)
-     (cone   -110 -80)
-     (gravity -1.5 0.5)
-     (size   0.15 0.5)
-     (drawer (surface-drawer (image "images/particles/smoke2.png")))
-     (distribution (point-distribution))
-     )
-
-    (particle-system
-     (lifetime   15.0)
-     (count      70)
-
-     (z-pos  1000)
-     (pos 0 136)
-     (velocity 60 80)
-     (cone    85 95)
-     (gravity 0.0 0.0)
-     (size   0.9 1.0)
-     (drawer (surface-drawer (image "images/particles/snow.png")))
-     (color-begin 1.0 1.0 1.0 1.0)
-     (color-end 1.0 1.0 1.0 1.0)
-     (distribution (line-distribution (x1 0) (y1 0) (x2 1024) (y2 0)))
-     )
-
     (scriptable-object
       (name "Lamp")
       (pos 256 736)

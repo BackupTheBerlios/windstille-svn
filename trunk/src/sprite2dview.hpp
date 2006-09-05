@@ -65,6 +65,8 @@ private:
   bool show_thumbnail;
   bool ignore_delta;
   bool shuffle;
+
+  bool auto_scroll;
 public:
   Sprite2DView();
   ~Sprite2DView();

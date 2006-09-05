@@ -33,11 +33,12 @@
  * Constants from display/scene_context.hpp, manually copied here so
  * you have to sync manually in case stuff changes
  */
-RENDER_MASK_COLORMAP       <- 1<<0,
-RENDER_MASK_LIGHTMAP       <- 1<<1,
-RENDER_MASK_HIGHLIGHTMAP   <- 1<<2,
+RENDER_MASK_COLORMAP       <- 1<<0
+RENDER_MASK_LIGHTMAP       <- 1<<1
+RENDER_MASK_HIGHLIGHTMAP   <- 1<<2
 RENDER_MASK_LIGHTMAPSCREEN <- 1<<3
-RENDER_MASK_ALL            <- (RENDER_MASK_HIGHLIGHTMAP | RENDER_MASK_LIGHTMAP | RENDER_MASK_COLORMAP)
+RENDER_MASK_BLURMAP        <- 1<<4
+RENDER_MASK_ALL            <- (RENDER_MASK_HIGHLIGHTMAP | RENDER_MASK_LIGHTMAP | RENDER_MASK_COLORMAP | RENDER_MASK_BLURMAP)
 
 has_nightvision <- false;
 function nightvision_enabled(...)
