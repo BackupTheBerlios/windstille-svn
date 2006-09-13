@@ -12,11 +12,11 @@ clean :
 	LASTCHANGE=`date -I`; \
 	echo $${FILENAME%%.xml}; \
 	xalan \
-          -PARAM filename   "'$${FILENAME%%.xml}'" \
-          -PARAM lastchange "'$${LASTCHANGE}'" \
-          -IN $< \
-          -OUT $@ \
-          -XSL default.xsl
+          -param filename   "'$${FILENAME%%.xml}'" \
+          -param lastchange "'$${LASTCHANGE}'" \
+          -in $< \
+          -out $@ \
+          -xsl default.xsl
 
 upload: berlios
 
