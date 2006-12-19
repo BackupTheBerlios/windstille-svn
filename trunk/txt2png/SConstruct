@@ -1,0 +1,10 @@
+# -*- python -*-
+
+env = Environment()
+env.ParseConfig('freetype-config --libs --cflags')
+env.Program('txt2png', ['txt2png.cpp',
+                        'bitmap.cpp',
+                        'ttf_font.cpp'],
+            CXXFLAGS="-g -O0 -Wall")
+
+# EOF #
