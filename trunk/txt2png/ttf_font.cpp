@@ -48,7 +48,7 @@ TTFCharacter::TTFCharacter(FT_GlyphSlot glyph)
   for(int y = 0; y < bitmap->get_height(); ++y)
     for(int x = 0; x < bitmap->get_width(); ++x)
       {
-        bitmap->get_data()[y * bitmap->get_width() + x] = glyph->bitmap.buffer[y * glyph->bitmap.pitch + x];
+        bitmap->get_data()[y * bitmap->get_width() + x] = 255 - glyph->bitmap.buffer[y * glyph->bitmap.pitch + x];
       }
 }
 
@@ -104,16 +104,27 @@ TTFFont::TTFFont(const std::string& filename, int size_)
 
   impl->height = impl->size;
 
+  std::cout << "BBox: " << impl->size << " "
+            << impl->size * face->bbox.xMin/face->units_per_EM << " " 
+            << impl->size * face->bbox.yMin/face->units_per_EM << " " 
+            << impl->size * face->bbox.xMax/face->units_per_EM << " " 
+            << impl->size * face->bbox.yMax/face->units_per_EM << " " 
+            << face->units_per_EM
+            << std::endl;
+
   // We limit ourself to 256 characters for the momemnt
   for(int glyph_index = 0; glyph_index < 256; glyph_index += 1)
     {
-      if (FT_Load_Char( face,  glyph_index, FT_LOAD_RENDER))
+      if (FT_Load_Char( face,  glyph_index, FT_LOAD_RENDER))//| FT_LOAD_FORCE_AUTOHINT))
         {
-          // FIXME: happens when character is not in font, should be handled more gentle
-          throw std::runtime_error("couldn't load char");
+          std::cerr << "couldn't load char: " << glyph_index << " '" << char(glyph_index) << "'" << std::endl;
+          impl->characters.push_back(0);
         }
-            
-      impl->characters.push_back(new TTFCharacter(face->glyph));
+      else
+        {
+          impl->characters.push_back(new TTFCharacter(face->glyph));
+        }
+      //std::cout << "Char: " << int(glyph_index) << " " << face->glyph->bitmap_top << std::endl;
     }
 
   FT_Done_Face(face);
@@ -128,7 +139,10 @@ const TTFCharacter&
 TTFFont::get_character(int c) const
 {
   assert(c >= 0 && c < 256);
-  return *impl->characters[c];
+  if (impl->characters[c] == 0)
+    return *impl->characters['?'];
+  else
+    return *impl->characters[c];
 }
 
 int
@@ -142,7 +156,7 @@ TTFFont::get_width(const std::string& text) const
 {
   int width = 0;
   for(std::string::const_iterator i = text.begin(); i != text.end(); ++i)
-    width += impl->characters[*i]->advance;
+    width += get_character(*i).advance;
   return width;
 }
 

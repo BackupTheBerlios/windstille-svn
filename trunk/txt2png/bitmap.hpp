@@ -47,10 +47,14 @@ public:
   unsigned char* get_data() { return buffer; }
   void clear();
   void write_pgm(const std::string& filename);
+  void write_jpg(const std::string& filename);
+  
 
   /** Invert the given region */
   void invert(int x1, int y1, int x2, int y2);
 
+  /** Fill the given region with color \a c */
+  void fill(int x1, int y1, int x2, int y2, unsigned char c);
 private:
   Bitmap (const Bitmap&);
   Bitmap& operator= (const Bitmap&);
