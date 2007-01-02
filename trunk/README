@@ -1,0 +1,27 @@
+Windstille SVN Directory Structure Overview
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+facebuilder/
+ - a little program to construct faces in front view, useful for
+   prototyping new characters and such
+
+htdocs/
+ - the source code (XML) of the windstille webpage
+
+html2png/
+ - a little program to render html to a image file (png/jpg/pnm)
+
+txt2png
+ - a little program to render text to a image file (png/jpg/pnm)
+
+media/
+ - all Windstille related data, graphics, music, 3d models, etc.
+
+windstille/
+ - Windstille engine source code
+
+windstille-nds/
+ - a little prototype of Windstille for the NintendoDS
+
+________________________________________________________________________
+$Id$
