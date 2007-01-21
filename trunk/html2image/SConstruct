@@ -1,0 +1,8 @@
+# -*- python -*-
+
+env = Environment()
+env['CPPPATH'] = ['/usr/include/kde', '/usr/include/qt3']
+env['LIBS'] = ['qt-mt', 'khtml']
+env.Program('htmlcreator', ['htmlcreator.cpp'])
+
+# EOF #
