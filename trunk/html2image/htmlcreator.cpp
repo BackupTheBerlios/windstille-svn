@@ -56,6 +56,75 @@ int last_empty_line(QImage& img)
   return 0;
 }
 
+bool line_empty(QImage& img, int y)
+{
+  uchar* p  = img.scanLine(y);
+  int width = img.width();
+  for(int x = 0; x < 4*width; ++x)
+    {
+      if (p[x] != 255)
+        {
+          return false;
+        }
+    } 
+  return true;
+}
+
+struct Empty
+{
+  int start;
+  int end;
+
+  int size()
+  {
+    return end - start;
+  }
+};
+
+int find_size(int pos, int page_size, std::vector<Empty>& empties)
+{
+  std::cout << "findsize: " << pos << " " << page_size << std::endl;
+  int i;
+  for(i = 0; i < (int)empties.size(); ++i)  
+    if (empties[i].start > pos)
+      break;
+
+  for(; i < (int)empties.size(); ++i)
+    {
+      if ((int)empties[i].size() > 10 && (pos + page_size) < empties[i].start)
+        {
+          return (empties[i].start + empties[i].size()/2) - pos;
+        }
+    }
+  std::cout << "XXXX Error: find_size: Couldn't find a fitting empty space" << std::endl;
+  return page_size;
+}
+
+void check_empties(QImage& img, std::vector<Empty>& empties)
+{
+  int first_empty = -1;
+  for(int y = 0; y < img.height(); ++y)
+    {
+      if (line_empty(img, y))
+        {
+          if (first_empty == -1)
+            first_empty = y;
+        }
+      else
+        {
+          if (first_empty != -1)
+            {
+              //std::cout << y - first_empty << " - [" << first_empty << " - " << y <<")"  << std::endl;
+              Empty empty;
+              empty.start = first_empty;
+              empty.end   = y;
+              empties.push_back(empty);
+              first_empty = -1;
+            }
+        }
+    }
+}
+
 HTMLCreator::HTMLCreator(int width, int heigth)
   : KMainWindow(0L, "HTMLCreator")
 {
@@ -120,7 +189,7 @@ void HTMLCreator::save()
     }
   while(last_empty != 0); //(img.height() > start_height - 100 && !(start_height > img.height()) && start_height < 16384);
       
-  std::cout << "Got " << images.size() << " pages" << std::endl;
+  //std::cout << "Got " << images.size() << " pages" << std::endl;
 
   int img_width  = 480;
   int img_height = 0;
@@ -137,10 +206,54 @@ void HTMLCreator::save()
     }
 
   //img = img.copy(0, 0, img.width(), std::max(272, last_empty));
-  
-  total.save(output_file, "JPEG", 80);
-  std::cout << "Outfile: " << output_file << std::endl;
 
+  if (total.height() < 272)
+    { // expant small images to fullscreen
+      QImage img(480,272,32);
+      img.fill(0xffffffff);
+      bitBlt(&img, 0, 0, &total, 0, 0, -1, -1, 0);
+
+      QString out = QString(output_file).arg(0);
+      img.save(out, "JPEG", 80);
+      std::cout << "Outfile: " << out << std::endl;
+    }
+  else
+    {
+  std::vector<Empty> empties;
+  check_empties(total, empties);
+
+  // calc page size
+  int num_pages = std::max(int((total.height()/(272*3.0f) + 0.5f)), 1);
+  int page_size = total.height() / num_pages;
+  int current_pos = 0;
+  for(int i = 0; i < num_pages && current_pos < total.height(); ++i)
+    {
+      int current_page_size;
+      if (i != num_pages-1)
+        current_page_size = find_size(current_pos, page_size, empties);
+      else // last page
+        {
+          std::cout << "Last page! " << current_pos << " " << total.height() << std::endl;
+          current_page_size = total.height() - current_pos;
+        }
+
+      std::cout << "Current_Page_Size: " << current_page_size << std::endl;
+      if (current_pos + current_page_size > total.height())
+        current_page_size = total.height() - current_pos;
+
+      if (total.height() - current_pos - current_page_size < 350)
+        { // last page to small, merge with former one
+          current_page_size = total.height() - current_pos;
+        }
+
+      QImage page = total.copy(0, current_pos, total.width(), current_page_size);
+      QString out = QString(output_file).arg(i);
+      page.save(out, "JPEG", 80);
+      std::cout << "Outfile: " << out << std::endl;
+
+      current_pos += current_page_size;
+    }
+    }
   // Brute force!
   exit(0);
 }
