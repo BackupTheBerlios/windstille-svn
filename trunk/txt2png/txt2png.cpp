@@ -20,6 +20,7 @@ struct Options {
   int text_y;
   int text_w;
   int text_h;
+  int vspace;
   bool area_set;
   bool break_lines;
   bool info_mode;
@@ -36,6 +37,8 @@ struct Options {
     canvas_width  = 480;
     canvas_height = 272;
       
+    vspace = 0;
+
     text_x = -1;
     text_y = -1;
     text_w = -1;
@@ -49,95 +52,178 @@ struct Options {
 
 Options options;
 
-void render(Bitmap& canvas, TTFFont& font, const std::string& text, 
-            int start_x, int start_y,
-            int text_width, int text_height)
+
+class TextStream
 {
-  int page = 0;
-  int x = 0;
-  int y = 0; // <- refers to the baseline of the font!
+private:
+  std::string text;
+  int count;
+  int lines;
+public:
+  TextStream(const std::string& text_)
+    : text(text_),
+      count(0),
+      lines(0)
+  {
+  }
+  
+  char read() { 
+    if (text[count] == '\n')
+      lines += 1;
 
-  for(std::string::size_type i = 0; i < text.size(); ++i)
-    {
-      if (text[i] == '\n')
-        {
-          x = 0;
-          y += font.get_height();
+    return text[count++];
+  }
 
-          if (y >= text_height)
-            { // FIXME :Duplicate code
-              y = 0;
-              x = 0;
-              
-              std::ostringstream tstr;
-              if (!options.title.empty())
-                tstr << options.title << " ";
+  std::string read_word() {
+    std::string word;
 
-              tstr << "Page "
-                   << std::setfill('0') << std::setw(2) << page << "/21 - " 
-                   << std::setw(3) << 100 * page / 21 << "%";
-              render(canvas, font, tstr.str(),
-                     canvas.get_width()/2 - font.get_width(tstr.str())/2, 
-                     canvas.get_height() - font.get_height() + font.get_character('M').bitmap->get_height()+2,
-                     canvas.get_width(), canvas.get_height());
-              canvas.invert(0, canvas.get_height() - font.get_height(),
-                            canvas.get_width(), canvas.get_height());
+    if (text[count] == '\n' ||
+        text[count] == ' '  ||
+        text[count] == '\t')
+      {
+        word += text[count++];
+        return word;
+      }
+    else
+      {
+        while (text[count] != '\n' &&
+               text[count] != ' '  &&
+               text[count] != '\t')
+          {
+            word  += text[count++];
+          }
+        return word;
+      }
+  }
 
-              std::ostringstream str;
-              str << "out/page" << std::setfill('0') << std::setw(3) << page << ".jpg";
-              std::cout << "Writing: " << str.str() << std::endl;
-              canvas.write_jpg(str.str());
-              canvas.clear();
+  void unread(const std::string& word)
+  {
+    for(std::string::size_type i = 0; i < word.size(); ++i)
+      {
+        if (word[i] == '\n')
+          {
+            lines -= 1;
+          }
+        count -= 1;
+      }
+  }
 
-              page += 1;
-            }
-        }
-      else if (text[i] == '\r')
-        {
-          // ignore so both DOS and Unix files look fine
-        }
-      else if (text[i] == '\t')
-        {
-          int cw = font.get_character(' ').advance * 8;
-          x = (x/cw + 1) * cw;
-        }
-      else
-        {
-          const TTFCharacter& glyph = font.get_character(text[i]);
+  int get_line() { return lines; }
+  
+  bool eof() {
+    return count >= int(text.size());
+  }
+};
 
-          canvas.blit(*glyph.bitmap, 
-                      x + glyph.x_offset + start_x,
-                      y + glyph.y_offset + start_y);
+class Renderer
+{
+public:
+  int x;
+  int y;
+  TTFFont* font;
+  Bitmap*  canvas;
+  int start_x;
+  int start_y;
+  int text_width;
+  int text_height;
+  bool done;
+  TextStream* stream;
 
-          x += glyph.advance;
+  Renderer()
+  {
+    x = 0;
+    y = 0; // <- refers to the baseline of the font not to top-left corner!
+    start_x = 0;
+    start_y = 0;
+  }
 
-          if (x >= text_width)
-            {
-              std::cout << "Illegal line break on page " << page << std::endl;
-              x = 0;
-              y += font.get_height();              
-            }
+  void print(const std::string& text)
+  {
+    for (std::string::const_iterator c = text.begin(); c != text.end(); ++c)
+      {
+        const TTFCharacter& glyph = font->get_character(*c);
+        canvas->blit(*glyph.bitmap, 
+                     x + glyph.x_offset + start_x,
+                     y + glyph.y_offset + start_y);
+        x += glyph.advance;
+      }
+  }
 
-          if (y >= text_height)
-            {
-              y = 0;
-              x = 0;
+  void render(Bitmap& canvas_, TTFFont& font_, TextStream& stream_,
+              int start_x_, int start_y_,
+              int text_width_, int text_height_)
+  {
+    font   = &font_;
+    canvas = &canvas_;
+    start_x = start_x_;
+    start_y = start_y_;
+    text_width  = text_width_;
+    text_height = text_height_;
+    stream = &stream_;
+    done = false;
 
-              canvas.invert(0, canvas.get_height() - font.get_height(),
-                            canvas.get_width(), canvas.get_height());
+    while(!stream->eof() && !done)
+      {
+        std::string word = stream->read_word();
 
+        if (word == "\n")
+          {
+            if (x == 0 && y == 0)
+              {
+                // ignore newlines at the top of a file
+              }
+            else
+              {
+                x = 0;
+                y += font->get_height() + options.vspace;
 
-              std::ostringstream str;
-              str << "out/page" << std::setfill('0') << std::setw(3) << page << ".pgm";
-              std::cout << "Writing: " << str.str() << std::endl;
-              canvas.write_pgm(str.str());
-              canvas.clear();
+                if (y >= text_height)
+                  {
+                    // We are done with rendering
+                    done = true;
+                  }
+              }
+          }
+        else if (word == "\t")
+          { // magic to get taps correctly aligned 
+            int cw = font->get_character(' ').advance * 8;
+            x = (x/cw + 1) * cw;
+          }
+        else if (word == " ")
+          { 
+            print(" ");
+          }
+        else if (word == "###PAGEBREAK###")
+          {
+            print("                                                            * * *");
+            done = true;
+          }
+        else
+          {
+            // read a whole word, now try to render it
+            if (x + font->get_width(word) >= text_width)
+              { // word would print over-print, so we make a linebreak
+                y += font->get_height() + options.vspace;
+                x = 0;
 
-              page += 1;
-            }
-        }
-    }
-}
+                if (y >= text_height)
+                  {
+                    done = true;
+                    stream->unread(word);
+                  }
+                else
+                  {
+                    print(word);
+                  }
+              }
+            else
+              {
+                print(word);
+              }
+          }
+      }
+  }
+};
 
 void parse_args(int argc, char** argv, Options& options)
 {
@@ -158,6 +244,7 @@ void parse_args(int argc, char** argv, Options& options)
   argp.add_option('c',  "canvas",   "WxH",      "Use a canvas for size WxH+X+Y");
   argp.add_option('b',  "break",    "",        "Break long lines");
   argp.add_option('i',  "info",     "",        "Print information about the text");
+  argp.add_option('v',  "vspace",   "NUM",     "Amount of pixels between lines");
   argp.add_option('h',  "help",     "",        "Display this help");
   
   argp.parse_args(argc, argv);
@@ -227,8 +314,16 @@ void parse_args(int argc, char** argv, Options& options)
               std::cerr << "Expected Integer as argument for --size" << std::endl;
               exit(EXIT_FAILURE);
             }
-
           break;
+
+        case 'v': // vspace
+          if (sscanf(argp.get_argument().c_str(), "%d", &options.vspace) != 1)
+            {
+              std::cerr << "Expected Integer as argument for --vspace" << std::endl;
+              exit(EXIT_FAILURE);
+            }
+          break;
+
 
         case 'h':
           argp.print_help();
@@ -278,12 +373,52 @@ int main(int argc, char** argv)
 
       //std::cout << "Render..." << std::endl;
 
-      if (options.area_set)
-        render(bitmap, font, text, options.text_x, options.text_y, options.text_w, options.text_h);
-      else
-        render(bitmap, font, text,
-               4, font.get_height(), bitmap.get_width() - 4, bitmap.get_height() - font.get_height()*2);
+      if (!options.area_set)
+        {
+          options.text_x = 4;
+          options.text_y = font.get_height();
+          options.text_w = bitmap.get_width() - 4;
+          options.text_h = bitmap.get_height() - font.get_height()*2;
+        }
+
+      
+      TextStream stream(text);
+      int page = 0;
   
+      while(!stream.eof())
+        { 
+          Renderer renderer;
+          renderer.render(bitmap, font, stream, options.text_x, options.text_y, options.text_w, options.text_h);
+
+          page += 1;
+
+          if (options.status)
+            {
+              std::ostringstream tstr;
+              if (!options.title.empty())
+                tstr << options.title << " - ";
+          
+              tstr << "Page "
+                   << std::setfill(' ') << std::setw(2) << page << "/21 - " 
+                   << std::setw(2) << 100 * page / 21 << "%";
+              {
+                TextStream tmpstr(tstr.str());
+                Renderer renderer;
+                renderer.render(bitmap, font, tmpstr,
+                                bitmap.get_width()/2 - font.get_width(tstr.str())/2, 
+                                bitmap.get_height() - font.get_height() + font.get_character('M').bitmap->get_height()+2,
+                                bitmap.get_width(), bitmap.get_height());
+              }
+              bitmap.invert(0, bitmap.get_height() - font.get_height(),
+                            bitmap.get_width(), bitmap.get_height());
+            }
+
+          std::ostringstream str;
+          str << options.output_file << std::setfill('0') << std::setw(3) << page << ".jpg";
+          std::cout << "Writing: " << str.str() << std::endl;
+          bitmap.write_jpg(str.str());
+          bitmap.clear();
+        }
       TTFFont::deinit();
     }
 

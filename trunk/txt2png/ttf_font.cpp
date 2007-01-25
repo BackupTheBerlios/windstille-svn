@@ -136,13 +136,23 @@ TTFFont::~TTFFont()
 }
 
 const TTFCharacter&
-TTFFont::get_character(int c) const
+TTFFont::get_character(char c) const
 {
-  assert(c >= 0 && c < 256);
-  if (impl->characters[c] == 0)
+  if (impl->characters[(unsigned char)c] == 0)
     return *impl->characters['?'];
   else
-    return *impl->characters[c];
+    return *impl->characters[(unsigned char)c];
+
+  /*  unsigned char c = c_;
+  if (!(c >= 0 && c < 256) || impl->characters[c] == 0)
+    {
+      std::cout << "Unknown character: " << c << " '" << c << "'" << std::endl;
+      return *impl->characters['?'];
+    }
+  else
+    {
+      return *impl->characters[c];
+      }*/
 }
 
 int

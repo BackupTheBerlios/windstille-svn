@@ -73,7 +73,7 @@ public:
       FontEffoct */
   int get_size() const;
 
-  const TTFCharacter& get_character(int c) const;
+  const TTFCharacter& get_character(char c) const;
 
   //void draw(float x_pos, float y_pos, const std::string& str, const Color& color = Color(1.0f, 1.0f, 1.0f));
   //void draw_center(float x_pos, float y_pos, const std::string& str, const Color& color = Color(1.0f, 1.0f, 1.0f));
