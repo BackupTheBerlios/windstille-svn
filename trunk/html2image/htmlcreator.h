@@ -16,6 +16,9 @@ private:
   KHTMLPart *m_html;
   QPushButton *print;
 
+  int picture_width;
+  int picture_height;
+
             public slots:
             void save();
 };

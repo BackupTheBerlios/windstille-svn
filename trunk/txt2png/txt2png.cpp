@@ -127,6 +127,7 @@ public:
   int text_width;
   int text_height;
   bool done;
+  int chapter;
   TextStream* stream;
 
   Renderer()
@@ -135,6 +136,8 @@ public:
     y = 0; // <- refers to the baseline of the font not to top-left corner!
     start_x = 0;
     start_y = 0;
+
+    chapter = 0;
   }
 
   void print(const std::string& text)
@@ -195,7 +198,8 @@ public:
           }
         else if (word == "###PAGEBREAK###")
           {
-            print("                                                            * * *");
+            //            print("                                                            * * *");
+            chapter += 1;
             done = true;
           }
         else
@@ -385,6 +389,7 @@ int main(int argc, char** argv)
       TextStream stream(text);
       int page = 0;
   
+      int chapter = 1;
       while(!stream.eof())
         { 
           Renderer renderer;
@@ -414,10 +419,15 @@ int main(int argc, char** argv)
             }
 
           std::ostringstream str;
-          str << options.output_file << std::setfill('0') << std::setw(3) << page << ".jpg";
+          str << options.output_file
+              << "chapter" << std::setfill('0') << std::setw(2) << chapter << "/"
+              << "page"    << std::setfill('0') << std::setw(4) << page << ".jpg";
+ 
           std::cout << "Writing: " << str.str() << std::endl;
           bitmap.write_jpg(str.str());
           bitmap.clear();
+
+          chapter += renderer.chapter;
         }
       TTFFont::deinit();
     }
