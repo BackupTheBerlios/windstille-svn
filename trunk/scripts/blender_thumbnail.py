@@ -1,8 +1,10 @@
 import Blender
-from Blender.Mathutils import Vector
+from Blender.Mathutils import Vector, Euler
 from Blender import Camera
 from Blender.Scene import Render
+from Blender import Lamp
 import time
+import math
 
 print "\033c--- Start --- %s" % time.time()
 
@@ -42,6 +44,11 @@ class BBox:
         self.z1 = min(self.z1, self.z2)
         self.z2 = max(self.z2, self.z1)
 
+    def valid(self):
+        return self.x1 and self.x2 and \
+               self.y1 and self.y2 and \
+               self.z1 and self.z2
+    
     def join(self, bbox):
         self.x1 = min(self.x1, bbox.x1) or bbox.x1
         self.x2 = max(self.x2, bbox.x2) or bbox.x2
@@ -61,34 +68,61 @@ class BBox:
 def bounding_rect():
     total = BBox()
 
-    for obj in scn.objects:       
-        if obj.boundingBox:
+    for obj in scn.objects:
+        if (1 in obj.layers) and obj.boundingBox:
             print obj.getType()
             print obj.boundingBox
             print total.join(BBox(obj.boundingBox))
 
-    cam = Camera.New('ortho')
-    
-    cam.scale = max(total.x2 - total.x1, total.y2 - total.y1) + 1.0
-    
-    cam_obj = scn.objects.new(cam)
-    
-    scn.setCurrentCamera(cam_obj)
-    
-    cam_obj.setLocation((total.x2 + total.x1)/2,
-                        (total.y2 + total.y1)/2,
-                        total.z2 + 5)
+    if not total.valid:
+        # Scene is empty
+        pass
+    else:
+        # Position of camera and support objects
+        (x, y, z) = ((total.x2 + total.x1)/2,
+                     (total.y2 + total.y1)/2,
+                     total.z2 + 5)
+        
+        ### Add camera
+        cam = Camera.New('ortho')
+        cam.scale = max(total.x2 - total.x1, total.y2 - total.y1)
+        cam.scale += cam.scale * 0.1
+        cam_obj = scn.objects.new(cam)
+        
+        scn.setCurrentCamera(cam_obj)
+        cam_obj.setLocation(x, y, z)
+        # cam_obj.setEuler(Euler(0, math.pi/2, 0))
 
-    render = scn.getRenderingContext()
-    
-    render.aspectX = 100
-    render.aspectY = 100
-    
-    render.sizeX = 512
-    render.sizeY = 512
-    
-    print "total: %s" % total
+        ### Add lamp
+        light = Lamp.New('Lamp')            # create new 'Spot' lamp data
+        light.energy = 2.0
+        # light.setMode('Square', 'Shadow')   # set these two lamp mode flags
+        light_obj = scn.objects.new(light)
+        light_obj.setLocation(x, y, z)
 
+        render = scn.getRenderingContext()
+
+        render.renderwinSize = 100
+        
+        render.aspectX = 100
+        render.aspectY = 100
+
+        render.sizeX = 512
+        render.sizeY = 512
+
+        render.imageType = Render.PNG
+        render.enableRGBAColor()
+
+        render.render()
+
+        render.setRenderPath("")
+        render.saveRenderedImage("/tmp/out.png")
+
+        #scn.objects.unlink(cam_obj)
+        scn.objects.unlink(light_obj)
+
+        print "total: %s" % total
+    
 bounding_rect()
 
 # EOF #
