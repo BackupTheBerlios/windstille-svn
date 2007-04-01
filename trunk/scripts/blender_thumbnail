@@ -1,0 +1,24 @@
+#! /bin/sh
+
+set -e 
+
+export BLEND_THUMB_AXIS=x
+export BLEND_THUMB_OUTPUT="/tmp/x-axis.png"
+blender "$@" -P /home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py 
+
+export BLEND_THUMB_AXIS=y
+export BLEND_THUMB_OUTPUT="/tmp/y-axis.png"
+blender "$@" -P /home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py 
+
+export BLEND_THUMB_AXIS=z
+export BLEND_THUMB_OUTPUT="/tmp/z-axis.png"
+blender "$@" -P /home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py 
+
+export BLEND_THUMB_AXIS="-z"
+export BLEND_THUMB_OUTPUT="/tmp/z2-axis.png"
+blender "$@" -P /home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py 
+
+montage -background "#FF00FF" -geometry +0+0  "/tmp/x-axis.png" "/tmp/y-axis.png" "/tmp/z-axis.png" "/tmp/z2-axis.png" "/tmp/out.png"
+gliv "/tmp/out.png"
+
+# EOF #

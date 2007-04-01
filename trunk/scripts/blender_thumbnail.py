@@ -2,6 +2,16 @@
 ## blender longshot.blend -P ~/projects/windstille/trunk/scripts/blender_thumbnail.py
 ## ! Argument order matters !
 
+## Bugs: The .blend file must not be in "Maximized Window Mode" (Ctrl
+## UpArrow) or it will segfault
+
+## ToDo:
+## - do multiple renderings in one go without restarting blender
+## - optimize the bounding rect so that the four-dir view contains
+##   less empty space
+## - set some better rendering parameter
+## - add a 3/4 view
+
 import Blender
 from Blender.Mathutils import Vector, Euler
 from Blender import Camera
@@ -9,6 +19,7 @@ from Blender.Scene import Render
 from Blender import Lamp
 import time
 import math
+import os
 
 # print "\033c--- Start --- %s" % time.time()
 
@@ -74,7 +85,7 @@ class BBox:
                 self.z1, self.z2)
 
 # Calculate the bounding box of a scene
-def bounding_rect():
+def render_thumbnail(axis, outfile):
     total = BBox()
 
     scn = Blender.Scene.GetCurrent()
@@ -82,6 +93,7 @@ def bounding_rect():
     # print scn.objects
     for obj in scn.objects:
         if obj.getType() != "Empty" and \
+           obj.getType() != "Light" and \
            (1 in obj.layers) and obj.boundingBox:
             # print obj.getType()
             # print obj.boundingBox
@@ -93,7 +105,7 @@ def bounding_rect():
     else:
         # print total
         # Position of camera and support objects
-        axis = "z"
+
         if axis == "x": # ok
             (x, y, z) = (total.x1 - 5,
                          (total.y2 + total.y1)/2,
@@ -160,7 +172,8 @@ def bounding_rect():
         render.render()
 
         render.setRenderPath("")
-        render.saveRenderedImage("/tmp/out.png")
+        render.saveRenderedImage(outfile)
+        print "blender_thumbnail: Wrote output to '%s'" % outfile
 
         #scn.objects.unlink(cam_obj)
         scn.objects.unlink(light_obj)
@@ -168,6 +181,7 @@ def bounding_rect():
         # print "total: %s" % total
         Blender.Quit()
     
-bounding_rect()
+render_thumbnail(os.getenv("BLEND_THUMB_AXIS") or "x",
+                 os.getenv("BLEND_THUMB_OUTPUT") or "/tmp/out.png")
 
 # EOF #
