@@ -34,6 +34,12 @@ class BBox:
             self.z1 = None
             self.z2 = None
 
+    def max(self):
+        """Returns the longest side of the bbox"""
+        return max(self.x2 - self.x1,
+                   self.y2 - self.y1,
+                   self.z2 - self.z1)
+
     def normalize(self):
         self.x1 = min(self.x1, self.x2)
         self.x2 = max(self.x2, self.x1)
@@ -79,19 +85,49 @@ def bounding_rect():
         pass
     else:
         # Position of camera and support objects
-        (x, y, z) = ((total.x2 + total.x1)/2,
-                     (total.y2 + total.y1)/2,
-                     total.z2 + 5)
+        axis = "z"
+        if axis == "x": # ok
+            (x, y, z) = (total.x1 - 5,
+                         (total.y2 + total.y1)/2,
+                         (total.z2 + total.z1)/2)
+            euler = Euler(-math.pi/2, math.pi, math.pi/2)
+        elif axis == "-x": # ok
+            (x, y, z) = (total.x2 + 5,
+                         (total.y2 + total.y1)/2,
+                         (total.z2 + total.z1)/2)
+            euler = Euler(math.pi/2, 0, math.pi/2)
+        elif axis == "y":
+            (x, y, z) = ((total.x2 + total.x1)/2,
+                         total.y1 - 5,
+                         (total.z2 + total.z1)/2)
+            euler = Euler(math.pi/2, 0, 0)     
+        elif axis == "-y":
+            (x, y, z) = ((total.x2 + total.x1)/2,
+                         total.y2 + 5,
+                         (total.z2 + total.z1)/2)
+            euler = Euler(-math.pi/2, math.pi, 0)    
+        elif axis == "z": # ok
+            (x, y, z) = ((total.x2 + total.x1)/2,
+                         (total.y2 + total.y1)/2,
+                         total.z1 - 5)
+            euler = Euler(0, math.pi, 0)
+        elif axis == "-z": # ok
+            (x, y, z) = ((total.x2 + total.x1)/2,
+                         (total.y2 + total.y1)/2,
+                         total.z2 + 5)
+            euler = Euler(0, 0, 0)
+        else:
+            raise "Unknown axis: '%s'" % (axis,)
         
         ### Add camera
         cam = Camera.New('ortho')
-        cam.scale = max(total.x2 - total.x1, total.y2 - total.y1)
+        cam.scale = total.max() # (total.x2 - total.x1, total.y2 - total.y1)
         cam.scale += cam.scale * 0.1
         cam_obj = scn.objects.new(cam)
         
         scn.setCurrentCamera(cam_obj)
         cam_obj.setLocation(x, y, z)
-        # cam_obj.setEuler(Euler(0, math.pi/2, 0))
+        cam_obj.setEuler(euler)
 
         ### Add lamp
         light = Lamp.New('Lamp')            # create new 'Spot' lamp data
