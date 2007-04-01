@@ -50,10 +50,11 @@ ARGV.each{|filename|
   
   gc = Magick::Draw.new()
   layout.each{|lst|
+    this_height = lst.map{|i| images[i].rows}.max
     x = spacing
     lst.each{|name|
       image = images[name]
-      gc.composite(x, height, 0, 0, image)
+      gc.composite(x, height + (this_height - image.rows)/2, 0, 0, image)
       x += image.columns + spacing
     }
 

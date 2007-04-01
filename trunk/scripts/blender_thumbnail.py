@@ -6,11 +6,8 @@
 ## UpArrow) or it will segfault
 
 ## ToDo:
-## - do multiple renderings in one go without restarting blender
-## - optimize the bounding rect so that the four-dir view contains
-##   less empty space
-## - set some better rendering parameter
-## - add a 3/4 view
+## - set some better rendering parameter, care less about what is set
+## - in the .blend file (background, ambient occulsion, etc.)
 
 import Blender
 from Blender.Mathutils import *
