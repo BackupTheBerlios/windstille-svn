@@ -3,9 +3,9 @@
 set -e 
 
 
-for AXIS in "x" "y" "z" "-x" "-y" "-z"; do
-export BLEND_THUMB_AXIS="$AXIS"
-export BLEND_THUMB_OUTPUT="/tmp/render-$AXIS-axis.png"
+for POS in "0,0,0" "-90,0,0" "90,0,0" "180,0,0" "0,90,0" "0,-90,0" "45,45,0" "135,45,0"; do
+export BLEND_THUMB_POS="$POS"
+export BLEND_THUMB_OUTPUT="/tmp/render-($POS).png"
 blender "$@" -P /home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py 
 convert -trim "$BLEND_THUMB_OUTPUT" "$BLEND_THUMB_OUTPUT"
 done
