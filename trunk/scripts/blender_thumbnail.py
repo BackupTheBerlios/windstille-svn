@@ -56,11 +56,21 @@ class BBox:
     def width_z(self):
         return self.z2 - self.z1
 
+    def center(self):
+        return Vector((self.x1 + self.x2)/2, 
+                      (self.y1 + self.y2)/2, 
+                      (self.z1 + self.z2)/2)
+
     def max(self):
         """Returns the longest side of the bbox"""
         return max(self.x2 - self.x1,
                    self.y2 - self.y1,
                    self.z2 - self.z1)
+
+    def max_diagonal(self):
+        return math.sqrt(self.width_x() ** 2 +
+                         self.width_y() ** 2 +
+                         self.width_z() ** 2)
 
     def normalize(self):
         self.x1 = min(self.x1, self.x2)
@@ -149,25 +159,30 @@ def render_thumbnail(axis, resolution, outfile):
         
         ### Add camera
         cam = Camera.New('ortho')
-        cam.scale = total.max() # (total.x2 - total.x1, total.y2 - total.y1)
         # cam.scale += cam.scale * 0.1
         cam_obj = scn.objects.new(cam)
-        
         scn.setCurrentCamera(cam_obj)
-
-        # matrix = TranslationMatrix(Vector(x,y,z))
-        # RotationMatrix(angle, 3, r, vec)
-        # cam_obj.setMatrix(matrix)
-        
-        cam_obj.setLocation(x, y, z)
-        cam_obj.setEuler(euler)
-
+         
         ### Add lamp
-        light = Lamp.New('Lamp')            # create new 'Spot' lamp data
-        light.energy = 1.5
+        light = Lamp.New('Sun')            # create new 'Spot' lamp data
+        light.energy = 1.0
         # light.setMode('Square', 'Shadow')   # set these two lamp mode flags
         light_obj = scn.objects.new(light)
-        light_obj.setLocation(x, y, z)
+
+        if False: # 3/4 perspective test
+            cam.scale = total.max_diagonal()
+            matrix = RotationMatrix(90, 4, 'x') * \
+                     TranslationMatrix(Vector(0, -total.max_diagonal(),0)) * \
+                     RotationMatrix(-45, 4, 'x') * \
+                     RotationMatrix(-45*3, 4, 'z') * \
+                     TranslationMatrix(total.center())
+            cam_obj.setMatrix(matrix)
+            light_obj.setMatrix(matrix)
+        else:
+            cam.scale = total.max()
+            cam_obj.setLocation(x, y, z)
+            cam_obj.setEuler(euler)
+            light_obj.setLocation(x, y, z)
 
         render = scn.getRenderingContext()
 
@@ -205,7 +220,7 @@ def render_thumbnail(axis, resolution, outfile):
         render.saveRenderedImage(outfile)
         print "blender_thumbnail: Wrote output to '%s'" % outfile
 
-        #scn.objects.unlink(cam_obj)
+        scn.objects.unlink(cam_obj)
         scn.objects.unlink(light_obj)
 
         # print "total: %s" % total
