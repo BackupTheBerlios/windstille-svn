@@ -13,7 +13,7 @@
 ## - add a 3/4 view
 
 import Blender
-from Blender.Mathutils import Vector, Euler
+from Blender.Mathutils import *
 from Blender import Camera
 from Blender.Scene import Render
 from Blender import Lamp
@@ -46,6 +46,15 @@ class BBox:
             self.y2 = None
             self.z1 = None
             self.z2 = None
+
+    def width_x(self):
+        return self.x2 - self.x1
+
+    def width_y(self):
+        return self.y2 - self.y1
+
+    def width_z(self):
+        return self.z2 - self.z1
 
     def max(self):
         """Returns the longest side of the bbox"""
@@ -84,8 +93,7 @@ class BBox:
                 self.y1, self.y2,
                 self.z1, self.z2)
 
-# Calculate the bounding box of a scene
-def render_thumbnail(axis, outfile):
+def render_thumbnail(axis, resolution, outfile):
     total = BBox()
 
     scn = Blender.Scene.GetCurrent()
@@ -142,10 +150,15 @@ def render_thumbnail(axis, outfile):
         ### Add camera
         cam = Camera.New('ortho')
         cam.scale = total.max() # (total.x2 - total.x1, total.y2 - total.y1)
-        cam.scale += cam.scale * 0.1
+        # cam.scale += cam.scale * 0.1
         cam_obj = scn.objects.new(cam)
         
         scn.setCurrentCamera(cam_obj)
+
+        # matrix = TranslationMatrix(Vector(x,y,z))
+        # RotationMatrix(angle, 3, r, vec)
+        # cam_obj.setMatrix(matrix)
+        
         cam_obj.setLocation(x, y, z)
         cam_obj.setEuler(euler)
 
@@ -163,10 +176,27 @@ def render_thumbnail(axis, outfile):
         render.aspectX = 100
         render.aspectY = 100
 
-        render.sizeX = 512
-        render.sizeY = 512
+#         if axis == "x" or axis == "-x": # front
+#             lmax = total.max()  #max(total.width_y(), total.width_z())
+#             render.sizeX = int(resolution * total.width_y() / lmax)
+#             render.sizeY = int(resolution * total.width_z() / lmax)
+#         elif axis == "y" or axis == "-y": # side
+#             lmax = total.max() # max(total.width_x(), total.width_z())
+#             render.sizeX = int(resolution * total.width_x() / lmax)
+#             render.sizeY = int(resolution * total.width_z() / lmax)
+#         elif axis == "z" or axis == "-z": # top
+#             lmax = total.max() # max(total.width_y(), total.width_x())
+#             render.sizeX = int(resolution * total.width_x() / lmax)
+#             render.sizeY = int(resolution * total.width_y() / lmax)
+#         else:
+#             raise "Unknown axis: '%s'" % (axis,)
+
+        render.sizeX = resolution
+        render.sizeY = resolution
 
         render.imageType = Render.PNG
+        # render.crop = True
+        # render.mode['crop'] = True
         render.enableRGBAColor()
 
         render.render()
@@ -180,8 +210,9 @@ def render_thumbnail(axis, outfile):
 
         # print "total: %s" % total
         Blender.Quit()
-    
+        
 render_thumbnail(os.getenv("BLEND_THUMB_AXIS") or "x",
+                 int(os.getenv("BLEND_THUMB_RESOLUTION") or 512),
                  os.getenv("BLEND_THUMB_OUTPUT") or "/tmp/out.png")
 
 # EOF #
