@@ -1,3 +1,7 @@
+## Usage:
+## blender longshot.blend -P ~/projects/windstille/trunk/scripts/blender_thumbnail.py
+## ! Argument order matters !
+
 import Blender
 from Blender.Mathutils import Vector, Euler
 from Blender import Camera
@@ -6,9 +10,7 @@ from Blender import Lamp
 import time
 import math
 
-print "\033c--- Start --- %s" % time.time()
-
-scn = Blender.Scene.GetCurrent()
+# print "\033c--- Start --- %s" % time.time()
 
 class BBox:
     def __init__(self, bbox = None):
@@ -66,24 +68,30 @@ class BBox:
         self.z2 = max(self.z2, bbox.z2) or bbox.z2
 
     def __str__(self):
-        return "[bbox: x:%.2f, %.2f, y:%.2f, %.2f, z:%.2f, %.2f]" % (self.x1, self.x2,
-                               self.y1, self.y2,
-                               self.z1, self.z2)
+        return "[bbox: x:%.2f, %.2f, y:%.2f, %.2f, z:%.2f, %.2f]" % \
+               (self.x1, self.x2,
+                self.y1, self.y2,
+                self.z1, self.z2)
 
 # Calculate the bounding box of a scene
 def bounding_rect():
     total = BBox()
 
-    for obj in scn.objects:
-        if (1 in obj.layers) and obj.boundingBox:
-            print obj.getType()
-            print obj.boundingBox
-            print total.join(BBox(obj.boundingBox))
+    scn = Blender.Scene.GetCurrent()
 
+    # print scn.objects
+    for obj in scn.objects:
+        if obj.getType() != "Empty" and \
+           (1 in obj.layers) and obj.boundingBox:
+            # print obj.getType()
+            # print obj.boundingBox
+            total.join(BBox(obj.boundingBox))
+    
     if not total.valid:
         # Scene is empty
         pass
     else:
+        # print total
         # Position of camera and support objects
         axis = "z"
         if axis == "x": # ok
@@ -131,7 +139,7 @@ def bounding_rect():
 
         ### Add lamp
         light = Lamp.New('Lamp')            # create new 'Spot' lamp data
-        light.energy = 2.0
+        light.energy = 1.5
         # light.setMode('Square', 'Shadow')   # set these two lamp mode flags
         light_obj = scn.objects.new(light)
         light_obj.setLocation(x, y, z)
@@ -157,10 +165,9 @@ def bounding_rect():
         #scn.objects.unlink(cam_obj)
         scn.objects.unlink(light_obj)
 
-        print "total: %s" % total
+        # print "total: %s" % total
+        Blender.Quit()
     
 bounding_rect()
 
 # EOF #
-
-
