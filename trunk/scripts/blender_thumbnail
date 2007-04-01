@@ -1,16 +1,70 @@
-#! /bin/sh
+#!/usr/bin/ruby -w
 
-set -e 
+require "RMagick"
 
+angles = {
+  "front"    => "0,0,0",
+  "left"     => "-90,0,0",
+  "right"    => "90,0,0",
+  "back"     => "180,0,0",
+  "top"      => "0,90,90",
+  "bottom"   => "0,-90,90",
+  "45-front" => "45,45,0",
+  "45-back"  => "135,45,0",
+}
 
-export BLEND_THUMB_POS="0,0,0;-90,0,0;90,0,0;180,0,0;0,90,0;0,-90,0;45,45,0;135,45,0"
-export BLEND_THUMB_OUTPUT="/tmp/render-front.png;/tmp/render-left.png;/tmp/render-right.png;/tmp/render-back.png;/tmp/render-top.png;/tmp/render-bottom.png;/tmp/render-45-front.png;/tmp/render-45-back.png"
-blender "$@" -P /home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py 
+layout = [
+          ["left",   "front", "top",    "45-front"],
+          ["right",  "back", "bottom", "45-back"],
+         ]
 
-# convert -trim "$BLEND_THUMB_OUTPUT" "$BLEND_THUMB_OUTPUT"
+ARGV.each{|filename|
+    positions = angles.values
+    outfiles  = angles.keys.map{|name| "/tmp/render-#{name}.png" }
 
-#montage -tile 2x2 -background "#FF00FF" -geometry +0+0 \
-#  "/tmp/render-x-axis.png" "/tmp/render-y-axis.png" "/tmp/render-z-axis.png" "/tmp/render--z-axis.png" "/tmp/render-out.png"
-#gliv "/tmp/render-out.png"
+  if true then
+    ENV["BLEND_THUMB_POS"]    = positions.join(';')
+    ENV["BLEND_THUMB_OUTPUT"] = outfiles.join(';')
+    
+    if not system("blender", filename, "-P",
+                  "/home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py") then
+      puts "Error while rendering '#{filename}', error code #{$?}"
+    end
+
+    outfiles.each{|file|
+      puts "Trimming #{file}"
+      if not system("convert", "-trim", file, file) then
+        puts "Error while trying to trim '#{file}'"
+      end
+    }
+  end
+
+  images = {}
+  outfiles.map{|file| Magick::Image.read(file).first}.zip(angles.keys).each{|v, k|
+    images[k] = v
+  }
+
+  spacing = 16
+  width  = 0
+  height = spacing
+  
+  gc = Magick::Draw.new()
+  layout.each{|lst|
+    x = spacing
+    lst.each{|name|
+      image = images[name]
+      gc.composite(x, height, 0, 0, image)
+      x += image.columns + spacing
+    }
+
+    height += lst.map{|i| images[i].rows}.max + spacing
+    width   = [width, lst.map{|i| images[i].columns + spacing}.inject(0){|t,v| t + v} + spacing].max
+  }
+  puts "OutImage: #{width} #{height}"
+  outimage = Magick::Image.new(width, height)
+  gc.draw(outimage)
+
+  outimage.write("/tmp/out.png")
+}
 
 # EOF #
