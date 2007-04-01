@@ -3,12 +3,11 @@
 set -e 
 
 
-for POS in "0,0,0" "-90,0,0" "90,0,0" "180,0,0" "0,90,0" "0,-90,0" "45,45,0" "135,45,0"; do
-export BLEND_THUMB_POS="$POS"
-export BLEND_THUMB_OUTPUT="/tmp/render-($POS).png"
+export BLEND_THUMB_POS="0,0,0;-90,0,0;90,0,0;180,0,0;0,90,0;0,-90,0;45,45,0;135,45,0"
+export BLEND_THUMB_OUTPUT="/tmp/render-front.png;/tmp/render-left.png;/tmp/render-right.png;/tmp/render-back.png;/tmp/render-top.png;/tmp/render-bottom.png;/tmp/render-45-front.png;/tmp/render-45-back.png"
 blender "$@" -P /home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py 
-convert -trim "$BLEND_THUMB_OUTPUT" "$BLEND_THUMB_OUTPUT"
-done
+
+# convert -trim "$BLEND_THUMB_OUTPUT" "$BLEND_THUMB_OUTPUT"
 
 #montage -tile 2x2 -background "#FF00FF" -geometry +0+0 \
 #  "/tmp/render-x-axis.png" "/tmp/render-y-axis.png" "/tmp/render-z-axis.png" "/tmp/render--z-axis.png" "/tmp/render-out.png"

@@ -103,49 +103,60 @@ class BBox:
                 self.y1, self.y2,
                 self.z1, self.z2)
 
-def render_thumbnail(longitude, latitude, rotation, resolution, outfile):
-    total = BBox()
+class ThumbnailRender:
+    """
+    bbox:  bounding box
+    scene: scene to render
+    cam_obj:   light object for the render
+    light_obj: camera object for the render
+    """
+    def __init__(self, scene):
+        self.scene = scene
+        self.bbox  = None
+        self.cam_obj   = None
+        self.light_obj = None
+        
+    def calc_bbox(self):
+        self.bbox = BBox()
+        for obj in self.scene.objects:
+            if obj.getType() != "Empty" and \
+               obj.getType() != "Light" and \
+               (1 in obj.layers) and obj.boundingBox:
+                # print obj.getType()
+                # print obj.boundingBox
+                self.bbox.join(BBox(obj.boundingBox))
 
-    scn = Blender.Scene.GetCurrent()
+        if not self.bbox.valid:
+            raise "Error: Scene is empty!"
 
-    # print scn.objects
-    for obj in scn.objects:
-        if obj.getType() != "Empty" and \
-           obj.getType() != "Light" and \
-           (1 in obj.layers) and obj.boundingBox:
-            # print obj.getType()
-            # print obj.boundingBox
-            total.join(BBox(obj.boundingBox))
+    def place_camera(self, longitude, latitude, rotation):
+        if not self.bbox:
+            self.calc_bbox()
 
-    if not total.valid:
-        # Scene is empty
-        pass
-    else:
-        # Position of camera and support objects
+        if not self.cam_obj:
+            cam = Camera.New('ortho')
 
-        ### Add camera
-        cam = Camera.New('ortho')
-        # cam.scale += cam.scale * 0.1
-        cam_obj = scn.objects.new(cam)
-        scn.setCurrentCamera(cam_obj)
+            light = Lamp.New('Sun')            # create new 'Spot' lamp data
+            light.energy = 1.0
 
-        ### Add lamp
-        light = Lamp.New('Sun')            # create new 'Spot' lamp data
-        light.energy = 1.0
-        # light.setMode('Square', 'Shadow')   # set these two lamp mode flags
-        light_obj = scn.objects.new(light)
+            self.light_obj = self.scene.objects.new(light)
+            self.cam_obj   = self.scene.objects.new(cam)
+            self.scene.setCurrentCamera(self.cam_obj)
 
-        cam.scale = total.max_diagonal()
+            cam.scale = self.bbox.max_diagonal()
+
+        # Position camera and light
         matrix = RotationMatrix(rotation, 4, 'z') * \
                  RotationMatrix(90, 4, 'x') * \
-                 TranslationMatrix(Vector(0, -total.max_diagonal()-2,0)) * \
+                 TranslationMatrix(Vector(0, -self.bbox.max_diagonal()-2,0)) * \
                  RotationMatrix(latitude,  4, 'x') * \
                  RotationMatrix(longitude, 4, 'z') * \
-                 TranslationMatrix(total.center())
-        cam_obj.setMatrix(matrix)
-        light_obj.setMatrix(matrix)
-
-        render = scn.getRenderingContext()
+                 TranslationMatrix(self.bbox.center())
+        self.cam_obj.setMatrix(matrix)
+        self.light_obj.setMatrix(matrix)
+        
+    def render(self, resolution, outfile):
+        render = self.scene.getRenderingContext()
 
         render.renderwinSize = 100
 
@@ -156,34 +167,58 @@ def render_thumbnail(longitude, latitude, rotation, resolution, outfile):
         render.sizeY = resolution
 
         render.imageType = Render.PNG
-        # render.crop = True
-        # render.mode['crop'] = True
+
         render.enableRGBAColor()
 
         render.render()
 
         render.setRenderPath("")
         render.saveRenderedImage(outfile)
-        print "blender_thumbnail: Wrote output to '%s'" % outfile
 
-        scn.objects.unlink(cam_obj)
-        scn.objects.unlink(light_obj)
+    def cleanup(self):
+        self.scene.objects.unlink(self.cam_obj)
+        self.scene.objects.unlink(self.light_obj)
+        self.cam_obj = None
+        self.light   = None
 
-        # print "total: %s" % total
-        Blender.Quit()
 
-# longitude: rotations around z-axis
-# latitude:  rotations around x/y-axis
-# rotation:  rotates the final image
+def resize_list(lst, num):
+    """Resizes a list to num elements, repeating the last one"""
+    while len(lst) < num:
+        lst.append(lst[-1])
 
-pos = os.getenv("BLEND_THUMB_POS") or "0,0,0"
-(longitude, latitude, rotation) = pos.split(',')
-longitude = -int(longitude) + -90
-latitude  = -int(latitude)
-rotation  =  int(rotation)
+def main():
+    # longitude: rotations around z-axis
+    # latitude:  rotations around x/y-axis
+    # rotation:  rotates the final image
+    
+    positions   = (os.getenv("BLEND_THUMB_POS") or "0,0,0").split(';')
+    resolutions = (os.getenv("BLEND_THUMB_RESOLUTION") or "512").split(';')
+    outfiles    = (os.getenv("BLEND_THUMB_OUTPUT") or "/tmp/out.png").split(';')
 
-render_thumbnail(longitude, latitude, rotation,
-                 int(os.getenv("BLEND_THUMB_RESOLUTION") or 512),
-                 os.getenv("BLEND_THUMB_OUTPUT") or "/tmp/out.png")
+    num_passes = max(len(positions), len(resolutions), len(outfiles))
 
+    resize_list(positions,   num_passes)
+    resize_list(resolutions, num_passes)
+    resize_list(outfiles,    num_passes)
+
+    renderer = ThumbnailRender(Blender.Scene.GetCurrent())
+        
+    for (position, resolution, outfile) in zip(positions, resolutions, outfiles):
+        print "Rendering: %s %s => %s" % (position, resolution, outfile)
+        
+        (longitude, latitude, rotation) = position.split(',')
+        longitude = -int(longitude)
+        latitude  = -int(latitude)
+        rotation  =  int(rotation)
+        
+        renderer.place_camera(longitude, latitude, rotation)
+        renderer.render(int(resolution), outfile)
+    
+    renderer.cleanup()
+    
+    Blender.Quit()
+
+main()
+        
 # EOF #
