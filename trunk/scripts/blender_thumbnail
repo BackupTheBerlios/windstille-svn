@@ -1,6 +1,26 @@
 #!/usr/bin/ruby -w
+##  Blender Thumbnail Generator
+##  Copyright (C) 2007 Ingo Ruhnke <grumbel@gmx.de>
+##
+##  This program is free software; you can redistribute it and/or
+##  modify it under the terms of the GNU General Public License
+##  as published by the Free Software Foundation; either version 2
+##  of the License, or (at your option) any later version.
+##
+##  This program is distributed in the hope that it will be useful,
+##  but WITHOUT ANY WARRANTY; without even the implied warranty of
+##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##  GNU General Public License for more details.
+## 
+##  You should have received a copy of the GNU General Public License
+##  along with this program; if not, write to the Free Software
+##  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+##  02111-1307, USA.
+##
 
 require "RMagick"
+require 'getoptlong'
+require 'rdoc/usage'
 
 angles = {
   "front"    => "0,0,0",
@@ -18,29 +38,70 @@ layout = [
           ["right",  "back", "bottom", "45-back"],
          ]
 
-ARGV.each{|filename|
-    positions = angles.values
-    outfiles  = angles.keys.map{|name| "/tmp/render-#{name}.png" }
+opts = GetoptLong.new(
+                      [ '--help',       '-h', GetoptLong::NO_ARGUMENT ],
+                      [ '--no-render',           GetoptLong::NO_ARGUMENT ],
+                      [ '--resolution', '-r', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--layout'    , '-l', GetoptLong::REQUIRED_ARGUMENT ],
+                      [ '--output'    , '-o', GetoptLong::REQUIRED_ARGUMENT ]
+                      )
 
-  if true then
-    ENV["BLEND_THUMB_POS"]    = positions.join(';')
-    ENV["BLEND_THUMB_OUTPUT"] = outfiles.join(';')
+$cfg_resolution = "512"
+$cfg_output     = "/tmp/blender_thumbnail_output.png"
+$cfg_render     = true
+$cfg_thumbnail_script = "/home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py"
+
+opts.each{|opt, arg|
+  case opt
+  when '--help'
+    puts "Usage: #{$0} [OPTION]... FILE..."
+    puts "Generates thumbnails from Blender files."
+    puts ""
+    puts "  --help              Display this help text"
+    puts "  --no-render         Don't render and instead just combine the images (for debugging)"
+    puts "  --resolution RES    Resolution to use for the thumbnail"
+    puts "  --output FILE       Write the final thumbnail to FILE"
+    puts "  --layout LAYOUT     Layout of the thumbnail"
+    puts ""
+    puts "Report bugs to <grumbel@gmx.de>"
+    exit(0)
+
+  when '--no-render'
+    $cfg_render = false
+
+  when '--resolution'
+    $cfg_resolution = arg
+
+  when '--output'
+    $cfg_output = arg
+
+  when '--layout'
+    puts "Layout setting unimplemented"
+    exit(1)
+
+  else
+    puts "Some error!?!"
+    exit(1)
+  end
+}
+
+ARGV.each{|filename|
+  positions = angles.values
+  outfiles  = angles.keys.map{|name| "/tmp/render-#{name}.png" }
+
+  if $cfg_render then
+    # render the graphics
+    ENV["BLEND_THUMB_POS"]        = positions.join(';')
+    ENV["BLEND_THUMB_OUTPUT"]     = outfiles.join(';')
+    ENV["BLEND_THUMB_RESOLUTION"] = $cfg_resolution
     
-    if not system("blender", filename, "-P",
-                  "/home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py") then
+    if not system("blender", filename, "-P", $cfg_thumbnail_script) then
       puts "Error while rendering '#{filename}', error code #{$?}"
     end
-
-    outfiles.each{|file|
-      puts "Trimming #{file}"
-      if not system("convert", "-trim", file, file) then
-        puts "Error while trying to trim '#{file}'"
-      end
-    }
   end
 
   images = {}
-  outfiles.map{|file| Magick::Image.read(file).first}.zip(angles.keys).each{|v, k|
+  outfiles.map{|file| Magick::Image.read(file).first.trim! }.zip(angles.keys).each{|v, k|
     images[k] = v
   }
 
@@ -62,10 +123,11 @@ ARGV.each{|filename|
     width   = [width, lst.map{|i| images[i].columns + spacing}.inject(0){|t,v| t + v} + spacing].max
   }
   puts "OutImage: #{width} #{height}"
-  outimage = Magick::Image.new(width, height)
+  outimage = Magick::Image.new(width, height, Magick::HatchFill.new("#78b", "#abd", 32))
   gc.draw(outimage)
 
-  outimage.write("/tmp/out.png")
+  puts "Writing final image to #{$cfg_output}"
+  outimage.write($cfg_output)
 }
 
 # EOF #
