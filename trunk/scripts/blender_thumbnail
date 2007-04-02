@@ -18,6 +18,16 @@
 ##  02111-1307, USA.
 ##
 
+## This script works in combination with blender_thumbnail.py, a
+## rendering script for Blender.
+##
+## Example usage:
+## ~~~~~~~~~~~~~~
+##   $ blender_thumbnail minedriller.blend \
+##       --layout "[['45,45,-45'],['135,45,45']]" \
+##       -o render/minedriller.png 
+## 
+
 require "RMagick"
 require 'getoptlong'
 require 'rdoc/usage'
@@ -25,7 +35,10 @@ require 'rdoc/usage'
 $cfg_resolution = "512"
 $cfg_output     = "/tmp/blender_thumbnail_output.png"
 $cfg_render     = true
-$cfg_thumbnail_script = "/home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py"
+
+$cfg_blender_script = "/home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py"
+$cfg_blender_binary = "blender"
+
 $cfg_layout = [
           [ "-90,0,0", # left
             "0,0,0", # front
@@ -44,7 +57,9 @@ GetoptLong.new(
                [ '--no-render',           GetoptLong::NO_ARGUMENT ],
                [ '--resolution', '-r', GetoptLong::REQUIRED_ARGUMENT ],
                [ '--layout'    , '-l', GetoptLong::REQUIRED_ARGUMENT ],
-               [ '--output'    , '-o', GetoptLong::REQUIRED_ARGUMENT ]
+               [ '--output'    , '-o', GetoptLong::REQUIRED_ARGUMENT ],
+               [ '--blender'   , GetoptLong::REQUIRED_ARGUMENT ],
+               [ '--script'    , GetoptLong::REQUIRED_ARGUMENT ]
                ).each{|opt, arg|
   case opt
   when '--help'
@@ -56,9 +71,17 @@ GetoptLong.new(
     puts "  --resolution RES    Resolution to use for the thumbnail"
     puts "  --output FILE       Write the final thumbnail to FILE"
     puts "  --layout LAYOUT     Layout of the thumbnail (ex: [['90,0,0'],['-90,0,0']])"
+    puts "  --blender FILE      Path to the blender binary"
+    puts "  --script  FILE      Path to the blender thumbnail script"
     puts ""
     puts "Report bugs to <grumbel@gmx.de>"
     exit(0)
+
+  when '--blender'
+    $cfg_blender_binary = arg
+
+  when '--script'
+    $cfg_blender_script = arg
 
   when '--no-render'
     $cfg_render = false
@@ -88,7 +111,7 @@ ARGV.each{|filename|
     ENV["BLEND_THUMB_OUTPUT"]     = outfiles.join(';')
     ENV["BLEND_THUMB_RESOLUTION"] = $cfg_resolution
     
-    if not system("blender", filename, "-P", $cfg_thumbnail_script) then
+    if not system($cfg_blender_binary, filename, "-P", $cfg_blender_script) then
       puts "Error while rendering '#{filename}', error code #{$?}"
     end
   end
