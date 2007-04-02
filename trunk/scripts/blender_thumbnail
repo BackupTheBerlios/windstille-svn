@@ -22,36 +22,30 @@ require "RMagick"
 require 'getoptlong'
 require 'rdoc/usage'
 
-angles = {
-  "front"    => "0,0,0",
-  "left"     => "-90,0,0",
-  "right"    => "90,0,0",
-  "back"     => "180,0,0",
-  "top"      => "0,90,90",
-  "bottom"   => "0,-90,90",
-  "45-front" => "45,45,0",
-  "45-back"  => "135,45,0",
-}
-
-layout = [
-          ["left",   "front", "top",    "45-front"],
-          ["right",  "back", "bottom", "45-back"],
-         ]
-
-opts = GetoptLong.new(
-                      [ '--help',       '-h', GetoptLong::NO_ARGUMENT ],
-                      [ '--no-render',           GetoptLong::NO_ARGUMENT ],
-                      [ '--resolution', '-r', GetoptLong::REQUIRED_ARGUMENT ],
-                      [ '--layout'    , '-l', GetoptLong::REQUIRED_ARGUMENT ],
-                      [ '--output'    , '-o', GetoptLong::REQUIRED_ARGUMENT ]
-                      )
-
 $cfg_resolution = "512"
 $cfg_output     = "/tmp/blender_thumbnail_output.png"
 $cfg_render     = true
 $cfg_thumbnail_script = "/home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py"
+$cfg_layout = [
+          [ "-90,0,0", # left
+            "0,0,0", # front
+            "0,90,90", # top
+            "45,45,0", # 45-front
+          ],
+          ["90,0,0", # right
+           "180,0,0", # back
+           "0,-90,90", # bottom
+           "135,45,0", # 45-back
+          ]
+         ]
 
-opts.each{|opt, arg|
+GetoptLong.new(
+               [ '--help',       '-h', GetoptLong::NO_ARGUMENT ],
+               [ '--no-render',           GetoptLong::NO_ARGUMENT ],
+               [ '--resolution', '-r', GetoptLong::REQUIRED_ARGUMENT ],
+               [ '--layout'    , '-l', GetoptLong::REQUIRED_ARGUMENT ],
+               [ '--output'    , '-o', GetoptLong::REQUIRED_ARGUMENT ]
+               ).each{|opt, arg|
   case opt
   when '--help'
     puts "Usage: #{$0} [OPTION]... FILE..."
@@ -61,7 +55,7 @@ opts.each{|opt, arg|
     puts "  --no-render         Don't render and instead just combine the images (for debugging)"
     puts "  --resolution RES    Resolution to use for the thumbnail"
     puts "  --output FILE       Write the final thumbnail to FILE"
-    puts "  --layout LAYOUT     Layout of the thumbnail"
+    puts "  --layout LAYOUT     Layout of the thumbnail (ex: [['90,0,0'],['-90,0,0']])"
     puts ""
     puts "Report bugs to <grumbel@gmx.de>"
     exit(0)
@@ -76,8 +70,7 @@ opts.each{|opt, arg|
     $cfg_output = arg
 
   when '--layout'
-    puts "Layout setting unimplemented"
-    exit(1)
+    $cfg_layout = eval(arg)
 
   else
     puts "Some error!?!"
@@ -86,8 +79,8 @@ opts.each{|opt, arg|
 }
 
 ARGV.each{|filename|
-  positions = angles.values
-  outfiles  = angles.keys.map{|name| "/tmp/render-#{name}.png" }
+  positions = $cfg_layout.flatten
+  outfiles  = positions.map{|name| "/tmp/render-#{name}.png" }
 
   if $cfg_render then
     # render the graphics
@@ -101,7 +94,7 @@ ARGV.each{|filename|
   end
 
   images = {}
-  outfiles.map{|file| Magick::Image.read(file).first.trim! }.zip(angles.keys).each{|v, k|
+  outfiles.map{|file| Magick::Image.read(file).first.trim! }.zip($cfg_layout.flatten).each{|v, k|
     images[k] = v
   }
 
@@ -109,8 +102,9 @@ ARGV.each{|filename|
   width  = 0
   height = spacing
   
+  puts "Composing final image"
   gc = Magick::Draw.new()
-  layout.each{|lst|
+  $cfg_layout.each{|lst|
     this_height = lst.map{|i| images[i].rows}.max
     x = spacing
     lst.each{|name|
@@ -122,11 +116,11 @@ ARGV.each{|filename|
     height += lst.map{|i| images[i].rows}.max + spacing
     width   = [width, lst.map{|i| images[i].columns + spacing}.inject(0){|t,v| t + v} + spacing].max
   }
-  puts "OutImage: #{width} #{height}"
+  # puts "OutImage: #{width} #{height}"
   outimage = Magick::Image.new(width, height, Magick::HatchFill.new("#78b", "#abd", 32))
   gc.draw(outimage)
 
-  puts "Writing final image to #{$cfg_output}"
+  puts "Writing final image to '#{$cfg_output}'"
   outimage.write($cfg_output)
 }
 

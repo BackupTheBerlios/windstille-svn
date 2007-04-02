@@ -121,6 +121,8 @@ class ThumbnailRender:
                (1 in obj.layers) and obj.boundingBox:
                 # print obj.getType()
                 # print obj.boundingBox
+                # print obj, obj.layers, (1 in obj.layers)
+                # FIXME: for some objects the bbox seems to large
                 self.bbox.join(BBox(obj.boundingBox))
 
         if not self.bbox.valid:
