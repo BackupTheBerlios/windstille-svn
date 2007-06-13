@@ -1,0 +1,21 @@
+## -*- python -*-
+
+import glob
+
+Import('conf_env')
+
+glew_env = Environment(CPPPATH = ['glew'], CXXFLAGS = ['-g', '-DDEBUG'])
+
+glew = glew_env.Library('glew',
+            glob.glob('glew/*.c') +
+            glob.glob('glew/*.h'))
+
+squirrel_env = Environment(CPPPATH = ['SQUIRREL2/include'],
+             CXXFLAGS = ["-fno-rtti", "-g", "-DDEBUG"])
+squirrel_env.Append(CXXFLAGS = conf_env['CXXFLAGS'])
+
+squirrel_env.Library('squirrel',
+            glob.glob('SQUIRREL2/squirrel/*.cpp') +
+            glob.glob('SQUIRREL2/sqstdlib/*.cpp'))
+
+# EOF #
