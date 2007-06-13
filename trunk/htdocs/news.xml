@@ -3,6 +3,19 @@
   
   <section title="News">
     <news>
+      <item date="13. Jun 2007">
+        Windstille 0.3.0 is out, featuring:
+        <ul>
+<li>near complete rewrite of the engine</li>
+<li>3D sprites</li>
+<li>light effects</li>
+<li>particle system</li>
+<li>model viewer</li>
+<li>menu system</li>
+<li>scripting</li>
+        </ul>
+      </item>
+
       <item date="23. Jun 2005">
         On 25. June 2005, 18:00 GMT we will have a developer IRC
         meeting in <tt>irc.freenode.net</tt>, channel

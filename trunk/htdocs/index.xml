@@ -42,8 +42,7 @@
     <subsection title="Scripting">
       <p>
         To allow a wide varity of puzzles and story events inside the
-        game, it will have to rely on a scripting engine, namly <a
-          href="http://www.gnu.org/software/guile/">Guile</a>. Game
+        game, it will have to rely on a scripting engine. Game
         content should be influencable quite a lot by scripting so
         that level designers and script writers have the freedom
         needed to create a compelling game.
