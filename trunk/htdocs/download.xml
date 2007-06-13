@@ -3,13 +3,20 @@
   
   <section title="Download">
     <p>
-      Below you can download the source code and static-binaries for
-      Windstille, the 0.2.0 release should be a useable techdemo, its
-      a bit playable (one level, one type of enemy) and should give
-      you an impression of how Windstille might look like. Win32
+      Below you can download the source code for Windstille, the 0.2.0
+      release should be a useable techdemo, its a bit playable (one
+      level, one type of enemy) and should give you an impression of
+      how Windstille might look like. The 0.3.0 release is much newer,
+      but not really playable, its just a pure techdemo. Win32
       releases always lack a bit behind. The static-binary requires a
       working OpenGL installation, glibc version shouldn't matter.
     </p>
+
+    <subsection title="0.3.0">
+      <ul>
+        <li>Source: <a href="http://download2.berlios.de/windstille/windstille-0.3.0.tar.bz2">windstille-0.3.0.tar.bz2</a></li>
+      </ul>
+    </subsection>
 
     <subsection title="0.2.0">
       <ul>
