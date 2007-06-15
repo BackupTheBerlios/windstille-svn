@@ -1,0 +1,3 @@
+Program('signals', ['signals.cpp'], CXXFLAGS="-O2 -Wall -ansi -pedantic", LIBS="boost_signals-st")
+
+# EOF #
