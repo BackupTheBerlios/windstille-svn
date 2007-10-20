@@ -3,6 +3,10 @@
   
   <section title="News">
     <news>
+      <item date="20. Oct 2007">
+        Windows build of the 0.3.0 release is available
+      </item>
+
       <item date="13. Jun 2007">
         <a href="download.html">Windstille 0.3.0</a> is out, featuring:
         <ul>
