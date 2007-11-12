@@ -11,6 +11,7 @@ class HelloWorld {
 
 print("--------------------");
 a <- HelloWorld();
+a.foo <- "Test"
 a.print();
 
 /* EOF */
