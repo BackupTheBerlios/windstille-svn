@@ -50,12 +50,42 @@
 
   <section title="Development Version">
     <p>
-      You can also get access to the latest development version, it is
-      available via <a
-        href="http://subversion.tigris.de">Subversion</a> at:
+      You can also get access to the latest development version via <a
+                                                                       href="http://subversion.tigris.de">Subversion</a> at:
     </p>
     <p>
-      <tt>svn co svn://svn.berlios.de/windstille/trunk/</tt>
+      <tt>svn co svn://svn.berlios.de/windstille/trunk/windstille</tt>
     </p>
+    <p>
+      You can browse the repository online
+      at <a href="http://svn.berlios.de/wsvn/windstille">Windstille
+        WebSVN</a>, it contains a few more things inside trunk/ that
+      aren't part of the core engine:
+    </p>
+    <dl>
+      <dt>windstille/</dt>
+      <dd>The core engine/game</dd>
+
+      <dt>windstille-nds/</dt>
+      <dd>A little techdemo version of Windstille for the NintendoDS</dd>
+
+      <dt>media/</dt>
+      <dd>Source for all the Windstille graphics, sketches and stuff</dd>
+
+      <dt>scripts/</dt>
+      <dd>Thumbnail generation script for Blender</dd>
+
+      <dt>txt2png/</dt>
+      <dd>An application to convert text files into graphics</dd>
+
+      <dt>html2image/</dt>
+      <dd>An application to convert html files into graphics</dd>
+
+      <dt>griv/</dt>
+      <dd>An OpenGL based image collection viewer</dd>
+
+      <dt>facebuilder/</dt>
+      <dd>An simple application to construct 2D front-view faces</dd>
+    </dl>
   </section>
 </page>
