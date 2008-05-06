@@ -52,6 +52,7 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * move the CL_OpenGLState to a more global place (Screen or SceneContext?) and remove all other calls to CL_OpenGLState
 * remove the players light sprite and replace it with a scripted entity, something analog to the fire-particle effect that attaches to the player
 * implement translation from "Foo-Bar" to "Foo_Bar" into lisp2table converter
+* fix nightvision to handle highlights correctly
 
 == Editor ==
 
