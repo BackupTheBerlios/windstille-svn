@@ -1,10 +1,12 @@
 Realistically, milestone 1 is only going to be able to have a very limited number of locations. This is an attempt to keep track of what locations we actually intend to create  - which requires art, level design, coding the required game objects, populating the location with characters and bad guys, and including the location in the plot.
 
+== VR Training ==
+
+* Used for the opening tutorial for the game.
+
+* provides a number of sub rooms to allow the player to train all kinds of stuff
+
 == City ==
-
-* VR Training room
-
-Used for the opening tutorial for the game.
 
 * Jane's apartment
 
