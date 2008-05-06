@@ -42,7 +42,6 @@ As always with [[wikipedia:Free Software|Free Software]] game projects, no payme
 * change the Sprite3DDrawingRequest so that it does *not* make any use of the Sprite3D class itself (sprite3d::Data should be ok), because this causes throuble if you want to draw a sprite3d twice with different parameters
 * implement some form of particle/spring system so that you could attach a lamp to it or something like that
 * add layer support to particles, so that you can have particles on the light layer
-* add argument parsing to BabyXML
 * we need a way to define objects in scripting language, nothing complicated, just so that when you want a lamp you don't have to specify its light/color/highlight layers over and over again seperatly
 * add Origin support to Sprite (much easier to say 'center' instead of (-32, -32))
 * add support for resolutions other than 800x600, for the scenario itsef it simply means to change the scaling, but fonts and such could require some more clever way to scale so that they don't get blurry
