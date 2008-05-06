@@ -1,3 +1,7 @@
+2005-08-06
+* input is configurable again
+* in-game PDA
+
 2005-08-05
 * switched away from ClanLib, SDL now creates the Windows and stuff
 
