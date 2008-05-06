@@ -55,6 +55,7 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * fix nightvision to handle highlights correctly
 * change the Sprite3DDrawingRequest so that it does *not* make any use of the Sprite3D class itself (sprite3d::Data should be ok), because this causes throuble if you want to draw a sprite3d twice with different parameters
 * implement some form of particle/spring system so that you could attach a lamp to it or something like that
+* implement moths or other little insects that fly around street lamps or other things
 
 == Editor ==
 
