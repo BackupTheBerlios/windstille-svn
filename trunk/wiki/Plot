@@ -52,7 +52,7 @@ Player can now move around in the level to collect gems, ControllerDialog shows 
 VR Training shows the player what actions are available and how to use
 them. It does this by guiding the player through a little course where
 he needs all the available actions to make it to the end, an AI-voice
-will give commands on which actions are currently needed.
+will explain the player what to do. A little meta-game control help window will tell the player which exact buttons he has to press to perform an action.
 
 # Walking: the player is commanded to walk from his current position to a marked new position
 # Running: the player is commanded to walk from his current position to a new one, the way is however bloked by a conveyour belt which he can pass without changing to running mode
