@@ -1,3 +1,17 @@
+Basic features that need to be handled by the physic/collision engine: 
+
+* properly detection of the side at which two boxes collide so that the game can react as expected (player pushes a box, player jumps on a moving platform from below, player jumps on an enemy vs gets hit by an enemy, etc.)
+* allow to stack crates, boxes and stuff
+* allow to shoot in a stack of boxes and let the stack collapse
+* conveyor belts
+* slopes in the tilemap
+
+Stuff that is not needed:
+
+* rotating boxes, while probally pretty, they cause more throuble then good, both on the programming side as well as on the gameplay side (what happens when you jump on a box which has a 45 degree angel?)
+
+----
+
 For box-collision see:
 
 src/ctest.cxx
