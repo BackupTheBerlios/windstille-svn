@@ -5,22 +5,22 @@
    (tilegroup
      (name "Virtual Reality")
      (tiles  31 30 114 ...)) 
-
+ 
    (tile
      (id 13)
-
+ 
      (color     (sprite "tiles/virtualreality.png"))
      (light     '())
      (highlight (sprite "tiles/virtualreality-highlight.png"))
-
+ 
      (solid #t))
-
+ 
    (tile
      (id 149)
-
+ 
      (color     (sprite (region "tiles/virtualreality-1.png" 0 0 32 32)))
      (light     '())
      (highlight '()
-
+ 
      (solid #f))
    )
