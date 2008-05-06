@@ -59,6 +59,7 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * bring all include file guards into the form of (except those of seperate libraries like lisp/ and squirrel/):
  #ifndef HEADER_{SUBDIR}_{FILENAME}_HPP
  #define HEADER_{SUBDIR}_{FILENAME}_HPP
+* add support for resolutions other than 800x600, for the scenario itsef it simply means to change the scaling, but fonts and such could require some more clever way to scale so that they don't get blurry
 
 == Editor ==
 
