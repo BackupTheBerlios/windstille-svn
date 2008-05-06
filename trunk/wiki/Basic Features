@@ -4,12 +4,13 @@ This is a list of basic features we should either get from additional libraries 
 * Setting up Fullscreen/Windowed OpenGL Context
 * Gathering Input from Keyboard/Joystick/Mouse
 
-= Graphics/Sprites =
+= Graphics =
 * Loading images (png, jpeg would be a nice addition but is not mandatory) and creating opengl textures from them
 * A system that gathers all drawing commands, sorts them and maybe optimizes them for opengl
 * The drawing system should be statefull to allow translation and maybe scaling and rotating of following drawing commands. It should be possible to maintain a stack of such transformations.
-* Sprite Handling. Sprites should support the following features (if we go for 3d sprites only we might not need these)
 * We need Fonts to display Text on screen
+== Sprites ==
+We might not need 2d sprites if we go for full 3d on all sprites.
 ** Several Animation switchable animations defined from a series of images. The animation speed should be freely adjustable.
 ** Animation images can be extracted from bigger images (texture coordinate animation)
 ** Support for reversing animations and mirroring/flipping the images will reduce the number of images needed.
