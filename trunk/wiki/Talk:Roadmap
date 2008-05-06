@@ -10,3 +10,5 @@ User input, control configuration
 ''Things I don't want to/can't do:''<br>
 Art, sound, graphical effects, OpenGL stuff, tilemap stuff, dynamic player movement
 -- [[User:James Gregory|James Gregory]]
+
+:Support for multiple sectors for the start simply means to implement a <tt>GameSession::set_sector(Sector* sector)</tt> or <tt>GameSession::set_sector(const std::string& sector)</tt> function and probally insert some code into the doors to handle the sector switch. Later on we might need a SectorManager or so that keeps track of the state of a sector, so that the sector doesn't get completly reset once you leave and reenter. -- [[User:Grumbel|Grumbel]] 13:58, 24 Jun 2005 (BST)
