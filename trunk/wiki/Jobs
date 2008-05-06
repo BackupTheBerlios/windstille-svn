@@ -30,7 +30,7 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * add tab-completion, line editing and other readline-like functions to the console
 * edit flexlay to be able to load new format windstille levels (this task is Ruby, not C++)
 * boxes or other items that you can push and pull
-* new font renderer, clanlib's is very buggy and has various issues (someone already said they would do this but they haven't been heard from for a while)
+* new font renderer, clanlib's is very buggy and has various issues. Perhaps using [http://oglft.sourceforge.net/ oglft], an interface between freetype and opengl 
 * initialising/loading/saving script variables (this is already being worked on by JamesG and MazteB)
 * collision detection between the player and other objects (Godrin is already working on this)
 * weapons and firing (MazteB may already be working on this?)
