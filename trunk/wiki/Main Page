@@ -9,6 +9,7 @@ We are still looking for new developers to join this project, have a look at the
 * [[Getting Started]]
 * [[Roadmap]]
 * [[IRC Meeting]]
+* [[Design Discussion CheckList]]
 * [[Jobs|Jobs/Tasks]]
 * [http://en.wikipedia.org/wiki/Wikipedia:How_to_edit_a_page How to edit a page]
 
@@ -19,10 +20,13 @@ We are still looking for new developers to join this project, have a look at the
 * [[Scripting]]
 * [[Graphics]]
 * [[Tilemap]]
+* [[GUI]]
+* [[Coding style]]
 
 == Gameplay/plot ==
 
 * [[Plot]]
+* [[Characters]]
 * [[Controls]]
 * [[Actions]]
 * [[Fighting]]
@@ -33,13 +37,6 @@ We are still looking for new developers to join this project, have a look at the
 
 * [[Level Format]]
 * [[Tile Specification Format]]
-
-== Other Stuff ==
-
-* [[Milestone1 CheckList]]
-* [[Characters]]
-* [[GUI]]
-* [[Coding style]]
 
 == Links ==
 
