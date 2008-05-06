@@ -31,3 +31,8 @@ Controls in Windtille will be configurable, this works by mapping keyboard keys,
 == Additional 'modeless' Controls ==
 
 * start/pause: show option menu (fullscreen/window mode, etc.)
+
+== Open Questions ==
+
+* Should drawing the weapon be a push&hold or a toggle?
+* Is there a need for a seperate aim button when holding the gun (Resident Evil style)?
