@@ -76,7 +76,7 @@ function bye()
 	if (knows_your_job)
 		new_dialog("Feel free to come back if you need a job");
 	else
-		new_dialog("See you again some time, maybe);
+		new_dialog("See you again some time, maybe");
 	return;
 }
 </nowiki>
