@@ -51,3 +51,4 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * copy CL_Size over to windstille
 * either copy over CL_Point or replace CL_Pointf with Vector
 * write a Display class with get_width/height()/set_fullscreen()
+* replace CL_Surface/CL_Sprite with Sprite and once done with that move the CL_OpenGLState to a more global place (Screen or SceneContext?) and remove all other calls to CL_OpenGLState
