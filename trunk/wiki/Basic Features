@@ -35,3 +35,4 @@ This is a list of basic features we should either get from additional libraries 
 * Stream ogg files for background music
 * Mix several sound sources together
 * Positional audio (we could also build a fake solution with adjuts panning/volume)
+* Effects applied to sound streams (echo, reverb, etc)
