@@ -1,0 +1,12 @@
+= Drawing Operations =
+To bring images on screen you have to execute drawing operations. There are several different types of drawing operations. Each of them depend on a number of parameters.
+
+== Common Parameters ==
+These parameters are used for all drawing operations
+* Position, Rotation, Scale -- These 3 values together are called a modelview transform and are encoded as a 4x4 Matrix
+* Color -- the color is multiplied with each pixel that is drawn
+* blend_sfactor, blend_dfactor -- factors that are used for blending pixels with alpha values on screen (see glBlendFunc for details)
+
+== Text ==
+Writes text on the screen.
+* Font -- The font that is used to write the characters (the font has additional attributes like color of the text)
