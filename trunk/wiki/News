@@ -1,5 +1,10 @@
+2007-06-21
+* the write of skeletal animation is under way, Blender export and Windstille import of armatures already works
+* navigation graph is mostly working and ready for integration into the main game
+
 2007-06-13
 * Windstille now features a menu system that lets you browse around all the different features and test level
+* Windstille 0.3.0 got released
 
 2007-04-27
 * [http://pingus.seul.org/~grumbel/tmp/md5/07294e356e1f09425f79dd940dfaadf4-head.png Retextured/Modeled Jane's Head]
