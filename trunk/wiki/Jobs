@@ -50,3 +50,11 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * either copy over CL_Point or replace CL_Pointf with Vector
 * write a Display class with get_width/height()/set_fullscreen()
 * move the CL_OpenGLState to a more global place (Screen or SceneContext?) and remove all other calls to CL_OpenGLState
+
+== Editor ==
+
+* hookup undo/redo and some other stuff to buttons
+* add Metadata handling to TilemapLayer (note: there is a naming conflict with another get_data() function), changing it will affect all other games
+* move minimap into the selector panel
+* add handling of unknown GameObjects (stuff their sexpr into a object and write it out on save)
+* write better s-expr parsing, the current stuff is ok, but could improve a lot
