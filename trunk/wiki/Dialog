@@ -2,7 +2,7 @@ It is logical if each character you speak to has their own, singular script file
 
 Each dialog function below should be thought of like a page in a "Choose your own story" book, or like a foward-linked list - it has no state with regards to a stack, but is instead a self contained unit, which includes forward links to other dialogs depending what option you choose. This means that dialog can jump across to a shared branch, which would not be possible if you just used a lot of nested switch statements (if you look at the dialog in a point and click adventure or an RPG, you will see there is a lot of branch-hopping).
 
-In the following example pseudo-code, the first argument to "interactive_dialog" is the NPC's text, and any further arguments are possible responses.
+In the following example pseudo-code, the first argument to "new_dialog()" is the NPC's text, and any further arguments are possible responses.
 
 Example pseudo code:
 
