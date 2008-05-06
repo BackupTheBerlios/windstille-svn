@@ -16,7 +16,9 @@ Below is what we currently have, more or less, its far from final.
      (tiles  31 30 114 ...)) 
  
    ;; The given image is cut into 32x32 grid, 'ids' gives which ids are assigned to
-   ;; which grid piece, 'colmap' specfies the same for the collision properties
+   ;; which grid piece, 'colmap' specfies the same for the collision properties.
+   ;; This would not support animations, but it shouldn't be a problem for the most
+   ;; number of tiles.
    (tiles (image "tiles/foo.png")
           (ids 0 1 2
                3 4 5
@@ -25,7 +27,7 @@ Below is what we currently have, more or less, its far from final.
                0 0 1
                0 0 1
                1 1 1))
-
+ 
    (tile
      (id 13)
  
