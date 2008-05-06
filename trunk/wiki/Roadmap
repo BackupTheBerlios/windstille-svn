@@ -28,3 +28,11 @@ The following items can be implemented basically as soon as somebody finds the t
 * add support to push boxes around
 * add support for carring and stacking boxes
 * add support for multi-layer playfields (ie. rooms that you can enter, which cause the wall to fade away)
+
+== Releases == 
+
+Release 1.0.0 should be a fully playable and complete version, releases before that should be playable as well and should contain at best a self contained story. Development releases/technical previews should be seperated from the playable released and should provide a special interface which lets you select level, intros, etc. The init/intro screen should show that the current version is not playable.
+
+== Releases == 
+
+I am not sure how releases will be handled. Release 1.0.0 should be a fully playable and complete version, other versions should also be playable, but maybe not all. Development releases/ technical previews should be seperated from playable demos and should provide a special interface which lets you select level, intros, etc. The init/intro screen should show that the current version is not playable.
