@@ -26,3 +26,4 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * integrate all available animations
 * implement the control dialog in code with opengl commands so that its properly resizable, make the displayed text configurable by scripting, figure out a way to display special icons, aka arrows, for 'up/down/left/right'
 * add tab-completion, line editing and other readline-like functions to the console
+* add a std::streambuf for the console
