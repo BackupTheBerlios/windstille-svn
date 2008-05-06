@@ -73,6 +73,7 @@ As always with [[wikipedia:Free Software|Free Software]] game projects, no payme
 * add handling of unknown GameObjects (stuff their sexpr into a object and write it out on save)
 * write better s-expr parsing, the current stuff is ok, but could improve a lot
 * added a tile editor that allows to edit the tile definition file
+* write a .sprite file parser in ruby
 
 === Into the future: ===
 
