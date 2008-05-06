@@ -48,6 +48,11 @@ The game will have a jetpack, I am currently not sure if we have it as a item wh
 
 http://windstille.berlios.de/images/jetpack.png
 
+=== Actions Diagram ===
+
+The following diagram tries to illustrate possible actions and how the engine should switch between them.
+[[Image:actions.png]]
+
 == Shoot ==
 
 Should the hero be able to shoot in different directions or should be stick to a MegaMan like shooting?
