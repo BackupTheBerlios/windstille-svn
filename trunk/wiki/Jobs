@@ -1,18 +1,8 @@
-The following people could be needed:
-
-* somebody good at programming (C++, Ruby for the editor)
-* somebody good at writing story and dialog
-* somebody good at animating human bodies (thats something [[Grumbel]] could try, however he might not be much good at)
-* somebody doing 2d graphics ([[Grumbel]] will do this)
-* some voice actors would be fun (at least two female voices, plus a few male ones)
-* sound effects and music people, there is currently some music, but no sound effects
-* somebody good at animating human faces, first version will probally stay away from this, but its something I would like to try in the future
-
-As often with [[Free Software]] game projects, no payment, all for fun, reputation and experience.
-
 == Tasks ==
 
-The following tasks are available, make sure you check with [irc://irc.freenode.net/#windstille] IRC Channel first to make sure that those tasks are not yet compeleted or picked up by somebody else, since those task lists always tend to get outdated quickly:
+The following tasks are available, make sure you check with [irc://irc.freenode.net/#windstille] IRC Channel first to make sure that those tasks are not yet compeleted or picked up by somebody else, since those task lists always tend to get outdated quickly.
+
+As always with [[Free Software]] game projects, no payment, all for fun, reputation and experience.
 
 === Blender ===
 
@@ -23,47 +13,62 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * you will move between levels in a transport ship, this requires a model (or maybe a 2D based sprite instead?) - this needs to be discussed and made
 * animations for going stairs up and down, [http://pingus.seul.org/~grumbel/tmp/windstille-stairs-2005-07-17.png stairs look like this]
 
-=== Coding ===
+=== Tilemap editor ===
 
-* fix player movement behaviour
+* we need to use Flexlay to create some tilemaps. Join the IRC channel if interested
+
+=== Sound ===
+
+* We have noone at all currently doing sound effects. If you want to do this, please get in contact
+* Voice acting. We have probably quite a few male volunteers for voice acting, but possibly not many female volunteers. However, we cannot start organising this until later in the development process, because dialog has yet to be written, let alone finalized
+* Wansti is making some music. If you want to write music too, join the IRC channel and coordinate as to what is and isn't already being done, etc
+
+=== Major features the game engine is still missing ===
+
+* Jumping and grabbing on to things, climbing on to platforms
+* Firing weapons
+* Fist fights
+
+=== Various bit-sized C++ tasks that require no particular knowledge ===
+
+* fix bugs - you can find some in the [http://svn.berlios.de/viewcvs/windstille/trunk/BUGS?view=markup SVN BUGS file]
 * integrate all available animations
-* implement the control dialog in code with opengl commands so that its properly resizable, make the displayed text configurable by scripting, figure out a way to display special icons, aka arrows, for 'up/down/left/right'
 * boxes or other items that you can push and pull
 * initialising/loading/saving script variables (this is already being worked on by JamesG and MazteB)
-* collision detection between the player and other objects (Godrin is already working on this)
-* weapons and firing
-* add a player-holding-torch lighting effect
-* fix bugs - you can find some in the [http://svn.berlios.de/viewcvs/windstille/trunk/BUGS?view=markup SVN BUGS file]
-* write a GameObject/Entity that simulates a 'laser display' or however you call things like [http://www.laserist.org/Laserist/2003Awards/LFI_Static_Cubi%20Bubi_B.jpg this], ie. something that uses a laser to project a 2d vector object on a wall, color of the laser should be configurable
-* write a Squirrel-mode for Emacs
 * implement stairs, see blender task list above
 * implement an elevator a platform onto which one can step on and once one presses 'use' it moves up or down, if 'use' is pressed while its moving it should inverse the direction
 * change the console so that each expression that returns a value automatically prints it
-* face animation via morph targets to be used in dialogs, by no means important for the GotM run, just something Grumbel would like to have one day
-* update the editor so that it can handle current file format completly and let it be tolerant to tags he doesn't know yet
 * implement the currently unimplemneted function in the particle system
-* implement water that has waves
-* write a Display class with get_width/height()/set_fullscreen()
-* move the CL_OpenGLState to a more global place (Screen or SceneContext?) and remove all other calls to CL_OpenGLState
-* remove the players light sprite and replace it with a scripted entity, something analog to the fire-particle effect that attaches to the player
-* implement translation from "Foo-Bar" to "Foo_Bar" into lisp2table converter
-* fix nightvision to handle highlights correctly
 * change the Sprite3DDrawingRequest so that it does *not* make any use of the Sprite3D class itself (sprite3d::Data should be ok), because this causes throuble if you want to draw a sprite3d twice with different parameters
 * implement some form of particle/spring system so that you could attach a lamp to it or something like that
-* implement moths or other little insects that fly around street lamps or other things
 * add layer support to particles, so that you can have particles on the light layer
 * add argument parsing to BabyXML
 * we need a way to define objects in scripting language, nothing complicated, just so that when you want a lamp you don't have to specify its light/color/highlight layers over and over again seperatly
 * add Origin support to Sprite (much easier to say 'center' instead of (-32, -32))
 * find a better way to get access to objects from scripting than brute-force binding them to names in the root table
-* bring all include file guards into the form of (except those of seperate libraries like lisp/ and squirrel/):
- #ifndef HEADER_{SUBDIR}_{FILENAME}_HPP
- #define HEADER_{SUBDIR}_{FILENAME}_HPP
 * add support for resolutions other than 800x600, for the scenario itsef it simply means to change the scaling, but fonts and such could require some more clever way to scale so that they don't get blurry
 * implement load on-demand (ie. load everything the sector needed at start of the sector) for TileFactor
 
-== Editor ==
+=== Pretty OpenGL effects ===
 
+* firing weapons - machine gun, flamethrower, etc
+* implement water that has waves
+* add a player-holding-torch lighting effect
+* write a GameObject/Entity that simulates a 'laser display' or however you call things like [http://www.laserist.org/Laserist/2003Awards/LFI_Static_Cubi%20Bubi_B.jpg this], ie. something that uses a laser to project a 2d vector object on a wall, color of the laser should be configurable
+* remove the players light sprite and replace it with a scripted entity, something analog to the fire-particle effect that attaches to the player
+* fix nightvision to handle highlights correctly
+* implement moths or other little insects that fly around street lamps or other things
+
+=== Random tasks ===
+
+* write a Squirrel-mode for Emacs
+* bring all include file guards into the form of (except those of seperate libraries like lisp/ and squirrel/):
+ #ifndef HEADER_{SUBDIR}_{FILENAME}_HPP
+ #define HEADER_{SUBDIR}_{FILENAME}_HPP
+
+=== Editor (written in Ruby) ===
+
+* update it so that it can handle current file format completly and let it be tolerant to tags he doesn't know yet
 * hookup undo/redo and some other stuff to buttons
 * add Metadata handling to TilemapLayer (note: there is a naming conflict with another get_data() function), changing it will affect all other games
 * move minimap into the selector panel
@@ -71,3 +76,7 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * write better s-expr parsing, the current stuff is ok, but could improve a lot
 * add support for tilegroups
 * added a tile editor that allows to edit the tile definition file
+
+=== Into the future: ===
+
+* face animation via morph targets to be used in dialogs, by no means important for the GotM run, just something Grumbel would like to have one day
