@@ -4,3 +4,5 @@ When starting the <code>apartment.wst</code> level and going down the stairs and
 
 == about morph targets in blender ==
 http://orange.blender.org/blog/the-amazing-incredible-monkey-brush#more-49
+
+IIRC you can "bake" blender morphs into keyframes for use in external apps such as GL games
