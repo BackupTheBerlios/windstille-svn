@@ -29,11 +29,9 @@ Executes a drawing command for opengl primiteves. (Typically used for GL_QUAD an
 
 = State Model and Transform Stack =
 When looking at typical code that does drawing operations, one observes that the
-common parameters are often the same for several drawing operations. A notable
-exception to this rule is the position parameter which is different for most
-Drawing Operations (more about this in the optimisation chapter). To make
-handling simpler and avoid the need to specify all parameters again for each
-Drawing Operation we created a state class that maintains a "current" value
+common parameters are often the same for several drawing operations. It is convenient to 
+not have to specify all parameters again and again for each
+drawing operation. So we created a state machine that maintains a "current" value
 for each of the common parameters.
 
 You can also observe that most of the time the things you want to draw are
