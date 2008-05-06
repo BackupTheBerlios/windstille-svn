@@ -46,8 +46,6 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * update the editor so that it can handle current file format completly and let it be tolerant to tags he doesn't know yet
 * implement the currently unimplemneted function in the particle system
 * implement water that has waves
-* copy CL_Size over to windstille
-* either copy over CL_Point or replace CL_Pointf with Vector
 * write a Display class with get_width/height()/set_fullscreen()
 * move the CL_OpenGLState to a more global place (Screen or SceneContext?) and remove all other calls to CL_OpenGLState
 * remove the players light sprite and replace it with a scripted entity, something analog to the fire-particle effect that attaches to the player
