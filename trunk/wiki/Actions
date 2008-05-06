@@ -22,18 +22,31 @@ Jump
 Shoot
 
 Should the hero be able to shoot in different directions or should be stick to a MegaMan like shooting?
+
 Surround
 
 Basically a turrican style surround shooting. Not sure how the thing will shoot (ice-freeze, flamethrower, normal). I kind of like it to behavice like a flamethrower to remove slime or other poison liquids on the ceiling or ground, which are immune against and unreachable with other weapons.
+
+http://windstille.berlios.de/images/surround.jpg
+
 Sit
+
+http://windstille.berlios.de/images/sit.jpg
+
 Run/Walk
 
 We might have seperate walk and run actions (basically like in Super Mario), don't know if that will work out well, so we might end up with only a run action.
+
 Hang
+
+http://windstille.berlios.de/images/posing4.jpg
 
 Climb
 
 The Hero should be able to climb both wall and roof ladders.
+
+http://windstille.berlios.de/images/posing2.jpg
+
 Swim/Underwater
 
 Swimming should basically be a 'endless' jump. You might also be able to simply walk underwater. [FIXME: This doesn't fit dogether with the otherwise planed realistic movement]
@@ -44,11 +57,27 @@ Will we need different weapon stages like Turrican or static ones? (Weaponstage 
 Jetpack
 
 The game will have a jetpack, I am currently not sure if we have it as a item which you can use all the time or just in some special events/levels.
+
+http://windstille.berlios.de/images/jetpack.png
+
 Light/Torch
+
+http://windstille.berlios.de/images/flashlight.png
+http://windstille.berlios.de/images/flashlight2.png
+
 Machinegun
+
+http://windstille.berlios.de/images/machinegun.png
+
 Plasmagun
+
+http://windstille.berlios.de/images/plasmagun.png
+
 Lasergun
 Flamegun
+
+http://windstille.berlios.de/images/flamegun.png
+
 Rocketlauncher
 
 Rocketlauncher can hold missiles
@@ -57,7 +86,12 @@ Homing Missile
 Smart Bomb - Shockwave
 
 Turrican 2 style, but maybe circular, which basically means that the bomb will not erase anything on the screen, but only these enemies which are reachable from the heros position.
+
+http://windstille.berlios.de/images/shockwave.jpg
+
 Bonus Items
+
+
 
 Power Up
 Machinegun ammunition
