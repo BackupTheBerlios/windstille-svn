@@ -61,30 +61,14 @@ them. It does this by guiding the player through a little course where
 he needs all the available actions to make it to the end, an AI-voice
 will give commands on which actions are currently needed.
 
-1. Walking: the player is commanded to walk from his current position
-   to a marked new position
+# Walking: the player is commanded to walk from his current position to a marked new position
+# Running: the player is commanded to walk from his current position to a new one, the way is however bloked by a conveyour belt which he can pass without changing to running mode
+# Jumping: the player has to jump over a small abyss, if he doesn't make the jump he will get reset to a position infront of the abyss
+# Climbing: the player has to make a 'hang-jump' (Up+Jump) to climb onto a little mountain
+# Duck: the player has to make its way under a block, under the block is a conveyour belt, so ducking will let him glide under it
+# Rolling: same as above but this time the player has to run and then make a roll under the block, optionally this might also be done with sneaking
 
-2. Running: the player is commanded to walk from his current position
-   to a new one, the way is however bloked by a conveyour belt which
-   he can pass without changing to running mode
-
-3. Jumping: the player has to jump over a small abyss, if he doesn't
-   make the jump he will get reset to a position infront of the abyss
-
-4. Climbing: the player has to make a 'hang-jump' (Up+Jump) to climb
-   onto a little mountain
-
-5. Duck: the player has to make its way under a block, under the block
-   is a conveyour belt, so ducking will let him glide under it
-
-6. Rolling: same as above but this time the player has to run and then
-   make a roll under the block, optionally this might also be done
-   with sneaking
-
-After movement training is over, the VR Training will switch over to
-weapon training, where the player has to grab a gun and use it to
-shoot a bunch of dummy targets (double-pyramids or something like
-that). Also available should be granates, satches carges and shild.
+After movement training is over, the VR Training will switch over to weapon training, where the player has to grab a gun and use it to shoot a bunch of dummy targets (double-pyramids or something like that). Also available should be granates, satches carges and shild.
 
 == Back in Real World ==
 
