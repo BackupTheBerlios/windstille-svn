@@ -47,6 +47,7 @@ As always with [[wikipedia:Free Software|Free Software]] game projects, no payme
 * add Origin support to Sprite (much easier to say 'center' instead of (-32, -32))
 * add support for resolutions other than 800x600, for the scenario itsef it simply means to change the scaling, but fonts and such could require some more clever way to scale so that they don't get blurry
 * implement load on-demand (ie. load everything the sector needed at start of the sector) for TileFactor
+* Blender Sprite3D exporter seems to have throuble with the Yagor, body gets messed up, when head and body are joined on the other side everything looks ok
 
 === Pretty OpenGL effects ===
 
