@@ -29,7 +29,17 @@ Once a collision occured the engine should give the object usefull feedback for 
 
  struct CollisionEvent
  {
-  enum State { NONE, STUCK, COLLISION } state; // is NONE actually needed?
-  enum Side  { TOP, BOTTOM, LEFT, RIGHT }; // should be enough no need for a vector IMHO
-  CollisionObject* object; // the object which with 'this' collided
+  // is NONE actually needed?
+  enum State { NONE, STUCK, COLLISION } state;
+
+  // should be enough no need for a vector IMHO
+  enum Side  { TOP, BOTTOM, LEFT, RIGHT };
+
+  // the object which with 'this' collided
+  CollisionObject* object;
+
+  // the amount of time that has not yet been used up
+  float rest_delta;
  };
+
+Collision resolution could then either mean to change the direction, to simply halt or to attach oneself to the other object (ie. that is how moving platforms should find the player).
