@@ -7,3 +7,7 @@ Some questions concerning the collision handling:
 
 :The most important point is that the GameObjects get proper feedback on collision, which object collided with which other objects, at which side, what speed had the other object when the collision occurred, at which exact point in time the collision occured and such. How to react on that is then the job of the GameObject, for most GameObjects physical behaviour is not usefull, it would be just a 'nice to have' for the few cases where one wants stacked boxes and such.
 :-- [[User:Grumbel|Grumbel]] 16:23, 25 Jun 2005 (BST)
+
+About the box example: You should use normal impulse equations, so this would result in the box increasing it's speed and it would also allow pushing multiple boxes. Elasticity is in general not needed I think.
+
+Another important part of the phyiscs/collision stuff would be to handle slopes correctly.
