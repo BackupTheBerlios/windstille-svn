@@ -4,6 +4,7 @@ This is a list of basic features we should either get from additional libraries 
 * Setting up Fullscreen/Windowed OpenGL Context, the mode should be switchable at runtime
 * Gathering Input from Keyboard/Joystick/Mouse
 * Allow input to be configurable
+* Demo recording/playback of input
 * Some structured file format parser/writer for config, map, tile- and sprite-definition files
 * Optionally support for a binary format, since loading large tilemaps from a structured text file is slow
 * Some way to store/retrieve translated strings (tinygettext)
