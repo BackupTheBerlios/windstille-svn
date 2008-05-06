@@ -12,6 +12,7 @@ This is a list of basic features we should either get from additional libraries 
 == Sprites ==
 We might not need 2d sprites if we go for full 3d on all sprites.
 * Several Animations that can be switched. Animations are defined from a series of images. Speed of the animation or even single frames should be freely adjustable.
+* It should be possible to freely define the origin point of a sprite
 * Animation images can be extracted from bigger images (texture coordinate animation)
 * Support for reversing animations and mirroring/flipping the images will reduce the number of images needed.
 * We might have to extend sprites to support the 3 layer displaying of windstille
