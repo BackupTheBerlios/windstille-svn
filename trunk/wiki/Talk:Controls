@@ -6,3 +6,6 @@ R = aim 45 degrees clockwise<br/>
 up= aim up<br/>
 down=aim down while in the air<br/>
 L+R = stop movement controls, arbitrary rotation of aim with D-pad (for precise shooting)
+
+
+Notes during development: [[PlayerControls]]
