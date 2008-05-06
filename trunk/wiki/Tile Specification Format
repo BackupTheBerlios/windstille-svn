@@ -1,4 +1,13 @@
+The tile file, ie. the tile which defines which graphics are used for a tile, if the tile is collidable or not, etc., should support the following features:
+
+* multi frame animated tiles
+* TexCoord animated tiles (waterfall)
+* multiple tiles per image
+* efficent storage of tiles in OpenGL textures
+* support for the different graphics layers (color/light/highlight)
  
+Below is what we currently have, more or less, its far from final.
+
  (windstille-tiles
    ;; Tile-Groups group different tiles together, this is used in
    ;; the editor, so that tiles can be selected by topic
