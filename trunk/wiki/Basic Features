@@ -11,6 +11,7 @@ This is a list of basic features we should either get from additional libraries 
 * A system that gathers all drawing commands, sorts them and maybe optimizes them for opengl
 * The drawing system should be statefull to allow translation and maybe scaling and rotating of following drawing commands. It should be possible to maintain a stack of such transformations.
 * We need Fonts to display Text on screen
+
 == Sprites ==
 * Several Animations that can be switched. Animations are defined from a series of images. Speed of the animation or even single frames should be freely adjustable.
 * It should be possible to freely define the origin point of a sprite
