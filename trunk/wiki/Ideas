@@ -1,12 +1,13 @@
 This page is meant to collect whatever wild or less wild ideas people have, be it story, engine or gameplay. To make clear who wrote the message use <nowiki>-- ~~~~</nowiki> at the end to automatically insert your name and date. You can use : at the start of a line to indent if you want to answer somebody.
 
-== Advanced Lighting ==
+== Backgroundstory Ideas ==
+=== Advanced Lighting ===
 
 As mentioned in the HP forum thread, perhaps lighting similar to [http://www.mechanicalcat.net/tech/ld48/6/bluescrn/diary FUBAR], a game entered in a 48 hour programming competition (so it can't be that difficult) might add a lot of atmosphere.  Files [http://www.mechanicalcat.net/tech/ld48/6/bluescrn available here].  I think it needs Windows, but obviously the lighting logic will be portable.
 
 -- [[User:Charlieg|charlieg]] 14 Jul 2005
 
-== Fist Fights ==
+=== Fist Fights ===
 
 The game is meant to take place on a rough outerspace colonie on a distant planet, so its more or less natural that conflict arises at times, a bit of fist fighting could help resolve that. The fight system should probally implemented as a mix of something like having a uppercut, a face punch and a belly punch and a block (in form of high, middle, low), either the animation itself should give hints on the oponents actions or DDR/Viewtiefull Joe like explizit markers.
 
@@ -19,7 +20,7 @@ The game is meant to take place on a rough outerspace colonie on a distant plane
 
 ::-- [[User:Grumbel|Grumbel]] 23:04, 5 Jul 2005 (BST)
 
-== Traveling between Planets ==
+=== Traveling between Planets ===
 Traveling between Planets should happen in this:
 
 http://pingus.seul.org/~grumbel/tmp/windstille-shuttle.png
@@ -28,14 +29,14 @@ shuttle. A smaller dropship might be used to carry the player from one mission t
 
 -- [[User:Grumbel|Grumbel]] 17:07, 2 Jul 2005 (BST)
 
-== Mining Minerals ==
+=== Mining Minerals ===
 
 The collonie will mine some minerals. One idea could be that these minerals could be used as fuel/energie source. Gameplay wise this could be used so that:
 
 * the player can recover energie from collecting minerals
 * minerals can detonate when you shoot on them
 
-== Cargo Ship ==
+=== Cargo Ship ===
 
 Every few weeks/month a cargo ship comes and collects the minerals:
 
@@ -43,7 +44,7 @@ Every few weeks/month a cargo ship comes and collects the minerals:
 
 -- [[User:Grumbel|Grumbel]] 20:09, 2 Jul 2005 (BST)
 
-== Some History ==
+=== Some History ===
 
 Project report
 Colony #: 003456-A
@@ -80,7 +81,7 @@ Mineral deposits secured(so far): gold, silver, platinum, uranium and an unknown
 
 --[[User:Ruskie|Ruskie]] 16:26, 3 Jul 2005 (BST)
 
-== Different History - Different Plot-take ==
+=== Different History - Different Plot-take ===
 
 Our hero's location is a Moon designated SYS3991 3-1.  Orbiting a Gas Giant, piloting to the planet has always been difficult.  The Gas Giant produces large, powerful magnetic fields which protect the moon from dangerous rays emitted by the local sun.  The planet was found to be excellent from a source of minerals, but the magnetic field interferred with regular communications from and on the planet, making it unsuitable for normal human colonization.  The planet became marked as a frontier planet where the Goverment would only vest interest in the gathering of important minerals and, so long as there was a regular ship delivering materials, the goverment would not get involved within the way the planet was actually run.  The self formed goverment of the planet is loosely based on the companies that come and mine the planet.  The first company was the called the "Local Miners Union."  Since then many companies have come and gone, each bringing various technologies to the planet, but the Local Miners Union has been the only one to stay strong throughout.  A local militia was created that to help rid companies of any wildlife and creatures that interferred with their business.  The companies did not feel that a powerful militia was in their best interests, so the militia was so well funded.  The militia had to survive using old miners equipment that companies would leave behind when they left.  With the help of the recycling plant, they would modify the mining suits for use more in line with their work.  The head of the militia was a man named Donovan. 
 
@@ -112,7 +113,7 @@ Grammar and spelling improvements.  The story is good, although needs a little m
 
 --[[User:Charlieg|charlieg]] 14 Jul 2005
 
-== Backstory, Round III ==
+=== Backstory, Round III ===
 '''Just started throwing this together:'''
 
 Jane grew up on a planet in a system near to the Gold Planet (do we have a name?).  This planet is also a mining planet, but they mine common minerals, and the quality of life is low.  Jane grew up, like 95% of the other residents, in a mining family.  She worked with Boss as her supervisor (not actually a "boss" yet).
@@ -126,28 +127,7 @@ Although all of Boss' employees had abandoned him, Jane stayed loyal.  Instead o
 
 --[[User:Pifactorial|Pifactorial]] 12:27, 4 Jul 2005 (BST)
 
-== Intro/Tutorial ==
-
-There was some discussion during the IRC meeting about how to work the tutorial into the story.  I was thinking it might make sense to open the game with a short cut scene where Jane is trapped and her suit badly damaged, and then the training takes over from there, with a dialog with a mechanic character which both introduces plot and explains the game mechanics.  Something along the lines of:
-
-Mechanic: Man, your suit really took a beating down in that mine.  What the hell were you doing down there?
-
-Jane: (Boss) sent me down there to meet someone who was interested in our services, but he didn't give me much detail.  I'm going to go find out if he knows any more than he told me.
-
-Mechanic: Before you go, could you help me test your suit?  I've got everything repaired.
-
-Jane: sure.
-
-...
-
-Mechanic: Why don't you start by climbing onto that block over there
-
-Blinking Overlay: To climb, press Jump and Up together
-
-...
-
---[[User:Mdgeorge|Mdgeorge]] 20:50, 4 Jul 2005 (BST)
-
+=== IRC-Discussion ===
 ----
  <netsrot> Do you have any new ideas? =)
  <netsrot> will there be a stunngun?
@@ -235,17 +215,52 @@ Blinking Overlay: To climb, press Jump and Up together
  <netsrot> That would be nice.
 
 ----
-== Swarm Enemies ==
-
-Instead of simply using a bunch of almost men-sized enemies the game should feature a bunch of swarm-enemies, ie. very little enemies that act as a collective, fighting against them with normal projectile weapons will be pretty much impossible, instead the player has to either utilizie the flame thrower or destroy the swarms nest (if available).
-
-== Escaping ==
+=== Escaping ===
 
 Most games your 'you against the rest of the world' and in the end you win. How about situations in Windstille which you can't win? In which you have to run for your life and just barly make it?
 
 Good idea. For example: There could be an assassination attempt from other mining companies resulting in an explosion in a mine Jane is in. She has to run to find the exit and her Mission obivously fails this time. There could be other events like this.
 
 Or more like it you're attacked by an insane number of enimies, and you have to retreate fighting and doging just to save your skin :)
+
+=== City ===
+
+It would be nice if the city you walk around in non-powersuit mode had a slightly living feel to it, like Syndicate or GTA or whatever. Obviously our extremely limited resources mean anything even resembling a true living city is impossible, but some ideas to heighten the feel of a real city might be:
+
+* NPCs who exist only to provide back story and hints, who you don't actually need to talk to to progress
+* Being able to travel via train or subway rather than just by foot. You wouldn't actually control the vehicle or anything, it would just be an animation for when you go between different areas
+* It might be nice if there was stuff going on in the background, though this is probably never going to happen. E.g. if you are at a shuttle port then shuttles take off and land in the background, if you are at a train station trains come and go in the background
+
+~~ ----
+
+== Episode 1 ==
+
+=== Intro/Tutorial ===
+
+There was some discussion during the IRC meeting about how to work the tutorial into the story.  I was thinking it might make sense to open the game with a short cut scene where Jane is trapped and her suit badly damaged, and then the training takes over from there, with a dialog with a mechanic character which both introduces plot and explains the game mechanics.  Something along the lines of:
+
+Mechanic: Man, your suit really took a beating down in that mine.  What the hell were you doing down there?
+
+Jane: (Boss) sent me down there to meet someone who was interested in our services, but he didn't give me much detail.  I'm going to go find out if he knows any more than he told me.
+
+Mechanic: Before you go, could you help me test your suit?  I've got everything repaired.
+
+Jane: sure.
+
+...
+
+Mechanic: Why don't you start by climbing onto that block over there
+
+Blinking Overlay: To climb, press Jump and Up together
+
+...
+
+--[[User:Mdgeorge|Mdgeorge]] 20:50, 4 Jul 2005 (BST)
+
+== Enemy Ideas ==
+=== Swarm Enemies ===
+
+Instead of simply using a bunch of almost men-sized enemies the game should feature a bunch of swarm-enemies, ie. very little enemies that act as a collective, fighting against them with normal projectile weapons will be pretty much impossible, instead the player has to either utilizie the flame thrower or destroy the swarms nest (if available).
 
 == Items and puzzles ==
 
@@ -276,15 +291,5 @@ Combining the item/puzzle related ideas from the above sketch as well as some th
 * radiation suit to go in a radioactive area
 * sabotaging a train or shuttle using a toolkit
 * putting a tracking device on a shuttle
-
-~~ ----
-
-== City ==
-
-It would be nice if the city you walk around in non-powersuit mode had a slightly living feel to it, like Syndicate or GTA or whatever. Obviously our extremely limited resources mean anything even resembling a true living city is impossible, but some ideas to heighten the feel of a real city might be:
-
-* NPCs who exist only to provide back story and hints, who you don't actually need to talk to to progress
-* Being able to travel via train or subway rather than just by foot. You wouldn't actually control the vehicle or anything, it would just be an animation for when you go between different areas
-* It might be nice if there was stuff going on in the background, though this is probably never going to happen. E.g. if you are at a shuttle port then shuttles take off and land in the background, if you are at a train station trains come and go in the background
 
 ~~ ----
