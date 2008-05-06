@@ -35,7 +35,8 @@ Check the [http://flexlay.berlios.de/ Official Flexlay Webpage] for details.
 
 Dependencies:
 
-* the development version of ClanLib
+* SDL
+* SDL_image
 * [http://icculus.org/physfs/ PhysicsFS]
 * [http://www.openal.org/ OpenAL]
 * [http://www.perforce.com/jam/jam.html Jam] (to build)
