@@ -1,4 +1,5 @@
 2005-07-19
+* tilemap and the particle systems now all use VertexArrayDrawingRequest
 * in-game dialogs are now mostly working
 
 2005-07-18
