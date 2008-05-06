@@ -1,0 +1,23 @@
+This is a list of basic features we should either get from additional libraries or write small classes ourself.
+
+= Basics =
+* Setting up Fullscreen/Windowed OpenGL Context
+* Gathering Input from Keyboard/Joystick/Mouse
+
+= Graphics/Sprites =
+* Loading images (png, jpeg would be a nice addition but is not mandatory) and creating opengl textures from them
+* A system that gathers all drawing commands, sorts them and maybe optimizes them for opengl
+* The drawing system should be statefull to allow translation and maybe scaling and rotating of following drawing commands. It should be possible to maintain a stack of such transformations.
+* Sprite Handling. Sprites should support the following features (if we go for 3d sprites only we might not need these)
+* We need Fonts to display Text on screen
+** Several Animation switchable animations defined from a series of images. The animation speed should be freely adjustable.
+** Animation images can be extracted from bigger images (texture coordinate animation)
+** Support for reversing animations and mirroring/flipping the images will reduce the number of images needed.
+** We might have to extend sprites to support the 3 layer displaying of windstille
+
+= Sound =
+* A way to send sound to the soundcard.
+* Load wav and ogg files
+* Stream ogg files for background music
+* Mix several sound sources together
+* Positional audio (a fake solution with might be enough where you can just adjuts panning/volume)
