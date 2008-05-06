@@ -55,19 +55,3 @@ planet X-Gamma-5..."
 
 (text runs out and the game fades over to the apartment of Jane, where
 Jane is just doing a VR training in her new powersuit)
-
-== Virtual Reality Training ==
-
-VR Training shows the player what actions are available and how to use
-them. It does this by guiding the player through a little course where
-he needs all the available actions to make it to the end, an AI-voice
-will give commands on which actions are currently needed.
-
-# Walking: the player is commanded to walk from his current position to a marked new position
-# Running: the player is commanded to walk from his current position to a new one, the way is however bloked by a conveyour belt which he can pass without changing to running mode
-# Jumping: the player has to jump over a small abyss, if he doesn't make the jump he will get reset to a position infront of the abyss
-# Climbing: the player has to make a 'hang-jump' (Up+Jump) to climb onto a little mountain
-# Duck: the player has to make its way under a block, under the block is a conveyour belt, so ducking will let him glide under it
-# Rolling: same as above but this time the player has to run and then make a roll under the block, optionally this might also be done with sneaking
-
-After movement training is over, the VR Training will switch over to weapon training, where the player has to grab a gun and use it to shoot a bunch of dummy targets (double-pyramids or something like that). Also available should be granates, satches carges and shild.
