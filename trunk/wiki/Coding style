@@ -4,7 +4,7 @@ Far more important than the supposed advantages or disadvantages of any particul
 
 In Windstille, code looks like this:
 
-From hypothetical file class_name.cxx:
+From hypothetical file class_name.cpp:
 
 <pre><nowiki>
 void
