@@ -28,19 +28,16 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * fix player movement behaviour
 * integrate all available animations
 * implement the control dialog in code with opengl commands so that its properly resizable, make the displayed text configurable by scripting, figure out a way to display special icons, aka arrows, for 'up/down/left/right'
-* add tab-completion, line editing and other readline-like functions to the console
-* edit flexlay to be able to load new format windstille levels (this task is Ruby, not C++)
 * boxes or other items that you can push and pull
 * initialising/loading/saving script variables (this is already being worked on by JamesG and MazteB)
 * collision detection between the player and other objects (Godrin is already working on this)
-* weapons and firing (MazteB may already be working on this?)
+* weapons and firing
 * add a player-holding-torch lighting effect
 * fix bugs - you can find some in the [http://svn.berlios.de/viewcvs/windstille/trunk/BUGS?view=markup SVN BUGS file]
 * write a GameObject/Entity that simulates a 'laser display' or however you call things like [http://www.laserist.org/Laserist/2003Awards/LFI_Static_Cubi%20Bubi_B.jpg this], ie. something that uses a laser to project a 2d vector object on a wall, color of the laser should be configurable
 * write a Squirrel-mode for Emacs
 * implement stairs, see blender task list above
 * implement an elevator a platform onto which one can step on and once one presses 'use' it moves up or down, if 'use' is pressed while its moving it should inverse the direction
-* add a proper way to define near/far clipping planes in ClanLib (currently defaults to -1000, 1000)
 * change the console so that each expression that returns a value automatically prints it
 * face animation via morph targets to be used in dialogs, by no means important for the GotM run, just something Grumbel would like to have one day
 * update the editor so that it can handle current file format completly and let it be tolerant to tags he doesn't know yet
