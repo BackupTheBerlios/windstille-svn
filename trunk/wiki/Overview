@@ -78,28 +78,28 @@ The goals for the first Milestone would be:
 
 When without the powersuit you can:
 
-- walk
-- run
-- duck
-- jump, 3 tiles wide when staying, 4 tiles when running
-- jump-up to grab on a ledge or the like
-- roll
-- crawl
-- draw your weapon
- - shoot
- - sneak
- - put weapon back
-- use your inventory
-- flashlight
+* walk
+* run
+* duck
+* jump, 3 tiles wide when staying, 4 tiles when running
+* jump-up to grab on a ledge or the like
+* roll
+* crawl
+* draw your weapon
+** shoot
+** sneak
+** put weapon back
+* use your inventory
+* flashlight
 
 Powersuit:
 
-- walk
-- run
-- jump
-- duck
-- shoot
-- IR-vision
+* walk
+* run
+* jump
+* duck
+* shoot
+* IR-vision
 
 == Weapons ==
 
