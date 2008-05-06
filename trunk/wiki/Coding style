@@ -6,8 +6,8 @@ In Windstille, code looks like this:
 
 From hypothetical file class_name.cxx:
 
-<code>
-void<br>
+<pre><nowiki>
+void<
 ClassName::function_name (float delta)
 {
   value -= 10*delta;
@@ -23,17 +23,15 @@ ClassName::function_name (float delta)
         }
     }
 }
-</code>
+</nowiki></pre>
 
 The following rules can be deduced:
 
-<ol>
-<li>Function return types comes on a line of their own
-<li>Curly braces are always on a line of their own
-<li>Two spaces seperate braces from both the line above them and the line below them
-<li>Class names have the first letter of each word in their name capitalised, and no underscores
-<li>Variable and function names are entirely in lower case, and seperate seperate words in their name using underscores
-<li>For function calls there is a space inbetween the name of the function being called and thfirst parenthesis
-<li>Files are named after the classes that they contain, but use the same rules for capitalisation and underscores as variable names, not class names (i.e. all lowercase, different words within a name are seperated by an underscore)
-<li>MediaWiki's automatic code formatting isn't perfect
-</ol>
+* Function return types comes on a line of their own
+* Curly braces are always on a line of their own
+* Two spaces seperate braces from both the line above them and the line below them
+* Class names have the first letter of each word in their name capitalised, and no underscores
+* Variable and function names are entirely in lower case, and seperate seperate words in their name using underscores
+* For function calls there is a space inbetween the name of the function being called and thfirst parenthesis
+* Files are named after the classes that they contain, but use the same rules for capitalisation and underscores as variable names, not class names (i.e. all lowercase, different words within a name are seperated by an underscore)
+* and if somebody doesn't like this we can switch to something else, all Grumbel cares about is that he can auto intend with a keypress in Emacs...
