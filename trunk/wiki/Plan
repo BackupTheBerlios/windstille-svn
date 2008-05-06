@@ -4,12 +4,7 @@
 
 
 
-== Respawning ==
 
-Its not yet clear how respawing should be handled, one way would be
-that the player respawns in a hospital in the city when he is
-critically hurt (GTA-like), another solution would be to simply
-respawn at the last rooms entrance (Beyond Good&Evil). 
 
 == New Game ==
 
