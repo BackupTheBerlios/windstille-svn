@@ -9,7 +9,7 @@ ClassName::do_stuff_method(int blup)
     int a = 20;
 
     // the following will do an insanely complicated calculation
-    for(int i = 0; i < a; ++i) {
+    for(int i = 0; i < (a + 3); ++i) {
         std::cout << i * a << "\n";
 
         // don't forget to skip some elements
