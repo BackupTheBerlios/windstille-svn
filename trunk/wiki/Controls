@@ -5,16 +5,17 @@ Controls in Windtille will be configurable, this works by mapping keyboard keys,
 * left/right: walk to the left or right
 * down: duck
 * down, left/right: sneak/crawl
-* a: jump
-* b + left/right: run to the left or right
-* x: draw gun
+* a + up: jump up
+* a: jump forward
+* b + left/right: run to the left or right, use nearest object
+* x: draw gun, use inventory item if equiped
 * y: show inventory
 
 == Human with gun ==
 
 * left/right: walk to the left or right
 * down, left/right: roll/dodge
-* a:
+* a: reload
 * b: shoot
 * x: put gun back
 * y: use secondary weapon (granade)
@@ -25,7 +26,7 @@ Controls in Windtille will be configurable, this works by mapping keyboard keys,
 * a: jump
 * b: shoot
 * x: switch weapon mode
-* y:
+* y: use secondary weapon (granade)
 
 == Additional 'modeless' Controls ==
 
