@@ -10,7 +10,12 @@ This is a list of basic features we should either get from additional libraries 
 * Loading images (png, jpeg would be a nice addition but is not mandatory) and creating opengl textures from them
 * A system that gathers all drawing commands, sorts them and maybe optimizes them for opengl
 * The drawing system should be statefull to allow translation and maybe scaling and rotating of following drawing commands. It should be possible to maintain a stack of such transformations.
+
+== Fonts ==
 * We need Fonts to display Text on screen
+* Fonts might be based on TTF for easier scaling/unicode support etc.
+* it should be possible to apply some effects to fonts, black-border, color gradients, glow, etc.
+* Fonts sholud be antialised
 
 == Sprites ==
 * Several Animations that can be switched. Animations are defined from a series of images. Speed of the animation or even single frames should be freely adjustable.
