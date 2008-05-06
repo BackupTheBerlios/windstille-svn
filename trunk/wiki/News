@@ -1,3 +1,6 @@
+2005-07-19
+* in-game dialogs are now mostly working
+
 2005-07-18
 * tilemap handling is now based on pure OpenGL, no longer Clanlib sprites
 * a new ClanLib independed 2d sprite class is available
