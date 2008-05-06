@@ -1,3 +1,7 @@
+= Drawing Model =
+
+[[Windstille Drawing Model]]
+
 = Layers =
 
 The current graphics engine works by using three layers:
