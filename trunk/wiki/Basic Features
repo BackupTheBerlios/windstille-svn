@@ -23,4 +23,4 @@ We might not need 2d sprites if we go for full 3d on all sprites.
 * Load wav and ogg files
 * Stream ogg files for background music
 * Mix several sound sources together
-* Positional audio (a fake solution with might be enough where you can just adjuts panning/volume)
+* Positional audio (we could also build a fake solution with adjuts panning/volume)
