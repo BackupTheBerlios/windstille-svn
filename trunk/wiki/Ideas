@@ -299,3 +299,62 @@ Combining the item/puzzle related ideas from the above sketch as well as some th
 == Fog of War/Visibility ==
 
 Not sure if we need it, but might be helpfull to limit visibility to things that are currently in the players view. For example it shouldn't be possible to look through the roof.
+
+
+== Voice Acting Script ==
+
+I think the script could use some work, but maybe my tastes are different, so I figured I'd post a sample of how I'd have written what's in the Plot section and if folks feel it's better, I'd be happy to handle it:
+
+Intro
+The Big Boom.  Humanity found out it could travel to the stars, and it did, en masse.  But it didn't take long for it to turn into The Big Bust.  The guilds, the governments and the corporations staked out the best worlds.  Still, many more took their chances, even without military hardware and terraformers.  Most worlds were so barren, or dangerous, that whole colonies died out.  In the Free Colonies that survive, life isn't easy.
+
+(I like, first of all, to detach from concrete dates, and try to imagine how people would come to refer to an era--in this case the obvious connection is between The Big Bang and The Big Boom.  This also establishes four major classes of humanity: Guild, gov't, corp and free--which I think affords some good storyline and gameplay aspects.)
+
+This is my new home, Sys-triple-three-niner.  The locals call it Hellas.  There are only two real jobs in the colonies: miner and merc.  I tried mining--bouncing from planet to planet, trying to find  work.  Then I met Yagor and he told me I could make more money in one mission as a merc than I could make in a year as a miner.  That was about six months ago.  It's like any other job, really, you have good days.. and bad days.
+
+First Mission
+Boss[4]: "Hey, you feelin' re-coop-er-ated?"
+
+Jane: "I think so, why?"
+
+Boss: "Not sure exactly, somethin' at Jimbo's.  Do me a favor, head down and see what's up."
+
+Jane: "I'm on my way."
+
+(Jane grabs her jacket and leaves her apartment and goes to Jimbo's bar, just a few screens away)
+
+Jane: "Hi, Bob."
+
+Bob: "Jane! I thought you were dead. Looks like one of our boys got into trouble. He ended up trapped in the nothern forest.  We got the emergency call half an hour ago."
+
+Jane: "Doesn't Northern Star take care of this?"
+
+Bob: "Don't ask me, ask them..."
+
+Miner: "Are you kidding? I'm gonna risk my neck for that poor bastard? Only an idiot goes into that forest."
+
+Jane: "I can't believe you'd just abandon him there!  Have you no honor?"
+
+Miner: "What do you know about honor?  You're just a damn mercenary."
+
+Jane: "I guess I can't expect much from a drunken miner. Anyway, I'll find him.  Where was he when he sent the distress signal?"
+
+Bob: "Here ya go.  You know we can't pay you much... "
+
+(Communicator call from Boss)
+
+Boss: "Got something?"
+
+Jane: "Yep, everything's set, looks like we have a job. Come and get me."
+
+Boss: "Okay, meet me on the roof."
+
+Jane: "Yep"
+
+(Jane goes to the roof and enters the spaceship, piloted by Boss)
+
+(little cutscene that shows spaceship flying over to the northern forest)
+
+(Jane gets dropped at the forest)
+
+Boss: "Ok Jane, this is as far as I can bring you, you have to make the rest on your own. I'll stay in contact."
