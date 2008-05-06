@@ -23,6 +23,8 @@ Saving will be based on slots, not files, when the user enters an
 empty slot a new game starts, if he enters a non-empty slot the game
 will continue at the last save-point. Saving will be mostly automatic.
 
+The game will save automatically when you quit and will offer a continue
+button in the menu that brings you back to that point where you last quit.
 
 == Respawning ==
 
