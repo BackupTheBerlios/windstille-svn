@@ -2,8 +2,6 @@ Controls in Windtille will be configurable, this works by mapping keyboard keys,
 
 Controls in general should be context sensitive meaning there don't necessarily is a hard mapping between a button and what you do, this could for example mean that the jump executed when you are standing infront of a ledge is a different one than when standing on normal ground or on the edge of a cliff.
 
-http://pingus.seul.org/~grumbel/tmp/windstille-contextsensitiveaction.png
-
 == Human without gun ==
 
 * left/right: walk to the left or right
