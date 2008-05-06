@@ -152,3 +152,90 @@ Blinking Overlay: To climb, press Jump and Up together
 The miner who gets rescued from the giant spiders works for Boss.  Boss owns a gold mine, not a junkyard.
 
 --[[User:Pifactorial|Pifactorial]] 11:56, 5 Jul 2005 (BST)
+
+
+----
+ <netsrot> Do you have any new ideas? =)
+ <netsrot> will there be a stunngun?
+ <grumbel> for the human-mode we will probally have plenty of non-deadly weapons
+ <netsrot> nice
+ <grumbel> don't wanna have much of a mass-murder kind of game
+ <netsrot> Will there be smoke grenades?
+ <grumbel> not sure how usefull they would be 
+ <grumbel> but cheff granates might be in there
+ <grumbel> not really sure how to handle the aiming
+ <grumbel> with granates its probally best when one goes a bit into the direction of a yoshi island, ie. some kind  of cross or whatever that one has to target 
+ <grumbel> for shooting i am not really sure what I want
+ <grumbel> something more rpg like, something where you can actually miss without doing anything wrong
+ <grumbel> need probally to have some shild or dodge system in place to allow the player some interaction
+ <grumbel> want to have it more mini-game based
+ <grumbel> ie. a shootout should play like a small game in itself, rather disconnected from the walking around
+ <netsrot> oki
+ <grumbel> for the powersuit mode however that needs to be kind of different, but even there I would prefer to not  have it to much metroid like 
+ <netsrot> I know .
+ <netsrot> More like a tank?
+ <grumbel> not sure, but its something I am thinking about
+ <grumbel> cybernator was a game that played pretty much like that
+ <grumbel> ie. you played a huge battlemech, but it was all sidescrolling 2d jump'n shoot
+ <grumbel> it was nice game, but powersuit here is a lot more lightweight, more a suit, then a mech
+ <grumbel> question is really: you stand on a platform, some enemy in front of you, what do you do?
+ <grumbel> should you need to duck to hit him if he is small?
+ <grumbel> should you auto-aim when he flies?
+ <grumbel> should you manually aim when he flies?
+ <grumbel> should you be able to aim at all?
+ <netsrot> I think not
+ <netsrot> You should always aim forward or up?
+ <grumbel> should I be able to run and shoot at the same time?
+ <netsrot> Yes but you should aim very bad?
+ <netsrot> Possibly shoot yourself in leg if unluckey =)
+ <netsrot> Should there be walk/run mode?
+ <netsrot> And walking backwards?
+ <netsrot> Will there be any kind of knockback system?
+ <netsrot> When getting hit or something.
+ <netsrot> grumbel: still here?
+ <grumbel> yep, still there
+ <grumbel> just programming a bit while talking
+ <netsrot> nice =)
+ <netsrot> knockback would be nice if there is falling dammage on enemy.
+ <grumbel> getting hit should definitivly give some feedback
+ <grumbel> not just a drop of energie
+ <netsrot> good
+ <grumbel> at best it should be something special, say some badguy might bight you in the leg
+ <grumbel> or ram you or capture you with tentacles
+ <grumbel> or attack you visually by other means
+ <grumbel> if you throws some acid/poision at you it should fly in a balistic curve, not linear
+ <netsrot> Will there be somethig like cars?
+ <netsrot> s/somethig/something/
+ <netsrot> I would like a running dropkick move =)
+ <netsrot> giving the enemy a long knockback =)
+ <grumbel> there will be a dropship that brings you to whereever you need to go
+ <netsrot> oki
+ <grumbel> cars probally in the background or so, not sure what they should be good for gameplay whise
+ <netsrot> You could have bigg guns on it =)
+ <netsrot> But thats probably a bad idea.
+ <netsrot> Will it be possible to distract an enemy or set up traps?
+ <grumbel> distraction yes
+ <grumbel> traps not sure, maybe mines or so could be usefull
+ <netsrot> Will there be binoculars?
+ <grumbel> maybe
+ <netsrot> IR goggles?
+ <grumbel> they would be a bit weird in 2d 
+ <netsrot> I have seen them work in a never released 2d sidescroller
+ <grumbel> ir or other kinds of vision most likly
+ <netsrot> but it used maps like in worms1
+ <netsrot> Will there be some kind of maps over the levels?
+ <netsrot> World map/starsystem?
+ <grumbel> there won't be a worldmap, because there won't be levels
+ <grumbel> but there will be a level map
+ <netsrot> oki
+ <grumbel> there will also be some overview map, but not in the supertux-kind of way
+ <grumbel> more like a real map that you see on a terminal
+ <netsrot> ok
+ <netsrot> Pherhaps it will be areas instead of level?
+ <netsrot> and sectors
+ <grumbel> official name currently is 'sector'
+ <netsrot> oki
+ <grumbel> which can be basically anything from a large outdoor areal to some small back room in the bar
+ <grumbel> something different: I also would like to a have a resident evil like inventory
+ <grumbel> something where you can look at close-ups of your items, rotate them and stuff like that
+ <netsrot> That would be nice.
