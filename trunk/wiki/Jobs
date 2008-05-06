@@ -33,5 +33,5 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * initialising/loading/saving script variables (this is already being worked on by JamesG and MazteB)
 * collision detection between the player and other objects (Godrin is already working on this)
 * weapons and firing (MazteB may already be working on this?)
-* add a player-holding torch lighting effect
+* add a player-holding-torch lighting effect
 * fix bugs - you can find some in the [http://svn.berlios.de/viewcvs/windstille/trunk/BUGS?view=markup SVN BUGS file]
