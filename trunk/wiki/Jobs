@@ -36,3 +36,4 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * weapons and firing (MazteB may already be working on this?)
 * add a player-holding-torch lighting effect
 * fix bugs - you can find some in the [http://svn.berlios.de/viewcvs/windstille/trunk/BUGS?view=markup SVN BUGS file]
+* write a GameObject/Entity that simulates a 'laser display' or however you call things like [http://www.laserist.org/Laserist/2003Awards/LFI_Static_Cubi%20Bubi_B.jpg this], ie. something that uses a laser to project a 2d vector object on a wall, color of the laser should be configurable
