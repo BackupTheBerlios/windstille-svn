@@ -244,3 +244,45 @@ Instead of simply using a bunch of almost men-sized enemies the game should feat
 Most games your 'you against the rest of the world' and in the end you win. How about situations in Windstille which you can't win? In which you have to run for your life and just barly make it?
 
 Good idea. For example: There could be an assassination attempt from other mining companies resulting in an explosion in a mine Jane is in. She has to run to find the exit and her Mission obivously fails this time. There could be other events like this.
+
+== Items and puzzles ==
+
+If the game is to be a little bit more thoughtful and slow paced than an out-and-out shoot-em-up, perhaps it would be nice if there were a whole bunch of items and objects in the game world, which have to be combined in the right way in the right places to progress?
+
+Grumbel has sketched some ideas out at:
+[http://pingus.seul.org/~grumbel/tmp/windstille-files/puzzles.png]
+
+Combining the item/puzzle related ideas from the above sketch as well as some thoughts of my own, here is a list of possible item/object comination puzzle ideas:
+
+* you have to push or pull a crate/box or multiple boxes into position to climb over an obstacle, or to gain access to a ladder
+* doors, walls, boxes or other objects that stand in your way could be destroyed with guns and/or explosives
+* explosive barrels can be placed next to a wall and then blown up to destory the wall
+* a bad guy has a powerful machine gun or whatever and you have to duck behind game objects to avoid being hit, but can shoot him when he stops to reload
+* press a button to make a lift go up or down
+* press a button to connect/disconnect a bridge
+* ladders
+* monkey-bar style traversing of ravines
+* zoomed out aiming with sniper rifle or missile launcher or other very powerful weapon to take out very dangerous enemies from afar
+* keycard doors
+* forcing people to do things at gunpoint
+* using a torch to light up/find items in darkness. Perhaps certain enemies don't like the light and would try and creep up on you until you shine your torch at them, and which point they scamper away
+* EMP grenades could take out automated weapon systems or very powerful robot enemies that are otherwise next to impossible to defeat
+* hacking into computers to control doors, lifts, automated weapon systems, robots, etc
+* destroying a power generator to allow you to get through an electrified fence, or to stop automated weapon systems from working, or to intentionally pluge a sector into darkness
+* an aqualung or similar that is needed to dive underwater
+* stealing or forging an identity card to gain access to a restricted area
+* radiation suit to go in a radioactive area
+* sabotaging a train or shuttle using a toolkit
+* putting a tracking device on a shuttle
+
+~~ ----
+
+== City ==
+
+It would be nice if the city you walk around in non-powersuit mode had a slightly living feel to it, like Syndicate or GTA or whatever. Obviously our extremely limited resources mean anything even resembling a true living city is impossible, but some ideas to heighten the feel of a real city might be:
+
+* NPCs who exist only to provide back story and hints, who you don't actually need to talk to to progress
+* Being able to travel via train or subway rather than just by foot. You wouldn't actually control the vehicle or anything, it would just be an animation for when you go between different areas
+* It might be nice if there was stuff going on in the background, though this is probably never going to happen. E.g. if you are at a shuttle port then shuttles take off and land in the background, if you are at a train station trains come and go in the background
+
+~~ ----
