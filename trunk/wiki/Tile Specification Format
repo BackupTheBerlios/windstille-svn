@@ -18,6 +18,10 @@
    (tile
      (id 149)
  
+     ;; FIXME: 'light' is problematic here, since light-tiles would
+     ;; need to be much larger than a single tile to work correctly,
+     ;; ie. light is scattered far across the 32x32 boundary, same
+     ;; might be true for 'highlight'
      (color     (sprite (region "tiles/virtualreality-1.png" 0 0 32 32)))
      (light     '())
      (highlight '()
