@@ -4,6 +4,7 @@ This is a list of basic features we should either get from additional libraries 
 * Setting up Fullscreen/Windowed OpenGL Context
 * Gathering Input from Keyboard/Joystick/Mouse
 * Some structured file format parser/writer for config, map, tile- and sprite-definition files
+* Some way to have store/retrieve translated strings
 
 = Graphics =
 * Loading images (png, jpeg would be a nice addition but is not mandatory) and creating opengl textures from them
