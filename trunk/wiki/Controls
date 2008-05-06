@@ -22,7 +22,7 @@ Controls in general should be context sensitive meaning there don't necessarily 
 * a: reload
 * x: put gun back
 * y: use secondary weapon (granade)
-* l: hold pressed to aim with gun
+* r: hold pressed to aim with gun
 
 == Human with gun and aiming ==
 
@@ -37,7 +37,7 @@ Controls in general should be context sensitive meaning there don't necessarily 
 * a: jump
 * x: switch weapon mode
 * y: use secondary weapon (granade)
-* l: aim
+* r: aim
 
 == Powersuit while aiming ==
 
