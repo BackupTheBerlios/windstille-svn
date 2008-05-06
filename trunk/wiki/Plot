@@ -15,7 +15,35 @@ The game takes place in the distant future when mankind has developed faster tha
 
 The intro will go something like:
 
-"Its the year 2248[1], after mankind has developed faster-then-light travel they have begun colonizing other planets and building up industries on other planets in the search for usefull good, one could call it a second gold rush. Some say mankind has spread faster then good for them, others hail the technological progress. Some colonies have become quickly abandoned after no worthy goods have shown up on a planet, other flourish at the same time and some struggle for their survival. This story takes place on one of the struggeling colonies, resources are rare and goods are seldom, the people struggle for their survival. We are going to tell the story of Jane[2], a Mercenary on planet X-Gamma-5..." 
+Jane: "Its the year 2248[1], after mankind has developed faster-then-light travel they have begun colonizing other planets and building up industries on other planets in the search for usefull good, one could call it a second gold rush. Some say mankind has spread faster then good for them, others hail the technological progress. Some colonies have become quickly abandoned after no worthy goods have shown up on a planet, other flourish at the same time and some struggle for their survival. This story takes place on one of the struggeling colonies, resources are rare and goods are seldom, the people struggle for their survival, but most of them like it that way."
+
+- View on the Planet -
+
+Jane: "This is Planet SYS339-3, my planet, moved here after I got sick of the mining business. Always moving from planet to planet just turned out to be less fun then expected, so I tried to settle here, build up a new live. Had a hard time in the beginning, but once I meet Yagor. Have worked for him now for like 6 month and things started to get better had a bunch of fun in the job till that one day..."
+
+- Cutscene of Jane getting hit/bitten whatever and getting wounding and then dragging herself to the next opening in the forest to be found by the shuttle. Tilemap for this should be all black, so that only Jane is visible.
+
+- Fadeout
+
+Jane: "Have been out of work since that day, can't really remember what happened. All I know that I broke my leg and lost a lot of blood, wasn't that much fun and pure luck that 'Pilot' found me in time. Recovery took a while, but tomorrow is now my first day back in the job. Yagor wants me todo VR training first, he doesn't seem to trust my abilites anymore, well, guess a little bit VR training can't after beeing out of order for a while."
+
+- Cutscene of Jane entering the VR-chamber
+
+- VR gets activated
+
+AI: "Welcome Jane, long time no see. Good to have you back."
+
+Jane: "How about we stop talking and start training, show me what you got."
+
+AI: "Ok, I have prepared a few programms for you, Yagor wants you to start with the first one, so lets go"
+
+ControllDialog: "Press left/right to walk, press up to enter a door"
+
+Player enters with Jane programm 1 door
+
+AI: "First programm is just a little bit jumping and running, have prepared a little course for, see those gems (camera scrolls around and shows the scenario), try to collect them all."
+
+Player can now move around in the level to collect gems, ControllerDialog shows the keypressed that are required to complete a specific obstacle.
 
 (text runs out and the game fades over to the apartment of Jane, where Jane is just doing a VR training in her new powersuit)
 
