@@ -13,3 +13,6 @@ I know this is a pain, but would it be possible to do (nightly? weekly?) develop
 ::: Actually you need to focus on both, can't have gameplay without some story and neither story without having any idea of gameplay. The important part is that it is fun and therefore gameplay and story need to go hand in hand. About the nightly builds, don't really think they are necessary, physfs and OpenAL should come with your distro, Squirrel is integrated into the source and ClanLib is also just a './configure && make' away. And after that its just a matter of regularly 'svn update && jam'.
 
 ::: -- [[User:Grumbel|Grumbel]] 14:00, 5 Jul 2005 (BST)
+
+:::: I just didn't want to have to download, compile and install subversion, clanlib and windstille under ''Knoppix''. :P None of my office computers have Linux, and I don't have a computer at home right now.
+::::--[[User:Pifactorial|Pifactorial]] 14:43, 5 Jul 2005 (BST)
