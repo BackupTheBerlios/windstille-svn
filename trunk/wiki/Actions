@@ -121,9 +121,7 @@ The level file format will be at its basic level tile based, support for multipl
 
 A flewible controller api should be provided for remapping the buttons to specific gamepads.
 
-== Items ==
 
-We might include items which can trigger specific switches, cutscenes or story events. They might also be used to open doors, detonate walls or similar things. Item selection should be similar to weapon select (a rotating pie-menu)
 
 == Weapon Select ==
 
