@@ -56,6 +56,9 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * we need a way to define objects in scripting language, nothing complicated, just so that when you want a lamp you don't have to specify its light/color/highlight layers over and over again seperatly
 * add Origin support to Sprite (much easier to say 'center' instead of (-32, -32))
 * find a better way to get access to objects from scripting than brute-force binding them to names in the root table
+* bring all include file guards into the form of (except those of seperate libraries like lisp/ and squirrel/):
+ #ifndef HEADER_{SUBDIR}_{FILENAME}_HPP
+ #define HEADER_{SUBDIR}_{FILENAME}_HPP
 
 == Editor ==
 
