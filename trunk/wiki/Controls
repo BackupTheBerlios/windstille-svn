@@ -1,4 +1,6 @@
-Controls in Windtille will be configurable, this works by mapping keyboard keys, joystick buttons or whatever input device you have available to a virtual controller. This virtual controller will be more or less SNES like, meaning you have a primary button (A), a secondary button (B), additional X and Y buttons, a digital directional pad (left/right/up/down), a start/pause button, select button and L and R triggers.
+Controls in Windtille will be configurable, this works by mapping keyboard keys, joystick buttons or whatever input device you have available to a virtual controller. This virtual controller will be more or less SNES like, meaning you have a primary button (A), a secondary button (B), additional X and Y buttons, a digital directional pad (left/right/up/down), a start/pause button, select button and L and R triggers. When using the a keyboard this can be mapped as 'wasd' + 'qe' + 'enter' + 'escape' + 'cursorkeys'.
+
+Controls in general should be context sensitive meaning there don't necessarily is a hard mapping between a button and what you do, this could for example mean that the jump executed when you are standing infront of a ledge is a different one than when standing on normal ground or on the edge of a cliff.
 
 == Human without gun ==
 
