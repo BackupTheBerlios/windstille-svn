@@ -1,1 +1,1 @@
-As far as it seems [http://squirrel.sourceforge.net/ Squirrel] will be used for in-game scripting. Scripting should be mainly used for triggers and special events and less for coding basic enemy AI and similar stuff.
+As far as it seems [http://squirrel.sourceforge.net/ Squirrel] will be used for in-game scripting. Scripting should be mainly used for triggers and special events and less for coding basic enemy AI and similar stuff. The SuperTux SVN repository src/scripting/ and miniswig contains the stuff that will be used in Windstille.
