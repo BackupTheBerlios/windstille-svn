@@ -39,7 +39,9 @@ given in a local coordinate system only. Typically you apply a "camera"
 transform to them or have even deeper parent/child relations where the
 coordinate system is relative to the parent. These cases can nicely be handled
 by a stack for the Position, Rotate and Scale attributes. Positions, Rotations
-and Scales are now specified relative to the topmost stack element.
+and Scales are now specified relative to the topmost stack element. You can now simply push
+the transformation from child coordinate system to parent coordinate system on the stack
+and draw all childs in their own coordinate system.
 
 = Foreground/Background and Z-Positions =
 We're presenting a (pseudo) 3d dimensional world on a 2d dimensional screen.
