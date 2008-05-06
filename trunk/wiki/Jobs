@@ -28,8 +28,8 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * implement the control dialog in code with opengl commands so that its properly resizable, make the displayed text configurable by scripting, figure out a way to display special icons, aka arrows, for 'up/down/left/right'
 * add tab-completion, line editing and other readline-like functions to the console
 * edit flexlay to be able to load new format windstille levels (this task is Ruby, not C++)
-* new font renderer, clanlibs is very buggy and has various issues (someone already said they would do this but they haven't been heard from for a while)
+* boxes or other items that you can push and pull
+* new font renderer, clanlib's is very buggy and has various issues (someone already said they would do this but they haven't been heard from for a while)
 * initialising/loading/saving script variables (this is already being worked on by JamesG and MazteB)
 * collision detection between the player and other objects (Godrin is already working on this)
 * weapons and firing (MazteB may already be working on this?)
-* boxes or other items that you can push and pull
