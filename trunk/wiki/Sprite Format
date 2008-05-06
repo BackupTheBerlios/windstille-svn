@@ -15,4 +15,4 @@ Sprite handle animation based on 2d images, they support using multiple images a
        (x-size 98)
        (y-size 125))))
 
-Currently missing is support for 'Origin'.
+Other stuff from sprite which might not yet be implemented: 'Origin', alpha, color, pingpong, blendfunc, scale, vflip.
