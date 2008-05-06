@@ -1,3 +1,6 @@
+2005-07-20
+* level editor can now load/save Windstille levels, more or less at least
+
 2005-07-19
 * tilemap and the particle systems now all use VertexArrayDrawingRequest
 * in-game dialogs are now mostly working
