@@ -1,0 +1,14 @@
+For box-collision see:
+
+src/ctest.cxx
+src/collision_manager.cxx
+
+and 
+
+test/physics/physics.cxx
+
+for pixel-collision see:
+
+src/collision/
+
+However the pixel-based  collision is most likly not going to be used.
