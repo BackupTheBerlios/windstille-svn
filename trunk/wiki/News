@@ -1,0 +1,12 @@
+2005-06-25
+* scripting is now available via the console
+
+2005-06-24
+* console can now accept keyboard input
+* Sprite3D now uses vertex arrays
+
+2005-06-23
+* a first model of the spider is available
+
+2005-06-22
+* a bunch of new animation for the girl are available
