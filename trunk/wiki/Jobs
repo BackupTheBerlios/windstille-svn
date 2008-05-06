@@ -26,3 +26,4 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * fix player movement behaviour
 * integrate all available animations
 * implement sector switching in GameSession
+* fix the SConstruct script so that ptest and ctest can compile alongside with windstille
