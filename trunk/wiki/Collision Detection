@@ -23,7 +23,7 @@ Domains could be implemented as a simple 'unsigned int' for the CollisionObject
 
 == Collision Callback ==
 
-Once a collision occured the engine should give the object usefull feedback for resolving the collision, the engine should *not* resolve collisions on there own. The callback might look like:
+Once a collision occured the engine should give the object usefull feedback for resolving the collision, the engine should *not* resolve collisions on its own. The engine should instead move the object as close to the other object as possible and then call the callback:
 
  CollisionObject::collision(CollisionEvent& collision);
 
@@ -31,15 +31,19 @@ Once a collision occured the engine should give the object usefull feedback for 
  {
   // is NONE actually needed?
   enum State { NONE, STUCK, COLLISION } state;
-
+ 
   // should be enough no need for a vector IMHO
   enum Side  { TOP, BOTTOM, LEFT, RIGHT };
-
+ 
   // the object which with 'this' collided
   CollisionObject* object;
-
+ 
   // the amount of time that has not yet been used up
   float rest_delta;
  };
 
 Collision resolution could then either mean to change the direction, to simply halt or to attach oneself to the other object (ie. that is how moving platforms should find the player).
+
+== Movement ==
+
+All movement from objects that collide *must* happen via the collision engine, this should happen via a simple CollisionObject::set_velocity(x, y) or CollisionObject::set_positio(x, y) call, no actually forces or other physics should come into play, since most objects simply won't react physical correct.
