@@ -4,7 +4,7 @@
 
 = Layers =
 
-The current graphics engine works by using three layers:
+The current graphics engine works by using three layers, to each of the layers you can draw independly. They are only later down the pipeline flushed down to the screen. The multiple layers are necessary for once to properly sort the graphics and secondly they are needed to create certain effects. The layer are:
 
 == Color Layer ==
 
@@ -12,11 +12,11 @@ This is a normal layer, it contains just good old graphics as you would expect a
 
 == Light Layer ==
 
-This layer specifies which areas of the screen are visible and which aren't. At start everything is invisible (black), to make stuff visible one uses white. One can also use other colors, red, green, etc. The light layer is later multiplied with the color layer, thus everything that is black (0) gets blended out and everything else gets lit by the color found in the light layer.
+This layer specifies which areas of the screen are visible and which aren't. At start everything is invisible (black), to make stuff visible one uses white. One can also use other colors, red, green, etc. The light layer is later multiplied with the color layer, thus everything that is black (0) gets blended out and everything else gets lit by the color found in the light layer. Drawing to this layer should almost always happen via additive blending.
 
 == Highlight Layer ==
 
-The highlight layer is drawn ontop of the light layer, it is meant for lense-flares, glows and other effects that should be 100% visible all of the time and not covered by the light-layers shadow.
+The highlight layer is drawn ontop of the light layer, it is meant for lense-flares, glows and other effects that should be 100% visible all of the time and not covered by the light-layers shadow. It is the same as the color layer, only that the light layer doesn't get multiplied with it. Drawing should again be happening mostly additive, since thats gets closest to how real light acts.
 
 = 3D Sprites =
 
