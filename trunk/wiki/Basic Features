@@ -1,10 +1,12 @@
 This is a list of basic features we should either get from additional libraries or write small classes ourself.
 
 = Basics =
-* Setting up Fullscreen/Windowed OpenGL Context
+* Setting up Fullscreen/Windowed OpenGL Context, the mode should be switchable at runtime
 * Gathering Input from Keyboard/Joystick/Mouse
+* Allow input to be configurable
 * Some structured file format parser/writer for config, map, tile- and sprite-definition files
-* Some way to store/retrieve translated strings
+* Optionally support for a binary format, since loading large tilemaps from a structured text file is slow
+* Some way to store/retrieve translated strings (tinygettext)
 
 = Graphics =
 * Loading images (png, jpeg would be a nice addition but is not mandatory) and creating opengl textures from them
