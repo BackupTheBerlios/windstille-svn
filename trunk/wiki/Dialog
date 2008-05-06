@@ -22,8 +22,8 @@ else
 function intro()
 {
 	seen_before = true;
-	response = new_dialog("Hey, my name's Bob, you new around here?", "Yes, I am.", "Go away.")
-	switch(response) {
+	new_dialog("Hey, my name's Bob, you new around here?", "Yes, I am.", "Go away.")
+	switch(dialog_answer()) {
 	case 0:
         ask_questions();
 	  break;
@@ -34,8 +34,8 @@ function intro()
 
 function hello_again()
 {
-	response = new_dialog("Hello again.", "Hey.", "Bye.")
-	switch(response) {
+	new_dialog("Hello again.", "Hey.", "Bye.")
+	switch(dialog_answer()) {
 	case 0:
 	  ask_questions();
 	  break;
@@ -46,8 +46,8 @@ function hello_again()
 
 function ask_questions()
 {
-	response = new_dialog("So what you doing here?", "I work as a mercenary.", "Not much.")
-	switch(response) {
+	new_dialog("So what you doing here?", "I work as a mercenary.", "Not much.")
+	switch(dialog_answer()) {
 	case 0:
 	  knows_you_mercenary = true;
 	  offer_job();
@@ -59,8 +59,8 @@ function ask_questions()
 
 function offer_job()
 {
-	response = new_dialog("Looking for work?", "I might be, if the offer is good enough.", "No thanks.")
-	switch(response) {
+	new_dialog("Looking for work?", "I might be, if the offer is good enough.", "No thanks.")
+	switch(dialog_answer()) {
 	case 0:
 	  knows_your_job = true;
 	  //I haven't actually written this function in this pseudo-code
