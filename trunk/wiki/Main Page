@@ -2,9 +2,9 @@
 
 Engine Parts:
 
-[Collision Detection]
-[Scripting]
-[Graphics]
+* [[Collision Detection]]
+* [[Scripting]]
+* [[Graphics]]
 
 ---
 Please see [http://meta.wikipedia.org/wiki/MediaWiki_i18n documentation on customizing the interface]
