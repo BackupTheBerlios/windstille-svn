@@ -128,11 +128,3 @@ We might include items which can trigger specific switches, cutscenes or story e
 == Weapon Select ==
 
 http://windstille.berlios.de/images/weaponitemselect.jpg
-
-
-
-== Releases == 
-
-I am not sure how releases will be handled. Release 1.0.0 should be a fully playable and complete version, other versions should also be playable, but maybe not all. Development releases/ technical previews should be seperated from playable demos and should provide a special interface which lets you select level, intros, etc. The init/intro screen should show that the current version is not playable.
-
-It might take three years or longer until a fully playable version is ready, demos might be ready a few weeks after I started coding.
