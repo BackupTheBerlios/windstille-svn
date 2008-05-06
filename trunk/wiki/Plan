@@ -2,13 +2,6 @@
 
 
 
-== Option Menu ==
-
-The option menu should allow to tweak the standard meta-game
-options, volume, fullscreen/window mode, language, controlls
-(important!) and such. The option menu should be available from inside
-the game as well.
-
 
 
 == Respawning ==
