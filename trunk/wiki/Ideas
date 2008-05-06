@@ -113,3 +113,25 @@ Although all of Boss' employees had abandoned him, Jane stayed loyal.  Instead o
 ''Ok the story ends here.  More later.''
 
 --[[User:Pifactorial|Pifactorial]] 12:27, 4 Jul 2005 (BST)
+
+== Intro/Tutorial ==
+
+There was some discussion during the IRC meeting about how to work the tutorial into the story.  I was thinking it might make sense to open the game with a short cut scene where Jane is trapped and her suit badly damaged, and then the training takes over from there, with a dialog with a mechanic character which both introduces plot and explains the game mechanics.  Something along the lines of:
+
+Mechanic: Man, your suit really took a beating down in that mine.  What the hell were you doing down there?
+
+Jane: (Boss) sent me down there to meet someone who was interested in our services, but he didn't give me much detail.  I'm going to go find out if he knows any more than he told me.
+
+Mechanic: Before you go, could you help me test your suit?  I've got everything repaired.
+
+Jane: sure.
+
+...
+
+Mechanic: Why don't you start by climbing onto that block over there
+
+Blinking Overlay: To climb, press Jump and Up together
+
+...
+
+--[[User:Mdgeorge|Mdgeorge]] 20:50, 4 Jul 2005 (BST)
