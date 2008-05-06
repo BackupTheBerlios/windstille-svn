@@ -93,9 +93,3 @@ Powersuit:
 * satchel carges
 * mines
 * granates
-
-== ToDo ==
-
-Finalize the story, write collision detection code, create graphics,
-design levels. Create proper 3D models of all the characters and
-animate them.
