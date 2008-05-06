@@ -8,7 +8,7 @@ Basic features that need to be handled by the physic/collision engine:
 
 Stuff that is not needed:
 
-* rotating boxes, while probally pretty, they cause more throuble then good, both on the programming side as well as on the gameplay side (what happens when you jump on a box which has a 45 degree angel?)
+* rotating boxes, while probally pretty, they cause more trouble then good, both on the programming side as well as on the gameplay side (what happens when you jump on a box which has a 45 degree angel?)
 
 ----
 
