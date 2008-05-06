@@ -15,6 +15,17 @@ Below is what we currently have, more or less, its far from final.
      (name "Virtual Reality")
      (tiles  31 30 114 ...)) 
  
+   ;; The given image is cut into 32x32 grid, 'ids' gives which ids are assigned to
+   ;; which grid piece, 'colmap' specfies the same for the collision properties
+   (tiles (image "tiles/foo.png")
+          (ids 0 1 2
+               3 4 5
+               6 7 8)
+           (colmap
+               0 0 1
+               0 0 1
+               1 1 1))
+
    (tile
      (id 13)
  
