@@ -70,7 +70,6 @@ As always with [[wikipedia:Free Software|Free Software]] game projects, no payme
 === Editor (written in Ruby) ===
 
 * update it so that it can handle current file format completly and let it be tolerant to tags he doesn't know yet
-* add Metadata handling to TilemapLayer (note: there is a naming conflict with another get_data() function), changing it will affect all other games
 * add handling of unknown GameObjects (stuff their sexpr into a object and write it out on save)
 * added a tile editor that allows to edit the tile definition file
 * write a .sprite file parser in ruby
