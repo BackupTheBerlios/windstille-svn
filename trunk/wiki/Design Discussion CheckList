@@ -23,3 +23,5 @@ Engine Design:
 * Identify where scripts should be used and design a scripting API
 * What interactions are needed between GameObjects, how to handle them
 * How do we handle savegames, do we need to have serialisation support across the project or will we do simpler solutions?
+
+PS: Its actually more Milestone2 or better Milestone3 then Milestone1, the former release was fully playable as well, it simply didn't provided that much.
