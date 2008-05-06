@@ -3,7 +3,7 @@ A Windstille level or sector needs to hold multiple tilemaps, some meta informat
  (windstille-sector
    (name  "City")
    (music "foo.ogg")
-
+ 
    (objects
      (tilemap (name "forground")
               (x-offset 50)
