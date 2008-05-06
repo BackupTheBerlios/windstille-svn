@@ -11,3 +11,143 @@ When you meet somebody in the adventure mode that you need to fight, you have th
 == Fighting with the powersuit ==
 
 When you have the powersuit equiped the gameplay changes quite a bit in that it gives you much more strength, higher jumps, power for your weapons and simply different weapons. However the powersuit is not allowed in some areas and won't be of much use in other, ie. when you want to sneak into enemy territory. The powersuit will also not be available at its full strength from the beginning of the game.
+
+
+----
+
+Old stuff copy&pasted from the webpage, need to be reworked!
+
+Actions
+Jump
+Shoot
+
+Should the hero be able to shoot in different directions or should be stick to a MegaMan like shooting?
+Surround
+
+Basically a turrican style surround shooting. Not sure how the thing will shoot (ice-freeze, flamethrower, normal). I kind of like it to behavice like a flamethrower to remove slime or other poison liquids on the ceiling or ground, which are immune against and unreachable with other weapons.
+Sit
+Run/Walk
+
+We might have seperate walk and run actions (basically like in Super Mario), don't know if that will work out well, so we might end up with only a run action.
+Hang
+
+Climb
+
+The Hero should be able to climb both wall and roof ladders.
+Swim/Underwater
+
+Swimming should basically be a 'endless' jump. You might also be able to simply walk underwater. [FIXME: This doesn't fit dogether with the otherwise planed realistic movement]
+Weapons
+
+Will we need different weapon stages like Turrican or static ones? (Weaponstage <-> Hero's energie!?)
+
+Jetpack
+
+The game will have a jetpack, I am currently not sure if we have it as a item which you can use all the time or just in some special events/levels.
+Light/Torch
+Machinegun
+Plasmagun
+Lasergun
+Flamegun
+Rocketlauncher
+
+Rocketlauncher can hold missiles
+Missile
+Homing Missile
+Smart Bomb - Shockwave
+
+Turrican 2 style, but maybe circular, which basically means that the bomb will not erase anything on the screen, but only these enemies which are reachable from the heros position.
+Bonus Items
+
+Power Up
+Machinegun ammunition
+Plasmagun ammunition
+Laser energie
+
+Enemies
+Respawning
+
+Big enemies, final bosses and similar things should not respawn. Small standard enemies should respawn at specific events (level/section change).
+Levels
+
+The game will not be sperated into normal levels, instead it will consist of 'sections', where one can more or less move freely around. Translating between section will be done via special events (like the water-thing in another world) or via doors (where one has to find the keys before passing them). Moving forward and backward should basically possible, but there might be points-of-no-return. Some kind of guidance system should always show you where to go, so that one doesn't lost himself in a level.
+
+Different types of assault suits
+Standard
+
+Ice
+
+might protect against ice water and give better grip on ice
+Fire/Lava
+
+protect better against lava and hot regions
+Level File Format
+
+The level file format will be at its basic level tile based, support for multiple overlapping tiles would be nice, the tile size will be 128x128. In addition the map might support brushes, meaning you can insert (animated) surface objects at arbitrary positions, not sure how this will influence the collision map.
+
+Collision Map
+
+needs to be modifiable, should use a tilesize of 8x8 pixels (the smallest possible world object). How to we integrade non-flat ground? Might need more than one pixel type. Water, Lava must also be handled by this map.
+Collision detection
+
+Collision detection should be pixel-precision.
+
+Backgrounds
+
+We will support multiple paralax scrolling layers of backgrounds. The implementation will/should be similar to Pingus.
+
+Cutscenes
+
+Not sure what we need here
+
+In game Events
+
+Not sure what we need here.
+
+Dialogs
+
+We should provide some kind of primitive dialog support, nothing complicated, simple yes/no dialogs might do it.
+
+Controller - Gamepad Mappings
+
+The game will be designed for use with a 8 button pad (4 action button, 1 pause button, 1 select, 2 shoulder button)
+
+    * jump (action button)
+    * shoot (action button)
+    * smartbomb [a selectable secondary weapon?] (action button)
+    * weapon change (action button) / tertiary button
+    * pause
+    * map, weapon assign (select)
+    * surround - shoulder button
+
+A flewible controller api should be provided for remapping the buttons to specific gamepads.
+
+Items
+
+We might include items which can trigger specific switches, cutscenes or story events. They might also be used to open doors, detonate walls or similar things. Item selection should be similar to weapon select (a rotating pie-menu)
+
+Layers
+
+The game engine should be build up-on different abstraction layers, each of these should only depend on the previous layer and should be mainly independet of the game itself, so allowing to reuse it for other games.
+
+    * 1. Layer -> ClanLib
+    * 2.1 Layer -> Tilemap based worlds
+    * 2.2 Layer -> Particle System
+    * 3. Layer -> WorldObj's, Framework for enemies
+    * 4. Layer -> The Game itself, enemies special effects
+
+
+Screen Items/layer
+
+    * player-energiebar
+    * weapon-energiebar
+    * current weapon icon
+    * armor/player icon
+    * map/radar
+
+
+Releases
+
+I am not sure how releases will be handled. Release 1.0.0 should be a fully playable and complete version, other versions should also be playable, but maybe not all. Development releases/ technical previews should be seperated from playable demos and should provide a special interface which lets you select level, intros, etc. The init/intro screen should show that the current version is not playable.
+
+It might take three years or longer until a fully playable version is ready, demos might be ready a few weeks after I started coding.
