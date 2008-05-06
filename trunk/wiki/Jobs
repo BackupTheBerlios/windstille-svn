@@ -74,6 +74,7 @@ As always with [[wikipedia:Free Software|Free Software]] game projects, no payme
 * added a tile editor that allows to edit the tile definition file
 * find out what broke redo/undo
 * write a .sprite file parser in ruby
+* integrate the color picker component with GenericDialog
 
 === Into the future: ===
 
