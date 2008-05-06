@@ -1,0 +1,6 @@
+Some questions concerning the collision handling:
+# Should we use constant or increasing speed, while pushing/pulling boxes ?
+# Moving the player avatar is done in constant speed, yes? I've not compiled the game yet.
+# What about elasticity - do we need this?
+# What about pushing more than 1 box? Just this be prevented?
+-- [Godrin]
