@@ -21,6 +21,7 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * make sure all animations are exported and available in the game
 * discuss what sort of bad guys will be needed and create models for them
 * you will move between levels in a transport ship, this requires a model (or maybe a 2D based sprite instead?) - this needs to be discussed and made
+* animations for going stairs up and down, [http://pingus.seul.org/~grumbel/tmp/windstille-stairs-2005-07-17.png stairs look like this]
 
 === Coding ===
 
