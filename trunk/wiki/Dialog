@@ -1,0 +1,83 @@
+It is logical if each character you speak to has their own, singular script file to represent converations with that character. When you start a conversation with that character in game, their corresponding dialog script file will be loaded and run. When the conversation ends, the script will be pushed off the stack (or whatever the correct terminology is). If dialogs become non blocking, then dialog manager will have to pause running of the dialog script until you make a choice whilst the rest of the game keeps running, but they can be left blocking for now, probably forever.
+
+Each dialog function below should be thought of like a page in a "Choose your own story" book, or like a foward-linked list - it has no state with regards to a stack, but is instead a self contained unit, which includes forward links to other dialogs depending what option you choose. This means that dialog can jump across to a shared branch, which would not be possible if you just used a lot of nested switch statements (if you look at the dialog in a point and click adventure or an RPG, you will see there is a lot of branch-hopping).
+
+In the following example pseudo-code, the first argument to "interactive_dialog" is the NPC's text, and any further arguments are possible responses.
+
+Example pseudo code:
+
+<pre>
+<nowiki>
+//first we need to decide where in out story-book/linked-list like structure to start
+if (famous_for_killing_big_spider)
+	//haven't actually written this function, this just demonstrates global/local distinction
+	congratulations();
+else if (knows_you_mercenary)
+	offer_job();
+else if (seen_before)
+	hello_again();
+else
+	intro();
+
+function intro()
+{
+	seen_before = true;
+	response = new_dialog("Hey, my name's Bob, you new around here?", "Yes, I am.", "Go away.")
+	switch(response) {
+	case 1:
+        ask_questions();
+	  break;
+	case 2:
+	  bye();
+	}
+}
+
+function hello_again()
+{
+	response = new_dialog("Hello again.", "Hey.", "Bye.")
+	switch(response) {
+	case 1:
+	  ask_questions();
+	  break;
+	case 2:
+	  bye();
+	}
+}
+
+function ask_questions()
+{
+	response = new_dialog("So what you doing here?", "I work as a mercenary.", "Not much.")
+	switch(response) {
+	case 1:
+	  knows_you_mercenary = true;
+	  offer_job();
+	  break;
+	case 2:
+	  bye();
+	}
+}
+
+function offer_job()
+{
+	response = new_dialog("Looking for work?", "I might be, if the offer is good enough.", "No thanks.")
+	switch(response) {
+	case 1:
+	  knows_your_job = true;
+	  //I haven't actually written this function in this pseudo-code
+	  details_of_job();
+	  break;
+	case 2:
+	  bye();
+	}
+}
+
+function bye()
+{
+	if (knows_your_job)
+		new_dialog("Feel free to come back if you need a job");
+	else
+		new_dialog("See you again some time, maybe);
+	return;
+}
+</nowiki>
+</pre>
