@@ -1,12 +1,13 @@
 2006-04-14
-Windstille now contains a simple slideshow viewer, usefull for viewing the notes and other stuff, use it via:
+* Windstille now contains a simple slideshow viewer, usefull for viewing the notes and other stuff, use it via:
 
  # necesarry to circumvent physfs directory restriction
  ln -s /tmp/ /home/user/projects/windstille/trunk/data/tmp/
  
  cd /tmp/
  wget -m -np http://pingus.seul.org/~grumbel/tmp/windstille-notes4/index.html
- 
+
+  cd  /home/user/projects/windstille/trunk/data/tmp/
  ./windstille --sprite2dview /tmp/pingus.seul.org/~grumbel/tmp/windstille-notes4/img_*.jpg --geometry 1024x768
 
 2006-04-05
