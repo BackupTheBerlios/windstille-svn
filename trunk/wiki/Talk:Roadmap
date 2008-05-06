@@ -1,0 +1,17 @@
+<p>
+James:<br>
+''Some examples of things I'd like to do:''<br>
+Scripting integration/API, scripting, story, dialog, level design, perhaps the code for pushing and stacking boxes (but perhaps it would be better to leave this to whoever does collision detection/tilemap stuff), if neccessary perhaps code for other moveable game objects (cranes, cars, lifts, whatever)
+</p>
+<p>
+''Something I might want to do if I understood exactly what was involved:''<br>
+Add support for multiple sectors
+</p>
+<p>
+''Some examples of things I could do if noone else wants to do them:''<br>
+User input, control configuration
+</p>
+<p>
+''Things I don't want to/can't do:''<br>
+Art, sound, graphical effects, OpenGL stuff, tilemap stuff, dynamic player movement
+</p>
