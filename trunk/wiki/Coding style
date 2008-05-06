@@ -7,7 +7,7 @@ In Windstille, code looks like this:
 From hypothetical file class_name.cxx:
 
 <pre><nowiki>
-void<
+void
 ClassName::function_name (float delta)
 {
   value -= 10*delta;
