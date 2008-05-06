@@ -11,3 +11,9 @@ Some questions concerning the collision handling:
 About the box example: You should use normal impulse equations, so this would result in the box increasing it's speed and it would also allow pushing multiple boxes. Elasticity is in general not needed I think.
 
 Another important part of the phyiscs/collision stuff would be to handle slopes correctly.
+
+Some more questions:
+# As I see, there is already some nice collision demo in test. I think I'll integrate this with the old way collision is done with the tilemap, ok?
+# As Jane isn't really box-shaped, should we part here into several boxes? That would mean linked boxes, which share speed, force and mass. And that leads to the question how to get these boxes. Maybe we should stick to one box, but that has the drawback of bad collision detection when shooting.
+
+:-- [[User:Godrin|Godrin]] 10:07, 26 Jun 2005 (BST)
