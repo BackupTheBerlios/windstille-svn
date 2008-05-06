@@ -1,6 +1,7 @@
 2005-07-26
 * TTF support now also in dialogs
 * particle system partly accessible from levelfile
+* [http://pingus.seul.org/~grumbel/tmp/windstille-screenshot-2005-07-26.png TextArea now has some formating abilites]
 
 2005-07-25
 * Lisp parsing code got a major cleanup
