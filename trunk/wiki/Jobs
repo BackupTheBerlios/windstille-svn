@@ -50,6 +50,7 @@ As always with [[wikipedia:Free Software|Free Software]] game projects, no payme
 * Blender Sprite3D exporter seems to have throuble with the Yagor, body gets messed up, when head and body are joined on the other side everything looks ok
 * implement screenshot support
 * save configuration changes only on request (probally via option menu), not at default on game quit (ie. to avoid switch to fullscreen -> find out that fullscreen doesn't work -> quit game -> stuck with game in unworking fullscreen mode)
+* add ability to use different textures in 3d sprite to skin somebody with different cloth, show damage or such
 
 === Pretty OpenGL effects ===
 
