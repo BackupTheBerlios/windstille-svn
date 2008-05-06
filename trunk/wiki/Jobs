@@ -28,3 +28,4 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * implement sector switching in GameSession
 * fix the SConstruct script so that ptest and ctest can compile alongside with windstille
 * implement the control dialog in code with opengl commands so that its properly resizable, make the displayed text configurable by scripting, figure out a way to display special icons, aka arrows, for 'up/down/left/right'
+* add alsa support to clanlib (currently uses oss)
