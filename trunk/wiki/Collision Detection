@@ -4,25 +4,32 @@ Basic features that need to be handled by the physic/collision engine:
 * allow to stack crates, boxes and stuff
 * allow to shoot in a stack of boxes and let the stack collapse
 * conveyor belts
-* slopes in the tilemap
+* slopes in the tilemap (not that important)
 
 Stuff that is not needed:
 
 * rotating boxes, while probally pretty, they cause more trouble then good, both on the programming side as well as on the gameplay side (what happens when you jump on a box which has a 45 degree angel?)
 
-----
+== Collision Domains ==
 
-For box-collision see:
+The collision detection should seperate different kind of objects into different collision domains, so that objects that are not in the same domain aren't checked at all against each other. Domains could be:
 
-src/ctest.cxx
-src/collision_manager.cxx
+* CollidesWithPlayer
+* CollidesWithEnemy
+* CollidesWithProjectile
+* ...
 
-and 
+Domains could be implemented as a simple 'unsigned int' for the CollisionObject
 
-test/physics/physics.cxx
+== Collision Callback ==
 
-for pixel-collision see:
+Once a collision occured the engine should give the object usefull feedback for resolving the collision, the engine should *not* resolve collisions on there own. The callback might look like:
 
-src/collision/
+ CollisionObject::collision(CollisionEvent& collision);
 
-However the pixel-based  collision is most likly not going to be used.
+ struct CollisionEvent
+ {
+  enum State { NONE, STUCK, COLLISION } state; // is NONE actually needed?
+  enum Side  { TOP, BOTTOM, LEFT, RIGHT }; // should be enough no need for a vector IMHO
+  CollisionObject* object; // the object which with 'this' collided
+ };
