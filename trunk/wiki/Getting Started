@@ -14,11 +14,11 @@ It is available via:
 
 <pre><nowiki>svn checkout https://clanlib.org/svn/ClanLib/Development/ClanLib-0.7 ClanLib-0.7</nowiki></pre>
 
-And is required by both Flexlay and Windstille. ClanLib itself also needs some additional libraries and programms for compile like pkg-config, libjpeg, libpng, libvorbis and some other things, however all those should come with your distro, so it shouldn't be to much throuble to install them. Check the [http://www.clanlib.org/subversion.html Official ClanLib Webpage] for details.
+And is required by both Flexlay and Windstille. ClanLib itself also needs some additional libraries and programs to compile like pkg-config, libjpeg, libpng, libvorbis and some other things, however all those should come with your distro, so it shouldn't be to much trouble to install them. Check the [http://www.clanlib.org/subversion.html Official ClanLib Webpage] for details.
 
-== Flexlay SVN Version - Windstilles Leveleditor ==
+== Flexlay SVN Version - Windstille's Level Editor ==
 
-Flexlay is the editor that is used for Windstille, it is not required to run Windstille, but if you want to help develop it might proof rather usefull, so its recomment that you get it, it requires:
+Flexlay is the editor that is used for Windstille, it is not required to run Windstille, but if you want to help develop it might prove rather useful, so it's recommended that you get it, it requires:
 
 * the development version of ClanLib
 * Ruby 1.8
@@ -31,5 +31,11 @@ You can get it via:
 Check the [http://flexlay.berlios.de/ Official Flexlay Webpage] for details.
 
 == Windstille SVN Version ==
+
+Dependencies:
+
+* the development version of ClanLib
+* [http://icculus.org/physfs/ PhysicsFS]
+* [http://www.openal.org/ OpenAL]
 
  svn checkout svn://svn.berlios.de/windstille/trunk/
