@@ -2,13 +2,13 @@ Controls in Windtille will be configurable, this works by mapping keyboard keys,
 
 == Human without gun ==
 
-left/right: walk to the left or right
-down: duck
-down, left/right: sneak/crawl
-a: jump
-b + left/right: run to the left or right
-x: draw gun
-y: show inventory
+* left/right: walk to the left or right
+* down: duck
+* down, left/right: sneak/crawl
+* a: jump
+* b + left/right: run to the left or right
+* x: draw gun
+* y: show inventory
 
 == Human with gun ==
 
