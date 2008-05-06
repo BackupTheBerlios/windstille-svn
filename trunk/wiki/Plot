@@ -1,0 +1,105 @@
+==Plot==
+
+This page is meant to show what has been decided so far. New plot/story ideas are welcome, feel free to post your ideas and discuss other peoples' on the [[Ideas]] page, but please leave this page as a summary of only what has been agreed upon.
+
+Some sort of process will take place whereby we agree on which ideas to use and which not to use, which ideas require new engine functionality and which must be discarded because they are too ambitious, etc. Here is what has been tentatively decided so far, though any and all of this is still up for debate.
+
+== Virtual Reality Training ==
+
+VR Training shows the player what actions are available and how to use
+them. It does this by guiding the player through a little course where
+he needs all the available actions to make it to the end, an AI-voice
+will give commands on which actions are currently needed.
+
+# Walking: the player is commanded to walk from his current position to a marked new position
+# Running: the player is commanded to walk from his current position to a new one, the way is however bloked by a conveyour belt which he can pass without changing to running mode
+# Jumping: the player has to jump over a small abyss, if he doesn't make the jump he will get reset to a position infront of the abyss
+# Climbing: the player has to make a 'hang-jump' (Up+Jump) to climb onto a little mountain
+# Duck: the player has to make its way under a block, under the block is a conveyour belt, so ducking will let him glide under it
+# Rolling: same as above but this time the player has to run and then make a roll under the block, optionally this might also be done with sneaking
+
+After movement training is over, the VR Training will switch over to weapon training, where the player has to grab a gun and use it to shoot a bunch of dummy targets (double-pyramids or something like that). Also available should be grenades, satchel charges and shield.
+
+== Back in Real World ==
+
+(onces done with the training Jane takes a shower)
+
+(seconds later her communicator starts to ring)
+
+(Jane dresses up and leaves the shower to take the call)
+
+Boss[4]: "Hi Jane, looks like there is a new job coming up."
+
+Jane: "Cool, what's it about?"
+
+Boss: "Can't give you details at the moment, but Bob[5] at Jimbos[6]
+bar will fill you in. Hurry cause we might not be the only one
+interested in that job."
+
+Jane: "Ok, on my way."
+
+(Jane grabs her jaked and leaves her apartment and goes to Jimbos bar,
+just a few screens away)
+
+Jane: "Hi, Bob. I heard you might have a job."
+
+Bob: "Jane, what a suprise! Yep, looks like one of our mineral-hunters got into
+trouble. He moved deep into the nothern forest and got trapped, we
+got the emergency call half an hour ago, but none of our guys seems
+to be too willing to help out.  They're all afraid of some ghost story floating
+around about that forest. 5'000 credits are in there for you if you
+bring back our man alive."
+
+Jane: "I'll take it, could really need a bit more money.  Been a long time since my last job."
+
+Bob: "Great, Here's his last position."
+
+(Communicator call from Boss)
+
+Boss: "Got the job?"
+
+Jane: "Yep, everything is set.  Come get me."
+
+Boss: "Okay, lets meet on the roof, will be there in a minute."
+
+Jane: "Yep"
+
+(Jane goes to the roof and enters the spaceship, piloted by Boss)
+
+(little cutscene that shows spaceship flying over to the northern
+forest)
+
+(Jane gets dropped at the forest)
+
+Boss: "Ok Jane, this is as far as I can bring you, you have to make
+the rest on your own. I'll stay in contact."
+
+== Forest Action Sequence ==
+
+The forest is full of creatures, some/most hostile and agressive,
+nobody really knows where they did come from, but rumor is that they
+are caused by some genetic material which was spread over the forest
+as a cargo ship of the Bio-Corp[7] crashed into the forest, however
+that incident has never been confirmed officially and since it
+happened in the early days of colonization no proper record of the
+happenings is available and truth to be told, nobody really cares
+anymore, people have other problems these days.
+
+(Jane now goes hunting down the forest, shooting spiders and other
+animals that cross the way)
+
+Automapping and regular radio messages guide the way through the
+forest.
+
+The level will play both above and below the ground, the below-ground
+sections will allow to greate labyrinth like structures, which the
+above ground only allow in a rather limited fasion.
+
+
+
+(Final boss is a large spider into which net the mineral-hunter has
+fallen)
+
+(to be continued)
+
+[1],[2],[3],[4],[5],[6],[7] just random names/dates/stuff for filling
