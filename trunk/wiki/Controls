@@ -55,4 +55,4 @@ Controls in general should be context sensitive meaning there don't necessarily 
 * Should drawing the weapon be a push&hold or a toggle? => drawing should be a toggle, but aiming should be a push&hold thing
 * Is there a need for a seperate aim button when holding the gun (Resident Evil style)? => yes
 * What about Turrican-style surround shooting? => can be done via aiming
-* Is the three-mode style gun usage to complicated (pull, aim, shoot)? => maybe, not sure, the point behind it is that you should not run around with a gun all the time in the city, another solution would be to have to equip the gun in the inventory
+* Is the three-mode style gun usage to complicated (pull, aim, shoot)? => maybe, not sure, the point behind it is that you should not run around with a gun all the time in the city, another solution would be to have to equip the gun in the inventory... The more I think about it the less of a good idea it seems, best is probally to have 'aim' automatically a draw the gun too, instead of having that a seperate action
