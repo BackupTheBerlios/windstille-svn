@@ -22,7 +22,7 @@ else
 function intro()
 {
 	seen_before = true;
-	new_dialog("Hey, my name's Bob, you new around here?", "Yes, I am.", "Go away.")
+	dialog_node("Hey, my name's Bob, you new around here?", "Yes, I am.", "Go away.")
 	switch(dialog_answer()) {
 	case 0:
         ask_questions();
@@ -34,7 +34,7 @@ function intro()
 
 function hello_again()
 {
-	new_dialog("Hello again.", "Hey.", "Bye.")
+	dialog_node("Hello again.", "Hey.", "Bye.")
 	switch(dialog_answer()) {
 	case 0:
 	  ask_questions();
@@ -46,7 +46,7 @@ function hello_again()
 
 function ask_questions()
 {
-	new_dialog("So what you doing here?", "I work as a mercenary.", "Not much.")
+	dialog_node("So what you doing here?", "I work as a mercenary.", "Not much.")
 	switch(dialog_answer()) {
 	case 0:
 	  knows_you_mercenary = true;
@@ -59,7 +59,7 @@ function ask_questions()
 
 function offer_job()
 {
-	new_dialog("Looking for work?", "I might be, if the offer is good enough.", "No thanks.")
+	dialog_node("Looking for work?", "I might be, if the offer is good enough.", "No thanks.")
 	switch(dialog_answer()) {
 	case 0:
 	  knows_your_job = true;
@@ -74,9 +74,9 @@ function offer_job()
 function bye()
 {
 	if (knows_your_job)
-		new_dialog("Feel free to come back if you need a job");
+		dialog_node("Feel free to come back if you need a job");
 	else
-		new_dialog("See you again some time, maybe");
+		dialog_node("See you again some time, maybe");
 	return;
 }
 </nowiki>
