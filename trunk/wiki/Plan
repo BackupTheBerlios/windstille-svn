@@ -1,0 +1,192 @@
+=======================================
+!Windstille Story, Script and Gameplay!
+=======================================
+
+Starting the game:
+------------------
+
+On startup the game should present its logo (Windstille), a short list
+of credits and copyright, combined by some fade-overs and light
+effects, after that it should fade over to the main menu.
+
+
+Main Menu:
+----------
+
+The main menu should offer the user different save-slots from which he
+can select one, a exit button and an option menu. A bonus would be the
+function to rewatch cutscenes and dialog via a special menu.
+
+
+Option Menu:
+------------
+
+The option menu should allow to tweak the standard meta-game
+options, volume, fullscreen/window mode, language, controlls
+(important!) and such. The option menu should be available from inside
+the game as well.
+
+
+Save game Slots:
+----------------
+
+Saving will be based on slots, not files, when the user enters an
+empty slot a new game starts, if he enters a non-empty slot the game
+will continue at the last save-point. Saving will be mostly automatic.
+
+
+Respawning:
+-----------
+
+Its not yet clear how respawing should be handled, one way would be
+that the player respawns in a hospital in the city when he is
+critically hurt (GTA-like), another solution would be to simply
+respawn at the last rooms entrance (Beyond Good&Evil). 
+
+
+New Game:
+---------
+
+Before starting a new game it might be wise to force the user to
+configure its input, else the game itself might get confusing.
+
+Once the user starts a new game a scrolling text which gives a general
+introduction about the backstory of the game is presented:
+
+"Its the year 2248[1], after mankind has developed faster-then-light
+travel they have begun colonizing other planets and building up
+industries on other planets in the search for usefull good, one could
+call it a second gold rush. Some say mankind has spread faster then
+good for them, others hail the technological progress. Some colonies
+have become quickly abandoned after no worthy goods have shown up on a
+planet, other flourish at the same time and some struggle for their
+survival. This story takes place on one of the struggeling colonies,
+resources are rare and goods are seldom, the people struggle for their
+survival. We are going to tell the story of Jane[2], a Mercenary on
+planet X-Gamma-5..."
+
+(text runs out and the game fades over to the apartment of Jane, where
+Jane is just doing a VR training in her new powersuit)
+
+
+Virtual Reality Training:
+-------------------------
+
+VR Training shows the player what actions are available and how to use
+them. It does this by guiding the player through a little course where
+he needs all the available actions to make it to the end, an AI-voice
+will give commands on which actions are currently needed.
+
+1. Walking: the player is commanded to walk from his current position
+   to a marked new position
+
+2. Running: the player is commanded to walk from his current position
+   to a new one, the way is however bloked by a conveyour belt which
+   he can pass without changing to running mode
+
+3. Jumping: the player has to jump over a small abyss, if he doesn't
+   make the jump he will get reset to a position infront of the abyss
+
+4. Climbing: the player has to make a 'hang-jump' (Up+Jump) to climb
+   onto a little mountain
+
+5. Duck: the player has to make its way under a block, under the block
+   is a conveyour belt, so ducking will let him glide under it
+
+6. Rolling: same as above but this time the player has to run and then
+   make a roll under the block, optionally this might also be done
+   with sneaking
+
+After movement training is over, the VR Training will switch over to
+weapon training, where the player has to grab a gun and use it to
+shoot a bunch of dummy targets (double-pyramids or something like
+that). Also available should be granates, satches carges and shild.
+
+Back in Real World:
+-------------------
+
+(onces done with the training Jane takes a shower)
+
+(seconds later her communicator starts to ring)
+
+(Jane dresses up and leaves the shower to take the call)
+
+Boss[4]: "Hi Jane, looks like there is a new job coming up."
+
+Jane: "Cool, whats it about?"
+
+Boss: "Can't give you details at the moment, but Bob[5] at Jimbos[6]
+bar will fill you in, but hurry we might not be the only one
+interested in that job."
+
+Jane: "Ok, on my way."
+
+(Jane grabs her jaked and leaves her apartment and goes to Jimbos bar,
+just a few screens away)
+
+Jane: "Hi, Bob. I heard you have a job for me?"
+
+Bob: "Hi, Jane. Yep, looks like one of our mineral-hunters got into
+throuble. He moved deep into the nothern forest and got trapped, we
+got the emergency call half an hour ago, but nobody of our guys seems
+to be much motivated to go there, to much mystic ghost story floating
+around about that forest. 5'000 credits are in there for you if you
+bring back our man alive."
+
+Jane: "I'll take it, could really need a bit more money, long time no job."
+
+Bob: "Ok, thats a deal, I'll mark the last position we have from him
+on your map."
+
+(Communicator call from Boss)
+
+Boss: "Got the job?"
+
+Jane: "Job, everything roger."
+
+Boss: "Okey, lets meet on the roof, will be there in a minute."
+
+Jane: "Ok"
+
+(Jane goes to the roof and enters the spaceship, piloted by Boss)
+
+(little cutscene that shows spaceship flying over to the northern
+forest)
+
+(Jane gets dropped at the forest)
+
+Boss: "Ok Jane, this is as far as I can bring you, you have to make
+the rest on your own. I'll stay in contact."
+
+Forest Action Sequence:
+-----------------------
+
+The forest is full of creatures, some/most hostile and agressive,
+nobody really knows where they did come from, but rumor is that they
+are caused by some genetic material which was spread over the forest
+as a cargo ship of the Bio-Corp[7] crashed into the forest, however
+that incident has never been confirmed officially and since it
+happened in the early days of colonization no proper record of the
+happenings is available and truth to be told, nobody really cares
+anymore, people have other problems these days.
+
+(Jane now goes hunting down the forest, shooting spiders and other
+animals that cross the way)
+
+Automapping and regular radio messages guide the way through the
+forest.
+
+The level will play both above and below the ground, the below-ground
+sections will allow to greate labyrinth like structures, which the
+above ground only allow in a rather limited fasion.
+
+
+
+(Final boss is a large spider into which net the mineral-hunter has
+fallen)
+
+(to be continued)
+
+[1],[2],[3],[4],[5],[6],[7] just random names/dates/stuff for filling
+
+# EOF #
