@@ -11,7 +11,9 @@ The following items should be more or less developed in that order, so that prog
 * write 'story' for the tutorial, ie. simply a AI that will tell the player how to control the game
 * create the levels necessary for the tutorial
 * create an additional level for the tutorial in which the player can train their movement in free form
+* create all necessary animations for the hero
 * finialize the story and the needed settings for the actual game
+* create all the necessary character 3d models for the actual game
 * do the graphics for the house/base of the hero
 * do the graphics for the powersuit scenario
 * write the dialog for the game
@@ -23,4 +25,6 @@ The following items can be implemented basically as soon as somebody finds the t
 
 * add slope support to the tilemap
 * add stair support to the tilemap
+* add support to push boxes around
+* add support for carring and stacking boxes
 * add support for multi-layer playfields (ie. rooms that you can enter, which cause the wall to fade away)
