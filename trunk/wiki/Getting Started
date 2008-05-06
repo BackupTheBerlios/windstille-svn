@@ -23,6 +23,7 @@ Flexlay is the editor that is used for Windstille, it is not required to run Win
 * the development version of ClanLib
 * Ruby 1.8
 * Swig 1.3.24
+* [http://www.scons.org SCons] (to build)
 
 You can get it via:
 
@@ -37,5 +38,6 @@ Dependencies:
 * the development version of ClanLib
 * [http://icculus.org/physfs/ PhysicsFS]
 * [http://www.openal.org/ OpenAL]
+* [http://www.perforce.com/jam/jam.html Jam] (to build)
 
  svn checkout svn://svn.berlios.de/windstille/trunk/
