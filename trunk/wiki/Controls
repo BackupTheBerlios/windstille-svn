@@ -21,47 +21,27 @@ Controls in general should be context sensitive meaning there don't necessarily 
 
 [http://pingus.seul.org/~grumbel/tmp/windstille-control-scheme.jpg Picture of some Control Modes]
 
+Controlls for powersuit and non-powersuit mode will be rather similar, except some details.
+
 == Human without gun ==
 
 * left/right: walk to the left or right
 * down: duck
 * down, left/right: sneak/crawl
-* a + up: jump up
-* a: jump forward
-* b + left/right: run to the left or right, use nearest object
-* x: draw gun, use inventory item if equiped
-* y: show inventory
-
-== Human with gun ==
-
-* left/right: walk to the left or right
-* down, left/right: roll/dodge
-* a: reload
-* x: put gun back
-* y: use secondary weapon (granade)
-* r: hold pressed to aim with gun
+* primary + up: jump up
+* primary: jump forward
+* secondary + left/right: run to the left or right
+* tertiary: use nearest object
+* aim: draw gun
+* pda: show PDA
 
 == Human with gun and aiming ==
 
 * left/right: retreat or walk forward without turning around
 * up/down: aim up or down
-* b: shoot
-* a: reload
-
-== Powersuit ==
-
-* left/right: run to the left or right
-* a: jump
-* x: switch weapon mode
-* y: use secondary weapon (granade)
-* r: aim
-
-== Powersuit while aiming ==
-
-* left/right: retreat or walk forward without turning around
-* up/down: aim up or down
-* b: shoot, hold pressed to charge up shoot
-* a: reload
+* secondary: shoot
+* primary: reload
+* tertiary: throw granate
 
 == Additional 'modeless' Controls ==
 
