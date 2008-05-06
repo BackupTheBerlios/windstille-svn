@@ -1,0 +1,13 @@
+The current graphics engine works by using three layers:
+
+== Color Layer ==
+
+This is a normal layer, it contains just good old graphics as you would expect and is drawn as if you would draw directly to the screen.
+
+== Light Layer ==
+
+This layer specifies which areas of the screen are visible and which aren't. At start everything is invisible (black), to make stuff visible one uses white. One can also use other colors, red, green, etc. The light layer is later multiplied with the color layer, thus everything that is black (0) gets blended out.
+
+== Highlight Layer ==
+
+The highlight layer is drawn ontop of the light layer, it is meant for lense-flares, glows and other effects that should be 100% visible all of the time and not covered by the light-layers shadow.
