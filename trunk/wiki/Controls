@@ -30,7 +30,7 @@ Controls in Windtille will be configurable, this works by mapping keyboard keys,
 
 == Additional 'modeless' Controls ==
 
-* start/pause: show option menu (fullscreen/window mode, etc.)
+* start/pause: pauses the game and shows the options menu (fullscreen/window mode, etc.)
 
 == Open Questions ==
 
