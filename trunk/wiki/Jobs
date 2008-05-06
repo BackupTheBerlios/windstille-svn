@@ -59,6 +59,7 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * add layer support to particles, so that you can have particles on the light layer
 * add argument parsing to BabyXML
 * we need a way to define objects in scripting language, nothing complicated, just so that when you want a lamp you don't have to specify its light/color/highlight layers over and over again seperatly
+* add Origin support to Sprite (much easier to say 'center' instead of (-32, -32))
 
 == Editor ==
 
