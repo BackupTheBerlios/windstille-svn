@@ -19,6 +19,7 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * rig the powersuit-character and the powersuit-less characters properly (data/blender/hero.blend)
 * create proper animations for walk, run, jump, duck, turn-around, aim and shoot, simple sloppy test animation would for the beginning be enough, just to figure out the movement and timing
 * make sure all animations are exported and available in the game
+* discuss what sort of bad guys will be needed and create models for them
 
 === Coding ===
 
