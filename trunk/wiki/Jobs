@@ -42,3 +42,4 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * implement an elevator a platform onto which one can step on and once one presses 'use' it moves up or down, if 'use' is pressed while its moving it should inverse the direction
 * add a proper way to define near/far clipping planes in ClanLib (currently defaults to -1000, 1000)
 * change the console so that each expression that returns a value automatically prints it
+* face animation via morph targets to be used in dialogs, by no means important for the GotM run, just something Grumbel would like to have one day
