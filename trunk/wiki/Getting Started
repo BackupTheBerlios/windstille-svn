@@ -2,6 +2,12 @@ __NOTOC__
 
 To get Windstille up and running you basically need these things:
 
+== Subversion ==
+
+http://subversion.tigris.org/
+      
+Description: A compelling replacement for CVS
+
 == ClanLib 0.7 SVN  Version ==
 
 It is available via:
