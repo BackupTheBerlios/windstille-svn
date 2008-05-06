@@ -1,4 +1,6 @@
-A Windstille level or sector needs to hold multiple tilemaps, some meta information, object placments and information on the background and the triggers/scripts. S-Expressions will be used as textbased-format, if necessary  there might also be a compiled binary format, but textbased formats have shown to be very flexlible in the develompent procress, so we start with them first:
+A Windstille level or sector needs to hold multiple tilemaps, some meta information, object placments and information on the background and the triggers/scripts. S-Expressions will be used as textbased-format, if necessary  there might also be a compiled binary format, but textbased formats have shown to be very flexlible in the develompent procress, so we start with them first.
+
+There are three default tilemaps, 'foreground', 'background' and 'interactive'. 'interactive' is the one on which the player walks normally, 'foreground' is for stuff infront of the player, 'background' for tiles behind the player, both don't have any impact on collision detection.
 
  (windstille-sector
    (name  "City")
