@@ -21,7 +21,7 @@ function intro()
 {
 	seen_before = true;
 	add_question("Hey, my name's Bob, you new around here?");
-      add_answers("Yes, I am.", "Go away.");
+	add_answers("Yes, I am.", "Go away.");
 	switch(get_answer()) {
 	case 0:
         ask_questions();
@@ -34,7 +34,7 @@ function intro()
 function hello_again()
 {
 	add_question("Hello again.");
-      add_answers("Hey.", "Bye.");
+	add_answers("Hey.", "Bye.");
 	switch(get_answer()) {
 	case 0:
 	  ask_questions();
@@ -47,7 +47,7 @@ function hello_again()
 function ask_questions()
 {
 	add_question("So what you doing here?");
-      add_answers("I work as a mercenary.", "Not much.");
+	add_answers("I work as a mercenary.", "Not much.");
 	switch(get_answer()) {
 	case 0:
 	  knows_you_mercenary = true;
@@ -61,7 +61,7 @@ function ask_questions()
 function offer_job()
 {
 	add_question("Looking for work?");
-      add_answers("I might be, if the offer is good enough.", "No thanks.");
+	add_answers("I might be, if the offer is good enough.", "No thanks.");
 	switch(get_answer()) {
 	case 0:
 	  knows_your_job = true;
