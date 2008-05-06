@@ -44,3 +44,4 @@ The following tasks are available, make sure you check with [irc://irc.freenode.
 * write a function that converts a Squirrel object to a human readable std::string, might be solvable with squirrel internals, print() however doesn't do a good job, since it uses a stream and secondly gives '(bool)' instead of 'true', same for classes, tables and arrays
 * implement stairs, see blender task list above
 * implement an elevator a platform onto which one can step on and once one presses 'use' it moves up or down, if 'use' is pressed while its moving it should inverse the direction
+* add a proper way to define near/far clipping planes in ClanLib (currently defaults to -1000, 1000)
