@@ -15,7 +15,7 @@ We might not need 2d sprites if we go for full 3d on all sprites.
 * Animation images can be extracted from bigger images (texture coordinate animation)
 * Support for reversing animations and mirroring/flipping the images will reduce the number of images needed.
 * We might have to extend sprites to support the 3 layer displaying of windstille
-* Sprites should be defined in external datafiles
+* Sprites should be defined in datafiles
 
 = Sound =
 * A way to send sound to the soundcard.
