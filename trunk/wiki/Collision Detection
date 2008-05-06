@@ -57,3 +57,7 @@ CollisionObject should *not* be a parent of entity. This has the simple reason t
 == Attachments/Contacts ==
 
 There should be a way to link objects together, this linking might either be primitive, ie. simple parenting without taking care if objects connect at all, or more complex, ie. a box that is standing ontop of another box. The collision engine should check when such a contact is no longer in place and give an appropriate event. There should also be a way to detect the angle of the contact point so that you can move objects at other speed when they walk up/down a slope.
+
+== Links ==
+
+[http://www.harveycartel.org/metanet/tutorials.html] has plenty of very good docu about collision detection between different object types.
