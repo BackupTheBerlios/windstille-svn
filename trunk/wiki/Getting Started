@@ -1,0 +1,29 @@
+__NOTOC__
+
+To get Windstille up and running you basically need these things:
+
+== ClanLib 0.7 SVN  Version ==
+
+It is available via:
+
+ svn checkout https://clanlib.org/svn/ClanLib/Development/ClanLib-0.7 ClanLib-0.7
+
+And is required by both Flexlay and Windstille. ClanLib itself also needs some additional libraries and programms for compile like pkg-config, libjpeg, libpng, libvorbis and some other things, however all those should come with your distro, so it shouldn't be to much throuble to install them. Check the [http://www.clanlib.org/subversion.html Official ClanLib Webpage] for details.
+
+== Flexlay SVN Version - Windstilles Leveleditor ==
+
+Flexlay is the editor that is used for Windstille, it is not required to run Windstille, but if you want to help develop it might proof rather usefull, so its recomment that you get it, it requires:
+
+* the development version of ClanLib
+* Ruby 1.8
+* Swig 1.3.24
+
+You can get it via:
+
+ svn checkout svn://svn.berlios.de/flexlay/trunk/
+
+Check the [http://flexlay.berlios.de/ Official Flexlay Webpage] for details.
+
+== Windstille SVN Version ==
+
+ svn checkout svn://svn.berlios.de/flexlay/trunk/
