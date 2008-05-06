@@ -1,51 +1,37 @@
-=======================================
-!Windstille Story, Script and Gameplay!
-=======================================
-
-Starting the game:
-------------------
+== Starting the game ==
 
 On startup the game should present its logo (Windstille), a short list
 of credits and copyright, combined by some fade-overs and light
 effects, after that it should fade over to the main menu.
 
-
-Main Menu:
-----------
+== Main Menu ==
 
 The main menu should offer the user different save-slots from which he
 can select one, a exit button and an option menu. A bonus would be the
 function to rewatch cutscenes and dialog via a special menu.
 
-
-Option Menu:
-------------
+== Option Menu ==
 
 The option menu should allow to tweak the standard meta-game
 options, volume, fullscreen/window mode, language, controlls
 (important!) and such. The option menu should be available from inside
 the game as well.
 
-
-Save game Slots:
-----------------
+== Save game Slots ==
 
 Saving will be based on slots, not files, when the user enters an
 empty slot a new game starts, if he enters a non-empty slot the game
 will continue at the last save-point. Saving will be mostly automatic.
 
 
-Respawning:
------------
+== Respawning ==
 
 Its not yet clear how respawing should be handled, one way would be
 that the player respawns in a hospital in the city when he is
 critically hurt (GTA-like), another solution would be to simply
 respawn at the last rooms entrance (Beyond Good&Evil). 
 
-
-New Game:
----------
+== New Game ==
 
 Before starting a new game it might be wise to force the user to
 configure its input, else the game itself might get confusing.
@@ -68,9 +54,7 @@ planet X-Gamma-5..."
 (text runs out and the game fades over to the apartment of Jane, where
 Jane is just doing a VR training in her new powersuit)
 
-
-Virtual Reality Training:
--------------------------
+== Virtual Reality Training ==
 
 VR Training shows the player what actions are available and how to use
 them. It does this by guiding the player through a little course where
@@ -102,8 +86,7 @@ weapon training, where the player has to grab a gun and use it to
 shoot a bunch of dummy targets (double-pyramids or something like
 that). Also available should be granates, satches carges and shild.
 
-Back in Real World:
--------------------
+== Back in Real World ==
 
 (onces done with the training Jane takes a shower)
 
@@ -158,8 +141,7 @@ forest)
 Boss: "Ok Jane, this is as far as I can bring you, you have to make
 the rest on your own. I'll stay in contact."
 
-Forest Action Sequence:
------------------------
+== Forest Action Sequence ==
 
 The forest is full of creatures, some/most hostile and agressive,
 nobody really knows where they did come from, but rumor is that they
@@ -188,5 +170,3 @@ fallen)
 (to be continued)
 
 [1],[2],[3],[4],[5],[6],[7] just random names/dates/stuff for filling
-
-# EOF #
