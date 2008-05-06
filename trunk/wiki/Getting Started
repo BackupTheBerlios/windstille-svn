@@ -6,7 +6,7 @@ To get Windstille up and running you basically need these things:
 
 It is available via:
 
- svn checkout https://clanlib.org/svn/ClanLib/Development/ClanLib-0.7 ClanLib-0.7
+<pre><nowiki>svn checkout https://clanlib.org/svn/ClanLib/Development/ClanLib-0.7 ClanLib-0.7</nowiki></pre>
 
 And is required by both Flexlay and Windstille. ClanLib itself also needs some additional libraries and programms for compile like pkg-config, libjpeg, libpng, libvorbis and some other things, however all those should come with your distro, so it shouldn't be to much throuble to install them. Check the [http://www.clanlib.org/subversion.html Official ClanLib Webpage] for details.
 
