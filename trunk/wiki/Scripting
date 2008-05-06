@@ -6,10 +6,10 @@ Currently a new squirrel VM (virtual machine) is created for each script being r
 
 Each sector/level is stored in an sexpr based .wst file. This contains tilemap layout, trigger locations (doors etc), spawn locations of bad guys, NPCs and the player character, as well as various other things. At some point thse will be editable using the [http://flexlay.berlios.de/ Flexlay] tile/level editor, though this doesn't work correctly at the moment.
 
-The plan is that scripts can then be associated with these .wst sectors, or indeed with individual bad guys or objects within these sectors. Scripts might be used:
+The plan is that scripts can then be associated with these .wst sectors, or indeed with individual bad guys or objects within these sectors. Some examples of things scripts might be used for:
 
-- to alter the starting locations of bad guys, NPCs or the player character, or stop any one of these from spawing at all
-- to alter which trigger points are active, or to alter their locations, or what they do
-- to control the AI behaviour of bad guys or NPCs
-- to control dialog with NPCs
-- to control when and where new information is provided to the player
+* to alter the starting locations of bad guys, NPCs or the player character, or stop any one of these from spawing at all
+* to alter which trigger points are active, or to alter their locations, or what they do
+* to control the AI behaviour of bad guys or NPCs
+* to control dialog with NPCs
+* to control when and where new information is provided to the player
