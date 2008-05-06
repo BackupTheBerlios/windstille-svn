@@ -1,8 +1,4 @@
-== Starting the game ==
 
-On startup the game should present its logo (Windstille), a short list
-of credits and copyright, combined by some fade-overs and light
-effects, after that it should fade over to the main menu.
 
 == Main Menu ==
 
