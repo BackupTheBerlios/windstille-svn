@@ -52,6 +52,8 @@ All movement from objects that collide *must* happen via the collision engine, t
 
 To detect the time and point of collision the standard sweepcheck should be used, this check needs to be performed for all possible object combination, after that the detected collisions should be sorted after the their time and then resolved one after another. Since the collision response might actually lead to new collisions, the check needs to be redone again for the involved objects (maybe for all objects?!). This is done up to the point where all time for all objects is used up.
 
+CollisionObject should *not* be a parent of entity. This has the simple reason that a entity might need multiple CollisionObject. Imagine a large robot with multiple legs, each of the feet is represented by a CollisionObject, the whole robot however should be handled as a single entity, which would be impossible if Entity derives from CollisionObject (unless of course you add a heapload of useless grouping features to the collision engine).
+
 == Attachments/Contacts ==
 
 There should be a way to link objects together, this linking might either be primitive, ie. simple parenting without taking care if objects connect at all, or more complex, ie. a box that is standing ontop of another box. The collision engine should check when such a contact is no longer in place and give an appropriate event. There should also be a way to detect the angle of the contact point so that you can move objects at other speed when they walk up/down a slope.
