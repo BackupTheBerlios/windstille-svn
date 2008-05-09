@@ -84,8 +84,11 @@ else
     out.write(rev.data)
     out.close()
 
-    system('git', 'add',  rev.title)
-    system('git', 'commit', '-m', rev.to_s)
+    # system('git', 'add',  rev.title)
+    # system('git', 'commit', '-m', rev.to_s)
+
+    system('svn', 'add',  rev.title)
+    system('svn', 'commit', '-m', rev.to_s)
   }
 end
 

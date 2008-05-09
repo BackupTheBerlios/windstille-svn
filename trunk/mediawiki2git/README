@@ -1,0 +1,13 @@
+mediawiki2git
+=============
+
+These are a bunch of scripts that were use to extract all content,
+including history, out of the Windstille mediawiki and convert it into
+plain text files to be placed in the SVN repository.
+
+The scripts where written to get the job done, so they won't work
+without adoption in other Wikis.
+
+-- 
+Ingo Ruhnke <grumbel@gmx.de>
+Fri May  9 03:56:58 2008
