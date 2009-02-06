@@ -23,5 +23,17 @@ windstille/
 windstille-nds/
  - a little prototype of Windstille for the NintendoDS
 
+physics2d/
+ - a simple 2d box physics engine
+
+blender-thumbnail/
+ - scripts to automatically generate thumbnails out of .blend files
+
+blender-exporter/
+ - export scripts to convert .blend files into stuff usable by Windstille engine
+
+sdl-jstest/
+ - a joystick test application using SDL
+
 ________________________________________________________________________
 $Id$
