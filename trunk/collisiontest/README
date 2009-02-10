@@ -1,0 +1,10 @@
+This example is able to do:
+1) Throw boxes by clicking and holding left-mouse-button.
+2) running and jumping around with cursor keys.
+
+Tests:
+- throw boxes
+- push boxes
+- fall off from elevator
+- run under elevator
+- let you push around from elevator
