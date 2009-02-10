@@ -30,39 +30,34 @@
 
 require "RMagick"
 require 'getoptlong'
-require 'rdoc/usage'
+require 'pathname'
 
 $cfg_resolution = "512"
 $cfg_output     = "/tmp/blender_thumbnail_output.png"
 $cfg_render     = true
 
-$cfg_blender_script = "/home/ingo/projects/windstille/trunk/scripts/blender_thumbnail.py"
 $cfg_blender_binary = "blender"
+$cfg_blender_script = "#{File.dirname($0)}/blender_thumbnail.py"
+
+if not File.exists?($cfg_blender_script)
+  puts "Couldn't find blender_thumbnail.py script"
+  exit 0
+end
 
 $cfg_layout = [
-          [ "-90,0,0", # left
-            "0,0,0", # front
-            "0,90,90", # top
-            "45,45,0", # 45-front
-          ],
-          ["90,0,0", # right
-           "180,0,0", # back
-           "0,-90,90", # bottom
-           "135,45,0", # 45-back
-          ]
-         ]
+               [ "-90,0,0", # left
+                 "0,0,0", # front
+                 "0,90,90", # top
+                 "45,45,0", # 45-front
+               ],
+               ["90,0,0", # right
+                "180,0,0", # back
+                "0,-90,90", # bottom
+                "135,45,0", # 45-back
+               ]
+              ]
 
-GetoptLong.new(
-               [ '--help',       '-h', GetoptLong::NO_ARGUMENT ],
-               [ '--no-render',           GetoptLong::NO_ARGUMENT ],
-               [ '--resolution', '-r', GetoptLong::REQUIRED_ARGUMENT ],
-               [ '--layout'    , '-l', GetoptLong::REQUIRED_ARGUMENT ],
-               [ '--output'    , '-o', GetoptLong::REQUIRED_ARGUMENT ],
-               [ '--blender'   , GetoptLong::REQUIRED_ARGUMENT ],
-               [ '--script'    , GetoptLong::REQUIRED_ARGUMENT ]
-               ).each{|opt, arg|
-  case opt
-  when '--help'
+def print_usage()
     puts "Usage: #{$0} [OPTION]... FILE..."
     puts "Generates thumbnails from Blender files."
     puts ""
@@ -76,6 +71,20 @@ GetoptLong.new(
     puts ""
     puts "Report bugs to <grumbel@gmx.de>"
     exit(0)
+end
+
+GetoptLong.new(
+               [ '--help',       '-h', GetoptLong::NO_ARGUMENT ],
+               [ '--no-render',           GetoptLong::NO_ARGUMENT ],
+               [ '--resolution', '-r', GetoptLong::REQUIRED_ARGUMENT ],
+               [ '--layout'    , '-l', GetoptLong::REQUIRED_ARGUMENT ],
+               [ '--output'    , '-o', GetoptLong::REQUIRED_ARGUMENT ],
+               [ '--blender'   , GetoptLong::REQUIRED_ARGUMENT ],
+               [ '--script'    , GetoptLong::REQUIRED_ARGUMENT ]
+               ).each{|opt, arg|
+  case opt
+  when '--help'
+    print_usage()
 
   when '--blender'
     $cfg_blender_binary = arg
@@ -101,50 +110,54 @@ GetoptLong.new(
   end
 }
 
-ARGV.each{|filename|
-  positions = $cfg_layout.flatten
-  outfiles  = positions.map{|name| "/tmp/render-#{name}.png" }
+if ARGV.empty?() then
+  print_usage()
+else
+  ARGV.each{|filename|
+    positions = $cfg_layout.flatten
+    outfiles  = positions.map{|name| "/tmp/render-#{name}.png" }
 
-  if $cfg_render then
-    # render the graphics
-    ENV["BLEND_THUMB_POS"]        = positions.join(';')
-    ENV["BLEND_THUMB_OUTPUT"]     = outfiles.join(';')
-    ENV["BLEND_THUMB_RESOLUTION"] = $cfg_resolution
-    
-    if not system($cfg_blender_binary, filename, "-P", $cfg_blender_script) then
-      puts "Error while rendering '#{filename}', error code #{$?}"
+    if $cfg_render then
+      # render the graphics
+      ENV["BLEND_THUMB_POS"]        = positions.join(';')
+      ENV["BLEND_THUMB_OUTPUT"]     = outfiles.join(';')
+      ENV["BLEND_THUMB_RESOLUTION"] = $cfg_resolution
+      
+      if not system($cfg_blender_binary, filename, "-P", $cfg_blender_script) then
+        puts "Error while rendering '#{filename}', error code #{$?}"
+      end
     end
-  end
 
-  images = {}
-  outfiles.map{|file| Magick::Image.read(file).first.trim! }.zip($cfg_layout.flatten).each{|v, k|
-    images[k] = v
-  }
-
-  spacing = 16
-  width  = 0
-  height = spacing
-  
-  puts "Composing final image"
-  gc = Magick::Draw.new()
-  $cfg_layout.each{|lst|
-    this_height = lst.map{|i| images[i].rows}.max
-    x = spacing
-    lst.each{|name|
-      image = images[name]
-      gc.composite(x, height + (this_height - image.rows)/2, 0, 0, image)
-      x += image.columns + spacing
+    images = {}
+    outfiles.map{|file| Magick::Image.read(file).first.trim! }.zip($cfg_layout.flatten).each{|v, k|
+      images[k] = v
     }
 
-    height += lst.map{|i| images[i].rows}.max + spacing
-    width   = [width, lst.map{|i| images[i].columns + spacing}.inject(0){|t,v| t + v} + spacing].max
-  }
-  # puts "OutImage: #{width} #{height}"
-  outimage = Magick::Image.new(width, height, Magick::HatchFill.new("#78b", "#abd", 32))
-  gc.draw(outimage)
+    spacing = 16
+    width  = 0
+    height = spacing
+    
+    puts "Composing final image"
+    gc = Magick::Draw.new()
+    $cfg_layout.each{|lst|
+      this_height = lst.map{|i| images[i].rows}.max
+      x = spacing
+      lst.each{|name|
+        image = images[name]
+        gc.composite(x, height + (this_height - image.rows)/2, 0, 0, image)
+        x += image.columns + spacing
+      }
 
-  puts "Writing final image to '#{$cfg_output}'"
-  outimage.write($cfg_output)
-}
+      height += lst.map{|i| images[i].rows}.max + spacing
+      width   = [width, lst.map{|i| images[i].columns + spacing}.inject(0){|t,v| t + v} + spacing].max
+    }
+    # puts "OutImage: #{width} #{height}"
+    outimage = Magick::Image.new(width, height, Magick::HatchFill.new("#78b", "#abd", 32))
+    gc.draw(outimage)
+
+    puts "Writing final image to '#{$cfg_output}'"
+    outimage.write($cfg_output)
+  }
+end
 
 # EOF #
