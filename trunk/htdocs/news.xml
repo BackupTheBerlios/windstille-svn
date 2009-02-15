@@ -3,6 +3,11 @@
   
   <section title="News">
     <news>
+      <item date="15. Feb 2009">
+        Some Windstille development is going on again, check out the 
+        <a href="http://grumbel.blogspot.com/search/label/Windstille">Blog</a>.
+      </item>
+
       <item date="20. Oct 2007">
         Windows build of the 0.3.0 release is available
       </item>
@@ -10,13 +15,13 @@
       <item date="13. Jun 2007">
         <a href="download.html">Windstille 0.3.0</a> is out, featuring:
         <ul>
-<li>near complete rewrite of the engine</li>
-<li>3D sprites</li>
-<li>light effects</li>
-<li>particle system</li>
-<li>model viewer</li>
-<li>menu system</li>
-<li>scripting</li>
+          <li>near complete rewrite of the engine</li>
+          <li>3D sprites</li>
+          <li>light effects</li>
+          <li>particle system</li>
+          <li>model viewer</li>
+          <li>menu system</li>
+          <li>scripting</li>
         </ul>
       </item>
 
@@ -32,8 +37,8 @@
         with a little luck we might have something actually playable
         ready in a few month. All development specific information is
         now collected in the <a
-        href="http://windstille.berlios.de/wiki/index.php/Main_Page">Windstille
-        Development Wiki</a>.
+                                href="http://windstille.berlios.de/wiki/index.php/Main_Page">Windstille
+          Development Wiki</a>.
       </item>
 
       <item date="3. Jun 2005">
@@ -42,9 +47,9 @@
 
       <item date="5. Nov 2004">
         We now have a <a
-        href="http://windstille.berlios.de/phpBB2">forum</a> where you
+                         href="http://windstille.berlios.de/phpBB2">forum</a> where you
         can post suggestion, comments and whatever you want. <em>Forum
-        is currently no longer online.</em>
+          is currently no longer online.</em>
       </item>
 
       <item date="3. Nov 2004">
@@ -57,30 +62,30 @@
       <item date="24. Oct 2004">
         A video of a fire effect created by the particle system that
         will be used in Windstille is now available in the <a
-        href="screenshots.html#effects">effects subsection</a>
+                                                              href="screenshots.html#effects">effects subsection</a>
       </item>
 
       <item date="16. Oct 2004">
         Some more screenshots of hour hero and some more sketches of
         scenery are available in the <a href="artworks.html">artwork
-        section</a> are available.
+          section</a> are available.
       </item>
 
       <item date="06. Oct 2004">
         Some new lighting effects are now in the <a
-        href="screenshots.html#effects">artwork section</a>.
+                                                    href="screenshots.html#effects">artwork section</a>.
       </item>
 
       <item date="04. Oct 2004">
         Not much news in the last few months, but don't worry, its not
         dead yet, just developing rather slowly and jumpy. The <a
-        href="artworks.html">artwork section</a> contains some new
+                                                                  href="artworks.html">artwork section</a> contains some new
         pieces (<a href="artworks.html#hero">here</a> and <a
-        href="screenshots.html#effects">here</a>) of graphics which might
+                                                             href="screenshots.html#effects">here</a>) of graphics which might
         be worth a look. You want to see the Windstille artwork in its
         purest or rawest form, you can now find it in the <a
-      href="http://undone.clanlib.org/~grumbel/show.cgi?search=windstille">Game
-      Media Repository</a>.
+                                                             href="http://undone.clanlib.org/~grumbel/show.cgi?search=windstille">Game
+          Media Repository</a>.
       </item>
 
       <item date="08. Feb 2004">
@@ -91,15 +96,15 @@
       <item date="08. Feb 2004">
         Thanks to <a href="mailto:rkon@gmx.de">Robert Konrad</a> we
         now have a Win32 build of the <a href="download.html">0.2.0
-        Windstille release</a>, known bugs for that release include
+          Windstille release</a>, known bugs for that release include
         the lack of the exit-trigger, so once you have reached the
         exit, you have to press Escape.
       </item>
 
       <item date="02. Feb 2004">
         Added another, a bit more detailed, <a
-        href="images/artwork10.jpg">artwork of the Windstille
-        hero</a>. Win32 release will hopefully follow real soon. Hint:
+                                               href="images/artwork10.jpg">artwork of the Windstille
+          hero</a>. Win32 release will hopefully follow real soon. Hint:
         If anybody wants to help maintaining the Win32 builds and thus
         lead to faster release cycles and less workload on myself,
         tools for doing that (MinGW, ClanLib, Voribs, etc.) are all
@@ -117,7 +122,7 @@
 	but it should ensure that following Windows ports should be doable
 	in relativly small amounts of time.
       </item>
-    
+      
       <item date="13. Aug 2003">
         <a href="download.html">Windstille 0.1.0</a> is out, both the
         full source and a static binary for GNU/Linux are provided,
@@ -128,13 +133,13 @@
 
       <item date="09. Aug 2003">
         Added a few <a href="screenshots.html#pseudoscreen">pseudo
-        screenshots</a>, aka artworks that use in-game graphics and a
+          screenshots</a>, aka artworks that use in-game graphics and a
         few other things to emulate special effects.
       </item>
 
       <item date="07. Aug 2003">
         Added a few <a href="screenshots.html#posingtest">posing
-        tests</a>, rewrote the <a href="index.html">introduction</a>.
+          tests</a>, rewrote the <a href="index.html">introduction</a>.
       </item>
 
       <item date="04. Aug 2003">
