@@ -3,6 +3,11 @@
   
   <section title="News">
     <news>
+      <item date="25. May 2010">
+        Added link to Ubuntu packages for the current 0.4.0 development branch
+      </item>
+
+
       <item date="22. Feb 2009">
         New <a href="wiki/">Windstille Wiki</a> got launched.
       </item>

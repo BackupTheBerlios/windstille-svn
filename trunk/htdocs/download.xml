@@ -49,43 +49,52 @@
   </section>
 
   <section title="Development Version">
-    <p>
-      You can also get access to the latest development version via <a
-                                                                       href="http://subversion.tigris.de">Subversion</a> at:
-    </p>
-    <p>
-      <tt>svn co svn://svn.berlios.de/windstille/trunk/windstille</tt>
-    </p>
-    <p>
-      You can browse the repository online
-      at <a href="http://svn.berlios.de/wsvn/windstille">Windstille
-        WebSVN</a>, it contains a few more things inside trunk/ that
-      aren't part of the core engine:
-    </p>
-    <dl>
-      <dt>windstille/</dt>
-      <dd>The core engine/game</dd>
+    <subsection title="Binary Builds">
+      <p>You can find binary builds of the latest development version for Ubuntu at:</p>
+      <ul>
+        <li><a href="https://launchpad.net/~grumbel/+archive/ppa/">https://launchpad.net/~grumbel/+archive/ppa/</a></li>
+      </ul>
+    </subsection>
 
-      <dt>windstille-nds/</dt>
-      <dd>A little techdemo version of Windstille for the NintendoDS</dd>
+    <subsection title="Source">
+      <p>
+        You can also get access to the latest development version via 
+        <a href="http://subversion.tigris.de">Subversion</a> at:
+      </p>
+      <p>
+        <tt>svn co svn://svn.berlios.de/windstille/trunk/windstille</tt>
+      </p>
+      <p>
+        You can browse the repository online
+        at <a href="http://svn.berlios.de/wsvn/windstille">Windstille
+          WebSVN</a>, it contains a few more things inside trunk/ that
+        aren't part of the core engine:
+      </p>
+      <dl>
+        <dt>windstille/</dt>
+        <dd>The core engine/game</dd>
 
-      <dt>media/</dt>
-      <dd>Source for all the Windstille graphics, sketches and stuff</dd>
+        <dt>windstille-nds/</dt>
+        <dd>A little techdemo version of Windstille for the NintendoDS</dd>
 
-      <dt>scripts/</dt>
-      <dd>Thumbnail generation script for Blender</dd>
+        <dt>media/</dt>
+        <dd>Source for all the Windstille graphics, sketches and stuff</dd>
 
-      <dt>txt2png/</dt>
-      <dd>An application to convert text files into graphics</dd>
+        <dt>scripts/</dt>
+        <dd>Thumbnail generation script for Blender</dd>
 
-      <dt>html2image/</dt>
-      <dd>An application to convert html files into graphics</dd>
+        <dt>txt2png/</dt>
+        <dd>An application to convert text files into graphics</dd>
 
-      <dt>griv/</dt>
-      <dd>An OpenGL based image collection viewer</dd>
+        <dt>html2image/</dt>
+        <dd>An application to convert html files into graphics</dd>
 
-      <dt>facebuilder/</dt>
-      <dd>An simple application to construct 2D front-view faces</dd>
-    </dl>
+        <dt>griv/</dt>
+        <dd>An OpenGL based image collection viewer</dd>
+
+        <dt>facebuilder/</dt>
+        <dd>An simple application to construct 2D front-view faces</dd>
+      </dl>
+    </subsection>
   </section>
 </page>
