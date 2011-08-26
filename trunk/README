@@ -26,6 +26,9 @@ windstille-nds/
 physics2d/
  - a simple 2d box physics engine
 
+collisiontest/
+ - a simple 2d box physics engine, similar to physics2d, but more advanced
+
 blender-thumbnail/
  - scripts to automatically generate thumbnails out of .blend files
 
