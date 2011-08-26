@@ -22,6 +22,7 @@
 QCString output_file;
 QCString input_file;
 QCString debug_file;
+QCString width_string;
 bool verbose = false;
 
 int last_empty_line(QImage& img)
@@ -197,17 +198,18 @@ void HTMLCreator::save()
       images.push_back(img.copy(0, 0, img.width(), 
                                 std::max(0, std::min(last_empty + 6, img.height()))));
 
-      if (debug_file != "")
-        {
-          images.back().save(QString(debug_file).arg(images.size(), 4), "PNG");
-        }
+      if (!debug_file.isNull())
+      {
+        std::cout << "### Writing debug to " << debug_file << std::endl;
+        images.back().save(QString(debug_file).arg(images.size(), 4), "PNG");
+      }
 
       if (verbose)
         std::cout << "HTMLCreator::save: rendering page: " << images.size() << " lastempty: " << last_empty << std::endl;
     }
   while(last_empty != 0);
 
-  int img_width  = 480;
+  int img_width  = picture_width;
   int img_height = 0;
   for(int i = 0; i < (int)images.size(); ++i)
     img_height += images[i].height();
@@ -262,6 +264,7 @@ void HTMLCreator::save()
               current_page_size = total.height() - current_pos;
             }
 
+          std::cout << "### Writing output to " << output_file << std::endl;
           QImage page = total.copy(0, current_pos, total.width(), current_page_size);
           QString out = QString(output_file).arg(i, 4);
           page.save(out, "JPEG", 80);
@@ -279,6 +282,7 @@ static const KCmdLineOptions options[] =
     { "output <file>", "Output file", 0 },
     { "file <file>",   "A required argument 'file'", 0 },
     { "debug <file>",   "Debug file", 0 },
+    { "width <WIDTH>", "Width", 0 },
     { "verbose",       "Verbose output", 0 },
     { NULL }
   };
@@ -298,9 +302,29 @@ int main(int argc, char** argv)
   output_file = args->getOption("output");
   input_file  = args->getOption("file");
   debug_file  = args->getOption("debug");
+  width_string = args->getOption("width");
   verbose     = args->isSet("verbose");
       
-  HTMLCreator* html = new HTMLCreator(480, 480);
+  if (output_file.isNull())
+  {
+    std::cout << "--output is missing" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
+  if (input_file.isNull())
+  {
+    std::cout << "input file is missing" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
+  bool ok = false;
+  int width = width_string.toInt(&ok);
+  if (!ok)
+  {
+    width = 480;
+  }
+
+  HTMLCreator* html = new HTMLCreator(width, 480);
   app.setMainWidget(html);
   //html->show();
 

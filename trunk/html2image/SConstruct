@@ -1,6 +1,6 @@
 # -*- python -*-
 
-env = Environment(CXXFLAGS=['-g', '-Wall'])
+env = Environment(CXXFLAGS=['-O0', '-g3', '-Wall'])
 env['CPPPATH'] = ['/usr/include/kde', '/usr/include/qt3', 'khtml']
 env['LIBS'] = ['qt-mt', 'khtml']
 env.Program('htmlcreator', ['htmlcreator.cpp'])
