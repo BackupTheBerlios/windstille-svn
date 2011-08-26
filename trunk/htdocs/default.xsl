@@ -1,15 +1,12 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xalan="org.apache.xalan.xslt.extensions.Redirect" extension-element-prefixes="xalan"
-  >
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   
   <xsl:output 
-    method="html" 
-    indent="yes" 
-    doctype-public="-//W3C//DTD HTML 4.01//EN" 
-    doctype-system="http://www.w3.org/TR/html4/strict.dtd"
-    encoding="ISO-8859-1" />
+     method="html" 
+     doctype-public="XSLT-compat"
+     encoding="UTF-8"
+     />
 
   <xsl:param name="filename"/>
   <xsl:param name="lastchange"/>  
@@ -33,31 +30,28 @@
         <title>Windstille - A Jump'n Shoot Game</title>
         <link rel="stylesheet" type="text/css" href="default.css" />
         <link rel="icon" href="images/favicon.png" type="image/png" />
+        <meta name="google-site-verification" content="GJ6Jvfp0OlkCgQWBqTAXEmc3R_2nr5FDboaSUv2tugc" />
       </head>
 
       <body>
-        <table border="0" width="100%">
-          <tr>
-            <td width="20%">
-            </td>
-            <td width="60%">
-              <h1><a href="http://windstille.berlios.de/windstille/"><img border="0" src="images/windstille_small.png" alt="Windstille" /></a></h1>
-            </td>
-            <td width="20%">
-              <div align="right">
-                <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-                  <input type="hidden" name="cmd" value="_xclick" />
-                  <input type="hidden" name="business" value="grumbel@gmx.de" />
-                  <input type="hidden" name="item_name" value="Windstille donation" />
-                  <input type="hidden" name="no_note" value="1" />
-                  <input type="hidden" name="currency_code" value="EUR" />
-                  <input type="hidden" name="tax" value="0" />
-                  <input type="image" src="https://www.paypal.com/images/x-click-but04.gif" border="0" name="submit" alt="donate via PayPal" />
-                </form>
-              </div>
-            </td>
-          </tr>
-        </table>
+        <div style="float: left; margin-top: 1em;">
+          <a href="http://flattr.com/thing/5654/Windstille-A-sidescrolling-2d-sci-fi-action-adventure" target="_blank">
+            <img src="http://api.flattr.com/button/button-static-50x60.png" title="Flattr this" border="0" /></a>
+        </div>
+
+        <div style="float: right; margin-top: 1em;">
+          <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+            <input type="hidden" name="cmd" value="_xclick" />
+            <input type="hidden" name="business" value="grumbel@gmx.de" />
+            <input type="hidden" name="item_name" value="Windstille donation" />
+            <input type="hidden" name="no_note" value="1" />
+            <input type="hidden" name="currency_code" value="EUR" />
+            <input type="hidden" name="tax" value="0" />
+            <input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="donate via PayPal" />
+          </form>
+        </div>
+        
+        <h1><a href="http://windstille.berlios.de/windstille/"><img border="0" src="images/windstille_small.png" alt="Windstille" /></a></h1>
         
         <table cellspacing="0" cellpadding="0" border="0" align="center" style="margin-bottom: 0em;">
           <tr>

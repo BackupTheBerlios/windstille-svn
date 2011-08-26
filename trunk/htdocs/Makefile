@@ -1,31 +1,38 @@
 OUTPUTFILES = \
-  index.html news.html screenshots.html development.html download.html contact.html \
-  artworks.html
+  build/index.html \
+  build/news.html \
+  build/screenshots.html \
+  build/development.html \
+  build/download.html \
+  build/contact.html \
+  build/artworks.html
 
 all : $(OUTPUTFILES)
 
 clean :
 	rm -vf $(OUTPUTFILES)
 
-%.html :: %.xml default.xsl Makefile menu.xml
-	FILENAME=$<; \
+build/:
+	mkdir build/
+
+build/%.html :: %.xml default.xsl Makefile menu.xml build/
+	@FILENAME=$<; \
 	LASTCHANGE=`date -I`; \
 	echo $${FILENAME%%.xml}; \
-	xalan \
-          -param filename   "'$${FILENAME%%.xml}'" \
-          -param lastchange "'$${LASTCHANGE}'" \
-          -in $< \
-          -out $@ \
-          -xsl default.xsl
+	xsltproc \
+          -stringparam filename   "'$${FILENAME%%.xml}'" \
+          -stringparam lastchange "'$${LASTCHANGE}'" \
+          -o $@ \
+          default.xsl $<
 
 upload: berlios
 
 commit: berlios
 
 berlios: all
-	svn update && \
-	svn commit -m "--- some unknown new stuff (automatically inserted by the upload script) ---" && \
-	rsync -Crv . grumbel@shell.berlios.de:/home/groups/windstille/htdocs/
+	# svn update && \
+	# svn commit -m "--- some unknown new stuff (automatically inserted by the upload script) ---" && \
+	rsync -LCrtv build/ grumbel@shell.berlios.de:/home/groups/windstille/htdocs/
 
 .PHONY: all clean upload
 

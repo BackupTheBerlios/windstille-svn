@@ -7,6 +7,10 @@ body {
 /*text-align: justify;*/
 }
 
+header, footer, aside, nav, article {  
+  display: block;  
+}  
+
 a:visited { 
   color: #00bbbb;
 }  
